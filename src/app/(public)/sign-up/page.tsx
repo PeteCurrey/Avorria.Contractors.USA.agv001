@@ -1,70 +1,103 @@
-import React from 'react';
-import Link from 'next/link';
-import { Metadata } from 'next';
-import { siteConfig } from '@/config/site';
+'use client';
 
-export const metadata: Metadata = {
-  title: 'Create Contractor Account',
-  robots: { index: false, follow: false },
-};
+import React, { useState } from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { siteConfig } from '@/config/site';
+import { Button } from '@/components/ui/Button';
+import { Input } from '@/components/ui/Input';
+import { Card } from '@/components/ui/Card';
 
 export default function SignUpPage() {
+  const router = useRouter();
+  const [companyName, setCompanyName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+
+    try {
+      // Initialize onboarding step 1 with company name and email
+      await fetch('/api/contractor/onboarding', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          step: 1,
+          data: {
+            businessName: companyName,
+            email,
+          },
+        }),
+      });
+
+      router.push('/app/onboarding');
+    } catch {
+      router.push('/app/onboarding');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
-    <div className="py-16 px-4 max-w-md mx-auto space-y-6">
+    <div className="py-16 px-4 max-w-md mx-auto space-y-6 text-left">
       <div className="text-center space-y-2">
-        <h1 className="text-2xl font-bold text-white">Start with {siteConfig.name}</h1>
-        <p className="text-xs text-slate-400">Build your business profile, generate JHAs, and track compliance.</p>
+        <h1 className="text-2xl font-black text-white tracking-tight">
+          Start with {siteConfig.name}
+        </h1>
+        <p className="text-xs text-slate-400">
+          Build your professional contractor identity, generate JHAs, and manage compliance.
+        </p>
       </div>
 
-      <div className="p-6 rounded-xl bg-surface-card border border-surface-border space-y-4">
-        <form className="space-y-4 text-xs">
-          <div>
-            <label className="block text-slate-300 mb-1 font-medium">Company Name</label>
-            <input
-              type="text"
-              placeholder="Apex Electrical Solutions LLC"
-              className="w-full px-3 py-2 rounded bg-surface-subtle border border-surface-border text-white focus:border-brand-500 focus:outline-none"
-            />
+      <Card variant="default">
+        <form onSubmit={handleSubmit} className="space-y-4 text-xs">
+          <Input
+            label="Company Name"
+            placeholder="Apex Electrical Solutions LLC"
+            value={companyName}
+            onChange={(e) => setCompanyName(e.target.value)}
+            required
+          />
+
+          <Input
+            label="Business Email"
+            type="email"
+            placeholder="owner@company.com"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+
+          <Input
+            label="Create Secure Password"
+            type="password"
+            placeholder="••••••••••••"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+
+          <div className="pt-2">
+            <Button type="submit" variant="primary" size="md" className="w-full text-center" isLoading={isLoading}>
+              Create Account & Start Onboarding →
+            </Button>
           </div>
-          <div>
-            <label className="block text-slate-300 mb-1 font-medium">Primary Trade</label>
-            <input
-              type="text"
-              placeholder="e.g. Electrical, HVAC, Plumbing, Roofing"
-              className="w-full px-3 py-2 rounded bg-surface-subtle border border-surface-border text-white focus:border-brand-500 focus:outline-none"
-            />
-          </div>
-          <div>
-            <label className="block text-slate-300 mb-1 font-medium">Business Email</label>
-            <input
-              type="email"
-              placeholder="owner@company.com"
-              className="w-full px-3 py-2 rounded bg-surface-subtle border border-surface-border text-white focus:border-brand-500 focus:outline-none"
-            />
-          </div>
-          <div>
-            <label className="block text-slate-300 mb-1 font-medium">Password</label>
-            <input
-              type="password"
-              placeholder="••••••••"
-              className="w-full px-3 py-2 rounded bg-surface-subtle border border-surface-border text-white focus:border-brand-500 focus:outline-none"
-            />
-          </div>
-          <Link
-            href="/app/dashboard"
-            className="block w-full text-center py-2.5 px-4 rounded bg-brand-600 hover:bg-brand-500 text-white font-semibold transition-colors"
-          >
-            Create Account & Enter Workspace
-          </Link>
+
+          <p className="text-[11px] text-slate-500 text-center pt-1">
+            Free Starter Tier • No Credit Card Required
+          </p>
         </form>
 
-        <div className="text-center pt-2 border-t border-surface-border text-xs text-slate-400">
+        <div className="text-center pt-4 mt-4 border-t border-surface-border text-xs text-slate-400">
           Already have an account?{' '}
-          <Link href="/sign-in" className="text-brand-400 hover:underline">
+          <Link href="/sign-in" className="text-brand-400 hover:underline font-semibold">
             Sign In
           </Link>
         </div>
-      </div>
+      </Card>
     </div>
   );
 }

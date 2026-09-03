@@ -2,6 +2,10 @@ import React from 'react';
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
 import { siteConfig } from '@/config/site';
+import { getPassportDetails } from '@/lib/tenant/repository';
+import { Badge } from '@/components/ui/Badge';
+import { ReadinessGauge } from '@/components/ui/ReadinessGauge';
+import { Card, CardTitle } from '@/components/ui/Card';
 
 interface Props {
   params: Promise<{
@@ -9,56 +13,30 @@ interface Props {
   }>;
 }
 
-// Sample verified contractor for demonstration and testing of public profile criteria
-const DEMO_PUBLIC_PROFILES: Record<string, {
-  slug: string;
-  companyName: string;
-  trade: string;
-  location: string;
-  visibility: 'published' | 'private' | 'draft' | 'suspended';
-  isIndexable: boolean;
-  readinessScore: number;
-  verifiedBadges: string[];
-  coiStatus: string;
-  licenseStatus: string;
-  safetyPlanStatus: string;
-  overview: string;
-}> = {
-  'apex-electrical-solutions': {
-    slug: 'apex-electrical-solutions',
-    companyName: 'Apex Electrical Solutions LLC',
-    trade: 'Commercial Electrical Contractor',
-    location: 'Austin, TX',
-    visibility: 'published',
-    isIndexable: true,
-    readinessScore: 95,
-    verifiedBadges: ['Verified Contractor', 'Active General Liability COI', 'Master Electrician TDLR', 'OSHA 30 Supervisors'],
-    coiStatus: 'Active ($2,000,000 Aggregate)',
-    licenseStatus: 'Texas TDLR #34891 (Active)',
-    safetyPlanStatus: 'Site Safety Plan Current (NFPA 70E Aligned)',
-    overview: 'Specializing in commercial tenant improvement, switchgear installation, industrial automation, and medium-voltage distribution across Central Texas.',
-  },
-  'unverified-draft-contractor': {
-    slug: 'unverified-draft-contractor',
-    companyName: 'Unpublished Demo Contractor',
-    trade: 'General Contracting',
-    location: 'Dallas, TX',
-    visibility: 'draft', // Draft / Private -> should trigger notFound()
-    isIndexable: false,
-    readinessScore: 35,
-    verifiedBadges: [],
-    coiStatus: 'Pending',
-    licenseStatus: 'Unverified',
-    safetyPlanStatus: 'Missing',
-    overview: 'Internal draft record.',
-  },
-};
-
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const profile = DEMO_PUBLIC_PROFILES[slug];
+  
+  // Check demo or live repository
+  let companyName = 'Contractor Profile';
+  let isPublished = false;
 
-  if (!profile || profile.visibility !== 'published') {
+  if (slug === 'apex-electrical-solutions') {
+    companyName = 'Apex Electrical Solutions LLC';
+    isPublished = true;
+  } else {
+    try {
+      const orgId = slug.startsWith('contractor-') ? `${slug.replace('contractor-', '')}-aaaa-aaaa-aaaa-aaaaaaaaaaaa` : 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa';
+      const passport = await getPassportDetails(orgId);
+      if (passport.isPublished) {
+        companyName = passport.workspace.organisation.name;
+        isPublished = true;
+      }
+    } catch {
+      isPublished = false;
+    }
+  }
+
+  if (!isPublished) {
     return {
       title: 'Profile Not Found',
       robots: { index: false, follow: false },
@@ -66,90 +44,110 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 
   return {
-    title: `${profile.companyName} | Verified Contractor Passport`,
-    description: `Verified contractor credentials for ${profile.companyName} (${profile.trade}) in ${profile.location}. Contractor Readiness Score: ${profile.readinessScore}%.`,
-    robots: {
-      index: profile.isIndexable,
-      follow: profile.isIndexable,
-    },
+    title: `${companyName} | Contractor Passport`,
+    description: `Public contractor credentials and readiness record for ${companyName}.`,
+    robots: { index: true, follow: true },
     alternates: {
-      canonical: `${siteConfig.url}/contractors/${profile.slug}`,
+      canonical: `${siteConfig.url}/contractors/${slug}`,
     },
   };
 }
 
 export default async function ContractorProfilePage({ params }: Props) {
   const { slug } = await params;
-  const profile = DEMO_PUBLIC_PROFILES[slug];
 
-  // STRICT ACCESS CONTROL: Only published profiles are visible to the public.
-  if (!profile || profile.visibility !== 'published') {
+  let companyName = '';
+  let tradeName = 'Commercial Electrical';
+  let location = 'Austin, TX';
+  let score = 92;
+  let isPublished = false;
+  let checks: { label: string; satisfied: boolean }[] = [];
+
+  if (slug === 'apex-electrical-solutions') {
+    companyName = 'Apex Electrical Solutions LLC';
+    tradeName = 'Commercial Electrical Contractor';
+    location = 'Austin, TX';
+    score = 95;
+    isPublished = true;
+    checks = [
+      { label: 'Active General Liability Insurance ($2M Aggregate)', satisfied: true },
+      { label: 'State Trade License (Texas TDLR #34891)', satisfied: true },
+      { label: 'Written Safety Program (OSHA 1926 Aligned)', satisfied: true },
+      { label: 'Supervisors with OSHA 30 Cards', satisfied: true },
+    ];
+  } else {
+    try {
+      const orgId = slug.startsWith('contractor-') ? `${slug.replace('contractor-', '')}-aaaa-aaaa-aaaa-aaaaaaaaaaaa` : 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa';
+      const passport = await getPassportDetails(orgId);
+      if (passport.isPublished) {
+        companyName = passport.workspace.organisation.name;
+        tradeName = passport.workspace.trades.map((t) => t.replace('-', ' ')).join(', ');
+        location = `${passport.workspace.serviceAreas.cities[0] || 'Austin'}, ${passport.workspace.serviceAreas.primaryState}`;
+        score = passport.readiness.score;
+        isPublished = true;
+        checks = passport.checks;
+      }
+    } catch {
+      isPublished = false;
+    }
+  }
+
+  // STRICT PRIVACY GATE: Only published passports are visible
+  if (!isPublished) {
     notFound();
   }
 
   return (
-    <div className="py-12 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto space-y-8">
-      {/* Header Profile Banner */}
-      <header className="p-8 rounded-xl bg-surface-card border border-surface-border space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div>
-            <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded text-xs font-semibold bg-emerald-950 text-emerald-400 border border-emerald-800 mb-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-              Verified Contractor Passport
+    <div className="py-12 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto space-y-8 text-left">
+      {/* Header Profile Card */}
+      <Card variant="elevated" className="border-brand-500/50 p-6 sm:p-8 space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 border-b border-surface-border pb-6">
+          <div className="space-y-1">
+            <div className="flex items-center gap-2">
+              <Badge variant="primary" size="sm">Public Contractor Passport</Badge>
+              <Badge variant="neutral" size="sm">Live Client View</Badge>
             </div>
-            <h1 className="text-3xl font-black text-white">{profile.companyName}</h1>
-            <p className="text-sm text-slate-300 mt-1">{profile.trade} • {profile.location}</p>
+            <h1 className="text-2xl sm:text-3xl font-black text-white">{companyName}</h1>
+            <p className="text-xs text-slate-300">
+              {tradeName} • {location}
+            </p>
           </div>
 
-          <div className="p-4 rounded-lg bg-surface-subtle border border-surface-border text-center sm:text-right">
-            <span className="text-xs text-slate-400 font-mono uppercase">Readiness Score</span>
-            <div className="text-3xl font-black text-white">{profile.readinessScore}%</div>
-            <span className="text-xs text-emerald-400 font-medium">Verified Criteria</span>
+          <div className="shrink-0 flex flex-col items-center">
+            <ReadinessGauge score={score} size="md" showLabel />
           </div>
         </div>
 
-        <p className="text-sm text-slate-300 leading-relaxed max-w-3xl">
-          {profile.overview}
-        </p>
+        {/* Verified Credentials List */}
+        <div className="space-y-3">
+          <div className="text-xs font-bold text-slate-300 uppercase tracking-wider">
+            Verified Contractor Credentials & Evidence
+          </div>
 
-        <div className="flex flex-wrap gap-2 pt-2 border-t border-surface-border">
-          {profile.verifiedBadges.map((badge, idx) => (
-            <span
-              key={idx}
-              className="text-xs font-medium px-3 py-1 rounded-full bg-brand-950 text-brand-300 border border-brand-800"
-            >
-              ✓ {badge}
-            </span>
-          ))}
+          <div className="space-y-2 text-xs">
+            {checks.map((chk, idx) => (
+              <div
+                key={idx}
+                className="p-3 rounded-lg bg-surface-subtle border border-surface-border flex items-center justify-between"
+              >
+                <div className="flex items-center gap-2 text-slate-200">
+                  <span className={chk.satisfied ? 'text-emerald-400 font-bold' : 'text-slate-600'}>
+                    {chk.satisfied ? '✓' : '•'}
+                  </span>
+                  <span>{chk.label}</span>
+                </div>
+                <Badge variant={chk.satisfied ? 'current' : 'missing'} size="sm">
+                  {chk.satisfied ? 'Verified on File' : 'Pending'}
+                </Badge>
+              </div>
+            ))}
+          </div>
         </div>
-      </header>
+      </Card>
 
-      {/* Verified Credentials Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="p-6 rounded-lg bg-surface-card border border-surface-border space-y-2">
-          <div className="text-xs font-semibold text-brand-400 uppercase tracking-wider">Insurance Status</div>
-          <h2 className="text-base font-bold text-white">General Liability COI</h2>
-          <p className="text-xs text-emerald-400 font-semibold">{profile.coiStatus}</p>
-          <p className="text-xs text-slate-400">Verified through Certificate of Insurance document inspection.</p>
-        </div>
-
-        <div className="p-6 rounded-lg bg-surface-card border border-surface-border space-y-2">
-          <div className="text-xs font-semibold text-brand-400 uppercase tracking-wider">State Licensing</div>
-          <h2 className="text-base font-bold text-white">Trade License</h2>
-          <p className="text-xs text-emerald-400 font-semibold">{profile.licenseStatus}</p>
-          <p className="text-xs text-slate-400">Validated against state regulatory licensing registry.</p>
-        </div>
-
-        <div className="p-6 rounded-lg bg-surface-card border border-surface-border space-y-2">
-          <div className="text-xs font-semibold text-brand-400 uppercase tracking-wider">Safety Program</div>
-          <h2 className="text-base font-bold text-white">Written Safety Plan</h2>
-          <p className="text-xs text-emerald-400 font-semibold">{profile.safetyPlanStatus}</p>
-          <p className="text-xs text-slate-400">OSHA 1926 compliant written program documentation on file.</p>
-        </div>
-      </div>
-
-      <div className="p-4 rounded-lg bg-surface-subtle border border-surface-border text-xs text-slate-400 text-center">
-        This public Contractor Passport has been published with explicit consent from {profile.companyName}. Verification indicates validated platform documentation and does not constitute a state or governmental certification.
+      {/* Regulatory Notice */}
+      <div className="p-4 rounded-xl bg-surface-subtle border border-surface-border text-xs text-slate-500 space-y-1 text-center">
+        <span>Contractor Passport verified against Avorria operational prequalification checklist criteria.</span>
       </div>
     </div>
   );

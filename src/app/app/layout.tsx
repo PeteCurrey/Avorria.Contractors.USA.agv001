@@ -2,6 +2,10 @@ import React from 'react';
 import Link from 'next/link';
 import { Metadata } from 'next';
 import { siteConfig } from '@/config/site';
+import { getTenantContext } from '@/lib/tenant/context';
+import { getEvaluatedWorkspace } from '@/lib/tenant/repository';
+
+export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
   title: {
@@ -31,7 +35,8 @@ const APP_NAV_SECTIONS = [
   {
     category: 'DOCUMENTS & CREATION',
     items: [
-      { title: 'Documents (JHA/JSA)', href: '/app/documents', icon: '📄' },
+      { title: 'Document Vault', href: '/app/documents', icon: '📄' },
+      { title: 'JHA / JSA Generator', href: '/app/documents/create/jha', icon: '⚡' },
       { title: 'Quotes & Estimates', href: '/app/quotes', icon: '💰' },
       { title: 'Proposals & Bids', href: '/app/proposals', icon: '📋' },
     ],
@@ -48,6 +53,7 @@ const APP_NAV_SECTIONS = [
     category: 'ORGANIZATION',
     items: [
       { title: 'Business Profile', href: '/app/business', icon: '🏢' },
+      { title: 'Onboarding Setup', href: '/app/onboarding', icon: '🚀' },
       { title: 'Billing & Plan', href: '/app/billing', icon: '💳' },
       { title: 'Notifications', href: '/app/notifications', icon: '🔔' },
       { title: 'Settings', href: '/app/settings', icon: '⚙️' },
@@ -55,11 +61,25 @@ const APP_NAV_SECTIONS = [
   },
 ];
 
-export default function AppShellLayout({
+export default async function AppShellLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  let tenantName = 'My Contracting Business';
+  let readinessLabel = 'Assessment in progress';
+  let isAssessmentPending = true;
+
+  try {
+    const tenant = await getTenantContext();
+    const { workspace, readiness } = await getEvaluatedWorkspace(tenant.organisation.id);
+    tenantName = workspace.organisation.name || tenantName;
+    readinessLabel = readiness.label;
+    isAssessmentPending = readiness.status === 'assessment_in_progress';
+  } catch (err) {
+    console.error('Failed to load tenant in app shell layout', err);
+  }
+
   return (
     <div className="min-h-screen bg-surface-base flex text-slate-200">
       {/* Sidebar Shell */}
@@ -78,11 +98,17 @@ export default function AppShellLayout({
             </span>
           </div>
 
-          {/* Tenant Org Identifier */}
+          {/* Dynamic Tenant Org Identifier */}
           <div className="p-3 mx-3 my-3 rounded bg-surface-card border border-surface-border">
             <div className="text-[10px] uppercase font-mono text-slate-500">Active Tenant</div>
-            <div className="text-xs font-bold text-white truncate">Apex Electrical Solutions LLC</div>
-            <div className="text-[10px] text-emerald-400 font-medium">95% Readiness Score</div>
+            <div className="text-xs font-bold text-white truncate">{tenantName}</div>
+            <div
+              className={`text-[10px] font-medium ${
+                isAssessmentPending ? 'text-amber-400' : 'text-emerald-400'
+              }`}
+            >
+              {readinessLabel}
+            </div>
           </div>
 
           {/* Navigation Links */}
@@ -114,30 +140,32 @@ export default function AppShellLayout({
           <Link href="/" className="hover:text-slate-300 transition-colors">
             ← Public Website
           </Link>
-          <span className="text-[10px] font-mono text-slate-600">v0.1.0</span>
+          <span className="font-mono text-[10px]">v0.3 Core</span>
         </div>
       </aside>
 
-      {/* Main App Canvas */}
+      {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0">
-        <header className="h-14 border-b border-surface-border bg-surface-subtle/50 px-6 flex items-center justify-between">
-          <div className="text-xs font-medium text-slate-400">
-            Avorria Contractor Workspace <span className="text-slate-600">/</span> Multi-Tenant Mode
+        {/* Top Minimal Bar */}
+        <header className="h-14 border-b border-surface-border bg-surface-subtle flex items-center justify-between px-6">
+          <div className="flex items-center gap-3">
+            <span className="text-xs font-mono text-slate-400">
+              Contractor Workspace • US Federal & State Framework
+            </span>
           </div>
-          <div className="flex items-center gap-4">
-            <Link
-              href="/app/passport"
-              className="text-xs font-medium text-brand-400 hover:text-brand-300 flex items-center gap-1.5"
-            >
-              <span>View Passport</span>
+
+          <div className="flex items-center gap-4 text-xs">
+            <Link href="/app/notifications" className="text-slate-400 hover:text-white">
+              🔔 Alerts
             </Link>
-            <div className="w-7 h-7 rounded-full bg-brand-900 border border-brand-700 flex items-center justify-center text-xs font-bold text-brand-300">
-              CO
-            </div>
+            <Link href="/app/settings" className="text-slate-400 hover:text-white">
+              ⚙️ Settings
+            </Link>
           </div>
         </header>
 
-        <main className="flex-1 p-6 lg:p-8 overflow-y-auto">
+        {/* Body Container */}
+        <main className="flex-1 p-6 md:p-8 overflow-y-auto">
           {children}
         </main>
       </div>

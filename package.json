@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
-    "test:security": "tsx scripts/test-multi-tenant-security.ts"
+    "test:security": "tsx scripts/test-multi-tenant-security.ts",
+    "test:core-loop": "tsx scripts/test-contractor-core-loop.ts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.5.2",

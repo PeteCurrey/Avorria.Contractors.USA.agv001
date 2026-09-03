@@ -1,194 +1,270 @@
-import React from 'react';
+'use client';
+
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Metadata } from 'next';
 import { ReadinessGauge } from '@/components/ui/ReadinessGauge';
 import { StatusIndicator } from '@/components/ui/StatusIndicator';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { Card, CardTitle, CardDescription } from '@/components/ui/Card';
-import { VerifiedBadge } from '@/components/brand/VerifiedBadge';
-
-export const metadata: Metadata = {
-  title: 'Contractor Operating Dashboard',
-};
+import { EvaluatedRequirement } from '@/lib/compliance/engine';
+import { DynamicReadinessResult } from '@/lib/scoring/readiness-service';
+import { ContractorWorkspaceData } from '@/lib/tenant/repository';
 
 export default function DashboardPage() {
+  const [data, setData] = useState<{
+    workspace: ContractorWorkspaceData;
+    requirements: EvaluatedRequirement[];
+    readiness: DynamicReadinessResult;
+  } | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadWorkspace() {
+      try {
+        const res = await fetch('/api/contractor/workspace');
+        if (res.ok) {
+          const json = await res.json();
+          setData(json);
+        }
+      } catch (err) {
+        console.error('Failed to load dashboard data', err);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    loadWorkspace();
+  }, []);
+
+  if (isLoading) {
+    return (
+      <div className="py-20 text-center text-slate-400 space-y-3">
+        <div className="w-8 h-8 border-2 border-brand-500 border-t-transparent rounded-full animate-spin mx-auto" />
+        <p className="text-xs font-mono">Loading active contractor workspace...</p>
+      </div>
+    );
+  }
+
+  const ws = data?.workspace;
+  const readiness = data?.readiness;
+  const requirements = data?.requirements || [];
+  const activeDocs = ws?.documents.filter((d) => d.status === 'active') || [];
+  const expiringReqs = requirements.filter((r) => r.state === 'expiring');
+  const missingReqs = requirements.filter((r) => r.state === 'missing');
+  const isOnboardingComplete = ws?.profile.onboarding_status === 'completed';
+
   return (
     <div className="max-w-6xl space-y-8 text-left">
-      {/* Page Title & Action Bar */}
+      {/* Top Welcome Bar */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-surface-border pb-6">
         <div>
           <div className="flex items-center gap-3">
-            <h1 className="text-2xl font-black text-white tracking-tight">Contractor Workspace</h1>
-            <VerifiedBadge size="sm" />
+            <h1 className="text-2xl font-black text-white tracking-tight">
+              {ws?.organisation.name || 'Contractor Workspace'}
+            </h1>
+            <Badge variant="neutral" size="sm">
+              {ws?.serviceAreas.primaryState || 'US'}
+            </Badge>
           </div>
           <p className="text-xs text-slate-400 mt-1">
-            Apex Electrical Solutions LLC • Austin, TX • Active Tenant
+            {ws?.trades.map((t) => t.replace('-', ' ')).join(', ')} • {ws?.profile.employee_count || 1} Personnel
           </p>
         </div>
+
         <div className="flex items-center gap-3">
-          <Button href="/app/documents" size="sm" variant="primary">
-            + Create Document
+          <Button href="/app/documents/create/jha" size="sm" variant="primary">
+            + Create JHA Document
           </Button>
           <Button href="/app/passport" size="sm" variant="outline">
-            Share Passport ↗
+            Contractor Passport ↗
           </Button>
         </div>
       </div>
 
-      {/* Top Metric Cards: 5 Pillars Overview */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {/* 1. Readiness Score */}
-        <Card variant="default" className="flex items-center justify-between p-5">
+      {/* Onboarding Incomplete Banner if Applicable */}
+      {!isOnboardingComplete && (
+        <div className="p-4 rounded-xl bg-brand-950/80 border border-brand-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="space-y-1">
-            <span className="text-[11px] font-mono text-slate-400 uppercase">Readiness</span>
-            <div className="text-2xl font-black text-white">92% Ready</div>
-            <StatusIndicator status="current" label="Verified Evidence" />
+            <div className="text-xs font-bold text-white flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-brand-400 animate-ping" />
+              <span>Contractor Onboarding Incomplete</span>
+            </div>
+            <p className="text-xs text-slate-300">
+              Complete your business profile and existing credentials baseline to unlock your verified readiness score.
+            </p>
           </div>
-          <ReadinessGauge score={92} size="sm" showLabel={false} />
+          <Button href="/app/onboarding" size="sm" variant="primary">
+            Resume Onboarding →
+          </Button>
+        </div>
+      )}
+
+      {/* 3 Core Questions Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        {/* 1. WHERE AM I? (Readiness Gauge) */}
+        <Card variant="default" className="p-5 flex flex-col justify-between">
+          <div className="space-y-1">
+            <span className="text-[11px] font-mono text-slate-400 uppercase">01 / WHERE AM I?</span>
+            <div className="text-xl font-bold text-white">Contractor Readiness</div>
+          </div>
+          <div className="my-4 flex flex-col items-center justify-center">
+            {readiness?.status === 'assessment_in_progress' ? (
+              <div className="text-center py-4 space-y-2">
+                <span className="text-2xl">⏳</span>
+                <div className="text-xs font-bold text-amber-400">Assessment in Progress</div>
+                <div className="text-[10px] text-slate-400 max-w-[200px] leading-relaxed">
+                  Upload evidence or complete onboarding to calculate verified readiness.
+                </div>
+              </div>
+            ) : (
+              <ReadinessGauge score={readiness?.score || 0} size="md" showLabel />
+            )}
+          </div>
+          <div className="text-[10px] text-slate-500 font-mono text-center">
+            Measures completion against Avorria criteria.
+          </div>
         </Card>
 
-        {/* 2. Insurance COI Status */}
-        <Card variant="default" className="p-5 space-y-2">
-          <div className="flex justify-between items-center text-[11px] font-mono text-slate-400 uppercase">
-            <span>Insurance (COI)</span>
-            <Badge variant="current" size="sm">Active</Badge>
+        {/* 2. WHAT DO I NEED TO DO? (Priority Actions) */}
+        <Card variant="default" className="p-5 flex flex-col justify-between">
+          <div className="space-y-1">
+            <span className="text-[11px] font-mono text-slate-400 uppercase">02 / WHAT DO I NEED TO DO?</span>
+            <div className="text-xl font-bold text-white">
+              {missingReqs.length + expiringReqs.length} Action Items
+            </div>
           </div>
-          <div className="text-2xl font-black text-white">$2,000,000</div>
-          <div className="text-xs text-slate-400">Travelers GL • Exp Dec 2026</div>
+
+          <div className="my-3 space-y-2 text-xs">
+            {readiness?.outstandingItems.slice(0, 3).map((item) => (
+              <div
+                key={item.id}
+                className="p-2.5 rounded bg-surface-subtle border border-surface-border flex items-center justify-between"
+              >
+                <div className="truncate pr-2 text-slate-300 font-medium">{item.title}</div>
+                <Link
+                  href={item.actionHref}
+                  className="text-[11px] font-bold text-brand-400 hover:text-brand-300 shrink-0"
+                >
+                  {item.actionLabel} →
+                </Link>
+              </div>
+            ))}
+            {(!readiness?.outstandingItems || readiness.outstandingItems.length === 0) && (
+              <div className="p-4 text-center text-xs text-slate-500">
+                No immediate action required. All current criteria satisfied.
+              </div>
+            )}
+          </div>
+
+          <Link href="/app/compliance" className="text-xs text-brand-400 hover:underline font-semibold block text-center">
+            View All Requirements Matrix →
+          </Link>
         </Card>
 
-        {/* 3. Trade Licensing */}
-        <Card variant="default" className="p-5 space-y-2">
-          <div className="flex justify-between items-center text-[11px] font-mono text-slate-400 uppercase">
-            <span>Trade License</span>
-            <Badge variant="expiring" size="sm">28 Days</Badge>
+        {/* 3. WHAT DO I HAVE? (Active Document Records) */}
+        <Card variant="default" className="p-5 flex flex-col justify-between">
+          <div className="space-y-1">
+            <span className="text-[11px] font-mono text-slate-400 uppercase">03 / WHAT DO I HAVE?</span>
+            <div className="text-xl font-bold text-white">
+              {activeDocs.length} Active Records
+            </div>
           </div>
-          <div className="text-2xl font-black text-white">TDLR #34891</div>
-          <div className="text-xs text-amber-400">Master Electrician Renewal Due</div>
-        </Card>
 
-        {/* 4. Active Documents */}
-        <Card variant="default" className="p-5 space-y-2">
-          <div className="flex justify-between items-center text-[11px] font-mono text-slate-400 uppercase">
-            <span>Documents</span>
-            <Badge variant="neutral" size="sm">28 Records</Badge>
+          <div className="my-3 space-y-2 text-xs">
+            <div className="flex justify-between py-1.5 border-b border-surface-border text-slate-300">
+              <span>Document Vault Files</span>
+              <span className="font-mono font-bold text-white">{activeDocs.length}</span>
+            </div>
+            <div className="flex justify-between py-1.5 border-b border-surface-border text-slate-300">
+              <span>Finalized Safety JHAs</span>
+              <span className="font-mono font-bold text-white">
+                {ws?.generatedDocuments.filter((d) => d.document_status === 'final').length || 0}
+              </span>
+            </div>
+            <div className="flex justify-between py-1.5 text-slate-300">
+              <span>Expiring Credentials (60d)</span>
+              <span className="font-mono font-bold text-amber-400">{expiringReqs.length}</span>
+            </div>
           </div>
-          <div className="text-2xl font-black text-white">6 JHAs</div>
-          <div className="text-xs text-slate-400">2 Active Proposals Out for Review</div>
+
+          <Link href="/app/documents" className="text-xs text-brand-400 hover:underline font-semibold block text-center">
+            Open Document Vault →
+          </Link>
         </Card>
       </div>
 
-      {/* Main Two-Column Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Left 2 Cols: Recent Documents & Quick Creation */}
-        <div className="lg:col-span-2 space-y-6">
+      {/* Category Breakdown & Document Vault Preview */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        {/* Left 7 Cols: Category Readiness Breakdown */}
+        <div className="lg:col-span-7 space-y-4">
           <Card variant="default">
-            <div className="flex items-center justify-between border-b border-surface-border pb-3 mb-4">
-              <CardTitle className="text-base">Recent Field & Safety Documents</CardTitle>
-              <Link href="/app/documents" className="text-xs text-brand-400 hover:text-brand-300 font-semibold">
-                All Documents →
-              </Link>
-            </div>
-
-            <div className="space-y-3 text-xs">
-              <div className="p-3 rounded-lg bg-surface-subtle border border-surface-border flex items-center justify-between">
-                <div>
-                  <div className="font-semibold text-white">480V Switchgear De-energization & Lockout</div>
-                  <div className="text-slate-400 mt-0.5">Project #402 • Austin Tech Campus • Task JHA</div>
-                </div>
-                <Badge variant="current" size="sm">Final Signed</Badge>
+            <CardTitle className="text-base mb-4">Operational Readiness Breakdown</CardTitle>
+            {readiness?.categoryBreakdown && readiness.categoryBreakdown.length > 0 ? (
+              <div className="space-y-3">
+                {readiness.categoryBreakdown.map((cat) => (
+                  <div key={cat.category} className="space-y-1">
+                    <div className="flex justify-between text-xs font-semibold text-slate-300">
+                      <span>{cat.label}</span>
+                      <span className="font-mono text-white">{cat.percentage}%</span>
+                    </div>
+                    <div className="w-full h-2 rounded-full bg-surface-subtle overflow-hidden border border-surface-border">
+                      <div
+                        className="h-full bg-brand-500 rounded-full transition-all duration-500"
+                        style={{ width: `${cat.percentage}%` }}
+                      />
+                    </div>
+                  </div>
+                ))}
               </div>
-
-              <div className="p-3 rounded-lg bg-surface-subtle border border-surface-border flex items-center justify-between">
-                <div>
-                  <div className="font-semibold text-white">Commercial HASP Site Safety Plan Q3</div>
-                  <div className="text-slate-400 mt-0.5">Annual Company Manual • OSHA 1926 Aligned</div>
-                </div>
-                <Badge variant="primary" size="sm">Active Manual</Badge>
+            ) : (
+              <div className="p-6 text-center text-xs text-slate-500 space-y-2">
+                <p>Readiness categories will populate as you upload evidence and create safety documents.</p>
+                <Button href="/app/onboarding" size="sm" variant="outline">
+                  Configure Baseline
+                </Button>
               </div>
-
-              <div className="p-3 rounded-lg bg-surface-subtle border border-surface-border flex items-center justify-between">
-                <div>
-                  <div className="font-semibold text-white">Downtown Plaza Lighting Retrofit Proposal</div>
-                  <div className="text-slate-400 mt-0.5">Bid Total: $84,500 • Submitted to DPR Construction</div>
-                </div>
-                <Badge variant="expiring" size="sm">Pending Award</Badge>
-              </div>
-            </div>
+            )}
           </Card>
-
-          {/* Quick Generator Launchers */}
-          <div className="grid grid-cols-3 gap-3 text-xs">
-            <Link
-              href="/app/documents"
-              className="p-4 rounded-xl bg-surface-card border border-surface-border hover:border-brand-500/50 hover:shadow-glow transition-all block text-center space-y-1"
-            >
-              <div className="text-xl">⚡</div>
-              <div className="font-bold text-white">New JHA</div>
-              <div className="text-[10px] text-slate-400">Task Hazard Plan</div>
-            </Link>
-
-            <Link
-              href="/app/documents"
-              className="p-4 rounded-xl bg-surface-card border border-surface-border hover:border-brand-500/50 hover:shadow-glow transition-all block text-center space-y-1"
-            >
-              <div className="text-xl">📋</div>
-              <div className="font-bold text-white">Safety Plan</div>
-              <div className="text-[10px] text-slate-400">OSHA 1926 Manual</div>
-            </Link>
-
-            <Link
-              href="/app/quotes"
-              className="p-4 rounded-xl bg-surface-card border border-surface-border hover:border-brand-500/50 hover:shadow-glow transition-all block text-center space-y-1"
-            >
-              <div className="text-xl">💵</div>
-              <div className="font-bold text-white">New Quote</div>
-              <div className="text-[10px] text-slate-400">Margin Calculation</div>
-            </Link>
-          </div>
         </div>
 
-        {/* Right Col: Compliance Monitor & Expiration Alerts */}
-        <div className="space-y-6">
-          <Card variant="default" className="space-y-4">
-            <div className="flex items-center justify-between border-b border-surface-border pb-3">
-              <CardTitle className="text-base">Compliance Monitor</CardTitle>
-              <Link href="/app/compliance" className="text-xs text-brand-400 hover:text-brand-300 font-semibold">
-                Manage →
+        {/* Right 5 Cols: Quick Launchers */}
+        <div className="lg:col-span-5 space-y-4">
+          <Card variant="default">
+            <CardTitle className="text-base mb-3">Quick Document Actions</CardTitle>
+            <div className="space-y-2.5 text-xs">
+              <Link
+                href="/app/documents/create/jha"
+                className="p-3 rounded-lg bg-surface-subtle border border-surface-border hover:border-brand-500 transition-all flex items-center justify-between block"
+              >
+                <div>
+                  <div className="font-bold text-white">Create Job Hazard Analysis (JHA)</div>
+                  <div className="text-[11px] text-slate-400">Site-specific task hazards & OSHA controls</div>
+                </div>
+                <span className="text-brand-400 font-bold">⚡</span>
+              </Link>
+
+              <Link
+                href="/app/documents"
+                className="p-3 rounded-lg bg-surface-subtle border border-surface-border hover:border-brand-500 transition-all flex items-center justify-between block"
+              >
+                <div>
+                  <div className="font-bold text-white">Upload Certificate of Insurance</div>
+                  <div className="text-[11px] text-slate-400">General Liability or Workers’ Comp COI</div>
+                </div>
+                <span className="text-brand-400 font-bold">📄</span>
+              </Link>
+
+              <Link
+                href="/app/passport"
+                className="p-3 rounded-lg bg-surface-subtle border border-surface-border hover:border-brand-500 transition-all flex items-center justify-between block"
+              >
+                <div>
+                  <div className="font-bold text-white">Review Contractor Passport</div>
+                  <div className="text-[11px] text-slate-400">Client prequalification identity & sharing</div>
+                </div>
+                <span className="text-brand-400 font-bold">🛡️</span>
               </Link>
             </div>
-
-            <div className="space-y-3 text-xs">
-              <div className="flex items-center justify-between p-2 rounded bg-surface-subtle">
-                <span className="text-slate-300">Travelers GL COI</span>
-                <StatusIndicator status="current" label="Active (210d)" />
-              </div>
-
-              <div className="flex items-center justify-between p-2 rounded bg-surface-subtle">
-                <span className="text-slate-300">Texas Mutual WC</span>
-                <StatusIndicator status="current" label="Active (180d)" />
-              </div>
-
-              <div className="flex items-center justify-between p-2 rounded bg-amber-950/30 border border-amber-800/40">
-                <span className="text-amber-200">Master Electrician License</span>
-                <StatusIndicator status="expiring" label="28 Days Left" />
-              </div>
-
-              <div className="flex items-center justify-between p-2 rounded bg-surface-subtle">
-                <span className="text-slate-300">Monthly Toolbox Talk</span>
-                <StatusIndicator status="current" label="Logged 7d Ago" />
-              </div>
-
-              <div className="flex items-center justify-between p-2 rounded bg-surface-subtle">
-                <span className="text-slate-300">OSHA 30 Supervisor Cards</span>
-                <StatusIndicator status="current" label="2 Verified" />
-              </div>
-            </div>
-
-            <Button href="/app/compliance" size="sm" variant="outline" className="w-full mt-2">
-              View Full Compliance Matrix
-            </Button>
           </Card>
         </div>
       </div>

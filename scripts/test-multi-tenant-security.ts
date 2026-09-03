@@ -58,6 +58,13 @@ function evaluateRlsPolicy(
     return user.activeOrgId === recordOrgId;
   }
 
+  // Storage objects policy
+  if (table === 'storage_objects') {
+    if (operation === 'SELECT' || operation === 'INSERT' || operation === 'UPDATE' || operation === 'DELETE') {
+      return user.activeOrgId === recordOrgId && user.role !== 'anonymous';
+    }
+  }
+
   // Public CMS reference tables (trades, plans, document_templates)
   if (['trades', 'plans', 'document_templates', 'compliance_requirements'].includes(table) && operation === 'SELECT') {
     return true;
@@ -81,70 +88,66 @@ function evaluateRlsPolicy(
   }
 }
 
+const TENANT_TABLES = [
+  'organisations',
+  'organisation_members',
+  'contractor_profiles',
+  'contractor_trades',
+  'contractor_service_areas',
+  'business_documents',
+  'compliance_records',
+  'insurance_records',
+  'licences',
+  'employees',
+  'certifications',
+  'training_records',
+  'qualifications',
+  'equipment',
+  'generated_documents',
+  'quotes',
+  'proposals',
+  'projects',
+  'verification_records',
+  'subscriptions',
+  'audit_logs',
+  'notifications',
+];
+
 export function runSecurityVerification(): SecurityAssertionResult[] {
   const results: SecurityAssertionResult[] = [];
 
-  const TENANT_TABLES = [
-    'organisations',
-    'organisation_members',
-    'contractor_profiles',
-    'contractor_trades',
-    'contractor_service_areas',
-    'business_documents',
-    'compliance_records',
-    'insurance_records',
-    'licences',
-    'employees',
-    'certifications',
-    'training_records',
-    'qualifications',
-    'equipment',
-    'generated_documents',
-    'quotes',
-    'proposals',
-    'projects',
-    'verification_records',
-    'subscriptions',
-    'audit_logs',
-    'notifications',
-  ];
-
-  console.log('\n======================================================');
-  console.log('RUNNING AVORRIA MULTI-TENANT RLS ISOLATION AUDIT');
-  console.log('======================================================\n');
-
   for (const table of TENANT_TABLES) {
-    // Test 1: Cross-tenant SELECT (Org A user reads Org B record)
-    const canCrossSelect = evaluateRlsPolicy(table, 'SELECT', TENANT_A_USER, ORG_B_ID);
+    // Test 1: Cross-tenant SELECT isolation
+    const canSelect = evaluateRlsPolicy(table, 'SELECT', TENANT_A_USER, ORG_B_ID);
     results.push({
       table,
       operation: 'SELECT',
       testDescription: `User from Org A cannot SELECT ${table} belonging to Org B`,
-      passed: canCrossSelect === false,
-      reason: canCrossSelect ? 'FAILED: Org A was able to read Org B data' : undefined,
+      passed: canSelect === false,
+      reason: canSelect ? 'FAILED: Cross-tenant read permitted' : undefined,
     });
 
-    // Test 2: Cross-tenant UPDATE (Org A user updates Org B record)
-    const canCrossUpdate = evaluateRlsPolicy(table, 'UPDATE', TENANT_A_USER, ORG_B_ID);
+    // Test 2: Cross-tenant UPDATE isolation
+    const canUpdate = evaluateRlsPolicy(table, 'UPDATE', TENANT_A_USER, ORG_B_ID);
     results.push({
       table,
       operation: 'UPDATE',
       testDescription: `User from Org A cannot UPDATE ${table} belonging to Org B`,
-      passed: canCrossUpdate === false,
-      reason: canCrossUpdate ? 'FAILED: Org A was able to modify Org B data' : undefined,
+      passed: canUpdate === false,
+      reason: canUpdate ? 'FAILED: Cross-tenant update permitted' : undefined,
     });
 
-    // Test 3: Cross-tenant DELETE (Org A user deletes Org B record)
-    const canCrossDelete = evaluateRlsPolicy(table, 'DELETE', TENANT_A_USER, ORG_B_ID);
+    // Test 3: Cross-tenant DELETE isolation
+    const canDelete = evaluateRlsPolicy(table, 'DELETE', TENANT_A_USER, ORG_B_ID);
     results.push({
       table,
       operation: 'DELETE',
       testDescription: `User from Org A cannot DELETE ${table} belonging to Org B`,
-      passed: canCrossDelete === false,
-      reason: canCrossDelete ? 'FAILED: Org A was able to delete Org B data' : undefined,
+      passed: canDelete === false,
+      reason: canDelete ? 'FAILED: Cross-tenant delete permitted' : undefined,
     });
 
-    // Test 4: Anonymous SELECT (Unauthenticated crawler reads tenant table)
+    // Test 4: Anonymous crawler rejection
     const canAnonSelect = evaluateRlsPolicy(table, 'SELECT', ANONYMOUS_USER, ORG_B_ID);
     results.push({
       table,
@@ -170,6 +173,31 @@ export function runSecurityVerification(): SecurityAssertionResult[] {
     operation: 'SELECT',
     testDescription: 'Anonymous visitor CANNOT read draft / private public profile',
     passed: canAnonReadDraftProfile === false,
+  });
+
+  // Test 6: Storage Isolation
+  const canUserAReadOrgBStorage = evaluateRlsPolicy('storage_objects', 'SELECT', TENANT_A_USER, ORG_B_ID);
+  results.push({
+    table: 'storage_objects',
+    operation: 'SELECT',
+    testDescription: 'User from Org A cannot read files from Org B storage bucket',
+    passed: canUserAReadOrgBStorage === false,
+  });
+
+  const canUserADeleteOrgBStorage = evaluateRlsPolicy('storage_objects', 'DELETE', TENANT_A_USER, ORG_B_ID);
+  results.push({
+    table: 'storage_objects',
+    operation: 'DELETE',
+    testDescription: 'User from Org A cannot delete files from Org B storage bucket',
+    passed: canUserADeleteOrgBStorage === false,
+  });
+
+  const canAnonReadStorage = evaluateRlsPolicy('storage_objects', 'SELECT', ANONYMOUS_USER, ORG_A_ID);
+  results.push({
+    table: 'storage_objects',
+    operation: 'SELECT',
+    testDescription: 'Anonymous user cannot read private document storage objects',
+    passed: canAnonReadStorage === false,
   });
 
   return results;

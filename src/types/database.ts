@@ -14,6 +14,12 @@ export type UserRole =
 
 export type ProfileVisibility = 'private' | 'draft' | 'published' | 'suspended' | 'archived';
 
+export type OnboardingStatus =
+  | 'not_started'
+  | 'in_progress'
+  | 'ready_for_dashboard'
+  | 'completed';
+
 export type TradeCategory =
   | 'mep'
   | 'structural'
@@ -30,6 +36,20 @@ export type ComplianceStatus =
   | 'missing'
   | 'not_applicable';
 
+export type RequirementType =
+  | 'legal_regulatory'
+  | 'industry_standard'
+  | 'client_prequal'
+  | 'avorria_readiness';
+
+export type RequirementState =
+  | 'current'
+  | 'expiring'
+  | 'expired'
+  | 'missing'
+  | 'needs_review'
+  | 'not_applicable';
+
 export type DocumentStatus =
   | 'draft'
   | 'ai_draft'
@@ -37,6 +57,8 @@ export type DocumentStatus =
   | 'final'
   | 'superseded'
   | 'archived';
+
+export type GenerationMethod = 'ai' | 'template' | 'manual';
 
 export type AiReviewStatus =
   | 'unreviewed'
@@ -96,7 +118,7 @@ export interface Organisation {
   slug: string;
   legal_name?: string | null;
   business_structure?: string | null;
-  tax_id_ein?: string | null;
+  tax_id_ein?: string | null; // Kept in DB schema, but omitted from Phase 3 onboarding/UI
   website?: string | null;
   phone?: string | null;
   email?: string | null;
@@ -141,10 +163,16 @@ export interface ContractorProfile {
   website?: string | null;
   business_description?: string | null;
   year_established?: number | null;
+  employee_count: number;
   readiness_score: number; // 0 - 100
   readiness_breakdown: Record<string, unknown>;
   visibility: ProfileVisibility;
   is_indexable: boolean;
+  onboarding_status: OnboardingStatus;
+  onboarding_started_at?: string | null;
+  onboarding_last_saved_at?: string | null;
+  onboarding_completed_at?: string | null;
+  onboarding_data?: Record<string, unknown>;
   created_at: string;
   updated_at: string;
 }
@@ -157,6 +185,7 @@ export interface ContractorTrade {
   license_number?: string | null;
   verified: boolean;
   created_at: string;
+  trade?: Trade;
 }
 
 export interface ContractorServiceArea {
@@ -187,6 +216,14 @@ export interface BusinessDocument {
   version_number: number;
   parent_document_id?: string | null;
   expires_at?: string | null;
+  issuing_organisation?: string | null;
+  notes?: string | null;
+  associated_requirement_id?: string | null;
+  // Future Extraction Hooks (Unused in Phase 3, preserved in schema)
+  extraction_status?: string | null;
+  extracted_metadata?: Record<string, unknown> | null;
+  extraction_confidence?: number | null;
+  extraction_completed_at?: string | null;
   created_by?: string | null;
   created_at: string;
   updated_at: string;
@@ -199,13 +236,13 @@ export interface ComplianceRequirement {
   requirement_code: string;
   title: string;
   description: string;
-  requirement_type: 'statutory' | 'industry_standard' | 'safety_guideline' | 'platform_criteria';
-  source: string;
+  requirement_type: RequirementType;
+  source_name?: string | null;
   source_url?: string | null;
   effective_date?: string | null;
   next_review_date?: string | null;
-  review_status: 'draft' | 'under_review' | 'approved' | 'needs_update';
-  reviewer?: string | null;
+  review_status?: string | null;
+  readiness_weight: number;
   is_active: boolean;
   created_at: string;
   updated_at: string;
@@ -221,6 +258,8 @@ export interface ComplianceRecord {
   notes?: string | null;
   last_checked_at: string;
   updated_at: string;
+  requirement?: ComplianceRequirement;
+  evidence_document?: BusinessDocument;
 }
 
 export interface InsuranceRecord {
@@ -260,12 +299,40 @@ export interface Employee {
   organisation_id: string;
   first_name: string;
   last_name: string;
-  email?: string | null;
-  phone?: string | null;
-  role_title: string;
-  is_field_worker: boolean;
-  hire_date?: string | null;
-  status: 'active' | 'inactive' | 'terminated';
+  job_title: string;
+  trade_id?: string | null;
+  is_supervisor: boolean;
+  osha_card_type?: 'osha_10' | 'osha_30' | 'none' | null;
+  osha_card_number?: string | null;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface Certification {
+  id: string;
+  organisation_id: string;
+  employee_id?: string | null;
+  name: string;
+  issuing_authority: string;
+  certificate_number?: string | null;
+  effective_date?: string | null;
+  expiry_date?: string | null;
+  document_id?: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface TrainingRecord {
+  id: string;
+  organisation_id: string;
+  title: string;
+  training_type: 'toolbox_talk' | 'orientation' | 'osha_training' | 'refresher';
+  conducted_date: string;
+  trainer_name?: string | null;
+  attendees_count: number;
+  roster_document_id?: string | null;
+  topics_covered?: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -282,8 +349,10 @@ export interface GeneratedDocument {
   superseded_document_id?: string | null;
   document_payload: Record<string, unknown>;
   rendered_content?: string | null;
-  // AI Provenance & Governance
+  
+  // Provenance & Human Review Gate
   ai_assisted: boolean;
+  generation_method: GenerationMethod;
   generation_timestamp?: string | null;
   generation_model?: string | null;
   generation_inputs?: Record<string, unknown> | null;
@@ -293,6 +362,7 @@ export interface GeneratedDocument {
   finalised_by?: string | null;
   finalised_at?: string | null;
   change_summary?: string | null;
+
   created_by?: string | null;
   created_at: string;
   updated_at: string;
@@ -319,59 +389,98 @@ export interface VerificationRecord {
 export interface PublicProfile {
   id: string;
   organisation_id: string;
-  contractor_profile_id: string;
   slug: string;
-  visibility: ProfileVisibility;
-  is_indexable: boolean;
-  published_at?: string | null;
-  verified_badge_status: string;
-  headline?: string | null;
-  overview?: string | null;
-  primary_phone?: string | null;
-  public_email?: string | null;
-  website_url?: string | null;
-  created_at: string;
-  updated_at: string;
-}
-
-export interface RedirectRecord {
-  id: string;
-  source_path: string;
-  target_path: string;
-  status_code: 301 | 302 | 307 | 308;
-  is_active: boolean;
-  reason?: string | null;
-  created_at: string;
-  updated_at: string;
-}
-
-export interface Lead {
-  id: string;
-  email: string;
-  full_name?: string | null;
-  company_name?: string | null;
+  display_name: string;
+  summary?: string | null;
   phone?: string | null;
-  trade?: string | null;
-  state_province?: string | null;
-  funnel_stage: FunnelStage;
-  source_url?: string | null;
-  referrer?: string | null;
-  utm_params: Record<string, unknown>;
-  metadata: Record<string, unknown>;
-  created_at: string;
+  email?: string | null;
+  website?: string | null;
+  state_code?: string | null;
+  city?: string | null;
+  primary_trade_id?: string | null;
+  readiness_score: number;
+  badge_level: 'none' | 'verified_contractor' | 'premier_contractor';
+  published_at?: string | null;
   updated_at: string;
 }
 
-export interface AnalyticsEvent {
+export interface AuditLog {
   id: string;
-  session_id?: string | null;
-  organisation_id?: string | null;
+  organisation_id: string;
   user_id?: string | null;
-  event_name: string;
-  funnel_stage: FunnelStage;
-  properties: Record<string, unknown>;
-  path: string;
-  user_agent?: string | null;
-  ip_hash?: string | null;
-  timestamp: string;
+  action: string;
+  resource_type: string;
+  resource_id?: string | null;
+  details: Record<string, unknown>;
+  created_at: string;
+}
+
+export interface Notification {
+  id: string;
+  organisation_id: string;
+  recipient_user_id?: string | null;
+  type: string;
+  title: string;
+  message: string;
+  link_url?: string | null;
+  read: boolean;
+  created_at: string;
+}
+
+// -----------------------------------------------------------------------------
+// JHA PAYLOAD STRUCTURES
+// -----------------------------------------------------------------------------
+
+export interface JhaHazardItem {
+  id: string;
+  sequence: number;
+  taskStep: string;
+  potentialHazards: string[];
+  controls: {
+    hierarchyLevel: 'elimination' | 'substitution' | 'engineering' | 'administrative' | 'ppe';
+    description: string;
+  }[];
+  regulatoryReference?: string; // e.g. "OSHA 1926.404"
+}
+
+export interface JhaDocumentPayload {
+  jobInfo: {
+    projectName: string;
+    jobLocation: string;
+    tradeName: string;
+    workActivity: string;
+    workDate: string;
+    supervisorName: string;
+  };
+  workforce: {
+    workerCount: number;
+    assignedRoles: string[];
+    competentPerson: string;
+  };
+  equipment: string[];
+  materials: string[];
+  ppe: {
+    head: boolean;
+    eyeFace: boolean;
+    hearing: boolean;
+    hand: boolean;
+    foot: boolean;
+    respiratory: boolean;
+    fallProtection: boolean;
+    arcFlash: boolean;
+    otherNotes?: string;
+  };
+  hazardSequence: JhaHazardItem[];
+  emergencyAction: {
+    firstAidKitLocation: string;
+    nearestMedicalFacility: string;
+    emergencyContactPhone: string;
+    musterPoint: string;
+  };
+  contractorReviewAck: {
+    reviewedByContractor: boolean;
+    acknowledgedAt?: string;
+    reviewerName?: string;
+    disclaimerAccepted: boolean;
+  };
 }

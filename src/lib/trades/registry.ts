@@ -1,0 +1,112 @@
+import { Trade } from '@/types/database';
+
+export const STANDARD_TRADES: Omit<Trade, 'id' | 'created_at'>[] = [
+  {
+    name: 'Electrical Contracting',
+    slug: 'electrical-contracting',
+    category: 'mep',
+    description: 'Commercial, industrial and residential electrical installations, switchgear, branch wiring, lighting, and low-voltage systems.',
+    is_active: true,
+    sort_order: 1,
+  },
+  {
+    name: 'HVAC & Mechanical',
+    slug: 'hvac-mechanical',
+    category: 'mep',
+    description: 'Heating, ventilation, air conditioning, refrigeration, ductwork, and mechanical equipment servicing.',
+    is_active: true,
+    sort_order: 2,
+  },
+  {
+    name: 'Commercial Plumbing',
+    slug: 'commercial-plumbing',
+    category: 'mep',
+    description: 'Commercial domestic water, sanitary waste, storm drainage, gas piping, backflow prevention, and medical gas.',
+    is_active: true,
+    sort_order: 3,
+  },
+  {
+    name: 'Commercial Roofing',
+    slug: 'commercial-roofing',
+    category: 'exterior',
+    description: 'Single-ply membranes (TPO/EPDM), modified bitumen, standing seam metal, built-up roofing, and commercial coatings.',
+    is_active: true,
+    sort_order: 4,
+  },
+  {
+    name: 'General Contracting',
+    slug: 'general-contracting',
+    category: 'general',
+    description: 'Prime contracting, project management, commercial tenant improvements, structural retrofits, and site logistics.',
+    is_active: true,
+    sort_order: 5,
+  },
+  {
+    name: 'Concrete & Masonry',
+    slug: 'concrete-masonry',
+    category: 'structural',
+    description: 'Foundations, slab-on-grade, structural cast-in-place walls, post-tensioned slabs, masonry block, and flatwork.',
+    is_active: true,
+    sort_order: 6,
+  },
+  {
+    name: 'Carpentry & Framing',
+    slug: 'carpentry-framing',
+    category: 'structural',
+    description: 'Heavy timber, commercial light-gauge metal framing, wood framing, exterior sheathing, and architectural woodwork.',
+    is_active: true,
+    sort_order: 7,
+  },
+  {
+    name: 'Painting & Wallcoverings',
+    slug: 'painting-wallcoverings',
+    category: 'finishes',
+    description: 'Commercial interior/exterior architectural painting, protective industrial coatings, epoxy flooring, and wallcoverings.',
+    is_active: true,
+    sort_order: 8,
+  },
+  {
+    name: 'Flooring & Tile',
+    slug: 'flooring-tile',
+    category: 'finishes',
+    description: 'Commercial carpet tile, luxury vinyl tile (LVT), terrazzo, ceramic and porcelain tile, and moisture barrier systems.',
+    is_active: true,
+    sort_order: 9,
+  },
+  {
+    name: 'Landscaping & Earthwork',
+    slug: 'landscaping-earthwork',
+    category: 'exterior',
+    description: 'Rough/finish grading, commercial irrigation, hardscaping, stormwater bioswales, and site grounds development.',
+    is_active: true,
+    sort_order: 10,
+  },
+  {
+    name: 'Fire Protection & Life Safety',
+    slug: 'fire-protection',
+    category: 'specialty',
+    description: 'Automatic fire sprinkler systems, fire pumps, standpipes, clean agent suppression, and life safety testing.',
+    is_active: true,
+    sort_order: 11,
+  },
+  {
+    name: 'Low Voltage & Telecommunications',
+    slug: 'low-voltage-telecom',
+    category: 'mep',
+    description: 'Structured cabling, optical fiber, security access control, video surveillance, audiovisual, and nurse call systems.',
+    is_active: true,
+    sort_order: 12,
+  },
+  {
+    name: 'Specialty Trades & Demolition',
+    slug: 'specialty-demolition',
+    category: 'specialty',
+    description: 'Interior architectural demolition, hazardous abatement support, scaffolding, industrial rigging, and specialty trade scopes.',
+    is_active: true,
+    sort_order: 13,
+  },
+];
+
+export function getTradeBySlug(slug: string) {
+  return STANDARD_TRADES.find((t) => t.slug === slug);
+}

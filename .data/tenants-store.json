@@ -1,0 +1,1266 @@
+{
+  "test-org-e2e-0000-0000-000000000001": {
+    "organisation": {
+      "id": "test-org-e2e-0000-0000-000000000001",
+      "name": "Vance Commercial Electric LLC",
+      "slug": "contractor-test-org",
+      "legal_name": "Vance Commercial Electric LLC",
+      "business_structure": "llc",
+      "tax_id_ein": null,
+      "website": null,
+      "phone": "(512) 555-4022",
+      "email": "marcus@vanceelectric.com",
+      "address_line1": null,
+      "address_line2": null,
+      "city": null,
+      "state_province": "TX",
+      "postal_code": null,
+      "country": "US",
+      "created_at": "2026-09-03T19:11:07.972Z",
+      "updated_at": "2026-09-03T19:11:07.973Z"
+    },
+    "profile": {
+      "id": "prof_test-org",
+      "organisation_id": "test-org-e2e-0000-0000-000000000001",
+      "dba_name": "Vance Electric",
+      "primary_phone": null,
+      "primary_email": null,
+      "website": null,
+      "business_description": null,
+      "year_established": 2022,
+      "employee_count": 6,
+      "readiness_score": 78,
+      "readiness_breakdown": {},
+      "visibility": "published",
+      "is_indexable": false,
+      "onboarding_status": "completed",
+      "onboarding_started_at": "2026-09-03T19:11:07.974Z",
+      "onboarding_last_saved_at": "2026-09-03T19:11:22.654Z",
+      "onboarding_completed_at": "2026-09-03T19:11:22.655Z",
+      "onboarding_data": {
+        "step_1": {
+          "businessName": "Vance Commercial Electric LLC",
+          "legalName": "Vance Commercial Electric LLC",
+          "dbaName": "Vance Electric",
+          "businessStructure": "llc",
+          "phone": "(512) 555-4022",
+          "email": "marcus@vanceelectric.com",
+          "employeeCount": 6,
+          "yearsInBusiness": 4
+        },
+        "step_2": {
+          "trades": [
+            "electrical-contracting",
+            "low-voltage-telecom"
+          ]
+        },
+        "step_3": {
+          "primaryState": "TX",
+          "radiusMiles": 75,
+          "cities": [
+            "Austin",
+            "Round Rock",
+            "San Marcos"
+          ]
+        },
+        "step_4": {
+          "credentials": {
+            "hasGeneralLiability": false,
+            "hasWorkersComp": true,
+            "hasTradeLicense": true,
+            "hasSafetyPlan": false,
+            "hasToolboxTalks": true,
+            "hasOshaCard": true
+          }
+        }
+      },
+      "created_at": "2026-09-03T19:11:07.973Z",
+      "updated_at": "2026-09-03T19:11:07.973Z"
+    },
+    "trades": [
+      "electrical-contracting",
+      "low-voltage-telecom"
+    ],
+    "serviceAreas": {
+      "primaryState": "TX",
+      "additionalStates": [],
+      "counties": [
+        "Travis County",
+        "Williamson County"
+      ],
+      "cities": [
+        "Austin",
+        "Round Rock",
+        "San Marcos"
+      ],
+      "radiusMiles": 75
+    },
+    "baselineCredentials": {
+      "hasGeneralLiability": false,
+      "hasWorkersComp": true,
+      "hasTradeLicense": true,
+      "hasSafetyPlan": false,
+      "hasToolboxTalks": true,
+      "hasOshaCard": true
+    },
+    "documents": [
+      {
+        "id": "doc-1788462682666",
+        "organisation_id": "test-org-e2e-0000-0000-000000000001",
+        "title": "Travelers Commercial General Liability 2027-2028",
+        "document_type": "insurance_coi",
+        "file_path": "/storage/org_test-org-e2e-0000-0000-000000000001/travelers_coi_v2.pdf",
+        "file_size_bytes": 256000,
+        "mime_type": "application/pdf",
+        "visibility": "private",
+        "status": "active",
+        "version_number": 2,
+        "expires_at": "2028-08-31",
+        "issuing_organisation": "Travelers Casualty & Surety",
+        "notes": "Annual policy renewal with updated endorsements",
+        "associated_requirement_id": null,
+        "created_at": "2026-09-03T19:11:22.663Z",
+        "updated_at": "2026-09-03T19:11:22.666Z",
+        "parent_document_id": "doc-1788462682663"
+      },
+      {
+        "id": "doc-1788462682663",
+        "organisation_id": "test-org-e2e-0000-0000-000000000001",
+        "title": "Travelers Commercial General Liability 2026-2027",
+        "document_type": "insurance_coi",
+        "file_path": "/storage/org_test-org-e2e-0000-0000-000000000001/travelers_coi.pdf",
+        "file_size_bytes": 256000,
+        "mime_type": "application/pdf",
+        "visibility": "private",
+        "status": "archived",
+        "version_number": 1,
+        "expires_at": "2027-08-31",
+        "issuing_organisation": "Travelers Casualty & Surety",
+        "notes": "Policy #COI-38491 ($2,000,000 Aggregate)",
+        "associated_requirement_id": null,
+        "created_at": "2026-09-03T19:11:22.663Z",
+        "updated_at": "2026-09-03T19:11:22.663Z"
+      },
+      {
+        "id": "doc-1788462667981",
+        "organisation_id": "test-org-e2e-0000-0000-000000000001",
+        "title": "JHA: 480V Substation Feeder Cable Pulling & Termination (Dell Childrens Hospital Expansion)",
+        "document_type": "safety_jha",
+        "file_path": "/storage/org_test-org-e2e-0000-0000-000000000001/gen-1788462667981.pdf",
+        "file_size_bytes": 184320,
+        "mime_type": "application/pdf",
+        "visibility": "private",
+        "status": "active",
+        "version_number": 1,
+        "issuing_organisation": "Vance Commercial Electric LLC",
+        "notes": "Signed and finalized site-specific Job Hazard Analysis.",
+        "created_at": "2026-09-03T19:11:07.982Z",
+        "updated_at": "2026-09-03T19:11:07.982Z"
+      },
+      {
+        "id": "doc-1788462667979",
+        "organisation_id": "test-org-e2e-0000-0000-000000000001",
+        "title": "Travelers Commercial General Liability 2027-2028",
+        "document_type": "insurance_coi",
+        "file_path": "/storage/org_test-org-e2e-0000-0000-000000000001/travelers_coi_v2.pdf",
+        "file_size_bytes": 256000,
+        "mime_type": "application/pdf",
+        "visibility": "private",
+        "status": "active",
+        "version_number": 2,
+        "expires_at": "2028-08-31",
+        "issuing_organisation": "Travelers Casualty & Surety",
+        "notes": "Annual policy renewal with updated endorsements",
+        "associated_requirement_id": null,
+        "created_at": "2026-09-03T19:11:07.978Z",
+        "updated_at": "2026-09-03T19:11:07.979Z",
+        "parent_document_id": "doc-1788462667978"
+      },
+      {
+        "id": "doc-1788462667978",
+        "organisation_id": "test-org-e2e-0000-0000-000000000001",
+        "title": "Travelers Commercial General Liability 2026-2027",
+        "document_type": "insurance_coi",
+        "file_path": "/storage/org_test-org-e2e-0000-0000-000000000001/travelers_coi.pdf",
+        "file_size_bytes": 256000,
+        "mime_type": "application/pdf",
+        "visibility": "private",
+        "status": "archived",
+        "version_number": 1,
+        "expires_at": "2027-08-31",
+        "issuing_organisation": "Travelers Casualty & Surety",
+        "notes": "Policy #COI-38491 ($2,000,000 Aggregate)",
+        "associated_requirement_id": null,
+        "created_at": "2026-09-03T19:11:07.978Z",
+        "updated_at": "2026-09-03T19:11:07.978Z"
+      }
+    ],
+    "generatedDocuments": [
+      {
+        "id": "gen-1788462667981",
+        "organisation_id": "test-org-e2e-0000-0000-000000000001",
+        "title": "JHA: 480V Substation Feeder Cable Pulling & Termination (Dell Childrens Hospital Expansion)",
+        "document_type": "jha",
+        "document_status": "final",
+        "version_number": 1,
+        "document_payload": {
+          "jobInfo": {
+            "projectName": "Dell Childrens Hospital Expansion",
+            "jobLocation": "Austin, TX",
+            "tradeName": "Electrical Contracting",
+            "workActivity": "480V Substation Feeder Cable Pulling & Termination",
+            "workDate": "2026-09-15",
+            "supervisorName": "Marcus Vance"
+          },
+          "workforce": {
+            "workerCount": 4,
+            "assignedRoles": [
+              "Lead Electrician",
+              "Rigger",
+              "Safety Watch"
+            ],
+            "competentPerson": "Marcus Vance"
+          },
+          "equipment": [
+            "Tugger Winch",
+            "Hydraulic Crimper",
+            "Insulated Ratchets"
+          ],
+          "materials": [
+            "500 kcmil Copper Conductors",
+            "Pulling Lubricant"
+          ],
+          "ppe": {
+            "head": true,
+            "eyeFace": true,
+            "hearing": false,
+            "hand": true,
+            "foot": true,
+            "respiratory": false,
+            "fallProtection": false,
+            "arcFlash": true,
+            "otherNotes": "High-visibility class 2 vest required on active site."
+          },
+          "hazardSequence": [
+            {
+              "id": "seq-1",
+              "sequence": 1,
+              "taskStep": "Job Site & Equipment Pre-Task Inspection",
+              "potentialHazards": [
+                "Slips, trips, and falls from cluttered work areas or uneven surfaces",
+                "Damaged cords, missing guards, or defective tools",
+                "Inadequate lighting or blind work corridors"
+              ],
+              "controls": [
+                {
+                  "hierarchyLevel": "administrative",
+                  "description": "Conduct visual site walk-through; verify housekeeping and clear designated walking pathways."
+                },
+                {
+                  "hierarchyLevel": "engineering",
+                  "description": "Inspect all power tools and extension cords before use; tag out damaged cords (OSHA 1926.404)."
+                },
+                {
+                  "hierarchyLevel": "ppe",
+                  "description": "Wear ASTM F2413 safety-toe boots and ANSI Z87.1 approved eye protection."
+                }
+              ],
+              "regulatoryReference": "OSHA 1926.20 / 1926.404"
+            },
+            {
+              "id": "seq-2",
+              "sequence": 2,
+              "taskStep": "Electrical De-Energization & Lockout/Tagout (LOTO)",
+              "potentialHazards": [
+                "Electric shock, electrocution, and contact with energized conductors",
+                "Arc flash explosion and blast pressure from short circuits",
+                "Inadvertent re-energization by unauthorized personnel"
+              ],
+              "controls": [
+                {
+                  "hierarchyLevel": "elimination",
+                  "description": "Establish an electrically safe work condition; de-energize circuits and test with calibrated meter before touching (NFPA 70E Article 120)."
+                },
+                {
+                  "hierarchyLevel": "administrative",
+                  "description": "Apply individual Lockout/Tagout padlocks and tags to disconnects with exclusive key control."
+                },
+                {
+                  "hierarchyLevel": "ppe",
+                  "description": "Wear arc-rated clothing, face shield, and voltage-rated rubber gloves (Class 0 or appropriate level) during testing."
+                }
+              ],
+              "regulatoryReference": "OSHA 1926.416 / 1926.417"
+            },
+            {
+              "id": "seq-4",
+              "sequence": 3,
+              "taskStep": "Execution of 480V Substation Feeder Cable Pulling & Termination",
+              "potentialHazards": [
+                "Pinch points, lacerations, and crushing injuries during material handling",
+                "Ergonomic strain from lifting heavy loads or awkward positioning",
+                "Flying debris, dust, or airborne particles"
+              ],
+              "controls": [
+                {
+                  "hierarchyLevel": "engineering",
+                  "description": "Utilize mechanical lifting aids (dollies, material lifts) for objects exceeding 50 lbs."
+                },
+                {
+                  "hierarchyLevel": "administrative",
+                  "description": "Enforce team lifting; rotate tasks among workers to mitigate physical fatigue."
+                },
+                {
+                  "hierarchyLevel": "ppe",
+                  "description": "Wear ANSI level A3 or higher cut-resistant work gloves and hearing protection during high-decibel operations."
+                }
+              ],
+              "regulatoryReference": "OSHA 1926.21 / 1926.95"
+            },
+            {
+              "id": "seq-5",
+              "sequence": 4,
+              "taskStep": "Site Housekeeping, De-mobilization & Sign-Off",
+              "potentialHazards": [
+                "Sharp scrap wire, metal trimmings, or nails left on walking surfaces",
+                "Unattended energized equipment or open utility access panels"
+              ],
+              "controls": [
+                {
+                  "hierarchyLevel": "administrative",
+                  "description": "Dispose of all debris into designated containers immediately upon task completion."
+                },
+                {
+                  "hierarchyLevel": "administrative",
+                  "description": "Close and lock all equipment access doors; perform final walk with supervisor."
+                }
+              ],
+              "regulatoryReference": "OSHA 1926.25"
+            }
+          ],
+          "emergencyAction": {
+            "firstAidKitLocation": "Main crew vehicle and gang box on site.",
+            "nearestMedicalFacility": "Local Emergency Medical Center (Call 911 immediately).",
+            "emergencyContactPhone": "(512) 555-0199",
+            "musterPoint": "Designated exterior contractor muster point at project gate."
+          },
+          "contractorReviewAck": {
+            "reviewedByContractor": false,
+            "disclaimerAccepted": false
+          }
+        },
+        "ai_assisted": false,
+        "generation_method": "template",
+        "generation_timestamp": "2026-09-03T19:11:07.981Z",
+        "generation_model": "Avorria Trade Safety Rules Engine v1.0",
+        "user_review_status": "reviewed_with_edits",
+        "created_at": "2026-09-03T19:11:07.981Z",
+        "updated_at": "2026-09-03T19:11:07.982Z",
+        "reviewed_by": "Marcus Vance",
+        "reviewed_at": "2026-09-03T19:11:07.982Z",
+        "finalised_by": "Marcus Vance",
+        "finalised_at": "2026-09-03T19:11:07.982Z"
+      }
+    ],
+    "auditLogs": [
+      {
+        "id": "log-1788462682666",
+        "action": "Document Version Created",
+        "timestamp": "2026-09-03T19:11:22.666Z",
+        "details": "Created version 2 for \"Travelers Commercial General Liability 2027-2028\"."
+      },
+      {
+        "id": "log-1788462682664",
+        "action": "Document Uploaded",
+        "timestamp": "2026-09-03T19:11:22.664Z",
+        "details": "Uploaded evidence document: \"Travelers Commercial General Liability 2026-2027\" (insurance_coi)."
+      },
+      {
+        "id": "log-1788462682655",
+        "action": "Onboarding Completed",
+        "timestamp": "2026-09-03T19:11:22.655Z",
+        "details": "Contractor onboarding completed. Workspace activated."
+      },
+      {
+        "id": "log-1788462682654",
+        "action": "Onboarding Step 4 Saved",
+        "timestamp": "2026-09-03T19:11:22.654Z",
+        "details": "Updated parameters for onboarding stage 4."
+      },
+      {
+        "id": "log-1788462682654",
+        "action": "Onboarding Step 3 Saved",
+        "timestamp": "2026-09-03T19:11:22.654Z",
+        "details": "Updated parameters for onboarding stage 3."
+      },
+      {
+        "id": "log-1788462682653",
+        "action": "Onboarding Step 2 Saved",
+        "timestamp": "2026-09-03T19:11:22.653Z",
+        "details": "Updated parameters for onboarding stage 2."
+      },
+      {
+        "id": "log-1788462682650",
+        "action": "Onboarding Step 1 Saved",
+        "timestamp": "2026-09-03T19:11:22.650Z",
+        "details": "Updated parameters for onboarding stage 1."
+      },
+      {
+        "id": "log-1788462667984",
+        "action": "Passport Visibility Changed",
+        "timestamp": "2026-09-03T19:11:07.984Z",
+        "details": "Updated Passport visibility to published."
+      },
+      {
+        "id": "log-1788462667982",
+        "action": "Document Finalized",
+        "timestamp": "2026-09-03T19:11:07.982Z",
+        "details": "Finalized JHA \"JHA: 480V Substation Feeder Cable Pulling & Termination (Dell Childrens Hospital Expansion)\" with human review sign-off by Marcus Vance."
+      },
+      {
+        "id": "log-1788462667981",
+        "action": "Generated Document Created",
+        "timestamp": "2026-09-03T19:11:07.981Z",
+        "details": "Created draft \"JHA: 480V Substation Feeder Cable Pulling & Termination (Dell Childrens Hospital Expansion)\" via template engine."
+      },
+      {
+        "id": "log-1788462667979",
+        "action": "Document Version Created",
+        "timestamp": "2026-09-03T19:11:07.979Z",
+        "details": "Created version 2 for \"Travelers Commercial General Liability 2027-2028\"."
+      },
+      {
+        "id": "log-1788462667978",
+        "action": "Document Uploaded",
+        "timestamp": "2026-09-03T19:11:07.978Z",
+        "details": "Uploaded evidence document: \"Travelers Commercial General Liability 2026-2027\" (insurance_coi)."
+      },
+      {
+        "id": "log-1788462667976",
+        "action": "Onboarding Completed",
+        "timestamp": "2026-09-03T19:11:07.976Z",
+        "details": "Contractor onboarding completed. Workspace activated."
+      },
+      {
+        "id": "log-1788462667975",
+        "action": "Onboarding Step 4 Saved",
+        "timestamp": "2026-09-03T19:11:07.975Z",
+        "details": "Updated parameters for onboarding stage 4."
+      },
+      {
+        "id": "log-1788462667975",
+        "action": "Onboarding Step 3 Saved",
+        "timestamp": "2026-09-03T19:11:07.975Z",
+        "details": "Updated parameters for onboarding stage 3."
+      },
+      {
+        "id": "log-1788462667975",
+        "action": "Onboarding Step 2 Saved",
+        "timestamp": "2026-09-03T19:11:07.975Z",
+        "details": "Updated parameters for onboarding stage 2."
+      },
+      {
+        "id": "log-1788462667974",
+        "action": "Onboarding Step 1 Saved",
+        "timestamp": "2026-09-03T19:11:07.974Z",
+        "details": "Updated parameters for onboarding stage 1."
+      },
+      {
+        "id": "log-1",
+        "action": "Organisation Created",
+        "timestamp": "2026-09-03T19:11:07.973Z",
+        "details": "Contractor organization initialised."
+      }
+    ]
+  },
+  "test-org-e2e-1788462692775": {
+    "organisation": {
+      "id": "test-org-e2e-1788462692775",
+      "name": "Vance Commercial Electric LLC",
+      "slug": "contractor-test-org",
+      "legal_name": "Vance Commercial Electric LLC",
+      "business_structure": "llc",
+      "tax_id_ein": null,
+      "website": null,
+      "phone": "(512) 555-4022",
+      "email": "marcus@vanceelectric.com",
+      "address_line1": null,
+      "address_line2": null,
+      "city": null,
+      "state_province": "TX",
+      "postal_code": null,
+      "country": "US",
+      "created_at": "2026-09-03T19:11:32.776Z",
+      "updated_at": "2026-09-03T19:11:32.778Z"
+    },
+    "profile": {
+      "id": "prof_test-org",
+      "organisation_id": "test-org-e2e-1788462692775",
+      "dba_name": "Vance Electric",
+      "primary_phone": null,
+      "primary_email": null,
+      "website": null,
+      "business_description": null,
+      "year_established": 2022,
+      "employee_count": 6,
+      "readiness_score": 78,
+      "readiness_breakdown": {},
+      "visibility": "published",
+      "is_indexable": false,
+      "onboarding_status": "completed",
+      "onboarding_started_at": "2026-09-03T19:11:32.781Z",
+      "onboarding_last_saved_at": "2026-09-03T19:11:32.786Z",
+      "onboarding_completed_at": "2026-09-03T19:11:32.788Z",
+      "onboarding_data": {
+        "step_1": {
+          "businessName": "Vance Commercial Electric LLC",
+          "legalName": "Vance Commercial Electric LLC",
+          "dbaName": "Vance Electric",
+          "businessStructure": "llc",
+          "phone": "(512) 555-4022",
+          "email": "marcus@vanceelectric.com",
+          "employeeCount": 6,
+          "yearsInBusiness": 4
+        },
+        "step_2": {
+          "trades": [
+            "electrical-contracting",
+            "low-voltage-telecom"
+          ]
+        },
+        "step_3": {
+          "primaryState": "TX",
+          "radiusMiles": 75,
+          "cities": [
+            "Austin",
+            "Round Rock",
+            "San Marcos"
+          ]
+        },
+        "step_4": {
+          "credentials": {
+            "hasGeneralLiability": false,
+            "hasWorkersComp": true,
+            "hasTradeLicense": true,
+            "hasSafetyPlan": false,
+            "hasToolboxTalks": true,
+            "hasOshaCard": true
+          }
+        }
+      },
+      "created_at": "2026-09-03T19:11:32.778Z",
+      "updated_at": "2026-09-03T19:11:32.778Z"
+    },
+    "trades": [
+      "electrical-contracting",
+      "low-voltage-telecom"
+    ],
+    "serviceAreas": {
+      "primaryState": "TX",
+      "additionalStates": [],
+      "counties": [
+        "Travis County",
+        "Williamson County"
+      ],
+      "cities": [
+        "Austin",
+        "Round Rock",
+        "San Marcos"
+      ],
+      "radiusMiles": 75
+    },
+    "baselineCredentials": {
+      "hasGeneralLiability": false,
+      "hasWorkersComp": true,
+      "hasTradeLicense": true,
+      "hasSafetyPlan": false,
+      "hasToolboxTalks": true,
+      "hasOshaCard": true
+    },
+    "documents": [
+      {
+        "id": "doc-1788462692804",
+        "organisation_id": "test-org-e2e-1788462692775",
+        "title": "JHA: 480V Substation Feeder Cable Pulling & Termination (Dell Childrens Hospital Expansion)",
+        "document_type": "safety_jha",
+        "file_path": "/storage/org_test-org-e2e-1788462692775/gen-1788462692804.pdf",
+        "file_size_bytes": 184320,
+        "mime_type": "application/pdf",
+        "visibility": "private",
+        "status": "active",
+        "version_number": 1,
+        "issuing_organisation": "Vance Commercial Electric LLC",
+        "notes": "Signed and finalized site-specific Job Hazard Analysis.",
+        "created_at": "2026-09-03T19:11:32.806Z",
+        "updated_at": "2026-09-03T19:11:32.806Z"
+      },
+      {
+        "id": "doc-1788462692799",
+        "organisation_id": "test-org-e2e-1788462692775",
+        "title": "Travelers Commercial General Liability 2027-2028",
+        "document_type": "insurance_coi",
+        "file_path": "/storage/org_test-org-e2e-1788462692775/travelers_coi_v2.pdf",
+        "file_size_bytes": 256000,
+        "mime_type": "application/pdf",
+        "visibility": "private",
+        "status": "active",
+        "version_number": 2,
+        "expires_at": "2028-08-31",
+        "issuing_organisation": "Travelers Casualty & Surety",
+        "notes": "Annual policy renewal with updated endorsements",
+        "associated_requirement_id": null,
+        "created_at": "2026-09-03T19:11:32.796Z",
+        "updated_at": "2026-09-03T19:11:32.799Z",
+        "parent_document_id": "doc-1788462692796"
+      },
+      {
+        "id": "doc-1788462692796",
+        "organisation_id": "test-org-e2e-1788462692775",
+        "title": "Travelers Commercial General Liability 2026-2027",
+        "document_type": "insurance_coi",
+        "file_path": "/storage/org_test-org-e2e-1788462692775/travelers_coi.pdf",
+        "file_size_bytes": 256000,
+        "mime_type": "application/pdf",
+        "visibility": "private",
+        "status": "archived",
+        "version_number": 1,
+        "expires_at": "2027-08-31",
+        "issuing_organisation": "Travelers Casualty & Surety",
+        "notes": "Policy #COI-38491 ($2,000,000 Aggregate)",
+        "associated_requirement_id": null,
+        "created_at": "2026-09-03T19:11:32.796Z",
+        "updated_at": "2026-09-03T19:11:32.796Z"
+      }
+    ],
+    "generatedDocuments": [
+      {
+        "id": "gen-1788462692804",
+        "organisation_id": "test-org-e2e-1788462692775",
+        "title": "JHA: 480V Substation Feeder Cable Pulling & Termination (Dell Childrens Hospital Expansion)",
+        "document_type": "jha",
+        "document_status": "final",
+        "version_number": 1,
+        "document_payload": {
+          "jobInfo": {
+            "projectName": "Dell Childrens Hospital Expansion",
+            "jobLocation": "Austin, TX",
+            "tradeName": "Electrical Contracting",
+            "workActivity": "480V Substation Feeder Cable Pulling & Termination",
+            "workDate": "2026-09-15",
+            "supervisorName": "Marcus Vance"
+          },
+          "workforce": {
+            "workerCount": 4,
+            "assignedRoles": [
+              "Lead Electrician",
+              "Rigger",
+              "Safety Watch"
+            ],
+            "competentPerson": "Marcus Vance"
+          },
+          "equipment": [
+            "Tugger Winch",
+            "Hydraulic Crimper",
+            "Insulated Ratchets"
+          ],
+          "materials": [
+            "500 kcmil Copper Conductors",
+            "Pulling Lubricant"
+          ],
+          "ppe": {
+            "head": true,
+            "eyeFace": true,
+            "hearing": false,
+            "hand": true,
+            "foot": true,
+            "respiratory": false,
+            "fallProtection": false,
+            "arcFlash": true,
+            "otherNotes": "High-visibility class 2 vest required on active site."
+          },
+          "hazardSequence": [
+            {
+              "id": "seq-1",
+              "sequence": 1,
+              "taskStep": "Job Site & Equipment Pre-Task Inspection",
+              "potentialHazards": [
+                "Slips, trips, and falls from cluttered work areas or uneven surfaces",
+                "Damaged cords, missing guards, or defective tools",
+                "Inadequate lighting or blind work corridors"
+              ],
+              "controls": [
+                {
+                  "hierarchyLevel": "administrative",
+                  "description": "Conduct visual site walk-through; verify housekeeping and clear designated walking pathways."
+                },
+                {
+                  "hierarchyLevel": "engineering",
+                  "description": "Inspect all power tools and extension cords before use; tag out damaged cords (OSHA 1926.404)."
+                },
+                {
+                  "hierarchyLevel": "ppe",
+                  "description": "Wear ASTM F2413 safety-toe boots and ANSI Z87.1 approved eye protection."
+                }
+              ],
+              "regulatoryReference": "OSHA 1926.20 / 1926.404"
+            },
+            {
+              "id": "seq-2",
+              "sequence": 2,
+              "taskStep": "Electrical De-Energization & Lockout/Tagout (LOTO)",
+              "potentialHazards": [
+                "Electric shock, electrocution, and contact with energized conductors",
+                "Arc flash explosion and blast pressure from short circuits",
+                "Inadvertent re-energization by unauthorized personnel"
+              ],
+              "controls": [
+                {
+                  "hierarchyLevel": "elimination",
+                  "description": "Establish an electrically safe work condition; de-energize circuits and test with calibrated meter before touching (NFPA 70E Article 120)."
+                },
+                {
+                  "hierarchyLevel": "administrative",
+                  "description": "Apply individual Lockout/Tagout padlocks and tags to disconnects with exclusive key control."
+                },
+                {
+                  "hierarchyLevel": "ppe",
+                  "description": "Wear arc-rated clothing, face shield, and voltage-rated rubber gloves (Class 0 or appropriate level) during testing."
+                }
+              ],
+              "regulatoryReference": "OSHA 1926.416 / 1926.417"
+            },
+            {
+              "id": "seq-4",
+              "sequence": 3,
+              "taskStep": "Execution of 480V Substation Feeder Cable Pulling & Termination",
+              "potentialHazards": [
+                "Pinch points, lacerations, and crushing injuries during material handling",
+                "Ergonomic strain from lifting heavy loads or awkward positioning",
+                "Flying debris, dust, or airborne particles"
+              ],
+              "controls": [
+                {
+                  "hierarchyLevel": "engineering",
+                  "description": "Utilize mechanical lifting aids (dollies, material lifts) for objects exceeding 50 lbs."
+                },
+                {
+                  "hierarchyLevel": "administrative",
+                  "description": "Enforce team lifting; rotate tasks among workers to mitigate physical fatigue."
+                },
+                {
+                  "hierarchyLevel": "ppe",
+                  "description": "Wear ANSI level A3 or higher cut-resistant work gloves and hearing protection during high-decibel operations."
+                }
+              ],
+              "regulatoryReference": "OSHA 1926.21 / 1926.95"
+            },
+            {
+              "id": "seq-5",
+              "sequence": 4,
+              "taskStep": "Site Housekeeping, De-mobilization & Sign-Off",
+              "potentialHazards": [
+                "Sharp scrap wire, metal trimmings, or nails left on walking surfaces",
+                "Unattended energized equipment or open utility access panels"
+              ],
+              "controls": [
+                {
+                  "hierarchyLevel": "administrative",
+                  "description": "Dispose of all debris into designated containers immediately upon task completion."
+                },
+                {
+                  "hierarchyLevel": "administrative",
+                  "description": "Close and lock all equipment access doors; perform final walk with supervisor."
+                }
+              ],
+              "regulatoryReference": "OSHA 1926.25"
+            }
+          ],
+          "emergencyAction": {
+            "firstAidKitLocation": "Main crew vehicle and gang box on site.",
+            "nearestMedicalFacility": "Local Emergency Medical Center (Call 911 immediately).",
+            "emergencyContactPhone": "(512) 555-0199",
+            "musterPoint": "Designated exterior contractor muster point at project gate."
+          },
+          "contractorReviewAck": {
+            "reviewedByContractor": false,
+            "disclaimerAccepted": false
+          }
+        },
+        "ai_assisted": false,
+        "generation_method": "template",
+        "generation_timestamp": "2026-09-03T19:11:32.804Z",
+        "generation_model": "Avorria Trade Safety Rules Engine v1.0",
+        "user_review_status": "reviewed_with_edits",
+        "created_at": "2026-09-03T19:11:32.804Z",
+        "updated_at": "2026-09-03T19:11:32.806Z",
+        "reviewed_by": "Marcus Vance",
+        "reviewed_at": "2026-09-03T19:11:32.806Z",
+        "finalised_by": "Marcus Vance",
+        "finalised_at": "2026-09-03T19:11:32.806Z"
+      }
+    ],
+    "auditLogs": [
+      {
+        "id": "log-1788462692813",
+        "action": "Passport Visibility Changed",
+        "timestamp": "2026-09-03T19:11:32.813Z",
+        "details": "Updated Passport visibility to published."
+      },
+      {
+        "id": "log-1788462692806",
+        "action": "Document Finalized",
+        "timestamp": "2026-09-03T19:11:32.806Z",
+        "details": "Finalized JHA \"JHA: 480V Substation Feeder Cable Pulling & Termination (Dell Childrens Hospital Expansion)\" with human review sign-off by Marcus Vance."
+      },
+      {
+        "id": "log-1788462692804",
+        "action": "Generated Document Created",
+        "timestamp": "2026-09-03T19:11:32.804Z",
+        "details": "Created draft \"JHA: 480V Substation Feeder Cable Pulling & Termination (Dell Childrens Hospital Expansion)\" via template engine."
+      },
+      {
+        "id": "log-1788462692799",
+        "action": "Document Version Created",
+        "timestamp": "2026-09-03T19:11:32.799Z",
+        "details": "Created version 2 for \"Travelers Commercial General Liability 2027-2028\"."
+      },
+      {
+        "id": "log-1788462692796",
+        "action": "Document Uploaded",
+        "timestamp": "2026-09-03T19:11:32.797Z",
+        "details": "Uploaded evidence document: \"Travelers Commercial General Liability 2026-2027\" (insurance_coi)."
+      },
+      {
+        "id": "log-1788462692789",
+        "action": "Onboarding Completed",
+        "timestamp": "2026-09-03T19:11:32.789Z",
+        "details": "Contractor onboarding completed. Workspace activated."
+      },
+      {
+        "id": "log-1788462692786",
+        "action": "Onboarding Step 4 Saved",
+        "timestamp": "2026-09-03T19:11:32.786Z",
+        "details": "Updated parameters for onboarding stage 4."
+      },
+      {
+        "id": "log-1788462692785",
+        "action": "Onboarding Step 3 Saved",
+        "timestamp": "2026-09-03T19:11:32.785Z",
+        "details": "Updated parameters for onboarding stage 3."
+      },
+      {
+        "id": "log-1788462692783",
+        "action": "Onboarding Step 2 Saved",
+        "timestamp": "2026-09-03T19:11:32.783Z",
+        "details": "Updated parameters for onboarding stage 2."
+      },
+      {
+        "id": "log-1788462692781",
+        "action": "Onboarding Step 1 Saved",
+        "timestamp": "2026-09-03T19:11:32.781Z",
+        "details": "Updated parameters for onboarding stage 1."
+      },
+      {
+        "id": "log-1",
+        "action": "Organisation Created",
+        "timestamp": "2026-09-03T19:11:32.778Z",
+        "details": "Contractor organization initialised."
+      }
+    ]
+  },
+  "test-org-e2e-1788462699903": {
+    "organisation": {
+      "id": "test-org-e2e-1788462699903",
+      "name": "Vance Commercial Electric LLC",
+      "slug": "contractor-test-org",
+      "legal_name": "Vance Commercial Electric LLC",
+      "business_structure": "llc",
+      "tax_id_ein": null,
+      "website": null,
+      "phone": "(512) 555-4022",
+      "email": "marcus@vanceelectric.com",
+      "address_line1": null,
+      "address_line2": null,
+      "city": null,
+      "state_province": "TX",
+      "postal_code": null,
+      "country": "US",
+      "created_at": "2026-09-03T19:11:39.904Z",
+      "updated_at": "2026-09-03T19:11:39.905Z"
+    },
+    "profile": {
+      "id": "prof_test-org",
+      "organisation_id": "test-org-e2e-1788462699903",
+      "dba_name": "Vance Electric",
+      "primary_phone": null,
+      "primary_email": null,
+      "website": null,
+      "business_description": null,
+      "year_established": 2022,
+      "employee_count": 6,
+      "readiness_score": 78,
+      "readiness_breakdown": {},
+      "visibility": "published",
+      "is_indexable": false,
+      "onboarding_status": "completed",
+      "onboarding_started_at": "2026-09-03T19:11:39.908Z",
+      "onboarding_last_saved_at": "2026-09-03T19:11:39.910Z",
+      "onboarding_completed_at": "2026-09-03T19:11:39.910Z",
+      "onboarding_data": {
+        "step_1": {
+          "businessName": "Vance Commercial Electric LLC",
+          "legalName": "Vance Commercial Electric LLC",
+          "dbaName": "Vance Electric",
+          "businessStructure": "llc",
+          "phone": "(512) 555-4022",
+          "email": "marcus@vanceelectric.com",
+          "employeeCount": 6,
+          "yearsInBusiness": 4
+        },
+        "step_2": {
+          "trades": [
+            "electrical-contracting",
+            "low-voltage-telecom"
+          ]
+        },
+        "step_3": {
+          "primaryState": "TX",
+          "radiusMiles": 75,
+          "cities": [
+            "Austin",
+            "Round Rock",
+            "San Marcos"
+          ]
+        },
+        "step_4": {
+          "credentials": {
+            "hasGeneralLiability": false,
+            "hasWorkersComp": true,
+            "hasTradeLicense": true,
+            "hasSafetyPlan": false,
+            "hasToolboxTalks": true,
+            "hasOshaCard": true
+          }
+        }
+      },
+      "created_at": "2026-09-03T19:11:39.905Z",
+      "updated_at": "2026-09-03T19:11:39.905Z"
+    },
+    "trades": [
+      "electrical-contracting",
+      "low-voltage-telecom"
+    ],
+    "serviceAreas": {
+      "primaryState": "TX",
+      "additionalStates": [],
+      "counties": [
+        "Travis County",
+        "Williamson County"
+      ],
+      "cities": [
+        "Austin",
+        "Round Rock",
+        "San Marcos"
+      ],
+      "radiusMiles": 75
+    },
+    "baselineCredentials": {
+      "hasGeneralLiability": false,
+      "hasWorkersComp": true,
+      "hasTradeLicense": true,
+      "hasSafetyPlan": false,
+      "hasToolboxTalks": true,
+      "hasOshaCard": true
+    },
+    "documents": [
+      {
+        "id": "doc-1788462699918",
+        "organisation_id": "test-org-e2e-1788462699903",
+        "title": "JHA: 480V Substation Feeder Cable Pulling & Termination (Dell Childrens Hospital Expansion)",
+        "document_type": "safety_jha",
+        "file_path": "/storage/org_test-org-e2e-1788462699903/gen-1788462699918.pdf",
+        "file_size_bytes": 184320,
+        "mime_type": "application/pdf",
+        "visibility": "private",
+        "status": "active",
+        "version_number": 1,
+        "issuing_organisation": "Vance Commercial Electric LLC",
+        "notes": "Signed and finalized site-specific Job Hazard Analysis.",
+        "created_at": "2026-09-03T19:11:39.920Z",
+        "updated_at": "2026-09-03T19:11:39.920Z"
+      },
+      {
+        "id": "doc-1788462699914",
+        "organisation_id": "test-org-e2e-1788462699903",
+        "title": "Travelers Commercial General Liability 2027-2028",
+        "document_type": "insurance_coi",
+        "file_path": "/storage/org_test-org-e2e-1788462699903/travelers_coi_v2.pdf",
+        "file_size_bytes": 256000,
+        "mime_type": "application/pdf",
+        "visibility": "private",
+        "status": "active",
+        "version_number": 2,
+        "expires_at": "2028-08-31",
+        "issuing_organisation": "Travelers Casualty & Surety",
+        "notes": "Annual policy renewal with updated endorsements",
+        "associated_requirement_id": null,
+        "created_at": "2026-09-03T19:11:39.913Z",
+        "updated_at": "2026-09-03T19:11:39.914Z",
+        "parent_document_id": "doc-1788462699913"
+      },
+      {
+        "id": "doc-1788462699913",
+        "organisation_id": "test-org-e2e-1788462699903",
+        "title": "Travelers Commercial General Liability 2026-2027",
+        "document_type": "insurance_coi",
+        "file_path": "/storage/org_test-org-e2e-1788462699903/travelers_coi.pdf",
+        "file_size_bytes": 256000,
+        "mime_type": "application/pdf",
+        "visibility": "private",
+        "status": "archived",
+        "version_number": 1,
+        "expires_at": "2027-08-31",
+        "issuing_organisation": "Travelers Casualty & Surety",
+        "notes": "Policy #COI-38491 ($2,000,000 Aggregate)",
+        "associated_requirement_id": null,
+        "created_at": "2026-09-03T19:11:39.913Z",
+        "updated_at": "2026-09-03T19:11:39.913Z"
+      }
+    ],
+    "generatedDocuments": [
+      {
+        "id": "gen-1788462699918",
+        "organisation_id": "test-org-e2e-1788462699903",
+        "title": "JHA: 480V Substation Feeder Cable Pulling & Termination (Dell Childrens Hospital Expansion)",
+        "document_type": "jha",
+        "document_status": "final",
+        "version_number": 1,
+        "document_payload": {
+          "jobInfo": {
+            "projectName": "Dell Childrens Hospital Expansion",
+            "jobLocation": "Austin, TX",
+            "tradeName": "Electrical Contracting",
+            "workActivity": "480V Substation Feeder Cable Pulling & Termination",
+            "workDate": "2026-09-15",
+            "supervisorName": "Marcus Vance"
+          },
+          "workforce": {
+            "workerCount": 4,
+            "assignedRoles": [
+              "Lead Electrician",
+              "Rigger",
+              "Safety Watch"
+            ],
+            "competentPerson": "Marcus Vance"
+          },
+          "equipment": [
+            "Tugger Winch",
+            "Hydraulic Crimper",
+            "Insulated Ratchets"
+          ],
+          "materials": [
+            "500 kcmil Copper Conductors",
+            "Pulling Lubricant"
+          ],
+          "ppe": {
+            "head": true,
+            "eyeFace": true,
+            "hearing": false,
+            "hand": true,
+            "foot": true,
+            "respiratory": false,
+            "fallProtection": false,
+            "arcFlash": true,
+            "otherNotes": "High-visibility class 2 vest required on active site."
+          },
+          "hazardSequence": [
+            {
+              "id": "seq-1",
+              "sequence": 1,
+              "taskStep": "Job Site & Equipment Pre-Task Inspection",
+              "potentialHazards": [
+                "Slips, trips, and falls from cluttered work areas or uneven surfaces",
+                "Damaged cords, missing guards, or defective tools",
+                "Inadequate lighting or blind work corridors"
+              ],
+              "controls": [
+                {
+                  "hierarchyLevel": "administrative",
+                  "description": "Conduct visual site walk-through; verify housekeeping and clear designated walking pathways."
+                },
+                {
+                  "hierarchyLevel": "engineering",
+                  "description": "Inspect all power tools and extension cords before use; tag out damaged cords (OSHA 1926.404)."
+                },
+                {
+                  "hierarchyLevel": "ppe",
+                  "description": "Wear ASTM F2413 safety-toe boots and ANSI Z87.1 approved eye protection."
+                }
+              ],
+              "regulatoryReference": "OSHA 1926.20 / 1926.404"
+            },
+            {
+              "id": "seq-2",
+              "sequence": 2,
+              "taskStep": "Electrical De-Energization & Lockout/Tagout (LOTO)",
+              "potentialHazards": [
+                "Electric shock, electrocution, and contact with energized conductors",
+                "Arc flash explosion and blast pressure from short circuits",
+                "Inadvertent re-energization by unauthorized personnel"
+              ],
+              "controls": [
+                {
+                  "hierarchyLevel": "elimination",
+                  "description": "Establish an electrically safe work condition; de-energize circuits and test with calibrated meter before touching (NFPA 70E Article 120)."
+                },
+                {
+                  "hierarchyLevel": "administrative",
+                  "description": "Apply individual Lockout/Tagout padlocks and tags to disconnects with exclusive key control."
+                },
+                {
+                  "hierarchyLevel": "ppe",
+                  "description": "Wear arc-rated clothing, face shield, and voltage-rated rubber gloves (Class 0 or appropriate level) during testing."
+                }
+              ],
+              "regulatoryReference": "OSHA 1926.416 / 1926.417"
+            },
+            {
+              "id": "seq-4",
+              "sequence": 3,
+              "taskStep": "Execution of 480V Substation Feeder Cable Pulling & Termination",
+              "potentialHazards": [
+                "Pinch points, lacerations, and crushing injuries during material handling",
+                "Ergonomic strain from lifting heavy loads or awkward positioning",
+                "Flying debris, dust, or airborne particles"
+              ],
+              "controls": [
+                {
+                  "hierarchyLevel": "engineering",
+                  "description": "Utilize mechanical lifting aids (dollies, material lifts) for objects exceeding 50 lbs."
+                },
+                {
+                  "hierarchyLevel": "administrative",
+                  "description": "Enforce team lifting; rotate tasks among workers to mitigate physical fatigue."
+                },
+                {
+                  "hierarchyLevel": "ppe",
+                  "description": "Wear ANSI level A3 or higher cut-resistant work gloves and hearing protection during high-decibel operations."
+                }
+              ],
+              "regulatoryReference": "OSHA 1926.21 / 1926.95"
+            },
+            {
+              "id": "seq-5",
+              "sequence": 4,
+              "taskStep": "Site Housekeeping, De-mobilization & Sign-Off",
+              "potentialHazards": [
+                "Sharp scrap wire, metal trimmings, or nails left on walking surfaces",
+                "Unattended energized equipment or open utility access panels"
+              ],
+              "controls": [
+                {
+                  "hierarchyLevel": "administrative",
+                  "description": "Dispose of all debris into designated containers immediately upon task completion."
+                },
+                {
+                  "hierarchyLevel": "administrative",
+                  "description": "Close and lock all equipment access doors; perform final walk with supervisor."
+                }
+              ],
+              "regulatoryReference": "OSHA 1926.25"
+            }
+          ],
+          "emergencyAction": {
+            "firstAidKitLocation": "Main crew vehicle and gang box on site.",
+            "nearestMedicalFacility": "Local Emergency Medical Center (Call 911 immediately).",
+            "emergencyContactPhone": "(512) 555-0199",
+            "musterPoint": "Designated exterior contractor muster point at project gate."
+          },
+          "contractorReviewAck": {
+            "reviewedByContractor": false,
+            "disclaimerAccepted": false
+          }
+        },
+        "ai_assisted": false,
+        "generation_method": "template",
+        "generation_timestamp": "2026-09-03T19:11:39.918Z",
+        "generation_model": "Avorria Trade Safety Rules Engine v1.0",
+        "user_review_status": "reviewed_with_edits",
+        "created_at": "2026-09-03T19:11:39.918Z",
+        "updated_at": "2026-09-03T19:11:39.920Z",
+        "reviewed_by": "Marcus Vance",
+        "reviewed_at": "2026-09-03T19:11:39.920Z",
+        "finalised_by": "Marcus Vance",
+        "finalised_at": "2026-09-03T19:11:39.920Z"
+      }
+    ],
+    "auditLogs": [
+      {
+        "id": "log-1788462699925",
+        "action": "Passport Visibility Changed",
+        "timestamp": "2026-09-03T19:11:39.925Z",
+        "details": "Updated Passport visibility to published."
+      },
+      {
+        "id": "log-1788462699920",
+        "action": "Document Finalized",
+        "timestamp": "2026-09-03T19:11:39.920Z",
+        "details": "Finalized JHA \"JHA: 480V Substation Feeder Cable Pulling & Termination (Dell Childrens Hospital Expansion)\" with human review sign-off by Marcus Vance."
+      },
+      {
+        "id": "log-1788462699918",
+        "action": "Generated Document Created",
+        "timestamp": "2026-09-03T19:11:39.918Z",
+        "details": "Created draft \"JHA: 480V Substation Feeder Cable Pulling & Termination (Dell Childrens Hospital Expansion)\" via template engine."
+      },
+      {
+        "id": "log-1788462699914",
+        "action": "Document Version Created",
+        "timestamp": "2026-09-03T19:11:39.914Z",
+        "details": "Created version 2 for \"Travelers Commercial General Liability 2027-2028\"."
+      },
+      {
+        "id": "log-1788462699913",
+        "action": "Document Uploaded",
+        "timestamp": "2026-09-03T19:11:39.913Z",
+        "details": "Uploaded evidence document: \"Travelers Commercial General Liability 2026-2027\" (insurance_coi)."
+      },
+      {
+        "id": "log-1788462699910",
+        "action": "Onboarding Completed",
+        "timestamp": "2026-09-03T19:11:39.910Z",
+        "details": "Contractor onboarding completed. Workspace activated."
+      },
+      {
+        "id": "log-1788462699910",
+        "action": "Onboarding Step 4 Saved",
+        "timestamp": "2026-09-03T19:11:39.910Z",
+        "details": "Updated parameters for onboarding stage 4."
+      },
+      {
+        "id": "log-1788462699909",
+        "action": "Onboarding Step 3 Saved",
+        "timestamp": "2026-09-03T19:11:39.909Z",
+        "details": "Updated parameters for onboarding stage 3."
+      },
+      {
+        "id": "log-1788462699908",
+        "action": "Onboarding Step 2 Saved",
+        "timestamp": "2026-09-03T19:11:39.908Z",
+        "details": "Updated parameters for onboarding stage 2."
+      },
+      {
+        "id": "log-1788462699908",
+        "action": "Onboarding Step 1 Saved",
+        "timestamp": "2026-09-03T19:11:39.908Z",
+        "details": "Updated parameters for onboarding stage 1."
+      },
+      {
+        "id": "log-1",
+        "action": "Organisation Created",
+        "timestamp": "2026-09-03T19:11:39.905Z",
+        "details": "Contractor organization initialised."
+      }
+    ]
+  }
+}
