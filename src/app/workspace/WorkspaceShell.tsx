@@ -40,6 +40,10 @@ const PRIMARY_NAV = [
     href: '/workspace/passport',
   },
   {
+    label: 'VERIFICATION',
+    href: '/workspace/verification',
+  },
+  {
     label: 'WIN WORK',
     href: '/workspace/win-work',
   },

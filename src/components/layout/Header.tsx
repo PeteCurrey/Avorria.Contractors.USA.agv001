@@ -267,20 +267,20 @@ export function Header() {
 
                 {/* Platform Mega Menu Panel */}
                 {activeDropdown === 'platform' && (
-                  <div className="absolute top-full left-0 mt-2 w-[680px] rounded-[8px] bg-[#07132b]/95 border border-sky-500/20 shadow-2xl shadow-[#020817]/90 p-5 backdrop-blur-xl ring-1 ring-sky-400/10 animate-in fade-in slide-in-from-top-1 duration-150 z-50">
+                  <div className="absolute top-full left-0 mt-2 w-[720px] rounded-[8px] bg-[#07132b]/95 border border-sky-500/20 shadow-2xl shadow-[#020817]/90 p-5 backdrop-blur-xl ring-1 ring-sky-400/10 animate-in fade-in slide-in-from-top-1 duration-150 z-50 font-sans">
                     <div className="flex items-center justify-between pb-3 mb-3 border-b border-white/[0.08]">
                       <div>
-                        <span className="text-[10px] font-mono tracking-[0.2em] uppercase text-[#38bdf8] font-medium block">
+                        <span className="text-[11px] font-mono tracking-[0.2em] uppercase text-[#38bdf8] font-medium block">
                           OPERATIONAL SUITE
                         </span>
-                        <p className="text-[12px] font-extralight text-slate-400 mt-0.5">
+                        <p className="text-[14px] font-light text-slate-400 mt-0.5">
                           Infrastructure built specifically for US commercial trade contractors.
                         </p>
                       </div>
                       <Link
                         href="/platform"
                         onClick={() => setActiveDropdown(null)}
-                        className="inline-flex items-center gap-1 text-[12px] text-sky-400 hover:text-sky-300 font-extralight transition-colors"
+                        className="inline-flex items-center gap-1 text-[14px] text-sky-400 hover:text-sky-300 font-light transition-colors"
                       >
                         <span>Platform Overview</span>
                         <ArrowRight className="w-3.5 h-3.5" />
@@ -296,16 +296,16 @@ export function Header() {
                           className="group p-2.5 rounded-[6px] hover:bg-white/[0.05] border border-transparent hover:border-white/[0.06] transition-all text-left block"
                         >
                           <div className="flex items-center justify-between gap-2">
-                            <span className="text-[14px] font-light text-white group-hover:text-sky-400 transition-colors">
+                            <span className="text-[16px] font-light text-white group-hover:text-sky-400 transition-colors">
                               {item.title}
                             </span>
                             {item.badge && (
-                              <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-white/[0.05] text-slate-400 border border-white/[0.05]">
+                              <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-white/[0.05] text-slate-400 border border-white/[0.05]">
                                 {item.badge}
                               </span>
                             )}
                           </div>
-                          <p className="text-[12px] font-extralight text-slate-400 mt-1 leading-snug group-hover:text-slate-300 transition-colors line-clamp-2">
+                          <p className="text-[14px] font-light text-slate-400 mt-1 leading-snug group-hover:text-slate-300 transition-colors line-clamp-2">
                             {item.description}
                           </p>
                         </Link>
@@ -341,13 +341,13 @@ export function Header() {
 
                 {/* Win Work Mega Menu Panel */}
                 {activeDropdown === 'win-work' && (
-                  <div className="absolute top-full left-0 mt-2 w-[520px] rounded-[8px] bg-[#07132b]/95 border border-sky-500/20 shadow-2xl shadow-[#020817]/90 p-5 backdrop-blur-xl ring-1 ring-sky-400/10 animate-in fade-in slide-in-from-top-1 duration-150 z-50">
+                  <div className="absolute top-full left-0 mt-2 w-[540px] rounded-[8px] bg-[#07132b]/95 border border-sky-500/20 shadow-2xl shadow-[#020817]/90 p-5 backdrop-blur-xl ring-1 ring-sky-400/10 animate-in fade-in slide-in-from-top-1 duration-150 z-50 font-sans">
                     <div className="flex items-center justify-between pb-3 mb-3 border-b border-white/[0.08]">
                       <div>
-                        <span className="text-[10px] font-mono tracking-[0.2em] uppercase text-[#38bdf8] font-medium block">
+                        <span className="text-[11px] font-mono tracking-[0.2em] uppercase text-[#38bdf8] font-medium block">
                           COMMERCIAL ACQUISITION
                         </span>
-                        <p className="text-[12px] font-extralight text-slate-400 mt-0.5">
+                        <p className="text-[14px] font-light text-slate-400 mt-0.5">
                           Position your business to win high-value commercial bids and client partnerships.
                         </p>
                       </div>
@@ -362,16 +362,16 @@ export function Header() {
                           className="group p-2.5 rounded-[6px] hover:bg-white/[0.05] border border-transparent hover:border-white/[0.06] transition-all text-left block"
                         >
                           <div className="flex items-center justify-between gap-2">
-                            <span className="text-[14px] font-light text-white group-hover:text-sky-400 transition-colors">
+                            <span className="text-[16px] font-light text-white group-hover:text-sky-400 transition-colors">
                               {item.title}
                             </span>
                             {item.badge && (
-                              <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-white/[0.05] text-slate-400 border border-white/[0.05]">
+                              <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-white/[0.05] text-slate-400 border border-white/[0.05]">
                                 {item.badge}
                               </span>
                             )}
                           </div>
-                          <p className="text-[12px] font-extralight text-slate-400 mt-1 leading-snug group-hover:text-slate-300 transition-colors">
+                          <p className="text-[14px] font-light text-slate-400 mt-1 leading-snug group-hover:text-slate-300 transition-colors">
                             {item.description}
                           </p>
                         </Link>
@@ -407,13 +407,13 @@ export function Header() {
 
                 {/* Resources Mega Menu Panel */}
                 {activeDropdown === 'resources' && (
-                  <div className="absolute top-full left-0 mt-2 w-[680px] rounded-[8px] bg-[#07132b]/95 border border-sky-500/20 shadow-2xl shadow-[#020817]/90 p-5 backdrop-blur-xl ring-1 ring-sky-400/10 animate-in fade-in slide-in-from-top-1 duration-150 z-50">
+                  <div className="absolute top-full left-0 mt-2 w-[720px] rounded-[8px] bg-[#07132b]/95 border border-sky-500/20 shadow-2xl shadow-[#020817]/90 p-5 backdrop-blur-xl ring-1 ring-sky-400/10 animate-in fade-in slide-in-from-top-1 duration-150 z-50 font-sans">
                     <div className="flex items-center justify-between pb-3 mb-3 border-b border-white/[0.08]">
                       <div>
-                        <span className="text-[10px] font-mono tracking-[0.2em] uppercase text-[#38bdf8] font-medium block">
+                        <span className="text-[11px] font-mono tracking-[0.2em] uppercase text-[#38bdf8] font-medium block">
                           TECHNICAL LIBRARY & STANDARDS
                         </span>
-                        <p className="text-[12px] font-extralight text-slate-400 mt-0.5">
+                        <p className="text-[14px] font-light text-slate-400 mt-0.5">
                           Free safety tools, templates, and US statutory licensing requirements.
                         </p>
                       </div>
@@ -428,16 +428,16 @@ export function Header() {
                           className="group p-2.5 rounded-[6px] hover:bg-white/[0.05] border border-transparent hover:border-white/[0.06] transition-all text-left block"
                         >
                           <div className="flex items-center justify-between gap-2">
-                            <span className="text-[14px] font-light text-white group-hover:text-sky-400 transition-colors">
+                            <span className="text-[16px] font-light text-white group-hover:text-sky-400 transition-colors">
                               {item.title}
                             </span>
                             {item.badge && (
-                              <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-white/[0.05] text-slate-400 border border-white/[0.05]">
+                              <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-white/[0.05] text-slate-400 border border-white/[0.05]">
                                 {item.badge}
                               </span>
                             )}
                           </div>
-                          <p className="text-[12px] font-extralight text-slate-400 mt-1 leading-snug group-hover:text-slate-300 transition-colors line-clamp-2">
+                          <p className="text-[14px] font-light text-slate-400 mt-1 leading-snug group-hover:text-slate-300 transition-colors line-clamp-2">
                             {item.description}
                           </p>
                         </Link>
@@ -516,16 +516,16 @@ export function Header() {
                   />
                 </button>
                 {mobileExpandedSection === 'platform' && (
-                  <div className="pl-3 pr-2 py-2 space-y-2 bg-white/[0.02] rounded-[6px]">
+                  <div className="pl-3 pr-2 py-2 space-y-2 bg-white/[0.02] rounded-[6px] font-sans">
                     {PLATFORM_ITEMS.map((item) => (
                       <Link
                         key={item.title}
                         href={item.href}
                         onClick={() => setMobileMenuOpen(false)}
-                        className="block py-1.5 text-xs font-extralight text-slate-300 hover:text-white"
+                        className="block py-1.5 text-slate-300 hover:text-white"
                       >
-                        <span className="font-light text-white block">{item.title}</span>
-                        <span className="text-[11px] text-slate-500 block leading-snug">{item.description}</span>
+                        <span className="text-[15px] font-light text-white block">{item.title}</span>
+                        <span className="text-[12px] font-light text-slate-400 block leading-snug mt-0.5">{item.description}</span>
                       </Link>
                     ))}
                   </div>
@@ -547,16 +547,16 @@ export function Header() {
                   />
                 </button>
                 {mobileExpandedSection === 'win-work' && (
-                  <div className="pl-3 pr-2 py-2 space-y-2 bg-white/[0.02] rounded-[6px]">
+                  <div className="pl-3 pr-2 py-2 space-y-2 bg-white/[0.02] rounded-[6px] font-sans">
                     {WIN_WORK_ITEMS.map((item) => (
                       <Link
                         key={item.title}
                         href={item.href}
                         onClick={() => setMobileMenuOpen(false)}
-                        className="block py-1.5 text-xs font-extralight text-slate-300 hover:text-white"
+                        className="block py-1.5 text-slate-300 hover:text-white"
                       >
-                        <span className="font-light text-white block">{item.title}</span>
-                        <span className="text-[11px] text-slate-500 block leading-snug">{item.description}</span>
+                        <span className="text-[15px] font-light text-white block">{item.title}</span>
+                        <span className="text-[12px] font-light text-slate-400 block leading-snug mt-0.5">{item.description}</span>
                       </Link>
                     ))}
                   </div>
@@ -578,16 +578,16 @@ export function Header() {
                   />
                 </button>
                 {mobileExpandedSection === 'resources' && (
-                  <div className="pl-3 pr-2 py-2 space-y-2 bg-white/[0.02] rounded-[6px]">
+                  <div className="pl-3 pr-2 py-2 space-y-2 bg-white/[0.02] rounded-[6px] font-sans">
                     {RESOURCE_ITEMS.map((item) => (
                       <Link
                         key={item.title}
                         href={item.href}
                         onClick={() => setMobileMenuOpen(false)}
-                        className="block py-1.5 text-xs font-extralight text-slate-300 hover:text-white"
+                        className="block py-1.5 text-slate-300 hover:text-white"
                       >
-                        <span className="font-light text-white block">{item.title}</span>
-                        <span className="text-[11px] text-slate-500 block leading-snug">{item.description}</span>
+                        <span className="text-[15px] font-light text-white block">{item.title}</span>
+                        <span className="text-[12px] font-light text-slate-400 block leading-snug mt-0.5">{item.description}</span>
                       </Link>
                     ))}
                   </div>
