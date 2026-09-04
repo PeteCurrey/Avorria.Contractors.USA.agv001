@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/Badge';
 import { StatusIndicator } from '@/components/ui/StatusIndicator';
 import { EvaluatedRequirement } from '@/lib/compliance/engine';
 import { DynamicReadinessResult } from '@/lib/scoring/readiness-service';
+import { AskAvorriaWidget } from '@/components/compliance/AskAvorriaWidget';
 
 export default function ComplianceWorkspacePage() {
   const [requirements, setRequirements] = useState<EvaluatedRequirement[]>([]);
@@ -95,6 +96,21 @@ export default function ComplianceWorkspacePage() {
             {requirements.filter((r) => r.state === 'missing').length} Gaps
           </div>
         </div>
+      </div>
+
+      {/* Ask Avorria Compliance Assistant */}
+      <div className="space-y-3">
+        <div className="flex items-center gap-3">
+          <h2 className="text-base font-bold text-white">Compliance Assistant</h2>
+          <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-brand-900/40 text-brand-400 border border-brand-800/40">
+            AI · OSHA 1926/1910
+          </span>
+        </div>
+        <p className="text-xs text-slate-500">
+          Ask a compliance or licensing question — your trade and state context are loaded
+          from your profile. Answers cite the standard they draw from.
+        </p>
+        <AskAvorriaWidget />
       </div>
 
       {/* Category Filter Pills */}

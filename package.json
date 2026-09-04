@@ -15,9 +15,11 @@
     "test": "npm run test:security && npm run test:core-loop && npm run test:engine && npm run test:verification"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.123.0",
     "@supabase/ssr": "^0.5.2",
     "@supabase/supabase-js": "^2.49.1",
     "clsx": "^2.1.1",
+    "firebase-admin": "^14.3.0",
     "lucide-react": "^0.475.0",
     "next": "15.5.25",
     "react": "^19.0.0",

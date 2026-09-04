@@ -45,6 +45,7 @@ const APP_NAV_SECTIONS = [
     category: 'COMPLIANCE & WORKFORCE',
     items: [
       { title: 'Compliance & COIs', href: '/app/compliance', icon: '⚠️' },
+      { title: 'Ask Avorria', href: '/app/compliance#ask-avorria', icon: '💬' },
       { title: 'People & OSHA Training', href: '/app/people', icon: '👷' },
       { title: 'Equipment & Safety', href: '/app/equipment', icon: '🚜' },
     ],
@@ -81,7 +82,7 @@ export default async function AppShellLayout({
   }
 
   return (
-    <div className="min-h-screen bg-surface-base flex text-slate-200">
+    <div className="dark min-h-screen bg-surface-base flex text-slate-200">
       {/* Sidebar Shell */}
       <aside className="w-64 border-r border-surface-border bg-surface-subtle flex flex-col justify-between shrink-0 hidden md:flex">
         <div>

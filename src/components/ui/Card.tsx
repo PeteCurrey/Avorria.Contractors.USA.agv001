@@ -13,15 +13,16 @@ export function Card({
   ...props
 }: CardProps) {
   const variants = {
-    default: 'bg-white border border-slate-200 text-navy-800 shadow-sm',
+    default: 'bg-white border border-slate-200 text-navy-800 shadow-sm dark:bg-surface-card dark:border-surface-border dark:text-slate-100 dark:shadow-none',
     light: 'bg-white border border-slate-200 text-navy-800 shadow-sm',
     'light-bordered': 'bg-slate-50/70 border border-slate-300 text-navy-800',
-    elevated: 'bg-white border border-slate-200 shadow-md text-navy-800',
-    subtle: 'bg-slate-50 border border-slate-200 text-navy-800',
+    elevated: 'bg-white border border-slate-200 shadow-md text-navy-800 dark:bg-surface-elevated dark:border-surface-border dark:text-slate-100',
+    subtle: 'bg-slate-50 border border-slate-200 text-navy-800 dark:bg-surface-subtle dark:border-surface-border dark:text-slate-200',
     interactive:
-      'bg-white border border-slate-200 hover:border-brand-600 hover:shadow-md transition-all duration-150 cursor-pointer text-navy-800',
+      'bg-white border border-slate-200 hover:border-brand-600 hover:shadow-md transition-all duration-150 cursor-pointer text-navy-800 dark:bg-surface-card dark:border-surface-border dark:hover:border-brand-500',
     'interactive-light':
       'bg-white border border-slate-200 hover:border-brand-500 hover:shadow-md transition-all duration-150 cursor-pointer text-navy-800',
+    dark: 'bg-surface-card border border-surface-border text-slate-100 shadow-none',
   };
 
   const glowStyle = glowing ? 'border-brand-500/60 shadow-glow' : '';
@@ -55,7 +56,7 @@ export function CardTitle({
 }: React.HTMLAttributes<HTMLHeadingElement>) {
   return (
     <h3
-      className={`text-lg sm:text-xl font-bold text-navy-900 tracking-tight ${className}`}
+      className={`text-lg sm:text-xl font-bold text-navy-900 dark:text-white tracking-tight ${className}`}
       {...props}
     >
       {children}
@@ -70,7 +71,7 @@ export function CardDescription({
 }: React.HTMLAttributes<HTMLParagraphElement>) {
   return (
     <p
-      className={`text-xs sm:text-sm text-slate-600 leading-relaxed ${className}`}
+      className={`text-sm text-slate-600 dark:text-slate-400 leading-relaxed ${className}`}
       {...props}
     >
       {children}

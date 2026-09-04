@@ -233,7 +233,7 @@ export function CinematicHero() {
                 </g>
 
                 {/* Physical Fabric Depth: Ripple Lighting Overlay */}
-                <rect width="1000" height="650" fill="url(#fabricRipples)" mixBlendMode="overlay" />
+                <rect width="1000" height="650" fill="url(#fabricRipples)" style={{ mixBlendMode: 'overlay' }} />
               </g>
             </svg>
           </div>

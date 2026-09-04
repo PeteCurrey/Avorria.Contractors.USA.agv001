@@ -2,16 +2,10 @@ import React from 'react';
 import Link from 'next/link';
 import { Metadata } from 'next';
 import { siteConfig } from '@/config/site';
-import { Button } from '@/components/ui/Button';
-import { Card, CardTitle, CardDescription } from '@/components/ui/Card';
-import { Badge } from '@/components/ui/Badge';
-import { StatusIndicator } from '@/components/ui/StatusIndicator';
-import { HeroDashboardGraphic } from '@/components/brand/HeroDashboardGraphic';
-import { PassportPreviewCard } from '@/components/brand/PassportPreviewCard';
-import { VerifiedBadge } from '@/components/brand/VerifiedBadge';
+import { CinematicHero } from '@/components/hero/CinematicHero';
 
 export const metadata: Metadata = {
-  title: 'Avorria | The Professional Operating Platform for US Contractors',
+  title: 'Avorria | The Operating Platform for American Trade Contractors',
   description:
     'Create professional documents, stay work-ready, prove your credentials and present your business with confidence — all from one platform.',
   alternates: {
@@ -21,389 +15,744 @@ export const metadata: Metadata = {
 
 export default function HomePage() {
   const TRADES = [
-    'Electrical Contractors',
-    'HVAC & Mechanical',
-    'Commercial Plumbing',
-    'Commercial Roofing',
-    'General Contractors',
-    'Concrete & Structural',
-    'Fire Protection',
-    'Low Voltage & Security',
+    { name: 'Electrical Contractors', code: 'NAICS 238210', standard: 'NFPA 70 / NEC 2023', focus: 'Arc flash, high voltage safety, panel upgrades & industrial feeders' },
+    { name: 'HVAC & Mechanical', code: 'NAICS 238220', standard: 'ASHRAE 15 / IMC 2024', focus: 'Refrigerant recovery, commercial chillers & rooftop VRF systems' },
+    { name: 'Commercial Plumbing', code: 'NAICS 238220', standard: 'IPC / UPC 2024', focus: 'Medical gas, backflow prevention & underground utility tie-ins' },
+    { name: 'Commercial Roofing', code: 'NAICS 238160', standard: 'OSHA 1926.502', focus: 'Fall arrest plans, hot-work permits & low-slope membrane warranties' },
+    { name: 'General Contractors', code: 'NAICS 236220', standard: 'OSHA 1926 General', focus: 'Site logistics, subcontractor pre-qualification & master scheduling' },
+    { name: 'Structural & Steel', code: 'NAICS 238120', standard: 'AISC 360 / AWS D1.1', focus: 'Rigging plans, crane lift calculations & welded connection inspections' },
+    { name: 'Specialty Trades', code: 'NAICS 238990', standard: 'Federal & Municipal Codes', focus: 'Fire protection, low voltage, concrete & civil excavation' },
   ];
 
   return (
-    <div className="space-y-24 py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto text-slate-100">
-      {/* 1. HERO SECTION */}
-      <section className="text-center max-w-4xl mx-auto space-y-6 pt-6">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-brand-950/90 text-brand-300 border border-brand-800/80 shadow-sm">
-          <span className="w-1.5 h-1.5 rounded-full bg-brand-400" />
-          THE PROFESSIONAL CONTRACTOR PLATFORM
+    <div className="w-full bg-white text-navy-800">
+      {/* ========================================================================= */}
+      {/* SECTION 1: CINEMATIC FULL-SCREEN HERO (DARK)                              */}
+      {/* ========================================================================= */}
+      <CinematicHero />
+
+      {/* ========================================================================= */}
+      {/* SECTION 2: THE CONTRACTOR OPERATING PLATFORM (LIGHT)                     */}
+      {/* ========================================================================= */}
+      <section className="py-24 lg:py-36 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+        <div className="max-w-3xl space-y-4 mb-16 lg:mb-20">
+          <div className="text-xs font-mono font-bold tracking-widest uppercase text-brand-600">
+            SYSTEM ARCHITECTURE
+          </div>
+          <h2 className="text-3xl sm:text-5xl font-black text-navy-900 tracking-tight leading-tight">
+            Everything your contracting business needs to look ready, stay ready and win work.
+          </h2>
+          <p className="text-lg text-slate-600 leading-relaxed font-normal">
+            Contractors lose jobs to unorganized paperwork, lapsed licenses, and amateur bid submissions. Avorria replaces fragmented software with five integrated pillars built specifically for the trade industry.
+          </p>
         </div>
 
-        <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight text-white leading-[1.08]">
-          Run a better <br className="hidden sm:inline" />
-          <span className="bg-gradient-to-r from-white via-slate-100 to-slate-400 bg-clip-text text-transparent">
-            contracting business.
-          </span>
-        </h1>
+        {/* 5 Distinct Editorial Product Blocks */}
+        <div className="space-y-12">
+          {/* Pillar 1 & 2 Dual Split Band */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+            {/* Pillar 1: Business */}
+            <div className="lg:col-span-6 p-8 lg:p-10 rounded-2xl bg-slate-50 border border-slate-200 flex flex-col justify-between space-y-6">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-mono font-bold text-brand-700 uppercase tracking-wider bg-brand-50 px-2.5 py-1 rounded border border-brand-200">
+                    Pillar 01 / Identity
+                  </span>
+                  <span className="text-xs font-mono text-slate-500">Structured Profile</span>
+                </div>
+                <h3 className="text-2xl font-bold text-navy-900">
+                  Business Infrastructure
+                </h3>
+                <p className="text-slate-600 text-sm leading-relaxed">
+                  Establish a single structured operating profile for your company: primary trade classifications, authorized state jurisdictions, verified corporate entity records, and designated master license holders.
+                </p>
+                <ul className="space-y-2 text-xs text-slate-700 pt-2">
+                  <li className="flex items-center gap-2">
+                    <span className="text-brand-600 font-bold">✓</span>
+                    <span>Standardized North American trade taxonomy (NAICS aligned)</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="text-brand-600 font-bold">✓</span>
+                    <span>State and municipal jurisdiction coverage boundaries</span>
+                  </li>
+                </ul>
+              </div>
+              <Link
+                href="/platform"
+                className="text-xs font-bold text-brand-600 hover:text-brand-700 flex items-center gap-1.5 pt-4 border-t border-slate-200"
+              >
+                <span>Learn about Business Profile setup</span>
+                <span>→</span>
+              </Link>
+            </div>
 
-        <p className="text-base sm:text-xl text-slate-300 max-w-2xl mx-auto leading-relaxed">
-          Create professional documents, stay work-ready, prove your credentials and present your business with confidence — all from one platform.
-        </p>
+            {/* Pillar 2: Create */}
+            <div className="lg:col-span-6 p-8 lg:p-10 rounded-2xl bg-white border-2 border-slate-300/80 shadow-sm flex flex-col justify-between space-y-6">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-mono font-bold text-brand-700 uppercase tracking-wider bg-brand-50 px-2.5 py-1 rounded border border-brand-200">
+                    Pillar 02 / Documents
+                  </span>
+                  <span className="text-xs font-mono text-slate-500">Universal Engine</span>
+                </div>
+                <h3 className="text-2xl font-bold text-navy-900">
+                  Document & Creation Engine
+                </h3>
+                <p className="text-slate-600 text-sm leading-relaxed">
+                  Generate professional, job-ready documentation in minutes. Produce site-specific JHAs, JSAs, safety plans, toolbox talks, line-item commercial quotes, and change orders with human review sign-off.
+                </p>
+                <div className="grid grid-cols-2 gap-2 pt-1 text-xs">
+                  <div className="p-2.5 rounded bg-slate-50 border border-slate-200 font-medium text-navy-900">
+                    Safety & Compliance Docs
+                  </div>
+                  <div className="p-2.5 rounded bg-slate-50 border border-slate-200 font-medium text-navy-900">
+                    Commercial Quotes & Change Orders
+                  </div>
+                </div>
+              </div>
+              <Link
+                href="/create"
+                className="text-xs font-bold text-brand-600 hover:text-brand-700 flex items-center gap-1.5 pt-4 border-t border-slate-200"
+              >
+                <span>Explore the Document Engine</span>
+                <span>→</span>
+              </Link>
+            </div>
+          </div>
 
-        {/* Primary CTAs */}
-        <div className="flex flex-wrap items-center justify-center gap-3 pt-4">
-          <Button href="/sign-up" size="lg" variant="primary">
-            Get Started Free
-          </Button>
-          <Button href="/platform" size="lg" variant="secondary">
-            Explore the Platform
-          </Button>
-        </div>
+          {/* Pillar 3, 4, 5 Triplet Band */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {/* Pillar 3: Comply */}
+            <div className="p-8 rounded-2xl bg-slate-50 border border-slate-200 flex flex-col justify-between space-y-6">
+              <div className="space-y-3">
+                <div className="text-xs font-mono font-bold text-brand-700 uppercase tracking-wider">
+                  Pillar 03 / Readiness
+                </div>
+                <h3 className="text-xl font-bold text-navy-900">
+                  Comply
+                </h3>
+                <p className="text-slate-600 text-xs leading-relaxed">
+                  Proactive tracking of Certificates of Insurance (COI), state trade licenses, workers’ comp, and safety policies. Automated alerts notify you 60, 30, and 14 days before expiration.
+                </p>
+              </div>
+              <Link
+                href="/comply"
+                className="text-xs font-bold text-brand-600 hover:text-brand-700 flex items-center gap-1"
+              >
+                <span>Review Compliance Engine →</span>
+              </Link>
+            </div>
 
-        {/* Fast Action Utility Links */}
-        <div className="flex flex-wrap items-center justify-center gap-6 pt-2 text-xs text-slate-400">
-          <Link href="/tools/job-hazard-analysis-jha-generator" className="hover:text-brand-300 transition-colors flex items-center gap-1.5">
-            <span className="text-brand-400">⚡</span>
-            <span>Free JHA Generator</span>
-          </Link>
-          <span className="text-slate-700">•</span>
-          <Link href="/contractor-passport" className="hover:text-brand-300 transition-colors flex items-center gap-1.5">
-            <span className="text-brand-400">🛡️</span>
-            <span>Contractor Passport Overview</span>
-          </Link>
-          <span className="text-slate-700">•</span>
-          <span className="text-slate-400">US-First • No Credit Card Required</span>
-        </div>
+            {/* Pillar 4: Prove */}
+            <div className="p-8 rounded-2xl bg-slate-50 border border-slate-200 flex flex-col justify-between space-y-6">
+              <div className="space-y-3">
+                <div className="text-xs font-mono font-bold text-brand-700 uppercase tracking-wider">
+                  Pillar 04 / Evidence
+                </div>
+                <h3 className="text-xl font-bold text-navy-900">
+                  Prove
+                </h3>
+                <p className="text-slate-600 text-xs leading-relaxed">
+                  Turn your compliance documents and safety history into verifiable evidence. Provide general contractors and property managers with tamper-evident audit trails and verified credentials.
+                </p>
+              </div>
+              <Link
+                href="/prove"
+                className="text-xs font-bold text-brand-600 hover:text-brand-700 flex items-center gap-1"
+              >
+                <span>Explore Evidence & Proof →</span>
+              </Link>
+            </div>
 
-        {/* Hero Product Graphic */}
-        <div className="pt-8">
-          <HeroDashboardGraphic />
+            {/* Pillar 5: Win */}
+            <div className="p-8 rounded-2xl bg-slate-50 border border-slate-200 flex flex-col justify-between space-y-6">
+              <div className="space-y-3">
+                <div className="text-xs font-mono font-bold text-brand-700 uppercase tracking-wider">
+                  Pillar 05 / Revenue
+                </div>
+                <h3 className="text-xl font-bold text-navy-900">
+                  Win Work
+                </h3>
+                <p className="text-slate-600 text-xs leading-relaxed">
+                  Present your business like the contractor clients want to award work to. Package itemized commercial quotes with your Contractor Passport and verified safety history in one submission.
+                </p>
+              </div>
+              <Link
+                href="/win-work"
+                className="text-xs font-bold text-brand-600 hover:text-brand-700 flex items-center gap-1"
+              >
+                <span>View Bid & Proposal Tools →</span>
+              </Link>
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* 2. TRUST & CONTRACTOR AUDIENCE STRIP */}
-      <section className="border-y border-surface-border py-8 text-center space-y-4">
-        <p className="text-xs uppercase tracking-widest text-slate-400 font-mono">
-          Engineered specifically for American specialty trade & commercial contractors
-        </p>
-        <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-4">
+      {/* ========================================================================= */}
+      {/* SECTION 3: CREATE — DOCUMENT ENGINE (LIGHT SLATE)                         */}
+      {/* ========================================================================= */}
+      <section className="py-24 lg:py-36 bg-slate-50 border-y border-slate-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+            
+            {/* Left Narrative */}
+            <div className="lg:col-span-5 space-y-6">
+              <div className="text-xs font-mono font-bold tracking-widest uppercase text-brand-600">
+                PILLAR 02 / DOCUMENT ENGINE
+              </div>
+              <h2 className="text-3xl sm:text-5xl font-black text-navy-900 tracking-tight leading-tight">
+                Create the documents your business actually needs.
+              </h2>
+              <p className="text-base text-slate-600 leading-relaxed font-normal">
+                Never start from a blank page or risk using outdated hazard forms. Avorria’s Document Engine incorporates trade-specific safety hazards, regulatory OSHA citations, and line-item financial formulas.
+              </p>
+
+              {/* Supported Document Library Grid */}
+              <div className="space-y-3 pt-2">
+                <div className="text-xs font-bold uppercase tracking-wider text-slate-500 font-mono">
+                  Supported Document Formats
+                </div>
+                <div className="grid grid-cols-2 gap-2 text-xs">
+                  <div className="p-2.5 rounded bg-white border border-slate-200 font-semibold text-navy-900">
+                    • Job Hazard Analysis (JHA)
+                  </div>
+                  <div className="p-2.5 rounded bg-white border border-slate-200 font-semibold text-navy-900">
+                    • Job Safety Analysis (JSA)
+                  </div>
+                  <div className="p-2.5 rounded bg-white border border-slate-200 font-semibold text-navy-900">
+                    • Site Safety Plan (HASP)
+                  </div>
+                  <div className="p-2.5 rounded bg-white border border-slate-200 font-semibold text-navy-900">
+                    • Field Toolbox Talk
+                  </div>
+                  <div className="p-2.5 rounded bg-white border border-slate-200 font-semibold text-navy-900">
+                    • Commercial Quote
+                  </div>
+                  <div className="p-2.5 rounded bg-white border border-slate-200 font-semibold text-navy-900">
+                    • Scope of Work (SOW)
+                  </div>
+                  <div className="p-2.5 rounded bg-white border border-slate-200 font-semibold text-navy-900">
+                    • Contract Change Order
+                  </div>
+                  <div className="p-2.5 rounded bg-white border border-slate-200 font-semibold text-navy-900">
+                    • Daily Field Report
+                  </div>
+                </div>
+              </div>
+
+              <div className="pt-4">
+                <Link
+                  href="/create"
+                  className="inline-flex items-center justify-center font-bold px-6 py-3 rounded bg-navy-900 hover:bg-navy-800 text-white text-sm shadow-sm transition-colors"
+                >
+                  Explore Document Creation
+                </Link>
+              </div>
+            </div>
+
+            {/* Right: Realistic Document Preview Mockup */}
+            <div className="lg:col-span-7">
+              <div className="bg-white rounded-xl border border-slate-300 shadow-xl overflow-hidden">
+                {/* Header Sheet Bar */}
+                <div className="bg-slate-100 border-b border-slate-200 px-6 py-4 flex items-center justify-between text-xs">
+                  <div className="flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                    <span className="font-mono font-bold text-navy-900">DOC-SAF-JHA-2026-884</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <span className="font-mono text-[11px] text-slate-500">OSHA 1926.403 Subpart K</span>
+                    <span className="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-semibold text-[10px] font-mono">
+                      FINALIZED & SIGNED
+                    </span>
+                  </div>
+                </div>
+
+                {/* Document Body Preview */}
+                <div className="p-6 sm:p-8 space-y-6 text-xs text-navy-800 font-sans">
+                  {/* Title & Organization Meta */}
+                  <div className="border-b border-slate-200 pb-4">
+                    <div className="text-[10px] font-mono uppercase text-slate-500">Safety & Hazard Prevention Plan</div>
+                    <h4 className="text-xl font-black text-navy-900 mt-1">
+                      Job Hazard Analysis: 480V Substation Feeder Cable Pulling & Terminations
+                    </h4>
+                    <div className="flex flex-wrap gap-4 text-[11px] text-slate-600 mt-2">
+                      <span><strong>Project:</strong> Dell Children’s Hospital Expansion</span>
+                      <span><strong>Jurisdiction:</strong> Travis County, TX</span>
+                      <span><strong>Date:</strong> Valid for Active Phase</span>
+                    </div>
+                  </div>
+
+                  {/* Hazard Control Sequence Table */}
+                  <div className="space-y-2">
+                    <div className="font-bold text-xs uppercase tracking-wider text-slate-700 font-mono">
+                      Task Hazard Identification & Controls
+                    </div>
+                    <div className="border border-slate-200 rounded overflow-hidden">
+                      <table className="w-full text-left border-collapse text-[11px]">
+                        <thead className="bg-slate-50 border-b border-slate-200 text-slate-700 font-semibold">
+                          <tr>
+                            <th className="p-2.5">Sequence of Work</th>
+                            <th className="p-2.5">Potential Hazard</th>
+                            <th className="p-2.5">Required Engineering Control</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-slate-200">
+                          <tr>
+                            <td className="p-2.5 font-medium">1. LOTO on main 480V feeder</td>
+                            <td className="p-2.5 text-rose-700 font-medium">Arc flash / electrocution</td>
+                            <td className="p-2.5 text-slate-600">NFPA 70E Cal/cm² PPE Category 4, verified zero energy state with calibrated multimeter.</td>
+                          </tr>
+                          <tr>
+                            <td className="p-2.5 font-medium">2. Tugger setup & cable pulling</td>
+                            <td className="p-2.5 text-rose-700 font-medium">Pinch points & high cable tension</td>
+                            <td className="p-2.5 text-slate-600">Stand clear of pulling line radius, rated cable grips, remote foot pedal control.</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+
+                  {/* Mandatory Human Review Sign-Off Block */}
+                  <div className="p-3.5 rounded bg-slate-50 border border-slate-200 flex items-center justify-between text-[11px]">
+                    <div>
+                      <span className="font-semibold text-navy-900 block">Editorial Review & Safety Sign-Off</span>
+                      <span className="text-slate-500">Human verified by Marcus Vance, Master Electrician (#TX-98765)</span>
+                    </div>
+                    <span className="font-mono text-emerald-700 font-bold">✓ Signed 2026-09-04</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      {/* ========================================================================= */}
+      {/* SECTION 4: COMPLY / READINESS (DARK ANCHOR)                                */}
+      {/* ========================================================================= */}
+      <section className="py-24 lg:py-36 bg-[#070c18] text-white border-b border-navy-800">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+            
+            {/* Left Column: Prominent Readiness Score */}
+            <div className="lg:col-span-5 space-y-6">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded bg-brand-950/80 border border-brand-800/60 text-xs font-mono text-brand-300">
+                <span>PILLAR 03 / OPERATIONAL READINESS</span>
+              </div>
+              <h2 className="text-3xl sm:text-5xl font-black text-white tracking-tight leading-tight">
+                Know what needs attention before someone else asks.
+              </h2>
+              <p className="text-base text-slate-300 leading-relaxed font-normal">
+                Don't wait for a general contractor’s safety auditor or a municipal inspector to shut down your job site. The Avorria Contractor Readiness Score actively evaluates your business evidence against trade standards.
+              </p>
+
+              {/* Visual Readiness Score Display */}
+              <div className="p-6 rounded-xl bg-navy-900/80 border border-navy-700/80 space-y-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <span className="text-xs font-mono uppercase text-slate-400">Readiness Assessment</span>
+                    <div className="text-sm font-bold text-white mt-0.5">Commercial Readiness Status</div>
+                  </div>
+                  <div className="text-right">
+                    <span className="text-3xl font-black text-emerald-400 font-mono">88%</span>
+                    <span className="text-xs text-slate-400 block">Work-Ready</span>
+                  </div>
+                </div>
+
+                {/* Linear Score Bar */}
+                <div className="w-full h-2.5 rounded-full bg-navy-950 overflow-hidden">
+                  <div className="h-full bg-emerald-500 rounded-full w-[88%]" />
+                </div>
+
+                <div className="text-[11px] text-slate-400 leading-relaxed pt-1">
+                  Evaluated against 9 required baseline categories including General Liability ($2M), Workers’ Compensation statutory thresholds, active state trade license, and signed OSHA safety programs.
+                </div>
+              </div>
+
+              {/* Regulatory Disclaimer (Mandatory) */}
+              <div className="text-[11px] text-slate-400 border-l-2 border-slate-600 pl-3 leading-relaxed">
+                <strong>Disclaimer:</strong> The Contractor Readiness Score reflects completion against Avorria’s published platform checklist and trade criteria. It does not constitute government regulatory certification, insurance underwriting, or legal counsel.
+              </div>
+            </div>
+
+            {/* Right Column: Requirements Breakdown Matrix */}
+            <div className="lg:col-span-7 space-y-4">
+              <div className="text-xs font-mono uppercase text-slate-400 tracking-wider">
+                Active Requirements Status Engine
+              </div>
+
+              <div className="space-y-3 text-xs">
+                {/* Status: Current */}
+                <div className="p-4 rounded-lg bg-navy-900/60 border border-emerald-500/30 flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 shrink-0" />
+                    <div>
+                      <div className="font-bold text-white text-sm">Commercial General Liability ($2M)</div>
+                      <div className="text-slate-400 text-xs">Travelers Casualty • Current on file • Valid to Sep 2027</div>
+                    </div>
+                  </div>
+                  <span className="font-mono text-[11px] text-emerald-400 bg-emerald-950/60 border border-emerald-800/60 px-2 py-0.5 rounded">
+                    CURRENT
+                  </span>
+                </div>
+
+                {/* Status: Current */}
+                <div className="p-4 rounded-lg bg-navy-900/60 border border-emerald-500/30 flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 shrink-0" />
+                    <div>
+                      <div className="font-bold text-white text-sm">State Master Electrical Contractor License</div>
+                      <div className="text-slate-400 text-xs">Texas TDLR TECL-98765 • Master of Record: Marcus Vance</div>
+                    </div>
+                  </div>
+                  <span className="font-mono text-[11px] text-emerald-400 bg-emerald-950/60 border border-emerald-800/60 px-2 py-0.5 rounded">
+                    CURRENT
+                  </span>
+                </div>
+
+                {/* Status: Expiring Soon (30-day window) */}
+                <div className="p-4 rounded-lg bg-navy-900/60 border border-amber-500/40 flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <span className="w-2.5 h-2.5 rounded-full bg-amber-400 shrink-0" />
+                    <div>
+                      <div className="font-bold text-white text-sm">Commercial Auto Liability ($1M CSL)</div>
+                      <div className="text-slate-300 text-xs">Policy expires in 26 days • Renewal certificate requested from broker</div>
+                    </div>
+                  </div>
+                  <span className="font-mono text-[11px] text-amber-400 bg-amber-950/60 border border-amber-800/60 px-2 py-0.5 rounded">
+                    EXPIRING SOON
+                  </span>
+                </div>
+
+                {/* Status: Missing */}
+                <div className="p-4 rounded-lg bg-navy-900/60 border border-slate-700 flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <span className="w-2.5 h-2.5 rounded-full bg-slate-500 shrink-0" />
+                    <div>
+                      <div className="font-bold text-slate-300 text-sm">Workers’ Compensation Statutory Waiver</div>
+                      <div className="text-slate-400 text-xs">Required for owner-operators prior to tier-1 job site entry</div>
+                    </div>
+                  </div>
+                  <span className="font-mono text-[11px] text-slate-400 bg-navy-950 border border-slate-800 px-2 py-0.5 rounded">
+                    ACTION NEEDED
+                  </span>
+                </div>
+              </div>
+
+              <div className="pt-2">
+                <Link
+                  href="/comply"
+                  className="inline-flex items-center gap-2 text-xs font-bold text-brand-400 hover:text-brand-300 transition-colors"
+                >
+                  <span>Explore full Compliance Monitoring & Alert System</span>
+                  <span>→</span>
+                </Link>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      {/* ========================================================================= */}
+      {/* SECTION 5: CONTRACTOR PASSPORT (LIGHT)                                    */}
+      {/* ========================================================================= */}
+      <section className="py-24 lg:py-36 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+          
+          {/* Left Narrative */}
+          <div className="lg:col-span-5 space-y-6">
+            <div className="text-xs font-mono font-bold tracking-widest uppercase text-brand-600">
+              PILLAR 04 / CREDENTIAL ARCHITECTURE
+            </div>
+            <h2 className="text-3xl sm:text-5xl font-black text-navy-900 tracking-tight leading-tight">
+              Build a professional profile around the evidence behind your business.
+            </h2>
+            <p className="text-base text-slate-600 leading-relaxed font-normal">
+              Most contractor profiles are nothing more than marketing claims. The Avorria Contractor Passport is an authoritative, evidence-backed digital credential summarizing your verified licenses, insurance limits, trade specializations, and site safety history.
+            </p>
+
+            {/* Passport Credential Pillars */}
+            <div className="space-y-3 text-xs text-navy-800">
+              <div className="p-3 rounded bg-slate-50 border border-slate-200 flex items-start gap-2.5">
+                <span className="text-brand-600 font-bold text-sm">✓</span>
+                <div>
+                  <strong className="block text-navy-900">Verified Corporate Identity</strong>
+                  <span className="text-slate-600">State registered entity status, physical headquarters, and leadership credentials.</span>
+                </div>
+              </div>
+              <div className="p-3 rounded bg-slate-50 border border-slate-200 flex items-start gap-2.5">
+                <span className="text-brand-600 font-bold text-sm">✓</span>
+                <div>
+                  <strong className="block text-navy-900">Active Insurance Verification</strong>
+                  <span className="text-slate-600">Confirmed General Liability, Workers’ Comp, Auto, and Umbrella limits directly on record.</span>
+                </div>
+              </div>
+              <div className="p-3 rounded bg-slate-50 border border-slate-200 flex items-start gap-2.5">
+                <span className="text-brand-600 font-bold text-sm">✓</span>
+                <div>
+                  <strong className="block text-navy-900">Safety & Site Track Record</strong>
+                  <span className="text-slate-600">Demonstrated OSHA compliance through job-specific JHAs, hazard controls, and signed safety plans.</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="pt-2">
+              <Link
+                href="/contractor-passport"
+                className="inline-flex items-center justify-center font-bold px-6 py-3 rounded bg-brand-600 hover:bg-brand-500 text-white text-sm shadow-sm transition-colors"
+              >
+                Explore Contractor Passport
+              </Link>
+            </div>
+          </div>
+
+          {/* Right Passport Mockup Composition */}
+          <div className="lg:col-span-7">
+            <div className="rounded-2xl bg-white border-2 border-slate-300 shadow-2xl p-6 sm:p-8 space-y-6">
+              {/* Passport Header Strip */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-200">
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-brand-50 text-brand-700 border border-brand-200 font-bold">
+                      VERIFIED CONTRACTOR PASSPORT
+                    </span>
+                    <span className="text-[10px] font-mono text-slate-500">ID: PASSPORT-TX-8849</span>
+                  </div>
+                  <h3 className="text-2xl font-black text-navy-900 mt-2">
+                    Apex Industrial Mechanical LLC
+                  </h3>
+                  <p className="text-xs text-slate-500 mt-0.5">
+                    Commercial HVAC & Electrical Contracting • Austin, TX Metropolitian Area
+                  </p>
+                </div>
+                <div className="shrink-0">
+                  <div className="p-2.5 rounded-lg bg-emerald-50 border border-emerald-200 text-center">
+                    <span className="text-[10px] uppercase font-mono text-emerald-800 font-bold block">Status</span>
+                    <span className="text-sm font-black text-emerald-700">VERIFIED</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Key Credential Grid */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+                <div className="p-3 rounded bg-slate-50 border border-slate-200">
+                  <span className="text-slate-500 text-[10px] font-mono block">PRIMARY TRADE</span>
+                  <span className="font-bold text-navy-900 mt-0.5 block">Commercial Electrical</span>
+                </div>
+                <div className="p-3 rounded bg-slate-50 border border-slate-200">
+                  <span className="text-slate-500 text-[10px] font-mono block">STATE LICENSE</span>
+                  <span className="font-bold text-navy-900 mt-0.5 block">TX TECL #98765</span>
+                </div>
+                <div className="p-3 rounded bg-slate-50 border border-slate-200">
+                  <span className="text-slate-500 text-[10px] font-mono block">LIABILITY LIMITS</span>
+                  <span className="font-bold text-navy-900 mt-0.5 block">$2,000,000 GL</span>
+                </div>
+                <div className="p-3 rounded bg-slate-50 border border-slate-200">
+                  <span className="text-slate-500 text-[10px] font-mono block">SAFETY PLANS</span>
+                  <span className="font-bold text-navy-900 mt-0.5 block">OSHA Aligned</span>
+                </div>
+              </div>
+
+              {/* Document Pack Verification Strip */}
+              <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="font-bold text-navy-900">Pre-Qualification Evidence Package</span>
+                  <span className="text-[11px] font-mono text-slate-500">4 Evidence Files Verified</span>
+                </div>
+                <div className="flex flex-wrap gap-2 text-[11px]">
+                  <span className="px-2 py-1 rounded bg-white border border-slate-200 text-navy-800">
+                    📄 Certificate of Insurance (COI) — Valid to 2027
+                  </span>
+                  <span className="px-2 py-1 rounded bg-white border border-slate-200 text-navy-800">
+                    📄 Texas TDLR Master License Copy
+                  </span>
+                  <span className="px-2 py-1 rounded bg-white border border-slate-200 text-navy-800">
+                    📄 Written OSHA Site Safety Program (HASP)
+                  </span>
+                </div>
+              </div>
+
+              <div className="text-center pt-1 text-[11px] text-slate-500 font-mono">
+                Verified against published Avorria Contractor Verification Criteria
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      {/* ========================================================================= */}
+      {/* SECTION 6: VERIFICATION ENGINE (LIGHT / EDITORIAL)                        */}
+      {/* ========================================================================= */}
+      <section className="py-24 lg:py-36 bg-slate-50 border-y border-slate-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-16">
+          <div className="max-w-3xl mx-auto space-y-4">
+            <div className="text-xs font-mono font-bold tracking-widest uppercase text-brand-600">
+              AUDITABLE TRUST
+            </div>
+            <h2 className="text-3xl sm:text-5xl font-black text-navy-900 tracking-tight">
+              Don&apos;t just say you&apos;re ready. Show the evidence.
+            </h2>
+            <p className="text-base sm:text-lg text-slate-600 leading-relaxed">
+              General contractors, project owners, and enterprise facilities managers require verified documentation before issuing contracts or granting site access.
+            </p>
+          </div>
+
+          {/* 3-Stage Verification Timeline */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-left">
+            <div className="p-8 rounded-2xl bg-white border border-slate-200 space-y-4">
+              <div className="w-10 h-10 rounded-full bg-brand-50 text-brand-700 font-bold font-mono flex items-center justify-center border border-brand-200 text-sm">
+                01
+              </div>
+              <h3 className="text-xl font-bold text-navy-900">Upload Evidence</h3>
+              <p className="text-xs text-slate-600 leading-relaxed">
+                Submit current COIs, state license numbers, master certifications, and written safety plans into your encrypted organizational vault.
+              </p>
+            </div>
+
+            <div className="p-8 rounded-2xl bg-white border border-slate-200 space-y-4">
+              <div className="w-10 h-10 rounded-full bg-brand-50 text-brand-700 font-bold font-mono flex items-center justify-center border border-brand-200 text-sm">
+                02
+              </div>
+              <h3 className="text-xl font-bold text-navy-900">Structured Review</h3>
+              <p className="text-xs text-slate-600 leading-relaxed">
+                Documents are audited against jurisdiction-specific coverage minimums, effective policy dates, and required statutory endorsements.
+              </p>
+            </div>
+
+            <div className="p-8 rounded-2xl bg-white border border-slate-200 space-y-4">
+              <div className="w-10 h-10 rounded-full bg-brand-50 text-brand-700 font-bold font-mono flex items-center justify-center border border-brand-200 text-sm">
+                03
+              </div>
+              <h3 className="text-xl font-bold text-navy-900">Published Verification</h3>
+              <p className="text-xs text-slate-600 leading-relaxed">
+                Earn the official verified credential badge on your Contractor Passport: &ldquo;Verified by Avorria against Avorria&apos;s published verification criteria.&rdquo;
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ========================================================================= */}
+      {/* SECTION 7: WIN WORK (DARK ANCHOR)                                         */}
+      {/* ========================================================================= */}
+      <section className="py-24 lg:py-36 bg-[#070c18] text-white border-b border-navy-800">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-3xl space-y-4 mb-16">
+            <div className="text-xs font-mono font-bold tracking-widest uppercase text-brand-400">
+              PILLAR 05 / COMMERCIAL REVENUE
+            </div>
+            <h2 className="text-3xl sm:text-5xl font-black text-white tracking-tight leading-tight">
+              Present your business like a contractor clients can trust.
+            </h2>
+            <p className="text-base sm:text-lg text-slate-300 leading-relaxed font-normal">
+              Combine professional commercial quotes, itemized change orders, and verified compliance documentation into winning bid packages that give commercial clients absolute confidence.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="p-8 rounded-2xl bg-navy-900/80 border border-navy-700/80 space-y-4">
+              <span className="text-2xl">📋</span>
+              <h3 className="text-xl font-bold text-white">Itemized Quotes & Proposals</h3>
+              <p className="text-xs text-slate-300 leading-relaxed">
+                Generate clean, branded commercial quotations with transparent labor, material schedules of values, and professional acceptance sign-offs.
+              </p>
+            </div>
+
+            <div className="p-8 rounded-2xl bg-navy-900/80 border border-navy-700/80 space-y-4">
+              <span className="text-2xl">🛡️</span>
+              <h3 className="text-xl font-bold text-white">Attached Passport Credentials</h3>
+              <p className="text-xs text-slate-300 leading-relaxed">
+                Every quote includes a live link to your verified Contractor Passport, proving insurance coverage and safety track record upfront.
+              </p>
+            </div>
+
+            <div className="p-8 rounded-2xl bg-navy-900/80 border border-navy-700/80 space-y-4">
+              <span className="text-2xl">📝</span>
+              <h3 className="text-xl font-bold text-white">Formal Change Orders</h3>
+              <p className="text-xs text-slate-300 leading-relaxed">
+                Protect your project profit margins with binding, audit-ready change orders that document scope modifications before additional work begins.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ========================================================================= */}
+      {/* SECTION 8: BUILT FOR AMERICAN CONTRACTORS (LIGHT)                         */}
+      {/* ========================================================================= */}
+      <section className="py-24 lg:py-36 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+        <div className="max-w-3xl space-y-4 mb-16">
+          <div className="text-xs font-mono font-bold tracking-widest uppercase text-brand-600">
+            INDUSTRY SPECIFICITY
+          </div>
+          <h2 className="text-3xl sm:text-5xl font-black text-navy-900 tracking-tight leading-tight">
+            Built for the demands of American trade contractors.
+          </h2>
+          <p className="text-base sm:text-lg text-slate-600 leading-relaxed font-normal">
+            Avorria is not generic project management software. It is purpose-engineered around the codes, regulatory standards, and commercial realities of specialty trade operations in the United States.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {TRADES.map((trade) => (
-            <span
-              key={trade}
-              className="text-xs font-semibold px-3 py-1.5 rounded-md bg-surface-subtle text-slate-300 border border-surface-border"
+            <div
+              key={trade.name}
+              className="p-6 rounded-xl bg-slate-50 border border-slate-200 space-y-3"
             >
-              {trade}
-            </span>
+              <div className="flex items-center justify-between">
+                <span className="font-bold text-navy-900 text-base">{trade.name}</span>
+                <span className="text-[10px] font-mono text-slate-500">{trade.code}</span>
+              </div>
+              <div className="text-[11px] font-mono text-brand-700 font-semibold">
+                {trade.standard}
+              </div>
+              <p className="text-xs text-slate-600 leading-relaxed">
+                {trade.focus}
+              </p>
+            </div>
           ))}
         </div>
       </section>
 
-      {/* 3. FOUR CORE PILLARS SECTION */}
-      <section className="space-y-12">
-        <div className="text-center max-w-3xl mx-auto space-y-3">
-          <div className="text-xs font-bold uppercase tracking-wider text-brand-400">Core Infrastructure</div>
-          <h2 className="text-3xl sm:text-4xl font-black text-white tracking-tight">
-            Four Pillars of Contractor Readiness
+      {/* ========================================================================= */}
+      {/* SECTION 9: FINAL CTA (DARK)                                               */}
+      {/* ========================================================================= */}
+      <section className="py-24 lg:py-32 bg-[#040813] text-white text-center border-t border-navy-800">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded bg-white/[0.06] border border-white/10 text-xs font-mono text-slate-300">
+            <span>GET STARTED TODAY</span>
+          </div>
+
+          <h2 className="text-4xl sm:text-6xl font-black text-white tracking-tight">
+            Run a better contracting business.
           </h2>
-          <p className="text-sm sm:text-base text-slate-400">
-            Avorria replaces scattered folders, expired paperwork, and amateur quotes with a single unified operating standard.
+
+          <p className="text-base sm:text-xl text-slate-300 max-w-2xl mx-auto leading-relaxed">
+            Build your business profile. Create better documents. Stay work-ready. Prove your credentials.
           </p>
-        </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {/* Pillar 1: CREATE */}
-          <Card variant="interactive" className="flex flex-col justify-between">
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <span className="text-2xl">📄</span>
-                <Badge variant="primary" size="sm">Pillar 01</Badge>
-              </div>
-              <CardTitle>CREATE</CardTitle>
-              <CardDescription>
-                Job-ready safety and commercial documents: site-specific JHAs, JSAs, construction safety plans, toolbox talks, quotes, and change orders.
-              </CardDescription>
-              <div className="space-y-1.5 text-xs text-slate-300 pt-2 border-t border-surface-border/50">
-                <div className="flex items-center gap-2">
-                  <span className="text-brand-400">✓</span>
-                  <span>OSHA 1926/1910 Aligned Templates</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-brand-400">✓</span>
-                  <span>Branded PDF Export & Digital Signing</span>
-                </div>
-              </div>
-            </div>
-            <div className="pt-6">
-              <Link href="/create" className="text-xs font-bold text-brand-400 hover:text-brand-300 flex items-center gap-1">
-                Explore Document Creation →
-              </Link>
-            </div>
-          </Card>
-
-          {/* Pillar 2: COMPLY */}
-          <Card variant="interactive" className="flex flex-col justify-between">
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <span className="text-2xl">⚠️</span>
-                <Badge variant="primary" size="sm">Pillar 02</Badge>
-              </div>
-              <CardTitle>COMPLY</CardTitle>
-              <CardDescription>
-                Keep critical insurance COIs, state trade licenses, workers’ comp policies, and employee safety training current with automated renewal alerts.
-              </CardDescription>
-              <div className="space-y-1.5 text-xs text-slate-300 pt-2 border-t border-surface-border/50">
-                <div className="flex items-center gap-2">
-                  <span className="text-brand-400">✓</span>
-                  <span>60, 30 & 14-Day Expiration Notices</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-brand-400">✓</span>
-                  <span>Current / Expiring / Expired Matrix</span>
-                </div>
-              </div>
-            </div>
-            <div className="pt-6">
-              <Link href="/comply" className="text-xs font-bold text-brand-400 hover:text-brand-300 flex items-center gap-1">
-                Explore Compliance Engine →
-              </Link>
-            </div>
-          </Card>
-
-          {/* Pillar 3: PROVE */}
-          <Card variant="interactive" className="flex flex-col justify-between">
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <span className="text-2xl">🛡️</span>
-                <Badge variant="primary" size="sm">Pillar 03</Badge>
-              </div>
-              <CardTitle>PROVE</CardTitle>
-              <CardDescription>
-                Build a professional Contractor Passport containing verified business registration, active insurance, licensing, and safety records.
-              </CardDescription>
-              <div className="space-y-1.5 text-xs text-slate-300 pt-2 border-t border-surface-border/50">
-                <div className="flex items-center gap-2">
-                  <span className="text-brand-400">✓</span>
-                  <span>Contractor Readiness Score (0-100%)</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-brand-400">✓</span>
-                  <span>Evidence-Backed Verification Badges</span>
-                </div>
-              </div>
-            </div>
-            <div className="pt-6">
-              <Link href="/prove" className="text-xs font-bold text-brand-400 hover:text-brand-300 flex items-center gap-1">
-                Explore Credibility & Proof →
-              </Link>
-            </div>
-          </Card>
-
-          {/* Pillar 4: WIN */}
-          <Card variant="interactive" className="flex flex-col justify-between">
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <span className="text-2xl">📋</span>
-                <Badge variant="primary" size="sm">Pillar 04</Badge>
-              </div>
-              <CardTitle>WIN</CardTitle>
-              <CardDescription>
-                Produce higher-converting commercial proposals, margin-protected estimates, and audit-ready pre-qualification packs that win high-value tenders.
-              </CardDescription>
-              <div className="space-y-1.5 text-xs text-slate-300 pt-2 border-t border-surface-border/50">
-                <div className="flex items-center gap-2">
-                  <span className="text-brand-400">✓</span>
-                  <span>Instant Client Shareable Pre-qual Links</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-brand-400">✓</span>
-                  <span>Itemized Margin & Labor Burden Quotes</span>
-                </div>
-              </div>
-            </div>
-            <div className="pt-6">
-              <Link href="/win-work" className="text-xs font-bold text-brand-400 hover:text-brand-300 flex items-center gap-1">
-                Explore Proposal Tools →
-              </Link>
-            </div>
-          </Card>
-        </div>
-      </section>
-
-      {/* 4. FLAGSHIP SHOWCASE: THE CONTRACTOR PASSPORT */}
-      <section className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center p-8 sm:p-12 rounded-2xl bg-surface-card border border-surface-border relative overflow-hidden">
-        <div className="lg:col-span-6 space-y-6">
-          <VerifiedBadge label="Flagship Credibility Standard" size="sm" />
-          <h2 className="text-3xl sm:text-4xl font-black text-white tracking-tight leading-tight">
-            Build your professional profile once. <br />
-            <span className="text-brand-400">Share it with every client.</span>
-          </h2>
-          <p className="text-sm sm:text-base text-slate-300 leading-relaxed">
-            Stop emailing a disorganized mess of PDF attachments every time a general contractor or commercial facility manager asks for pre-qualification paperwork. The <strong>Avorria Contractor Passport</strong> consolidates verified business registration, active COIs, trade licenses, and site safety plans into a secure, verifiable digital profile.
-          </p>
-          <div className="space-y-2 text-xs text-slate-300">
-            <div className="flex items-center gap-2">
-              <span className="text-brand-400 font-bold">✓</span>
-              <span>Private by default — share via secure client links or password-protected packs</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="text-brand-400 font-bold">✓</span>
-              <span>Live document freshness verification prevents rejected site access</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="text-brand-400 font-bold">✓</span>
-              <span>Demonstrates to tier-1 GCs that your business is ready for the site on day one</span>
-            </div>
+          <div className="flex flex-wrap items-center justify-center gap-4 pt-2">
+            <Link
+              href="/sign-up"
+              className="font-bold px-8 py-4 rounded bg-brand-600 hover:bg-brand-500 text-white text-base shadow-sm transition-colors"
+            >
+              Get Started Free
+            </Link>
+            <Link
+              href="/platform"
+              className="font-semibold px-7 py-4 rounded bg-white/[0.06] hover:bg-white/[0.12] text-slate-200 border border-white/20 text-base transition-colors"
+            >
+              Explore Avorria
+            </Link>
           </div>
-          <div className="pt-2 flex items-center gap-4">
-            <Button href="/contractor-passport" variant="primary" size="md">
-              Learn About Contractor Passport
-            </Button>
-            <Button href="/prove" variant="outline" size="md">
-              Verification Details
-            </Button>
+
+          <div className="text-xs text-slate-500 font-mono pt-4">
+            No credit card required • Instant access to Free JHA Generator
           </div>
         </div>
-
-        <div className="lg:col-span-6">
-          <PassportPreviewCard />
-        </div>
-      </section>
-
-      {/* 5. COMPLIANCE GOVERNANCE TIMELINE */}
-      <section className="space-y-8">
-        <div className="text-center max-w-3xl mx-auto space-y-3">
-          <div className="text-xs font-bold uppercase tracking-wider text-brand-400">Proactive Governance</div>
-          <h2 className="text-3xl sm:text-4xl font-black text-white tracking-tight">
-            Never Get Locked Off a Job Site
-          </h2>
-          <p className="text-sm sm:text-base text-slate-400">
-            An expired General Liability policy or trade license can shut down an active commercial crew in seconds. Avorria continuously tracks renewal cycles.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div className="p-6 rounded-xl bg-surface-card border border-surface-border space-y-3">
-            <StatusIndicator status="current" label="Current" />
-            <h3 className="text-base font-bold text-white">General Liability COI</h3>
-            <p className="text-xs text-slate-400 leading-relaxed">
-              $2,000,000 policy with active expiration dates monitored automatically.
-            </p>
-          </div>
-          <div className="p-6 rounded-xl bg-surface-card border border-surface-border space-y-3">
-            <StatusIndicator status="current" label="Current" />
-            <h3 className="text-base font-bold text-white">Workers' Compensation</h3>
-            <p className="text-xs text-slate-400 leading-relaxed">
-              Statutory coverage verification on file for commercial subcontractor pre-qualification.
-            </p>
-          </div>
-          <div className="p-6 rounded-xl bg-surface-card border border-amber-800/60 bg-amber-950/20 space-y-3">
-            <StatusIndicator status="expiring" label="Expiring in 28 Days" />
-            <h3 className="text-base font-bold text-white">State Trade License</h3>
-            <p className="text-xs text-slate-400 leading-relaxed">
-              Automated renewal alert dispatched to admin with state board renewal instructions.
-            </p>
-          </div>
-          <div className="p-6 rounded-xl bg-surface-card border border-surface-border space-y-3">
-            <StatusIndicator status="current" label="Current" />
-            <h3 className="text-base font-bold text-white">Written Safety Plan</h3>
-            <p className="text-xs text-slate-400 leading-relaxed">
-              OSHA 1926 construction program active with documented monthly toolbox talks.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* 6. ACQUISITION ENGINE: FREE TOOLS & TEMPLATES */}
-      <section className="p-8 sm:p-12 rounded-2xl bg-surface-subtle border border-surface-border space-y-8">
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
-          <div>
-            <div className="text-xs font-bold uppercase tracking-wider text-brand-400">Instant Utility</div>
-            <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight mt-1">
-              Start with Free Contractor Tools & Templates
-            </h2>
-          </div>
-          <div className="flex items-center gap-3 text-xs">
-            <Link href="/tools" className="font-semibold text-brand-400 hover:underline">Browse Tools →</Link>
-            <span className="text-slate-600">|</span>
-            <Link href="/templates" className="font-semibold text-brand-400 hover:underline">Browse Templates →</Link>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <Card variant="default">
-            <Badge variant="primary" size="sm" className="mb-3">Interactive Tool</Badge>
-            <CardTitle className="text-base">Job Hazard Analysis Generator</CardTitle>
-            <CardDescription className="text-xs mb-4">
-              Break down project tasks step-by-step, assign OSHA control measures, and download a job-ready JHA PDF.
-            </CardDescription>
-            <Button href="/tools/job-hazard-analysis-jha-generator" size="sm" variant="outline" className="w-full">
-              Launch JHA Generator
-            </Button>
-          </Card>
-
-          <Card variant="default">
-            <Badge variant="primary" size="sm" className="mb-3">Financial Tool</Badge>
-            <CardTitle className="text-base">Contractor Quote & Margin Calculator</CardTitle>
-            <CardDescription className="text-xs mb-4">
-              Calculate accurate labor burden, direct costs, company overhead, and markup to safeguard net profit margins.
-            </CardDescription>
-            <Button href="/tools/contractor-quote-calculator" size="sm" variant="outline" className="w-full">
-              Calculate Quote Margins
-            </Button>
-          </Card>
-
-          <Card variant="default">
-            <Badge variant="trade" size="sm" className="mb-3">Regulatory Guide</Badge>
-            <CardTitle className="text-base">US Contractor Compliance Checklist</CardTitle>
-            <CardDescription className="text-xs mb-4">
-              30-point practical checklist covering entity registration, COI requirements, state licensing, and OSHA rules.
-            </CardDescription>
-            <Button href="/guides/contractor-compliance-checklist" size="sm" variant="outline" className="w-full">
-              View Compliance Guide
-            </Button>
-          </Card>
-        </div>
-      </section>
-
-      {/* 7. REAL CREDIBILITY ARCHITECTURE (NO FAKE SOCIAL PROOF) */}
-      <section className="text-center max-w-3xl mx-auto space-y-4">
-        <div className="text-xs font-bold uppercase tracking-wider text-brand-400">Quality Standard</div>
-        <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
-          Built for Serious Contractors
-        </h2>
-        <p className="text-xs sm:text-sm text-slate-400 leading-relaxed">
-          Avorria does not make artificial claims or display fake customer reviews. The platform is designed from real-world US construction pre-qualification specifications: general contractor site access requirements, insurance underwriting guidelines, and federal OSHA standards.
-        </p>
-      </section>
-
-      {/* 8. FINAL CONVERSION CTA SECTION */}
-      <section className="p-8 sm:p-14 rounded-2xl bg-gradient-to-b from-surface-card to-surface-elevated border border-surface-border text-center space-y-6 shadow-2xl">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-brand-950 text-brand-400 border border-brand-800">
-          <span className="w-1.5 h-1.5 rounded-full bg-brand-400" />
-          Ready to Work. Ready to Prove It.
-        </div>
-
-        <h2 className="text-3xl sm:text-5xl font-black text-white tracking-tight">
-          Professionalize Your Contracting Operations Today
-        </h2>
-
-        <p className="text-sm sm:text-base text-slate-300 max-w-xl mx-auto leading-relaxed">
-          Build your verified business profile, create your first Job Hazard Analysis, and manage active compliance credentials from one platform.
-        </p>
-
-        <div className="pt-4 flex flex-wrap items-center justify-center gap-4">
-          <Button href="/sign-up" size="lg" variant="primary">
-            Start Free Contractor Account
-          </Button>
-          <Button href="/pricing" size="lg" variant="secondary">
-            View Transparent Plans
-          </Button>
-        </div>
-
-        <p className="text-[11px] text-slate-500 pt-2">
-          Free Starter tier available • Instant document generation • US-focused
-        </p>
       </section>
     </div>
   );

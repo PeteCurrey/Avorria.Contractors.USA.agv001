@@ -79,10 +79,22 @@ export async function getSeoPage(slug: string): Promise<SeoPageModel | null> {
   return staticPage || null;
 }
 
+const DEDICATED_ROUTES = new Set([
+  'platform',
+  'create',
+  'comply',
+  'prove',
+  'win-work',
+  'contractor-passport',
+  'pricing',
+  'tools',
+  'templates',
+]);
+
 /**
- * Returns all slugs for static generation and sitemap
+ * Returns all slugs for static generation and sitemap, excluding dedicated pages
  */
 export async function getAllSeoSlugs(): Promise<string[]> {
   const staticSlugs = INITIAL_SEO_PAGES.map((p) => p.slug);
-  return staticSlugs;
+  return staticSlugs.filter((s) => !DEDICATED_ROUTES.has(s));
 }

@@ -73,6 +73,12 @@ const config: Config = {
         'lg': '12px',
         'xl': '16px',
       },
+      transitionTimingFunction: {
+        brand: 'cubic-bezier(0.22, 0.61, 0.36, 1)',
+      },
+      backgroundImage: {
+        'hero-pink-gradient': 'linear-gradient(100deg, #FF3E9D 0%, #ED3899 50%, #C026D3 100%)',
+      },
     },
   },
   plugins: [],
