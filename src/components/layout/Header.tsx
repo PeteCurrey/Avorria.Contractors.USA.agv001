@@ -109,13 +109,13 @@ export function Header() {
           <div className="hidden sm:flex items-center gap-5">
             <Link
               href="/sign-in"
-              className="text-[13px] font-extralight text-slate-300 hover:text-white transition-colors"
+              className="text-[15px] font-extralight text-slate-300 hover:text-white transition-colors"
             >
               Sign In
             </Link>
             <Link
               href="/sign-up"
-              className="inline-flex items-center justify-center text-xs font-light px-4 py-2 rounded-[6px] bg-[#0284c7] hover:bg-[#0369a1] text-white shadow-sm transition-all duration-200"
+              className="inline-flex items-center justify-center text-[15px] font-light px-4 py-2 rounded-[6px] bg-[#0284c7] hover:bg-[#0369a1] text-white shadow-sm transition-all duration-200"
             >
               Get Started Free
             </Link>
