@@ -43,7 +43,11 @@ export type AnalyticsEventType =
   | 'requirement_pack_activated'
   | 'requirement_pack_closed'
   | 'requirement_pack_cancelled'
-  | 'requirement_pack_duplicated';
+  | 'requirement_pack_duplicated'
+  | 'match_set_generated'
+  | 'match_refresh_completed'
+  | 'match_set_invalidated'
+  | 'match_viewed';
 
 export interface AnalyticsEvent {
   event: AnalyticsEventType;

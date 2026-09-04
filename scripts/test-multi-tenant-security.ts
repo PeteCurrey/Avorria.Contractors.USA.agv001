@@ -99,6 +99,16 @@ function evaluateRlsPolicy(
     return false;
   }
 
+  // Phase 10: match_contractor_snapshots are immutable (no UPDATE)
+  if (table === 'match_contractor_snapshots' && operation === 'UPDATE') {
+    return false;
+  }
+
+  // Phase 10: Contractors have ZERO access to client match sets or snapshots
+  if ((table === 'match_sets' || table === 'match_contractor_snapshots') && ['contractor_owner', 'contractor_admin', 'employee_user'].includes(user.role)) {
+    return false;
+  }
+
   // Tenant-owned tables require strict membership match
   const isMember = user.activeOrgId === recordOrgId && user.role !== 'anonymous';
   const isAdmin = isMember && ['contractor_owner', 'contractor_admin', 'client_admin'].includes(user.role);
@@ -158,6 +168,9 @@ const TENANT_TABLES = [
   'requirement_pack_requirements',
   'requirement_pack_attachments',
   'requirement_pack_events',
+  // Phase 10 Match Intelligence Tables
+  'match_sets',
+  'match_contractor_snapshots',
 ];
 
 export function runSecurityVerification(): SecurityAssertionResult[] {
@@ -683,6 +696,70 @@ export function runSecurityVerification(): SecurityAssertionResult[] {
     operation: 'UPDATE',
     testDescription: 'Requirement pack audit events are strictly append-only (UPDATE and DELETE forbidden)',
     passed: canClientAUpdateEvent === false && canClientADeleteEvent === false,
+  });
+
+  // ─── PHASE 10 MATCH INTELLIGENCE ASSERTIONS ──────────────────
+  // Test 46: Client B cannot SELECT Client A match sets
+  const canClientBSelectMatchSet = evaluateRlsPolicy('match_sets', 'SELECT', CLIENT_B_USER, ORG_A_ID);
+  results.push({
+    table: 'match_sets',
+    operation: 'SELECT',
+    testDescription: 'Client B CANNOT SELECT match sets calculated for Client A',
+    passed: canClientBSelectMatchSet === false,
+  });
+
+  // Test 47: Client B cannot UPDATE Client A match sets
+  const canClientBUpdateMatchSet = evaluateRlsPolicy('match_sets', 'UPDATE', CLIENT_B_USER, ORG_A_ID);
+  results.push({
+    table: 'match_sets',
+    operation: 'UPDATE',
+    testDescription: 'Client B CANNOT UPDATE match sets calculated for Client A',
+    passed: canClientBUpdateMatchSet === false,
+  });
+
+  // Test 48: Contractor C has ZERO visibility into client match sets
+  const canContractorSelectMatchSet = evaluateRlsPolicy('match_sets', 'SELECT', CONTRACTOR_C_USER, ORG_A_ID);
+  results.push({
+    table: 'match_sets',
+    operation: 'SELECT',
+    testDescription: 'Contractors have ZERO visibility into client match sets (SELECT rejected)',
+    passed: canContractorSelectMatchSet === false,
+  });
+
+  // Test 49: Contractor C CANNOT insert or manipulate match contractor snapshots
+  const canContractorInsertSnapshot = evaluateRlsPolicy('match_contractor_snapshots', 'INSERT', CONTRACTOR_C_USER, ORG_A_ID);
+  results.push({
+    table: 'match_contractor_snapshots',
+    operation: 'INSERT',
+    testDescription: 'Contractors CANNOT insert or modify match contractor snapshots',
+    passed: canContractorInsertSnapshot === false,
+  });
+
+  // Test 50: Anonymous visitor cannot SELECT match sets
+  const canAnonSelectMatchSet = evaluateRlsPolicy('match_sets', 'SELECT', ANONYMOUS_USER, ORG_A_ID);
+  results.push({
+    table: 'match_sets',
+    operation: 'SELECT',
+    testDescription: 'Anonymous visitor CANNOT view private match sets',
+    passed: canAnonSelectMatchSet === false,
+  });
+
+  // Test 51: Anonymous visitor cannot INSERT match sets
+  const canAnonInsertMatchSet = evaluateRlsPolicy('match_sets', 'INSERT', ANONYMOUS_USER, ORG_A_ID);
+  results.push({
+    table: 'match_sets',
+    operation: 'INSERT',
+    testDescription: 'Anonymous visitor CANNOT trigger or insert match sets',
+    passed: canAnonInsertMatchSet === false,
+  });
+
+  // Test 52: Match contractor snapshots are strictly immutable
+  const canClientAUpdateSnapshot = evaluateRlsPolicy('match_contractor_snapshots', 'UPDATE', CLIENT_A_USER, ORG_A_ID);
+  results.push({
+    table: 'match_contractor_snapshots',
+    operation: 'UPDATE',
+    testDescription: 'Match contractor snapshots are strictly immutable (UPDATE rejected)',
+    passed: canClientAUpdateSnapshot === false,
   });
 
   return results;

@@ -31,6 +31,7 @@ import {
 import { evaluateRequestReadiness } from './readiness';
 import { getTradeBySlug, STANDARD_TRADES } from '@/lib/trades/registry';
 import { trackEvent } from '@/lib/analytics/events';
+import { invalidateMatchSet } from '@/lib/match/repository';
 
 /**
  * Generates deterministic, unique, non-sequential reference code (e.g. REQ-783921).
@@ -161,6 +162,9 @@ export async function updateRequirementPack(
   await logPackEvent(packId, tenantId, userId, 'request_updated', {
     updatedFields: Object.keys(updates),
   });
+
+  // Invalidate any existing match set
+  await invalidateMatchSet(packId, tenantId, 'Requirement pack parameters updated');
 
   return saved;
 }
@@ -338,6 +342,7 @@ export async function addPackTrade(
   const trade = await repoAddPackTrade(packId, tenantId, tradeSlug, tradeName);
 
   await logPackEvent(packId, tenantId, userId, 'trade_added', { tradeSlug, tradeName });
+  await invalidateMatchSet(packId, tenantId, 'Trade classification added');
   return trade;
 }
 
@@ -350,6 +355,7 @@ export async function removePackTrade(
   const removed = await repoRemovePackTrade(packId, tenantId, tradeSlug);
   if (removed) {
     await logPackEvent(packId, tenantId, userId, 'trade_removed', { tradeSlug });
+    await invalidateMatchSet(packId, tenantId, 'Trade classification removed');
   }
   return removed;
 }
@@ -391,6 +397,8 @@ export async function addRequirement(
     provenance: req.provenance,
   });
 
+  await invalidateMatchSet(packId, tenantId, 'Requirement added');
+
   return req;
 }
 
@@ -406,6 +414,9 @@ export async function updateRequirement(
     requirementId,
     updates: Object.keys(updates),
   });
+
+  await invalidateMatchSet(packId, tenantId, 'Requirement updated');
+
   return req;
 }
 
@@ -418,6 +429,7 @@ export async function removeRequirement(
   const removed = await repoRemovePackRequirement(requirementId, tenantId);
   if (removed) {
     await logPackEvent(packId, tenantId, userId, 'requirement_removed', { requirementId });
+    await invalidateMatchSet(packId, tenantId, 'Requirement removed');
   }
   return removed;
 }
