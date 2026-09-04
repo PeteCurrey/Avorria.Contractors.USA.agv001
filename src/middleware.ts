@@ -43,6 +43,17 @@ export async function middleware(request: NextRequest) {
     return response;
   }
 
+  // 4. Client, Contractor & Admin Portal — also must not be indexed
+  if (
+    pathname.startsWith('/client') ||
+    pathname.startsWith('/contractor') ||
+    pathname.startsWith('/admin')
+  ) {
+    const response = NextResponse.next();
+    response.headers.set('X-Robots-Tag', 'noindex, nofollow, noarchive');
+    return response;
+  }
+
   return NextResponse.next();
 }
 

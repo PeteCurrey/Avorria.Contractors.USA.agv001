@@ -80,7 +80,7 @@ export const PRICING_PLANS: PlanEntitlement[] = [
     name: 'Professional',
     description: 'Comprehensive documentation and automated compliance management for active trade contractors.',
     monthlyPriceCents: 4900, // $49/mo
-    annualPriceCents: 47000, // $39/mo billed annually ($468)
+    annualPriceCents: 47000, // ~$39/mo billed annually ($470/yr)
     featured: true,
     badge: 'Most Popular',
     limits: {
@@ -118,7 +118,7 @@ export const PRICING_PLANS: PlanEntitlement[] = [
     name: 'Verified Contractor',
     description: 'Complete operating suite with third-party evidence verification and public trust profile to win bids.',
     monthlyPriceCents: 9900, // $99/mo
-    annualPriceCents: 95000, // $79/mo billed annually ($948)
+    annualPriceCents: 95000, // ~$79/mo billed annually ($950/yr)
     badge: 'Trust & Winning Work',
     limits: {
       monthlyDocuments: -1, // Unlimited
@@ -155,7 +155,7 @@ export const PRICING_PLANS: PlanEntitlement[] = [
     name: 'Business',
     description: 'High-capacity compliance, subcontractor oversight, and custom workflows for growing GC & multi-crew firms.',
     monthlyPriceCents: 19900, // $199/mo
-    annualPriceCents: 191000, // $159/mo billed annually
+    annualPriceCents: 191000, // ~$159/mo billed annually ($1,910/yr)
     limits: {
       monthlyDocuments: -1,
       teamMembers: 50,
@@ -169,7 +169,7 @@ export const PRICING_PLANS: PlanEntitlement[] = [
       { title: 'Full Team Audit Logs & Activity History', included: true },
       { title: 'Equipment Maintenance & Inspection Logs', included: true },
       { title: 'Dedicated Onboarding & Compliance Advisor', included: true },
-      { title: 'REST API & Webhook Access (Future Phase)', included: true },
+      { title: 'REST API & Webhook Access (Coming Soon)', included: false },
       { title: 'SLA & Multi-Organization Billing', included: true },
     ],
     entitlements: {

@@ -195,7 +195,7 @@ export default function PricingPage() {
               Are payments and billing data secure?
             </h3>
             <p className="text-slate-600 text-sm leading-relaxed">
-              Yes. Avorria utilizes PCI-DSS Level 1 compliant billing infrastructure with end-to-end encryption. We never store credit card numbers on our application servers. Subscriptions can be canceled or paused anytime with one click in your workspace settings.
+              Paid subscription billing is currently in final integration and will be processed through an industry-standard, PCI-compliant payment processor. We will never store card numbers on our own servers. During the current beta phase, paid plan activation is handled manually — contact us to get started.
             </p>
           </div>
 

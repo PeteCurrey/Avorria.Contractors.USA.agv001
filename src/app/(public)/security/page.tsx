@@ -19,28 +19,28 @@ export default function SecurityPage() {
         <div className="p-6 rounded-xl bg-surface-card border border-surface-border space-y-2">
           <h2 className="text-base font-bold text-white">Multi-Tenant Isolation</h2>
           <p className="text-xs text-slate-400">
-            Every database table enforces strict PostgreSQL Row Level Security (RLS) scoped by tenant organisation_id. Organisation A can never read or query records belonging to Organisation B.
+            Every database table enforces strict PostgreSQL Row Level Security (RLS) scoped by tenant organization_id. Organization A can never read or query records belonging to Organization B.
           </p>
         </div>
 
         <div className="p-6 rounded-xl bg-surface-card border border-surface-border space-y-2">
           <h2 className="text-base font-bold text-white">Private Document Storage</h2>
           <p className="text-xs text-slate-400">
-            Uploaded Certificates of Insurance, trade licenses, and employee records are stored in secure cloud buckets accessible only through temporary, time-bound signed URLs.
+            Uploaded Certificates of Insurance, trade licenses, and employee records are stored in secure, access-controlled cloud storage buckets. Files are retrievable only by authenticated users within the same tenant account.
           </p>
         </div>
 
         <div className="p-6 rounded-xl bg-surface-card border border-surface-border space-y-2">
-          <h2 className="text-base font-bold text-white">Encryption at Rest & in Transit</h2>
+          <h2 className="text-base font-bold text-white">Encryption at Rest &amp; in Transit</h2>
           <p className="text-xs text-slate-400">
-            All network communication is encrypted using TLS 1.3. Database storage and cloud file assets are encrypted at rest using AES-256 standard encryption.
+            All network communication is encrypted via TLS. Database storage and cloud file assets are encrypted at rest via AES-256, as provided by our hosting infrastructure (Supabase and Google Cloud).
           </p>
         </div>
 
         <div className="p-6 rounded-xl bg-surface-card border border-surface-border space-y-2">
-          <h2 className="text-base font-bold text-white">Strict Search Engine Guardrails</h2>
+          <h2 className="text-base font-bold text-white">Search Engine Guardrails</h2>
           <p className="text-xs text-slate-400">
-            All authenticated application routes, internal API endpoints, and private documents strictly enforce X-Robots-Tag: noindex directives to prevent search engine indexing of private contractor information.
+            Authenticated application routes (<code className="text-slate-300">/app/*</code>) and internal API endpoints (<code className="text-slate-300">/api/*</code>) enforce <code className="text-slate-300">X-Robots-Tag: noindex</code> to prevent search engine indexing of private contractor data.
           </p>
         </div>
       </div>

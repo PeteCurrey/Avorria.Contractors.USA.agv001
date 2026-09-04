@@ -2,6 +2,7 @@ import React from 'react';
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
 import Link from 'next/link';
+import { cookies, headers } from 'next/headers';
 import { siteConfig } from '@/config/site';
 import { getPassportDetails, loadTenantsStore } from '@/lib/tenant/repository';
 import { sanitizeContractorForPublic } from '@/lib/passport/sanitizer';
@@ -12,6 +13,8 @@ import { Button } from '@/components/ui/Button';
 import { PassportQRCode } from '@/components/passport/PassportQRCode';
 import { ShortlistProvider } from '@/components/shortlist/ShortlistContext';
 import { PassportActionButtons } from '@/components/passport/PassportActionButtons';
+import { getPublicPassport } from '@/lib/workspace/passport';
+import { WorkspacePublicPassport } from '@/components/passport/WorkspacePublicPassport';
 
 interface Props {
   params: Promise<{
@@ -49,6 +52,18 @@ async function resolvePublicContractor(slug: string): Promise<PublicPassportDTO 
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
+
+  const wsPassport = await getPublicPassport(slug, '127.0.0.1');
+  if (wsPassport) {
+    const title = `${wsPassport.organization.name} | Contractor Passport | Avorria`;
+    const description = `Live verified commercial credentials and operational readiness for ${wsPassport.organization.name}.`;
+    return {
+      title,
+      description,
+      robots: { index: true, follow: true },
+    };
+  }
+
   const contractor = await resolvePublicContractor(slug);
 
   if (!contractor) {
@@ -83,6 +98,25 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function ContractorProfilePage({ params, searchParams }: Props) {
   const { slug } = await params;
   const sParams = searchParams ? await searchParams : {};
+
+  // First check if a workspace passport exists for this slug
+  const cookieStore = await cookies();
+  const headerStore = await headers();
+  const clientIp = headerStore.get('x-forwarded-for') || '127.0.0.1';
+  const referrer = headerStore.get('referer') || undefined;
+  const isUnlockedCookie = cookieStore.get(`avorria_pass_${slug}`)?.value === 'unlocked';
+
+  const wsPassport = await getPublicPassport(
+    slug,
+    clientIp,
+    referrer,
+    isUnlockedCookie ? 'unlocked' : undefined
+  );
+
+  if (wsPassport) {
+    return <WorkspacePublicPassport passportView={wsPassport} />;
+  }
+
   const contractor = await resolvePublicContractor(slug);
 
   if (!contractor) {
