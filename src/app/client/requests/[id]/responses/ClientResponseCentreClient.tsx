@@ -163,6 +163,27 @@ export function ClientResponseCentreClient({
             </div>
           </div>
 
+          {/* Compare CTA — only when 2+ responses exist */}
+          {submittedResponses.length >= 2 && (
+            <div className="rounded-2xl border border-brand-200 bg-brand-50 px-5 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div>
+                <div className="text-sm font-bold text-brand-900">
+                  {submittedResponses.length} responses ready for comparison
+                </div>
+                <div className="text-xs text-brand-700 mt-0.5">
+                  Open the Compare workspace to view contractor positions requirement-by-requirement with full evidence context.
+                </div>
+              </div>
+              <Link
+                href={`/client/requests/${pack.id}/compare`}
+                className="px-5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition-all shadow-2xs shrink-0 flex items-center gap-1.5"
+              >
+                <span>⚖️</span>
+                <span>Open Compare Workspace</span>
+              </Link>
+            </div>
+          )}
+
           {submittedResponses.length === 0 ? (
             <div className="rounded-2xl border border-dashed border-slate-300 p-12 text-center bg-white">
               <span className="text-3xl">📥</span>

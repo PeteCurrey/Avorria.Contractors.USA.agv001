@@ -59,6 +59,13 @@ export default async function ClientResponseCentrePage({ params }: Props) {
 
         <div className="flex items-center gap-3">
           <Link
+            href={`/client/requests/${pack.id}/compare`}
+            className="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition-all shadow-2xs flex items-center gap-1.5"
+          >
+            <span>⚖️</span>
+            <span>Compare Responses</span>
+          </Link>
+          <Link
             href={`/client/requests/${pack.id}/matches`}
             className="px-4 py-2 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 text-xs font-bold transition-all shadow-2xs flex items-center gap-1.5"
           >

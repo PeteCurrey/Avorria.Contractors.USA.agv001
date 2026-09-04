@@ -855,7 +855,129 @@ async function runCoreLoopTest() {
   console.log(`   ✓ Response Centre aggregated: ${responseCentre.invitations.length} invitation(s), ${responseEntry.confirmedCount} confirmed, ${responseEntry.requiresClarificationCount} clarification requested`);
   console.log(`   ✓ Non-marketplace integrity: Zero competitive pricing boards, zero AI winner rankings, clear separation of verified evidence vs contractor declarations`);
 
-  console.log('\n🎉 ALL 47 CONTRACTOR OPERATING, CREATION, PROVE, DISCOVER, CONNECT, REQUEST, MATCH & RESPOND MILESTONES COMPLETED WITH REAL PERSISTENCE.');
+  // ─────────────────────────────────────────────────────────────
+  // PHASE 12: COMPARE — EVIDENCE-LED CONTRACTOR RESPONSE COMPARISON
+  // ─────────────────────────────────────────────────────────────
+  console.log('\n--- Setting up second contractor for side-by-side comparison ---');
+  const TEST_ORG_ID_2 = `test-org-e2e-peer-${Date.now()}`;
+  const ws2 = await getContractorWorkspace(TEST_ORG_ID_2);
+  await saveOnboardingStep(TEST_ORG_ID_2, 1, {
+    businessName: 'Apex Peer Electric LLC',
+    legalName: 'Apex Peer Electric LLC',
+    businessStructure: 'llc',
+    phone: '(512) 555-9088',
+    email: 'contact@apexpeer.com',
+  });
+  await saveOnboardingStep(TEST_ORG_ID_2, 2, { trades: ['electrical-contracting'] });
+  await saveOnboardingStep(TEST_ORG_ID_2, 3, { primaryState: 'TX', cities: ['Austin'] });
+  await saveOnboardingStep(TEST_ORG_ID_2, 4, {
+    credentials: { hasGeneralLiability: true, hasTradeLicense: true, hasWorkersComp: true, hasSafetyPlan: true },
+  });
+  await completeOnboarding(TEST_ORG_ID_2);
+  await setPassportVisibility(TEST_ORG_ID_2, 'published');
+
+  // Refresh match set so Contractor 2 is registered as an eligible candidate
+  const matchSetWithPeer = await refreshMatchSet(duplicatedPack.id, CLIENT_ORG_ID, 'user-client-eleanor');
+
+  // Invite Contractor 2 & Submit Response
+  const inv2 = await createContractorInvitation(CLIENT_ORG_ID, 'user-client-eleanor', {
+    pack_id: duplicatedPack.id,
+    contractor_id: TEST_ORG_ID_2,
+    contractor_slug: ws2.organisation.slug,
+    contractor_name: 'Apex Peer Electric LLC',
+    match_set_id: matchSetWithPeer.id,
+  });
+  await sendInvitation(inv2.id, CLIENT_ORG_ID, 'user-client-eleanor');
+  await viewContractorInvitation(inv2.id, TEST_ORG_ID_2);
+  await expressContractorInterest(inv2.id, TEST_ORG_ID_2);
+  await submitContractorResponse(inv2.id, TEST_ORG_ID_2, {
+    availability_status: 'available',
+    proposed_start_date: '2026-11-15',
+    proposed_completion_date: '2026-12-31',
+    availability_notes: 'Full team available.',
+    response_notes: 'Complete compliance ready.',
+    requirement_acknowledgements: requirementsToAck.map((r) => ({
+      requirement_id: r.requirement_id,
+      response_status: 'confirmed',
+    })),
+  });
+
+  const {
+    createCompareSet,
+    getCompareSetMatrix,
+    refreshCompareSet,
+    requestClarification,
+  } = await import('../src/lib/compare/service');
+
+  // 47. Phase 12 Milestone 48: Create Comparison Set
+  console.log('\n48. Phase 12 Compare Set Creation: Client creates comparison set from 2 submitted contractor responses...');
+  const { compareSet, matrix: initialMatrix } = await createCompareSet(
+    CLIENT_ORG_ID,
+    'user-client-eleanor',
+    {
+      request_id: duplicatedPack.id,
+      contractor_ids: [invCandidate.contractorId, TEST_ORG_ID_2],
+    }
+  );
+
+  if (!compareSet.id || compareSet.comparison_version !== 'COMPARE_ENGINE_V1') {
+    throw new Error('FAILED: CompareSet must have valid ID and version COMPARE_ENGINE_V1!');
+  }
+  if (initialMatrix.contractors.length !== 2) {
+    throw new Error(`FAILED: Matrix must have 2 contractors, got ${initialMatrix.contractors.length}`);
+  }
+  console.log(`   ✓ Comparison set created: ${compareSet.id} (version ${compareSet.comparison_version}) with 2 contractors`);
+
+  // 48. Phase 12 Milestone 49: Deterministic Side-by-Side Matrix Evaluation & Non-Marketplace Assurances
+  console.log('\n49. Phase 12 Comparison Matrix Evaluation: Evaluating side-by-side evidence matrix...');
+  const evaluatedMatrix = await getCompareSetMatrix(compareSet.id, CLIENT_ORG_ID);
+
+  if (evaluatedMatrix.rows.length === 0) {
+    throw new Error('FAILED: Comparison matrix must have rows for requirements!');
+  }
+  for (const row of evaluatedMatrix.rows) {
+    if (!row.contractorPositions[invCandidate.contractorId] || !row.contractorPositions[TEST_ORG_ID_2]) {
+      throw new Error(`FAILED: Each requirement row must have positions for all compared contractors! Row: ${row.requirement.title}`);
+    }
+  }
+
+  // Verify non-marketplace integrity: no score, rank, star rating, etc.
+  const matrixObj = evaluatedMatrix as unknown as Record<string, unknown>;
+  const forbiddenScoreKeys = ['score', 'rank', 'suitability', 'rating', 'winner', 'recommendation'];
+  const foundScoreKeys = forbiddenScoreKeys.filter((k) => Object.keys(matrixObj).some((mk) => mk.toLowerCase().includes(k)));
+  if (foundScoreKeys.length > 0) {
+    throw new Error(`FAILED: Non-marketplace violation: Comparison matrix contains forbidden score keys: ${foundScoreKeys.join(', ')}`);
+  }
+
+  console.log(`   ✓ Side-by-side alignment confirmed: ${evaluatedMatrix.rows.length} requirement rows with positions for each contractor`);
+  console.log(`   ✓ Attention items generated factually: ${evaluatedMatrix.attentionSummary.items.length} items (Clarifications: ${evaluatedMatrix.attentionSummary.totalClarificationsNeeded}, Evidence Gaps: ${evaluatedMatrix.attentionSummary.totalEvidenceGaps})`);
+  console.log(`   ✓ Non-marketplace integrity: Zero winner badges, zero scores, zero rankings — pure evidence-led presentation`);
+
+  // 49. Phase 12 Milestone 50: Material Change Invalidation & Stale Refresh
+  console.log('\n50. Phase 12 Stale Invalidation & Refresh: Pack modification triggers stale state, refreshed cleanly...');
+  await addRequirement(duplicatedPack.id, CLIENT_ORG_ID, 'user-client-eleanor', {
+    category: 'credential',
+    title: 'Hospital Infection Control Certificate (ICRA Level 2)',
+    strength: 'preferred',
+    provenance: 'client',
+  });
+
+  const staleCompareMatrix = await getCompareSetMatrix(compareSet.id, CLIENT_ORG_ID);
+  if (!staleCompareMatrix.isStale) {
+    throw new Error('FAILED: Comparison matrix should be marked isStale: true after pack modification!');
+  }
+  console.log(`   ✓ Comparison marked stale on material pack modification (isStale = true)`);
+
+  const refreshedMatrix = await refreshCompareSet(compareSet.id, CLIENT_ORG_ID, 'user-client-eleanor');
+  if (refreshedMatrix.isStale) {
+    throw new Error('FAILED: Refreshed matrix must clear isStale flag!');
+  }
+  if (refreshedMatrix.rows.length <= evaluatedMatrix.rows.length) {
+    throw new Error(`FAILED: Refreshed matrix must include new requirement! Got ${refreshedMatrix.rows.length}, expected > ${evaluatedMatrix.rows.length}`);
+  }
+  console.log(`   ✓ Comparison refreshed: Stale cleared (isStale = false), expanded to ${refreshedMatrix.rows.length} requirement rows`);
+
+  console.log('\n🎉 ALL 50 CONTRACTOR OPERATING, CREATION, PROVE, DISCOVER, CONNECT, REQUEST, MATCH, RESPOND & COMPARE MILESTONES COMPLETED WITH REAL PERSISTENCE.');
 }
 
 runCoreLoopTest().catch((err) => {

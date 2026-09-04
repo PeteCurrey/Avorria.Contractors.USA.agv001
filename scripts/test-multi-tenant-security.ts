@@ -119,6 +119,19 @@ function evaluateRlsPolicy(
     return false;
   }
 
+  // Phase 12: compare_events is append-only (no UPDATE or DELETE)
+  if (table === 'compare_events' && (operation === 'UPDATE' || operation === 'DELETE')) {
+    return false;
+  }
+
+  // Phase 12: Contractors have ZERO access to client compare tables
+  if (
+    ['compare_sets', 'compare_contractors', 'compare_events'].includes(table) &&
+    ['contractor_owner', 'contractor_admin', 'employee_user'].includes(user.role)
+  ) {
+    return false;
+  }
+
   // Tenant-owned tables require strict membership match
   const isMember = user.activeOrgId === recordOrgId && user.role !== 'anonymous';
   const isAdmin = isMember && ['contractor_owner', 'contractor_admin', 'client_admin'].includes(user.role);
@@ -186,6 +199,10 @@ const TENANT_TABLES = [
   'request_invitation_events',
   'request_responses',
   'request_response_requirements',
+  // Phase 12 Compare Tables
+  'compare_sets',
+  'compare_contractors',
+  'compare_events',
 ];
 
 export function runSecurityVerification(): SecurityAssertionResult[] {
@@ -884,6 +901,153 @@ export function runSecurityVerification(): SecurityAssertionResult[] {
     operation: 'SELECT',
     testDescription: 'Anonymous visitors CANNOT view requirement acknowledgements',
     passed: canAnonSelectRespReq === false,
+  });
+
+  // ─────── Phase 12: Compare Table Security ───────
+
+  // Test 65: Cross-tenant SELECT on compare_sets blocked
+  const canBSelectACompareSets = evaluateRlsPolicy('compare_sets', 'SELECT', CLIENT_B_USER, ORG_A_ID);
+  results.push({
+    table: 'compare_sets',
+    operation: 'SELECT',
+    testDescription: 'Client B cannot SELECT compare_sets owned by Client A',
+    passed: canBSelectACompareSets === false,
+  });
+
+  // Test 66: Cross-tenant UPDATE on compare_sets blocked
+  const canBUpdateACompareSets = evaluateRlsPolicy('compare_sets', 'UPDATE', CLIENT_B_USER, ORG_A_ID);
+  results.push({
+    table: 'compare_sets',
+    operation: 'UPDATE',
+    testDescription: 'Client B cannot UPDATE compare_sets owned by Client A',
+    passed: canBUpdateACompareSets === false,
+  });
+
+  // Test 67: Contractor CANNOT access compare_sets
+  const canContractorSelectCompareSets = evaluateRlsPolicy('compare_sets', 'SELECT', TENANT_A_USER, ORG_A_ID);
+  results.push({
+    table: 'compare_sets',
+    operation: 'SELECT',
+    testDescription: 'Contractor (contractor_owner) CANNOT access compare_sets even for their own org',
+    passed: canContractorSelectCompareSets === false,
+  });
+
+  // Test 68: Contractor CANNOT access compare_contractors
+  const canContractorSelectCompareContractors = evaluateRlsPolicy('compare_contractors', 'SELECT', TENANT_A_USER, ORG_A_ID);
+  results.push({
+    table: 'compare_contractors',
+    operation: 'SELECT',
+    testDescription: 'Contractor (contractor_owner) CANNOT access compare_contractors',
+    passed: canContractorSelectCompareContractors === false,
+  });
+
+  // Test 69: Cross-tenant SELECT on compare_contractors blocked
+  const canBSelectACompareContractors = evaluateRlsPolicy('compare_contractors', 'SELECT', CLIENT_B_USER, ORG_A_ID);
+  results.push({
+    table: 'compare_contractors',
+    operation: 'SELECT',
+    testDescription: 'Client B cannot SELECT compare_contractors owned by Client A',
+    passed: canBSelectACompareContractors === false,
+  });
+
+  // Test 70: compare_events is append-only (UPDATE blocked)
+  const canUpdateCompareEvent = evaluateRlsPolicy('compare_events', 'UPDATE', CLIENT_A_USER, ORG_A_ID);
+  results.push({
+    table: 'compare_events',
+    operation: 'UPDATE',
+    testDescription: 'compare_events is append-only — UPDATE is ALWAYS blocked for all users',
+    passed: canUpdateCompareEvent === false,
+  });
+
+  // Test 71: compare_events is append-only (DELETE blocked)
+  const canDeleteCompareEvent = evaluateRlsPolicy('compare_events', 'DELETE', CLIENT_A_USER, ORG_A_ID);
+  results.push({
+    table: 'compare_events',
+    operation: 'DELETE',
+    testDescription: 'compare_events is append-only — DELETE is ALWAYS blocked for all users',
+    passed: canDeleteCompareEvent === false,
+  });
+
+  // Test 72: Client A can SELECT their own compare_sets
+  const canClientASelectOwnCompareSets = evaluateRlsPolicy('compare_sets', 'SELECT', CLIENT_A_USER, ORG_A_ID);
+  results.push({
+    table: 'compare_sets',
+    operation: 'SELECT',
+    testDescription: 'Client A can SELECT their own compare_sets',
+    passed: canClientASelectOwnCompareSets === true,
+  });
+
+  // Test 73: Client A can INSERT into their own compare_sets
+  const canClientAInsertCompareSets = evaluateRlsPolicy('compare_sets', 'INSERT', CLIENT_A_USER, ORG_A_ID);
+  results.push({
+    table: 'compare_sets',
+    operation: 'INSERT',
+    testDescription: 'Client A can INSERT their own compare_sets',
+    passed: canClientAInsertCompareSets === true,
+  });
+
+  // Test 74: Anonymous cannot SELECT compare_sets
+  const canAnonSelectCompareSets = evaluateRlsPolicy('compare_sets', 'SELECT', ANONYMOUS_USER, ORG_A_ID);
+  results.push({
+    table: 'compare_sets',
+    operation: 'SELECT',
+    testDescription: 'Anonymous visitors CANNOT SELECT compare_sets',
+    passed: canAnonSelectCompareSets === false,
+  });
+
+  // Test 75: Anonymous cannot SELECT compare_contractors
+  const canAnonSelectCompareContractors = evaluateRlsPolicy('compare_contractors', 'SELECT', ANONYMOUS_USER, ORG_A_ID);
+  results.push({
+    table: 'compare_contractors',
+    operation: 'SELECT',
+    testDescription: 'Anonymous visitors CANNOT SELECT compare_contractors',
+    passed: canAnonSelectCompareContractors === false,
+  });
+
+  // Test 76: Contractor CANNOT INSERT into compare_events (even their own org)
+  const canContractorInsertCompareEvents = evaluateRlsPolicy('compare_events', 'INSERT', TENANT_A_USER, ORG_A_ID);
+  results.push({
+    table: 'compare_events',
+    operation: 'INSERT',
+    testDescription: 'Contractor (contractor_owner) CANNOT INSERT into compare_events',
+    passed: canContractorInsertCompareEvents === false,
+  });
+
+  // Test 77: Cross-tenant INSERT on compare_sets blocked
+  const canBInsertIntoACompareSets = evaluateRlsPolicy('compare_sets', 'INSERT', CLIENT_B_USER, ORG_A_ID);
+  results.push({
+    table: 'compare_sets',
+    operation: 'INSERT',
+    testDescription: 'Client B cannot INSERT a compare_set owned by Client A',
+    passed: canBInsertIntoACompareSets === false,
+  });
+
+  // Test 78: Cross-tenant DELETE on compare_contractors blocked
+  const canBDeleteACompareContractors = evaluateRlsPolicy('compare_contractors', 'DELETE', CLIENT_B_USER, ORG_A_ID);
+  results.push({
+    table: 'compare_contractors',
+    operation: 'DELETE',
+    testDescription: 'Client B cannot DELETE compare_contractors owned by Client A',
+    passed: canBDeleteACompareContractors === false,
+  });
+
+  // Test 79: Employee_user role CANNOT access compare_sets
+  const employeeUser: MockUserContext = { userId: 'emp-1', activeOrgId: ORG_A_ID, role: 'employee_user' };
+  const canEmployeeSelectCompareSets = evaluateRlsPolicy('compare_sets', 'SELECT', employeeUser, ORG_A_ID);
+  results.push({
+    table: 'compare_sets',
+    operation: 'SELECT',
+    testDescription: 'Employee (employee_user) CANNOT access compare_sets',
+    passed: canEmployeeSelectCompareSets === false,
+  });
+
+  // Test 80: Client B cross-tenant DELETE on compare_events blocked
+  const canBDeleteACompareEvents = evaluateRlsPolicy('compare_events', 'DELETE', CLIENT_B_USER, ORG_A_ID);
+  results.push({
+    table: 'compare_events',
+    operation: 'DELETE',
+    testDescription: 'Client B cannot DELETE compare_events owned by Client A (and table is append-only)',
+    passed: canBDeleteACompareEvents === false,
   });
 
   return results;
