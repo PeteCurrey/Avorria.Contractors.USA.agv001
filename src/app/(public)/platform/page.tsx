@@ -2,6 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import { Metadata } from 'next';
 import { siteConfig } from '@/config/site';
+import { CinematicPageHero } from '@/components/hero/CinematicPageHero';
 
 export const metadata: Metadata = {
   title: 'Platform Architecture & Operating System for Contractors | Avorria',
@@ -98,20 +99,16 @@ export default function PlatformPage() {
 
   return (
     <div className="w-full bg-white text-navy-800">
-      {/* Hero: Operating Layer Narrative */}
-      <section className="py-20 lg:py-28 bg-[#070c18] text-white border-b border-navy-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded bg-white/[0.06] border border-white/10 text-xs font-mono text-slate-300">
-            <span>OPERATING SYSTEM ARCHITECTURE</span>
-          </div>
-          <h1 className="text-4xl sm:text-6xl font-black tracking-tight text-white max-w-4xl leading-tight">
-            The operating layer for modern contractors.
-          </h1>
-          <p className="text-lg sm:text-xl text-slate-300 max-w-3xl leading-relaxed font-normal">
-            Avorria connects every phase of contracting operations — from company identity and safety documentation to compliance readiness and commercial bidding — into one unified system.
-          </p>
-        </div>
-      </section>
+      <CinematicPageHero
+        eyebrow="OPERATING SYSTEM ARCHITECTURE"
+        title={<>The operating layer for<br />modern contractors.</>}
+        subtitle="Avorria connects every phase of contracting operations — from company identity and safety documentation to compliance readiness and commercial bidding — into one unified system."
+        primaryCta={{ label: 'Get Started Free', href: '/sign-up' }}
+        secondaryCta={{ label: 'Explore the Platform', href: '#pillars' }}
+        backgroundImage="/images/hero-platform.jpg"
+        backgroundAlt="High-tech commercial construction project control center at dusk"
+        trustItems={['Business Identity', 'Document Engine', 'Compliance Monitoring', 'Evidence Verification', 'Win Work Suite']}
+      />
 
       {/* 5 Editorial Pillar Walkthrough Sections */}
       <div className="divide-y divide-slate-200">

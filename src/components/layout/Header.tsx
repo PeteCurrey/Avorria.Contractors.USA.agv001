@@ -56,7 +56,7 @@ export function Header() {
     <>
       <header
         className={`fixed top-0 inset-x-0 z-50 w-full transition-all duration-300 ${
-          scrolled || mobileMenuOpen || pathname !== '/'
+          scrolled || mobileMenuOpen || !new Set(['/', '/platform', '/create', '/comply', '/prove', '/win-work', '/contractor-passport', '/tools', '/templates', '/pricing']).has(pathname ?? '')
             ? 'border-b border-navy-800/80 bg-[#070c18]/95 backdrop-blur-md shadow-md'
             : 'border-b border-white/[0.05] bg-gradient-to-b from-[#040813]/90 via-[#040813]/40 to-transparent'
         }`}

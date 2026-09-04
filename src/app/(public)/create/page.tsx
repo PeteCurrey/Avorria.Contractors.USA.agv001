@@ -2,6 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import { Metadata } from 'next';
 import { siteConfig } from '@/config/site';
+import { CinematicPageHero } from '@/components/hero/CinematicPageHero';
 
 export const metadata: Metadata = {
   title: 'Create Professional Contractor Documents | Avorria Document Engine',
@@ -105,34 +106,16 @@ export default function CreatePage() {
 
   return (
     <div className="w-full bg-white text-navy-800">
-      {/* Hero Header (Dark Anchor) */}
-      <section className="py-20 lg:py-28 bg-[#070c18] text-white border-b border-navy-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded bg-white/[0.06] border border-white/10 text-xs font-mono text-slate-300">
-            <span>AVORRIA DOCUMENT ENGINE</span>
-          </div>
-          <h1 className="text-4xl sm:text-6xl font-black tracking-tight text-white max-w-4xl leading-tight">
-            Create professional contractor documents in minutes.
-          </h1>
-          <p className="text-lg sm:text-xl text-slate-300 max-w-3xl leading-relaxed font-normal">
-            Deterministic trade templates, real-world regulatory codes, and automated formatting. Create, review, digitally sign, and export audit-ready documents built for American job sites.
-          </p>
-          <div className="flex flex-wrap items-center gap-4 pt-2">
-            <Link
-              href="/tools/job-hazard-analysis-jha-generator"
-              className="inline-flex items-center justify-center font-bold px-6 py-3 rounded bg-brand-600 hover:bg-brand-500 text-white text-sm shadow-sm transition-colors"
-            >
-              Try Free JHA Generator
-            </Link>
-            <Link
-              href="/sign-up"
-              className="inline-flex items-center justify-center font-semibold px-6 py-3 rounded bg-white/[0.06] hover:bg-white/[0.12] text-slate-200 border border-white/20 text-sm transition-colors"
-            >
-              Sign Up for Document Vault
-            </Link>
-          </div>
-        </div>
-      </section>
+      <CinematicPageHero
+        eyebrow="AVORRIA DOCUMENT ENGINE"
+        title={<>Create professional contractor<br />documents in minutes.</>}
+        subtitle="Deterministic trade templates, real-world regulatory codes, and automated formatting. Create, review, digitally sign, and export audit-ready documents built for American job sites."
+        primaryCta={{ label: 'Try Free JHA Generator', href: '/tools/job-hazard-analysis-jha-generator' }}
+        secondaryCta={{ label: 'Sign Up for Document Vault', href: '/sign-up' }}
+        backgroundImage="/images/hero-create.jpg"
+        backgroundAlt="Safety officer reviewing Job Hazard Analysis on a commercial construction site"
+        trustItems={['JHA Generator', 'Safety Plans (HASP)', 'Commercial Quotes', 'Change Orders', 'Toolbox Talks']}
+      />
 
       {/* Main Document Groups */}
       <div className="py-20 lg:py-28 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-24">

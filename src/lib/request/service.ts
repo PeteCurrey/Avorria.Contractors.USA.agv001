@@ -478,3 +478,5 @@ export async function removeAttachment(
   }
   return removed;
 }
+
+export { getRequirementPackById, getRequirementPackById as getRequirementPack } from './repository';

@@ -2,6 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import { Metadata } from 'next';
 import { siteConfig } from '@/config/site';
+import { CinematicPageHero } from '@/components/hero/CinematicPageHero';
 
 export const metadata: Metadata = {
   title: 'Contractor Compliance & Readiness Monitoring | Avorria Comply',
@@ -58,34 +59,16 @@ export default function ComplyPage() {
 
   return (
     <div className="w-full bg-white text-navy-800">
-      {/* Hero Section (Dark Anchor) */}
-      <section className="py-20 lg:py-28 bg-[#070c18] text-white border-b border-navy-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded bg-white/[0.06] border border-white/10 text-xs font-mono text-slate-300">
-            <span>PILLAR 03 / COMPLIANCE & READINESS</span>
-          </div>
-          <h1 className="text-4xl sm:text-6xl font-black tracking-tight text-white max-w-4xl leading-tight">
-            Know what you need. Know what&apos;s current.
-          </h1>
-          <p className="text-lg sm:text-xl text-slate-300 max-w-3xl leading-relaxed font-normal">
-            Contractor compliance is not one-size-fits-all. Avorria organizes your business records by distinguishing legal statutory rules, trade engineering standards, client contract requirements, and internal platform readiness.
-          </p>
-          <div className="flex flex-wrap items-center gap-4 pt-2">
-            <Link
-              href="/sign-up"
-              className="inline-flex items-center justify-center font-bold px-6 py-3 rounded bg-brand-600 hover:bg-brand-500 text-white text-sm shadow-sm transition-colors"
-            >
-              Start Tracking Compliance Free
-            </Link>
-            <Link
-              href="/guides/contractor-compliance-checklist"
-              className="inline-flex items-center justify-center font-semibold px-6 py-3 rounded bg-white/[0.06] hover:bg-white/[0.12] text-slate-200 border border-white/20 text-sm transition-colors"
-            >
-              View Compliance Checklist
-            </Link>
-          </div>
-        </div>
-      </section>
+      <CinematicPageHero
+        eyebrow="PILLAR 03 / COMPLIANCE & READINESS"
+        title={<>Know what you need.<br />Know what's current.</>}
+        subtitle="Contractor compliance is not one-size-fits-all. Avorria organizes your business records by distinguishing legal statutory rules, trade engineering standards, client contract requirements, and internal platform readiness."
+        primaryCta={{ label: 'Start Tracking Compliance Free', href: '/sign-up' }}
+        secondaryCta={{ label: 'View Compliance Checklist', href: '/guides/contractor-compliance-checklist' }}
+        backgroundImage="/images/hero-comply.jpg"
+        backgroundAlt="Compliance audit review on commercial construction job site"
+        trustItems={['COI Tracking', 'License Monitoring', 'OSHA Alignment', 'Readiness Score', 'Renewal Alerts']}
+      />
 
       {/* Contextual Compliance Framework (Light Theme) */}
       <section className="py-20 lg:py-28 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-16">

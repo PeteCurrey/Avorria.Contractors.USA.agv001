@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { Metadata } from 'next';
 import { siteConfig } from '@/config/site';
 import { Button } from '@/components/ui/Button';
+import { CinematicPageHero } from '@/components/hero/CinematicPageHero';
 
 export const metadata: Metadata = {
   title: 'Free Interactive Tools & Safety Generators for Contractors | Avorria',
@@ -79,21 +80,16 @@ const TOOLS = [
 export default function ToolsIndexPage() {
   return (
     <div className="min-h-screen bg-surface-page text-navy-800">
-      {/* Light Hero Header */}
-      <section className="bg-white border-b border-slate-200 py-16 lg:py-24 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-5xl mx-auto text-center space-y-6">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded bg-slate-100 border border-slate-200 text-slate-700 font-mono text-xs uppercase tracking-wider">
-            Contractor Utilities · 100% Free to Use
-          </div>
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-navy-900 tracking-tight leading-tight">
-            Free tools for <br className="hidden sm:inline" />
-            <span className="text-brand-600">American trade contractors.</span>
-          </h1>
-          <p className="text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed font-normal">
-            Field-tested digital utilities engineered to streamline job hazard evaluations, calculate accurate commercial profit margins, and keep your crews compliant.
-          </p>
-        </div>
-      </section>
+      <CinematicPageHero
+        eyebrow="CONTRACTOR UTILITIES · 100% FREE TO USE"
+        title={<>Free tools for<br />American trade contractors.</>}
+        subtitle="Field-tested digital utilities engineered to streamline job hazard evaluations, calculate accurate commercial profit margins, and keep your crews compliant."
+        primaryCta={{ label: 'Launch Free JHA Generator', href: '/tools/job-hazard-analysis-jha-generator' }}
+        secondaryCta={{ label: 'Quote & Margin Calculator', href: '/tools/contractor-quote-calculator' }}
+        backgroundImage="/images/hero-tools.jpg"
+        backgroundAlt="Trade contractor tools and job site digital utilities"
+        trustItems={['JHA Generator', 'Quote Calculator', 'Compliance Checklist', 'JSA Builder', 'Safety Plan Manual', 'Toolbox Talk Log']}
+      />
 
       {/* Featured Primary Tool: JHA Generator */}
       <section className="py-12 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto">

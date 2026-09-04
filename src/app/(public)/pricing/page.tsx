@@ -4,62 +4,56 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { PRICING_PLANS } from '@/config/plans';
 import { Button } from '@/components/ui/Button';
+import { CinematicPageHero } from '@/components/hero/CinematicPageHero';
 
 export default function PricingPage() {
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'annual'>('annual');
 
   return (
     <div className="min-h-screen bg-surface-page text-navy-800">
-      {/* Light Hero Header */}
-      <section className="bg-white border-b border-slate-200 py-16 lg:py-24 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-4xl mx-auto text-center space-y-6">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded bg-slate-100 border border-slate-200 text-slate-700 font-mono text-xs uppercase tracking-wider">
-            Predictable Contractor Subscriptions
-          </div>
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-navy-900 tracking-tight leading-tight">
-            Transparent pricing for <br className="hidden sm:inline" />
-            <span className="text-brand-600">serious contractors.</span>
-          </h1>
-          <p className="text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed">
-            From independent specialty trades generating their first JHA to growing multi-crew firms managing commercial pre-qualification dossiers.
-          </p>
-
-          {/* Billing Interval Toggle */}
-          <div className="pt-6 flex items-center justify-center gap-3">
-            <span
-              className={`text-sm font-semibold transition-colors ${
-                billingCycle === 'monthly' ? 'text-navy-900' : 'text-slate-500'
+      <CinematicPageHero
+        eyebrow="PREDICTABLE CONTRACTOR SUBSCRIPTIONS"
+        title={<>Transparent pricing for<br />serious contractors.</>}
+        subtitle="From independent specialty trades generating their first JHA to growing multi-crew firms managing commercial pre-qualification dossiers."
+        backgroundImage="/images/hero-pricing.jpg"
+        backgroundAlt="Commercial construction project planning and predictable contractor investment"
+        trustItems={['Cancel Anytime', '30-Day Money Back', 'Instant Activation', 'No Setup Fees', 'Commercial Pre-Qual Ready']}
+      >
+        {/* Billing Interval Toggle (Dark Themed within Hero) */}
+        <div className="pt-2 flex items-center gap-3">
+          <span
+            className={`text-xs sm:text-sm font-light transition-colors ${
+              billingCycle === 'monthly' ? 'text-white font-normal' : 'text-slate-400'
+            }`}
+          >
+            Monthly Billing
+          </span>
+          <button
+            type="button"
+            role="switch"
+            aria-checked={billingCycle === 'annual'}
+            onClick={() => setBillingCycle(billingCycle === 'monthly' ? 'annual' : 'monthly')}
+            className="w-14 h-7 min-h-[28px] max-h-[28px] shrink-0 rounded-full bg-white/20 border border-white/30 p-1 transition-colors relative inline-flex items-center focus:outline-none focus:ring-2 focus:ring-[#38bdf8]/50 cursor-pointer backdrop-blur-sm"
+            aria-label="Toggle Billing Interval"
+          >
+            <div
+              className={`w-5 h-5 rounded-full bg-[#0284c7] transition-transform duration-200 shadow-sm ${
+                billingCycle === 'annual' ? 'translate-x-7' : 'translate-x-0'
               }`}
-            >
-              Monthly Billing
+            />
+          </button>
+          <span
+            className={`text-xs sm:text-sm font-light flex items-center gap-2 transition-colors ${
+              billingCycle === 'annual' ? 'text-white font-normal' : 'text-slate-400'
+            }`}
+          >
+            <span>Annual Billing</span>
+            <span className="text-[10px] sm:text-[11px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-mono">
+              Save ~20%
             </span>
-            <button
-              type="button"
-              role="switch"
-              aria-checked={billingCycle === 'annual'}
-              onClick={() => setBillingCycle(billingCycle === 'monthly' ? 'annual' : 'monthly')}
-              className="w-14 h-7 min-h-[28px] max-h-[28px] shrink-0 rounded-full bg-slate-200 border border-slate-300 p-1 transition-colors relative inline-flex items-center focus:outline-none focus:ring-2 focus:ring-brand-500/50 cursor-pointer"
-              aria-label="Toggle Billing Interval"
-            >
-              <div
-                className={`w-5 h-5 rounded-full bg-brand-600 transition-transform duration-200 shadow-sm ${
-                  billingCycle === 'annual' ? 'translate-x-7' : 'translate-x-0'
-                }`}
-              />
-            </button>
-            <span
-              className={`text-sm font-semibold flex items-center gap-2 transition-colors ${
-                billingCycle === 'annual' ? 'text-navy-900' : 'text-slate-500'
-              }`}
-            >
-              <span>Annual Billing</span>
-              <span className="text-[11px] px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-mono font-bold">
-                Save ~20%
-              </span>
-            </span>
-          </div>
+          </span>
         </div>
-      </section>
+      </CinematicPageHero>
 
       {/* Pricing Plans Grid */}
       <section className="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">

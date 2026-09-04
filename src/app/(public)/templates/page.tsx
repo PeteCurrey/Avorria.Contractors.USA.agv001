@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { Metadata } from 'next';
 import { siteConfig } from '@/config/site';
 import { Button } from '@/components/ui/Button';
+import { CinematicPageHero } from '@/components/hero/CinematicPageHero';
 
 export const metadata: Metadata = {
   title: 'Contractor Document Templates (OSHA & Commercial Forms) | Avorria',
@@ -97,21 +98,16 @@ export default function TemplatesIndexPage() {
 
   return (
     <div className="min-h-screen bg-surface-page text-navy-800">
-      {/* Light Hero Header */}
-      <section className="bg-white border-b border-slate-200 py-16 lg:py-24 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-5xl mx-auto text-center space-y-6">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded bg-slate-100 border border-slate-200 text-slate-700 font-mono text-xs uppercase tracking-wider">
-            Document Template Library
-          </div>
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-navy-900 tracking-tight leading-tight">
-            Professional contractor templates, <br className="hidden sm:inline" />
-            <span className="text-brand-600">ready to deploy.</span>
-          </h1>
-          <p className="text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed font-normal">
-            Standardized, legally vetted, and OSHA-aligned document templates designed for commercial and specialty trade contractors in the United States.
-          </p>
-        </div>
-      </section>
+      <CinematicPageHero
+        eyebrow="DOCUMENT TEMPLATE LIBRARY"
+        title={<>Professional contractor templates,<br />ready to deploy.</>}
+        subtitle="Standardized, legally vetted, and OSHA-aligned document templates designed for commercial and specialty trade contractors in the United States."
+        primaryCta={{ label: 'Explore All Templates', href: '/templates#templates' }}
+        secondaryCta={{ label: 'Try JHA Generator', href: '/tools/job-hazard-analysis-jha-generator' }}
+        backgroundImage="/images/hero-templates.jpg"
+        backgroundAlt="Architectural blueprints and standardized contractor document templates"
+        trustItems={['Job Hazard Analysis', 'Job Safety Analysis', 'Site Safety Plan', 'Toolbox Talk Roster', 'Commercial Proposal', 'Change Order']}
+      />
 
       {/* Templates Grouped by Category */}
       <section className="py-16 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto space-y-16">

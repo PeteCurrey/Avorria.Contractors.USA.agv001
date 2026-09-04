@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { Metadata } from 'next';
 import { siteConfig } from '@/config/site';
 import { Button } from '@/components/ui/Button';
+import { CinematicPageHero } from '@/components/hero/CinematicPageHero';
 
 export const metadata: Metadata = {
   title: 'Win More High-Value Contractor Bids | Avorria Win Work',
@@ -16,31 +17,16 @@ export const metadata: Metadata = {
 export default function WinWorkPage() {
   return (
     <div className="min-h-screen bg-surface-page text-navy-800">
-      {/* Dark Anchor Hero */}
-      <section className="bg-[#070c18] text-white py-20 lg:py-28 px-4 sm:px-6 lg:px-8 border-b border-slate-800">
-        <div className="max-w-5xl mx-auto space-y-6">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded bg-brand-500/10 border border-brand-500/20 text-brand-400 font-mono text-xs uppercase tracking-wider">
-            Operational Pillar 04 · Win Work
-          </div>
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-[1.1]">
-            Look ready when the <br className="hidden sm:inline" />
-            <span className="text-white">opportunity arrives.</span>
-          </h1>
-          <p className="text-lg sm:text-xl text-slate-300 max-w-3xl leading-relaxed font-light">
-            Tier-1 general contractors and commercial project owners do not award bids solely on price.
-            They award to trade contractors who eliminate risk through structured safety planning,
-            verified compliance, and immediate pre-qualification readiness.
-          </p>
-          <div className="pt-4 flex flex-wrap items-center gap-4">
-            <Button href="/sign-up" size="lg" variant="primary">
-              Build Your Pre-Qual Pack
-            </Button>
-            <Button href="/tools/contractor-quote-calculator" size="lg" variant="secondary-dark">
-              Try Quote & Margin Calculator
-            </Button>
-          </div>
-        </div>
-      </section>
+      <CinematicPageHero
+        eyebrow="OPERATIONAL PILLAR 05 · WIN WORK"
+        title={<>Look ready when the<br />opportunity arrives.</>}
+        subtitle="Tier-1 general contractors and commercial project owners do not award bids solely on price. They award to trade contractors who eliminate risk through structured safety planning, verified compliance, and immediate pre-qualification readiness."
+        primaryCta={{ label: 'Build Your Pre-Qual Pack', href: '/sign-up' }}
+        secondaryCta={{ label: 'Try Quote & Margin Calculator', href: '/tools/contractor-quote-calculator' }}
+        backgroundImage="/images/hero-win-work.jpg"
+        backgroundAlt="NYC skyline construction cranes at golden hour sunset"
+        trustItems={['Pre-Qual Packs', 'Commercial Proposals', 'Quote Calculator', 'Verified Passport', 'Change Orders']}
+      />
 
       {/* Main Narrative: Three Strategic Levers */}
       <section className="py-20 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto">

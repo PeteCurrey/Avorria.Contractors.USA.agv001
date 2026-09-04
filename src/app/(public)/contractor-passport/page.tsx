@@ -2,6 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import { Metadata } from 'next';
 import { siteConfig } from '@/config/site';
+import { CinematicPageHero } from '@/components/hero/CinematicPageHero';
 
 export const metadata: Metadata = {
   title: 'Contractor Passport | Professional Credential Infrastructure | Avorria',
@@ -50,34 +51,16 @@ export default function ContractorPassportPage() {
 
   return (
     <div className="w-full bg-white text-navy-800">
-      {/* Hero Header (Dark Anchor) */}
-      <section className="py-20 lg:py-28 bg-[#070c18] text-white border-b border-navy-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded bg-white/[0.06] border border-white/10 text-xs font-mono text-slate-300">
-            <span>THE AVORRIA CONTRACTOR PASSPORT</span>
-          </div>
-          <h1 className="text-4xl sm:text-6xl font-black tracking-tight text-white max-w-4xl leading-tight">
-            Your business. Your credentials. One professional Passport.
-          </h1>
-          <p className="text-lg sm:text-xl text-slate-300 max-w-3xl leading-relaxed font-normal">
-            Eliminate disorganized PDF attachments, lost insurance certificates, and amateur email threads. The Contractor Passport organizes the verifiable facts of your business into an authoritative digital credential.
-          </p>
-          <div className="flex flex-wrap items-center gap-4 pt-2">
-            <Link
-              href="/sign-up"
-              className="inline-flex items-center justify-center font-bold px-6 py-3 rounded bg-brand-600 hover:bg-brand-500 text-white text-sm shadow-sm transition-colors"
-            >
-              Build Your Passport Free
-            </Link>
-            <Link
-              href="/prove"
-              className="inline-flex items-center justify-center font-semibold px-6 py-3 rounded bg-white/[0.06] hover:bg-white/[0.12] text-slate-200 border border-white/20 text-sm transition-colors"
-            >
-              How Verification Works
-            </Link>
-          </div>
-        </div>
-      </section>
+      <CinematicPageHero
+        eyebrow="THE AVORRIA CONTRACTOR PASSPORT"
+        title={<>Your business. Your credentials.<br />One professional Passport.</>}
+        subtitle="Eliminate disorganized PDF attachments, lost insurance certificates, and amateur email threads. The Contractor Passport organizes the verifiable facts of your business into an authoritative digital credential."
+        primaryCta={{ label: 'Build Your Passport Free', href: '/sign-up' }}
+        secondaryCta={{ label: 'How Verification Works', href: '/prove' }}
+        backgroundImage="/images/hero-passport.jpg"
+        backgroundAlt="Contractor credential dossier and verification workbench"
+        trustItems={['Created', 'Complete', 'Published', 'Verified']}
+      />
 
       {/* The 4 Lifecycle States: Created → Complete → Published → Verified */}
       <section className="py-20 lg:py-28 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-16">
