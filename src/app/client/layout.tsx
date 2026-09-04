@@ -25,6 +25,7 @@ export const metadata: Metadata = {
 
 const CLIENT_NAV_ITEMS = [
   { title: 'Dashboard', href: '/client', icon: '📊' },
+  { title: 'Project Requests', href: '/client/requests', icon: '📋' },
   { title: 'My Contractors', href: '/client/contractors', icon: '👥' },
   { title: 'Opportunities', href: '/client/opportunities', icon: '🎯' },
   { title: 'Discover Directory', href: '/contractors', icon: '🔍' },

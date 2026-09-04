@@ -37,7 +37,13 @@ export type AnalyticsEventType =
   | 'contractor_invited_to_opportunity'
   | 'opportunity_response_received'
   | 'opportunity_viewed_by_contractor'
-  | 'opportunity_closed';
+  | 'opportunity_closed'
+  | 'requirement_pack_created'
+  | 'requirement_pack_marked_ready'
+  | 'requirement_pack_activated'
+  | 'requirement_pack_closed'
+  | 'requirement_pack_cancelled'
+  | 'requirement_pack_duplicated';
 
 export interface AnalyticsEvent {
   event: AnalyticsEventType;

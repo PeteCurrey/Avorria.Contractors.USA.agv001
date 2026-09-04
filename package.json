@@ -17,7 +17,8 @@
     "test:verification": "tsx scripts/test-verification-engine.ts",
     "test:directory": "tsx scripts/test-directory-engine.ts",
     "test:connect": "tsx scripts/test-connect-engine.ts",
-    "test": "npm run test:security && npm run test:core-loop && npm run test:engine && npm run test:verification && npm run test:directory && npm run test:connect"
+    "test:request": "tsx scripts/test-request-engine.ts",
+    "test": "npm run test:security && npm run test:core-loop && npm run test:engine && npm run test:verification && npm run test:directory && npm run test:connect && npm run test:request"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.123.0",

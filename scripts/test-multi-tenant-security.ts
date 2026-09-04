@@ -89,6 +89,16 @@ function evaluateRlsPolicy(
     return true;
   }
 
+  // Phase 9: requirement_pack_events is append-only (no UPDATE or DELETE)
+  if (table === 'requirement_pack_events' && (operation === 'UPDATE' || operation === 'DELETE')) {
+    return false;
+  }
+
+  // Phase 9: Contractors have ZERO access to client requirement packs
+  if (table.startsWith('requirement_pack') && ['contractor_owner', 'contractor_admin', 'employee_user'].includes(user.role)) {
+    return false;
+  }
+
   // Tenant-owned tables require strict membership match
   const isMember = user.activeOrgId === recordOrgId && user.role !== 'anonymous';
   const isAdmin = isMember && ['contractor_owner', 'contractor_admin', 'client_admin'].includes(user.role);
@@ -142,6 +152,12 @@ const TENANT_TABLES = [
   'opportunities',
   'opportunity_invitations',
   'connect_notifications',
+  // Phase 9 Request & Requirement Pack Tables
+  'requirement_packs',
+  'requirement_pack_trades',
+  'requirement_pack_requirements',
+  'requirement_pack_attachments',
+  'requirement_pack_events',
 ];
 
 export function runSecurityVerification(): SecurityAssertionResult[] {
@@ -586,13 +602,87 @@ export function runSecurityVerification(): SecurityAssertionResult[] {
     passed: canContractorUpdateOpp === false,
   });
 
-  // Test 37: Unrelated contractor cannot respond to or update another contractor\'s invitation
+  // Test 37: Unrelated contractor cannot respond to or update another contractor's invitation
   const canOrgCUpdateInvitation = evaluateRlsPolicy('opportunity_invitations', 'UPDATE', CONTRACTOR_C_USER, ORG_A_ID);
   results.push({
     table: 'opportunity_invitations',
     operation: 'UPDATE',
     testDescription: 'Unrelated contractor C CANNOT update or respond to invitations sent to Contractor A',
     passed: canOrgCUpdateInvitation === false,
+  });
+
+  // ─── PHASE 9 REQUEST & REQUIREMENT PACK ASSERTIONS ──────────────
+  // Test 38: Client B cannot SELECT Client A requirement packs
+  const canClientBSelectReqPack = evaluateRlsPolicy('requirement_packs', 'SELECT', CLIENT_B_USER, ORG_A_ID);
+  results.push({
+    table: 'requirement_packs',
+    operation: 'SELECT',
+    testDescription: 'Client B CANNOT SELECT requirement packs created by Client A',
+    passed: canClientBSelectReqPack === false,
+  });
+
+  // Test 39: Client B cannot UPDATE Client A requirement packs
+  const canClientBUpdateReqPack = evaluateRlsPolicy('requirement_packs', 'UPDATE', CLIENT_B_USER, ORG_A_ID);
+  results.push({
+    table: 'requirement_packs',
+    operation: 'UPDATE',
+    testDescription: 'Client B CANNOT UPDATE requirement packs created by Client A',
+    passed: canClientBUpdateReqPack === false,
+  });
+
+  // Test 40: Contractor C CANNOT view or enumerate Client A requirement packs (zero visibility)
+  const canContractorSelectReqPack = evaluateRlsPolicy('requirement_packs', 'SELECT', CONTRACTOR_C_USER, ORG_A_ID);
+  results.push({
+    table: 'requirement_packs',
+    operation: 'SELECT',
+    testDescription: 'Contractors have ZERO visibility into client requirement packs (SELECT rejected)',
+    passed: canContractorSelectReqPack === false,
+  });
+
+  // Test 41: Contractor C CANNOT insert or update requirements in Client A requirement pack
+  const canContractorInsertReq = evaluateRlsPolicy('requirement_pack_requirements', 'INSERT', CONTRACTOR_C_USER, ORG_A_ID);
+  results.push({
+    table: 'requirement_pack_requirements',
+    operation: 'INSERT',
+    testDescription: 'Contractors CANNOT insert or author requirements in a client requirement pack',
+    passed: canContractorInsertReq === false,
+  });
+
+  // Test 42: Anonymous visitor cannot SELECT requirement packs
+  const canAnonSelectReqPack = evaluateRlsPolicy('requirement_packs', 'SELECT', ANONYMOUS_USER, ORG_A_ID);
+  results.push({
+    table: 'requirement_packs',
+    operation: 'SELECT',
+    testDescription: 'Anonymous visitor CANNOT view private requirement packs',
+    passed: canAnonSelectReqPack === false,
+  });
+
+  // Test 43: Anonymous visitor cannot INSERT requirement packs
+  const canAnonInsertReqPack = evaluateRlsPolicy('requirement_packs', 'INSERT', ANONYMOUS_USER, ORG_A_ID);
+  results.push({
+    table: 'requirement_packs',
+    operation: 'INSERT',
+    testDescription: 'Anonymous visitor CANNOT create requirement packs',
+    passed: canAnonInsertReqPack === false,
+  });
+
+  // Test 44: Client B cannot access Client A requirement pack attachments
+  const canClientBSelectAttachments = evaluateRlsPolicy('requirement_pack_attachments', 'SELECT', CLIENT_B_USER, ORG_A_ID);
+  results.push({
+    table: 'requirement_pack_attachments',
+    operation: 'SELECT',
+    testDescription: 'Client B CANNOT access private site attachments of Client A requirement packs',
+    passed: canClientBSelectAttachments === false,
+  });
+
+  // Test 45: Append-only event log cannot be updated or deleted by any user
+  const canClientAUpdateEvent = evaluateRlsPolicy('requirement_pack_events', 'UPDATE', CLIENT_A_USER, ORG_A_ID);
+  const canClientADeleteEvent = evaluateRlsPolicy('requirement_pack_events', 'DELETE', CLIENT_A_USER, ORG_A_ID);
+  results.push({
+    table: 'requirement_pack_events',
+    operation: 'UPDATE',
+    testDescription: 'Requirement pack audit events are strictly append-only (UPDATE and DELETE forbidden)',
+    passed: canClientAUpdateEvent === false && canClientADeleteEvent === false,
   });
 
   return results;

@@ -503,7 +503,130 @@ async function runCoreLoopTest() {
   }
   console.log(`   ✓ Opportunity closed: Status "${closedOpp.status}" (No public bidding or tender award leak)`);
 
-  console.log('\n🎉 ALL 30 CONTRACTOR OPERATING, CREATION, PROVE, DISCOVER & CONNECT MILESTONES COMPLETED WITH REAL PERSISTENCE.');
+  // ─────────────────────────────────────────────────────────────
+  // PHASE 9: REQUEST — STRUCTURED PROJECT REQUESTS & REQUIREMENT PACKS
+  // ─────────────────────────────────────────────────────────────
+  const {
+    createRequirementPack,
+    transitionPackStatus,
+    duplicateRequirementPack,
+  } = await import('../src/lib/request/service');
+  const { evaluateRequestReadiness } = await import('../src/lib/request/readiness');
+  const { previewContractorMatchesForPack } = await import('../src/lib/request/matching-preview');
+
+  // 30. Phase 9 Milestone 31: Client Authors Structured Requirement Pack
+  console.log('\n31. Phase 9 Request Engine: Client authors structured project request & requirement pack...');
+  const reqPack = await createRequirementPack(
+    CLIENT_ORG_ID,
+    'user-client-eleanor',
+    {
+      title: 'Austin Medical Center Switchgear Replacement',
+      project_type: 'Commercial Facility Renovation',
+      description: 'Turnkey replacement of 480V service entrance switchgear.',
+      scope: 'Complete removal of existing gear, supply and install new 3000A switchboard, coordination study, and commissioning.',
+      state: 'TX',
+      city: 'Austin',
+      site_address: '1500 Red River St',
+      site_access_notes: 'Hospital facility: strict infection control and night-work schedule required.',
+      target_start_date: '2026-10-15',
+      target_completion_date: '2026-11-30',
+      urgency: 'within_30_days',
+      flexibility: 'negotiable',
+      value_tier: 'tier_3_100k_250k',
+    },
+    ['electrical-contracting'],
+    [
+      {
+        category: 'insurance',
+        title: 'Commercial General Liability ($2,000,000 Occurrence)',
+        description: 'Minimum $2M per occurrence, $4M general aggregate.',
+        strength: 'required',
+        minimum_value: '$2,000,000 per occurrence',
+        evidence_required: true,
+        provenance: 'client',
+      },
+      {
+        category: 'licence',
+        title: 'Texas Master Electrician Contractor License',
+        description: 'Active license with TDLR in good standing.',
+        strength: 'required',
+        jurisdiction: 'TX',
+        evidence_required: true,
+        provenance: 'client',
+      },
+      {
+        category: 'safety',
+        title: 'Site-Specific Health & Safety Plan (HASP)',
+        description: 'Hospital infection control and electrical safety plan compliant with NFPA 70E.',
+        strength: 'required',
+        evidence_required: true,
+        provenance: 'client',
+      },
+    ]
+  );
+  if (!reqPack || reqPack.status !== 'draft') {
+    throw new Error('FAILED: Requirement pack creation failed or status not draft!');
+  }
+  console.log(`   ✓ Requirement Pack created: ${reqPack.reference} ("${reqPack.title}") with 3 structured requirements`);
+
+  // 31. Phase 9 Milestone 32: Deterministic Readiness Check
+  console.log('\n32. Phase 9 Readiness Evaluation: Assessing requirement pack readiness...');
+  const readiness = evaluateRequestReadiness(reqPack);
+  if (!readiness.isReady || readiness.completionPercent !== 100) {
+    throw new Error(`FAILED: Requirement pack should be 100% ready, got ${readiness.completionPercent}% (${readiness.statusMessage})`);
+  }
+  console.log(`   ✓ Readiness confirmed: ${readiness.completionPercent}% (${readiness.statusMessage}, ${readiness.checklist.length} criteria passed)`);
+
+  // 32. Phase 9 Milestone 33: Preliminary Candidate Matching & Requirement-to-Evidence Matrix
+  console.log('\n33. Phase 9 Candidate Match Preview: Running Requirement-to-Evidence Matrix...');
+  const matchPreview = await previewContractorMatchesForPack(reqPack);
+  if (matchPreview.candidates.length === 0) {
+    throw new Error('FAILED: Expected matching candidate contractors in directory!');
+  }
+  const previewCandidate = matchPreview.candidates.find((c) => c.slug === orgSlug);
+  if (!previewCandidate) {
+    throw new Error('FAILED: Contractor workspace not found in preliminary match preview!');
+  }
+  if (!previewCandidate.overallEligible || previewCandidate.requirementMatrix.length !== 3) {
+    throw new Error('FAILED: Candidate contractor should be overallEligible with 3 requirement matrix rows!');
+  }
+  console.log(`   ✓ Preliminary candidate preview generated: ${matchPreview.candidates.length} candidates evaluated`);
+  console.log(`   ✓ Target contractor "${previewCandidate.businessName}" matched: Eligible = ${previewCandidate.overallEligible}, Evidence aligned/declared = ${previewCandidate.alignedCount + previewCandidate.declaredCount}`);
+
+  // 33. Phase 9 Milestone 34: Request Pack Duplication Integrity
+  console.log('\n34. Phase 9 Duplication Integrity: Client duplicates requirement pack for recurring scope...');
+  const duplicatedPack = await duplicateRequirementPack(reqPack.id, CLIENT_ORG_ID, 'user-client-eleanor');
+  if (duplicatedPack.id === reqPack.id || duplicatedPack.reference === reqPack.reference) {
+    throw new Error('FAILED: Duplicated pack must have unique ID and reference code!');
+  }
+  if (duplicatedPack.status !== 'draft' || duplicatedPack.requirements?.length !== 3) {
+    throw new Error('FAILED: Duplicated pack must reset to draft and retain requirements!');
+  }
+  console.log(`   ✓ Requirement Pack duplicated: New Ref ${duplicatedPack.reference} (Title: "${duplicatedPack.title}")`);
+
+  // 34. Phase 9 Milestone 35: Deterministic Lifecycle Transitions & Terminal State Protection
+  console.log('\n35. Phase 9 Lifecycle Transitions: Progressing pack from draft -> ready -> active -> closed...');
+  const readyPack = await transitionPackStatus(reqPack.id, CLIENT_ORG_ID, 'user-client-eleanor', 'ready');
+  if (readyPack.status !== 'ready') throw new Error('FAILED: Expected status "ready"');
+
+  const activePack = await transitionPackStatus(reqPack.id, CLIENT_ORG_ID, 'user-client-eleanor', 'active');
+  if (activePack.status !== 'active') throw new Error('FAILED: Expected status "active"');
+
+  const closedPack = await transitionPackStatus(reqPack.id, CLIENT_ORG_ID, 'user-client-eleanor', 'closed');
+  if (closedPack.status !== 'closed') throw new Error('FAILED: Expected status "closed"');
+
+  let illegalReopenFailed = false;
+  try {
+    await transitionPackStatus(reqPack.id, CLIENT_ORG_ID, 'user-client-eleanor', 'draft');
+  } catch {
+    illegalReopenFailed = true;
+  }
+  if (!illegalReopenFailed) {
+    throw new Error('FAILED: Terminal state protection failed — closed pack must not transition to draft!');
+  }
+  console.log(`   ✓ Lifecycle validated: draft -> ready -> active -> closed (Terminal protection verified: closed -> draft rejected)`);
+
+  console.log('\n🎉 ALL 35 CONTRACTOR OPERATING, CREATION, PROVE, DISCOVER, CONNECT & REQUEST MILESTONES COMPLETED WITH REAL PERSISTENCE.');
 }
 
 runCoreLoopTest().catch((err) => {
