@@ -6,9 +6,6 @@ import Image from 'next/image';
 import {
   PlayCircle,
   ArrowRight,
-  Zap,
-  ShieldCheck,
-  Flag,
   CheckCircle2,
 } from 'lucide-react';
 
@@ -95,31 +92,106 @@ export function CinematicHero() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-3 border-t border-white/10">
-            <div className="flex items-start gap-2.5">
-              <div className="p-1.5 rounded bg-amber-500/10 border border-amber-500/25 shrink-0 mt-0.5">
-                <Zap className="w-3.5 h-3.5 text-amber-400 fill-amber-400/30" />
+            <div className="flex items-start gap-3 group">
+              <div className="w-8 h-8 rounded-[5px] bg-[#0c1322]/90 border border-white/10 flex items-center justify-center shrink-0 mt-0.5 text-slate-300 transition-colors group-hover:border-sky-500/40 group-hover:text-white">
+                <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-4 h-4">
+                  <path
+                    d="M4 2.5C4 2.22386 4.22386 2 4.5 2H12.5L16 5.5V17.5C16 17.7761 15.7761 18 15.5 18H4.5C4.22386 18 4 17.7761 4 17.5V2.5Z"
+                    stroke="currentColor"
+                    strokeWidth="1.25"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  <path
+                    d="M12 2V5.5C12 5.77614 12.2239 6 12.5 6H16"
+                    stroke="currentColor"
+                    strokeWidth="1.25"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  <path d="M7 6.5H10" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" opacity="0.6" />
+                  <path d="M7 9.5H13" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" opacity="0.6" />
+                  <path
+                    d="M7 13.5H9.5M8.25 12.25V14.75"
+                    stroke="#38bdf8"
+                    strokeWidth="1.4"
+                    strokeLinecap="round"
+                  />
+                  <path d="M11 13.5H13" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" opacity="0.6" />
+                </svg>
               </div>
               <div className="space-y-0.5">
-                <h4 className="text-sm font-light text-white tracking-tight">Free JHA Generator</h4>
-                <p className="text-xs font-extralight text-slate-400 leading-snug">Create professional safety documents in minutes</p>
+                <h4 className="text-[14px] font-light text-white tracking-tight">Free JHA Generator</h4>
+                <p className="text-[12px] font-extralight text-slate-400 leading-snug">Create professional safety documents in minutes</p>
               </div>
             </div>
-            <div className="flex items-start gap-2.5">
-              <div className="p-1.5 rounded bg-sky-500/10 border border-sky-500/25 shrink-0 mt-0.5">
-                <ShieldCheck className="w-3.5 h-3.5 text-[#38bdf8]" />
+
+            <div className="flex items-start gap-3 group">
+              <div className="w-8 h-8 rounded-[5px] bg-[#0c1322]/90 border border-white/10 flex items-center justify-center shrink-0 mt-0.5 text-slate-300 transition-colors group-hover:border-sky-500/40 group-hover:text-white">
+                <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-4 h-4">
+                  <rect
+                    x="3"
+                    y="3"
+                    width="14"
+                    height="14"
+                    rx="2"
+                    stroke="currentColor"
+                    strokeWidth="1.25"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  <line x1="3" y1="7" x2="17" y2="7" stroke="currentColor" strokeWidth="1" opacity="0.4" />
+                  <path
+                    d="M10 9V14.2C10 14.2 12.8 13.2 12.8 11.2V9.8L10 9Z"
+                    stroke="currentColor"
+                    strokeWidth="1.2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    opacity="0.7"
+                  />
+                  <path
+                    d="M10 9V14.2C10 14.2 7.2 13.2 7.2 11.2V9.8L10 9Z"
+                    stroke="#38bdf8"
+                    strokeWidth="1.2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  <path
+                    d="M8.8 11.4L9.7 12.3L11.5 10.5"
+                    stroke="currentColor"
+                    strokeWidth="1.3"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
               </div>
               <div className="space-y-0.5">
-                <h4 className="text-sm font-light text-white tracking-tight">Contractor Passport</h4>
-                <p className="text-xs font-extralight text-slate-400 leading-snug">Build a verified profile clients trust</p>
+                <h4 className="text-[14px] font-light text-white tracking-tight">Contractor Passport</h4>
+                <p className="text-[12px] font-extralight text-slate-400 leading-snug">Build a verified profile clients trust</p>
               </div>
             </div>
-            <div className="flex items-start gap-2.5">
-              <div className="p-1.5 rounded bg-blue-500/10 border border-blue-500/25 shrink-0 mt-0.5">
-                <Flag className="w-3.5 h-3.5 text-blue-400" />
+
+            <div className="flex items-start gap-3 group">
+              <div className="w-8 h-8 rounded-[5px] bg-[#0c1322]/90 border border-white/10 flex items-center justify-center shrink-0 mt-0.5 text-slate-300 transition-colors group-hover:border-sky-500/40 group-hover:text-white">
+                <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-4 h-4">
+                  <path
+                    d="M3 17.5V7L10 3L17 7V17.5"
+                    stroke="currentColor"
+                    strokeWidth="1.25"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  <line x1="10" y1="3" x2="10" y2="17.5" stroke="currentColor" strokeWidth="1" opacity="0.4" strokeDasharray="1.5 1.5" />
+                  <line x1="3" y1="12" x2="17" y2="12" stroke="currentColor" strokeWidth="1.1" strokeLinecap="round" opacity="0.6" />
+                  <circle cx="5.5" cy="9.5" r="1.25" fill="#38bdf8" />
+                  <circle cx="10" cy="7.5" r="1.25" fill="currentColor" />
+                  <circle cx="14.5" cy="9.5" r="1.25" fill="#38bdf8" />
+                  <line x1="2" y1="17.5" x2="18" y2="17.5" stroke="currentColor" strokeWidth="1.25" strokeLinecap="round" />
+                </svg>
               </div>
               <div className="space-y-0.5">
-                <h4 className="text-sm font-light text-white tracking-tight">US-First Platform</h4>
-                <p className="text-xs font-extralight text-slate-400 leading-snug">Built for American contractors. No credit card required.</p>
+                <h4 className="text-[14px] font-light text-white tracking-tight">US-First Platform</h4>
+                <p className="text-[12px] font-extralight text-slate-400 leading-snug">Built for American contractors. No credit card required.</p>
               </div>
             </div>
           </div>

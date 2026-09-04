@@ -39,7 +39,8 @@ export type NotificationType =
   | 'expiring_30'
   | 'expiring_14'
   | 'expired'
-  | 'passport_viewed';
+  | 'passport_viewed'
+  | 'reorder_alert';
 
 export interface Organization {
   id: string;
