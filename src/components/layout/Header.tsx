@@ -39,7 +39,6 @@ export function Header() {
     { title: 'Create', href: '/create', hasDropdown: true },
     { title: 'Comply', href: '/comply', hasDropdown: true },
     { title: 'Prove', href: '/prove', hasDropdown: true },
-    { title: 'Directory', href: '/contractors', hasDropdown: false },
     { title: 'Win Work', href: '/win-work', hasDropdown: true },
     { title: 'Passport', href: '/contractor-passport', hasDropdown: false },
     { title: 'Tools', href: '/tools', hasDropdown: true },
