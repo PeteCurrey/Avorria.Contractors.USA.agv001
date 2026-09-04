@@ -3,171 +3,330 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 
+interface HazardStep {
+  taskStep: string;
+  hazardDescription: string;
+  controlMeasures: string[];
+  requiredPpe: string[];
+  oshaSubpart: string;
+}
+
+const PRESET_HAZARDS: Record<string, HazardStep[]> = {
+  'Electrical Contracting': [
+    {
+      taskStep: 'Main Feeder De-energization & Lockout/Tagout (LOTO)',
+      hazardDescription: 'Electrical shock, stored capacitive energy, and arc flash hazard up to 40 cal/cm².',
+      controlMeasures: [
+        'Open upstream disconnect and apply individual red Master Lock with danger tag.',
+        'Perform live-dead-live testing with calibrated Category IV 1000V multimeter.',
+        'Verify zero mechanical or capacitive stored energy before installing ground clusters.',
+      ],
+      requiredPpe: ['NFPA 70E Category 4 Arc Flash Suit & Hood (40 cal/cm²)', 'Class 2 Dielectric Gloves (17,000V rated)', 'EH Safety Boots'],
+      oshaSubpart: 'OSHA 29 CFR 1926 Subpart K (Electrical)',
+    },
+    {
+      taskStep: 'Overhead Conduit Bending & Trapeze Hanger Installation',
+      hazardDescription: 'Falls from height, falling tools, ergonomic strain, hand pinch points.',
+      controlMeasures: [
+        'Inspect scissor lift harness and anchor lanyard before elevation.',
+        'Establish 10ft ground exclusion barricade below aerial work zone.',
+        'Secure power tools with tool lanyards when working overhead.',
+      ],
+      requiredPpe: ['ANSI Z89.1 Class E Hard Hat', 'ANSI Z87.1 Safety Glasses with Side Shields', 'Cut-Resistant Level A4 Gloves'],
+      oshaSubpart: 'OSHA 29 CFR 1926 Subpart M (Fall Protection)',
+    },
+  ],
+  'HVAC & Mechanical': [
+    {
+      taskStep: 'Rooftop Package Chiller Rigging & Placement',
+      hazardDescription: 'Dropped heavy load, crane boom contact with overhead power lines, structural collapse.',
+      controlMeasures: [
+        'Verify crane outriggers deployed on certified timber crane mats.',
+        'Inspect wire rope slings and synthetic chokers prior to initial pick.',
+        'Enforce minimum 20ft clearance boundary from all overhead power conductors.',
+      ],
+      requiredPpe: ['High-Visibility Safety Vest (Class 2)', 'Steel-Toe Boots (ASTM F2413)', 'Hard Hat Type I'],
+      oshaSubpart: 'OSHA 29 CFR 1926 Subpart CC (Cranes & Derricks)',
+    },
+  ],
+  'Concrete & Masonry': [
+    {
+      taskStep: 'Dry Masonry Sawing & Concrete Core Drilling',
+      hazardDescription: 'Respirable crystalline silica dust inhalation, rotational kickback, high noise level.',
+      controlMeasures: [
+        'Utilize integrated wet-suppression water feed kit at all cutting heads.',
+        'Equip core drill with HEPA-filtered vacuum extraction shroud.',
+        'Enforce Table 1 engineering controls per OSHA 1926.1153.',
+      ],
+      requiredPpe: ['NIOSH N95 / Half-Mask Elastomeric Respirator', 'NRR 28dB Hearing Protection', 'Safety Goggles with Seal'],
+      oshaSubpart: 'OSHA 29 CFR 1926.1153 (Respirable Crystalline Silica)',
+    },
+  ],
+};
+
 export function PublicJhaToolClient() {
   const [trade, setTrade] = useState('Electrical Contracting');
-  const [taskName, setTaskName] = useState('Main Switchgear De-energization and Tie-in');
-  const [hazardType, setHazardType] = useState('Electrical Arc Flash / Shock');
-  const [isGenerated, setIsGenerated] = useState(false);
+  const [projectName, setProjectName] = useState('Centennial Plaza Commercial Complex');
+  const [competentPerson, setCompetentPerson] = useState('Marcus Vance, Lead Safety Supervisor');
+  const [taskDescription, setTaskDescription] = useState('Switchgear replacement and heavy feeder wire pull');
+  const [customControl, setCustomControl] = useState('');
+  const [isGenerated, setIsGenerated] = useState(true);
 
-  const sampleResult = {
-    project: 'Sample Field Demonstration Project',
-    task: taskName,
-    hazard: hazardType,
-    subpart: 'OSHA 1926 Subpart K (Electrical)',
-    controls: [
-      'De-energize upstream feeder breaker and apply Master Lock LOTO hasp.',
-      'Perform live-dead-live testing using calibrated Fluke multimeter.',
-      'Establish 10ft perimeter boundary with red danger tape and high-voltage warnings.',
-    ],
-    ppe: ['NFPA 70E Category 2 Arc Flash Shield', 'Class 0 Dielectric Gloves (1000V rated)', 'EH Safety Boots'],
+  const currentSteps = PRESET_HAZARDS[trade] || PRESET_HAZARDS['Electrical Contracting'];
+
+  const handlePrint = () => {
+    window.print();
   };
 
   return (
-    <div className="min-h-screen bg-[#030712] text-slate-100 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-4xl mx-auto space-y-8">
+    <div className="min-h-screen bg-[#030712] text-slate-100 py-10 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-5xl mx-auto space-y-8">
         {/* Header */}
-        <div className="text-center space-y-3">
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-slate-900 border border-slate-800 text-sky-400 font-mono text-xs font-bold uppercase tracking-wider">
-            FREE PUBLIC GENERATOR • WATERMARKED PREVIEW
+        <div className="space-y-3 print:hidden">
+          <div className="flex items-center gap-2 text-xs">
+            <Link href="/resources" className="text-slate-400 hover:text-sky-400 uppercase font-bold tracking-wider">
+              ← Resources Library
+            </Link>
+            <span className="text-slate-600">/</span>
+            <span className="text-sky-400 font-bold uppercase tracking-wider">Safety &amp; Compliance</span>
+            <span className="text-slate-600">/</span>
+            <span className="px-1.5 py-0.5 bg-slate-900 border border-slate-800 text-slate-400 font-bold uppercase text-[10px]">
+              OSHA 1926
+            </span>
           </div>
           <h1 className="text-3xl sm:text-4xl font-black text-white tracking-tight">
-            Online Job Hazard Analysis (JHA) Generator
+            Job Hazard Analysis (JHA) Generator
           </h1>
-          <p className="text-slate-400 text-sm sm:text-base max-w-2xl mx-auto">
-            Test-drive the OSHA 1926-aligned JHA engine. Generate single-use preview summaries or sign up to save, brand, and execute unlimited documents.
+          <p className="text-sm text-slate-400 max-w-3xl leading-relaxed">
+            Generate an OSHA 1926-aligned Job Hazard Analysis for pre-task planning. Break down scheduled work activities, identify physical hazards, enforce the hierarchy of controls, and generate clean jobsite documentation.
           </p>
         </div>
 
-        {/* Interactive Form Card */}
-        <div className="bg-[#090d16] border border-slate-800 p-6 space-y-4 font-mono text-xs">
-          <h2 className="text-xs font-bold text-slate-400 uppercase tracking-wider border-b border-slate-800 pb-2">
-            TASK CONFIGURATION (SINGLE-USE PREVIEW)
-          </h2>
+        {/* Input Configuration Card */}
+        <div className="bg-[#090d16] border border-slate-800 p-6 space-y-4 print:hidden">
+          <div className="flex items-center justify-between border-b border-slate-800 pb-2">
+            <h2 className="text-xs font-bold text-slate-300 uppercase tracking-wider">
+              Task Configuration &amp; Project Context
+            </h2>
+            <span className="text-[11px] text-slate-500">Field Pre-Task Briefing Standard</span>
+          </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
             <div>
-              <label className="block text-slate-400 mb-1">PRIMARY TRADE</label>
+              <label className="block text-slate-400 mb-1 font-bold uppercase text-[11px]">Primary Trade Scope</label>
               <select
                 value={trade}
                 onChange={(e) => setTrade(e.target.value)}
-                className="w-full bg-[#030712] border border-slate-800 px-3 py-2 text-slate-200"
+                className="w-full bg-[#030712] border border-slate-800 focus:border-sky-500 px-3 py-2 text-slate-200 outline-none"
               >
                 <option value="Electrical Contracting">Electrical Contracting</option>
-                <option value="HVAC & Mechanical">HVAC & Mechanical</option>
-                <option value="Roofing & Waterproofing">Roofing & Waterproofing</option>
-                <option value="Plumbing & Pipefitting">Plumbing & Pipefitting</option>
-                <option value="Concrete & Masonry">Concrete & Masonry</option>
-                <option value="Steel Erection & Rigging">Steel Erection & Rigging</option>
+                <option value="HVAC & Mechanical">HVAC &amp; Mechanical</option>
+                <option value="Concrete & Masonry">Concrete &amp; Masonry</option>
               </select>
             </div>
 
             <div>
-              <label className="block text-slate-400 mb-1">ANTICIPATED HAZARD</label>
-              <select
-                value={hazardType}
-                onChange={(e) => setHazardType(e.target.value)}
-                className="w-full bg-[#030712] border border-slate-800 px-3 py-2 text-slate-200"
-              >
-                <option value="Electrical Arc Flash / Shock">Electrical Arc Flash / Shock</option>
-                <option value="Fall from Height > 6ft">Fall from Height &gt; 6ft</option>
-                <option value="Struck-By Falling Objects">Struck-By Falling Objects</option>
-                <option value="Caught-In / Between Machinery">Caught-In / Between Machinery</option>
-                <option value="Silica Dust Exposure">Silica Dust Exposure</option>
-              </select>
-            </div>
-
-            <div className="sm:col-span-2">
-              <label className="block text-slate-400 mb-1">TASK STEP DESCRIPTION</label>
+              <label className="block text-slate-400 mb-1 font-bold uppercase text-[11px]">Project / Jobsite Name</label>
               <input
                 type="text"
-                value={taskName}
-                onChange={(e) => setTaskName(e.target.value)}
-                className="w-full bg-[#030712] border border-slate-800 px-3 py-2 text-slate-200"
+                value={projectName}
+                onChange={(e) => setProjectName(e.target.value)}
+                className="w-full bg-[#030712] border border-slate-800 focus:border-sky-500 px-3 py-2 text-slate-200 outline-none"
+              />
+            </div>
+
+            <div>
+              <label className="block text-slate-400 mb-1 font-bold uppercase text-[11px]">Competent Person / Lead Supervisor</label>
+              <input
+                type="text"
+                value={competentPerson}
+                onChange={(e) => setCompetentPerson(e.target.value)}
+                className="w-full bg-[#030712] border border-slate-800 focus:border-sky-500 px-3 py-2 text-slate-200 outline-none"
+              />
+            </div>
+
+            <div>
+              <label className="block text-slate-400 mb-1 font-bold uppercase text-[11px]">Specific Task Description</label>
+              <input
+                type="text"
+                value={taskDescription}
+                onChange={(e) => setTaskDescription(e.target.value)}
+                className="w-full bg-[#030712] border border-slate-800 focus:border-sky-500 px-3 py-2 text-slate-200 outline-none"
               />
             </div>
           </div>
 
-          <div className="pt-2 flex justify-end">
+          <div className="pt-2 flex justify-end gap-3">
             <button
               type="button"
-              onClick={() => setIsGenerated(true)}
-              className="px-6 py-2.5 bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold uppercase tracking-wider"
+              onClick={handlePrint}
+              className="px-4 py-2 bg-[#030712] hover:bg-slate-900 border border-slate-700 text-slate-300 text-xs font-bold uppercase tracking-wider transition-colors"
             >
-              Generate Free JHA Preview →
+              Print JHA Document
             </button>
           </div>
         </div>
 
-        {/* Output Preview with Watermark & Upsell CTA */}
-        {isGenerated && (
-          <div className="space-y-6">
-            {/* Watermark Banner */}
-            <div className="relative bg-[#090d16] border border-amber-800/80 p-6 space-y-4 overflow-hidden">
-              <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-10">
-                <span className="text-6xl font-mono font-black text-red-500 rotate-[-20deg] select-none">
-                  WATERMARKED PREVIEW • NOT SAVED
-                </span>
+        {/* Formatted Commercial Document Output */}
+        <div className="bg-white text-slate-900 border border-slate-300 shadow-2xl p-8 sm:p-10 space-y-6 print:border-none print:shadow-none print:p-0">
+          {/* Header */}
+          <div className="border-b-2 border-slate-900 pb-4">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <h2 className="text-xl font-black text-slate-900 uppercase tracking-tight">
+                  JOB HAZARD ANALYSIS (JHA)
+                </h2>
+                <div className="text-xs text-slate-600 font-medium mt-0.5">
+                  OSHA 29 CFR 1926 SAFETY &amp; HEALTH REGULATIONS FOR CONSTRUCTION
+                </div>
               </div>
-
-              <div className="flex items-center justify-between border-b border-slate-800 pb-3 font-mono text-xs">
-                <span className="px-2 py-0.5 bg-amber-950 border border-amber-800 text-amber-300 font-bold uppercase">
-                  Single-Use Preview
-                </span>
-                <span className="text-slate-500">Watermarked • Unsaved</span>
+              <div className="text-right shrink-0">
+                <div className="text-xs font-bold text-sky-800 uppercase tracking-wider">
+                  FORM: SAF-JHA-01
+                </div>
+                <div className="text-[10px] text-slate-500 mt-0.5">
+                  DATE: {new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                </div>
               </div>
+            </div>
 
-              <div className="space-y-3 font-mono text-xs">
-                <div className="text-sm font-bold text-white font-sans">
-                  {sampleResult.task}
-                </div>
-                <div className="text-slate-400">
-                  <span className="text-slate-500">STANDARD:</span> {sampleResult.subpart}
-                </div>
+            {/* Context Table */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-6 pt-4 border-t border-slate-200 text-xs">
+              <div>
+                <span className="block text-[10px] font-bold text-slate-500 uppercase">PROJECT:</span>
+                <span className="font-bold text-slate-900">{projectName}</span>
+              </div>
+              <div>
+                <span className="block text-[10px] font-bold text-slate-500 uppercase">TRADE SCOPE:</span>
+                <span className="font-bold text-slate-900">{trade}</span>
+              </div>
+              <div>
+                <span className="block text-[10px] font-bold text-slate-500 uppercase">COMPETENT PERSON:</span>
+                <span className="font-bold text-slate-900">{competentPerson}</span>
+              </div>
+              <div>
+                <span className="block text-[10px] font-bold text-slate-500 uppercase">TASK ACTIVITY:</span>
+                <span className="font-bold text-slate-900">{taskDescription}</span>
+              </div>
+            </div>
+          </div>
 
-                <div className="pt-2">
-                  <div className="text-sky-400 font-bold uppercase mb-1">MANDATORY CONTROLS:</div>
-                  <ul className="space-y-1 list-disc pl-4 text-slate-300">
-                    {sampleResult.controls.map((c, i) => (
-                      <li key={i}>{c}</li>
-                    ))}
-                  </ul>
-                </div>
+          {/* Sequenced Hazard Breakdown Table */}
+          <div className="space-y-4">
+            <div className="text-xs font-bold text-slate-900 uppercase tracking-wider bg-slate-100 px-3 py-1.5 border-l-4 border-slate-900">
+              SEQUENCED TASK BREAKDOWN &amp; HIERARCHY OF CONTROLS
+            </div>
 
-                <div className="pt-2">
-                  <div className="text-sky-400 font-bold uppercase mb-1">REQUIRED PPE:</div>
-                  <div className="flex flex-wrap gap-2">
-                    {sampleResult.ppe.map((p, i) => (
-                      <span key={i} className="px-2 py-1 bg-slate-900 border border-slate-800 text-slate-300">
-                        {p}
+            <div className="space-y-4">
+              {currentSteps.map((step, idx) => (
+                <div key={idx} className="border border-slate-200 p-4 space-y-3">
+                  <div className="flex items-center justify-between border-b border-slate-100 pb-2">
+                    <div className="text-sm font-bold text-slate-900">
+                      Step {idx + 1}: {step.taskStep}
+                    </div>
+                    <span className="text-[10px] font-bold text-slate-500 uppercase">
+                      {step.oshaSubpart}
+                    </span>
+                  </div>
+
+                  <div className="text-xs text-slate-700">
+                    <span className="font-bold text-rose-800">POTENTIAL HAZARDS: </span>
+                    {step.hazardDescription}
+                  </div>
+
+                  <div className="space-y-1 text-xs">
+                    <span className="font-bold text-slate-900 block">MANDATORY CONTROL MEASURES:</span>
+                    <ul className="list-disc pl-5 space-y-1 text-slate-700">
+                      {step.controlMeasures.map((c, ci) => (
+                        <li key={ci}>{c}</li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  <div className="pt-2 border-t border-slate-100 flex flex-wrap items-center gap-2 text-xs">
+                    <span className="font-bold text-slate-900 text-[10px] uppercase">REQUIRED PPE:</span>
+                    {step.requiredPpe.map((ppe, pi) => (
+                      <span key={pi} className="px-2 py-0.5 bg-slate-100 border border-slate-200 text-slate-800 text-[11px] font-medium">
+                        {ppe}
                       </span>
                     ))}
                   </div>
                 </div>
-              </div>
+              ))}
             </div>
+          </div>
 
-            {/* MANDATORY UPSELL CTA */}
-            <div className="bg-[#0b1324] border-2 border-sky-500 p-8 text-center space-y-4">
-              <div className="w-10 h-10 bg-sky-950 border border-sky-700 text-sky-400 mx-auto flex items-center justify-center font-bold">
-                ★
+          {/* Emergency Plan & Contacts */}
+          <div className="space-y-2 border-t border-slate-200 pt-4">
+            <div className="text-xs font-bold text-slate-900 uppercase tracking-wider">
+              EMERGENCY ACTION &amp; MUSTER POINT
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs text-slate-700">
+              <div>
+                <span className="text-[10px] text-slate-500 font-bold block uppercase">First Aid Station:</span>
+                Gang box #1 (Inspected weekly)
               </div>
-              <h3 className="text-xl font-bold text-white">
-                Save this, brand it, and generate unlimited documents — start free
-              </h3>
-              <p className="text-slate-400 text-sm max-w-xl mx-auto">
-                Avorria workspace accounts include your company logo, custom branding, digital signature execution, OSHA audit trails, and automatic Readiness Score boosting.
-              </p>
-              <div className="pt-2">
-                <Link
-                  href="/sign-up?intent=tool_jha"
-                  className="inline-block px-8 py-3 bg-sky-500 hover:bg-sky-400 text-slate-950 font-mono font-bold text-xs uppercase tracking-wider transition-colors shadow-lg"
-                >
-                  Create Free Workspace Account →
-                </Link>
+              <div>
+                <span className="text-[10px] text-slate-500 font-bold block uppercase">Emergency Muster:</span>
+                North Gate Assembly Flagpole
+              </div>
+              <div>
+                <span className="text-[10px] text-slate-500 font-bold block uppercase">Emergency Response:</span>
+                Dial 911 immediately
               </div>
             </div>
           </div>
-        )}
+
+          {/* Sign-Off Block */}
+          <div className="pt-6 border-t-2 border-slate-900 space-y-4">
+            <div className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+              CREW REVIEW &amp; COMPETENT PERSON CERTIFICATION
+            </div>
+            <p className="text-[11px] text-slate-600 leading-relaxed italic">
+              I certify that I have inspected the active work zone, identified site-specific hazards, and reviewed the control measures and required PPE with all attending crew members prior to commencing work.
+            </p>
+            <div className="grid grid-cols-2 gap-8 text-xs text-slate-700 pt-2">
+              <div className="space-y-4">
+                <div className="border-b border-slate-400 pt-6"></div>
+                <div className="text-[10px] text-slate-500 font-medium">Competent Person Signature / Date</div>
+              </div>
+              <div className="space-y-4">
+                <div className="border-b border-slate-400 pt-6"></div>
+                <div className="text-[10px] text-slate-500 font-medium">Superintendent / Lead Journeyman Signature / Date</div>
+              </div>
+            </div>
+          </div>
+
+          {/* Disclaimer Footer */}
+          <div className="pt-4 border-t border-slate-200 flex items-center justify-between text-[10px] text-slate-400">
+            <span>Operational safety documentation template. Does not replace site-specific competent person hazard evaluation.</span>
+            <span className="font-bold text-slate-500 shrink-0">AVORRIA CONTRACTOR OPERATING SYSTEM</span>
+          </div>
+        </div>
+
+        {/* Integration Callout */}
+        <div className="p-6 bg-[#090d16] border border-slate-800 space-y-3 print:hidden">
+          <h3 className="text-sm font-bold text-white uppercase tracking-wider">
+            Looking for more safety and compliance resources?
+          </h3>
+          <p className="text-xs text-slate-400 leading-relaxed max-w-2xl">
+            Explore our complete Safety &amp; Compliance library including the Site Safety Audit Checklist, Toolbox Talk Meeting Roster, and Contractor Incident Report.
+          </p>
+          <div className="pt-1 flex flex-wrap gap-3">
+            <Link
+              href="/resources/site-safety-inspection"
+              className="px-4 py-2 bg-slate-900 hover:bg-slate-800 border border-slate-700 text-sky-400 text-xs font-bold uppercase tracking-wider transition-colors"
+            >
+              Site Safety Inspection Checklist →
+            </Link>
+            <Link
+              href="/resources"
+              className="px-4 py-2 bg-[#030712] hover:bg-slate-900 border border-slate-800 text-slate-300 text-xs font-bold uppercase tracking-wider transition-colors"
+            >
+              View All 25 Resources →
+            </Link>
+          </div>
+        </div>
       </div>
     </div>
   );

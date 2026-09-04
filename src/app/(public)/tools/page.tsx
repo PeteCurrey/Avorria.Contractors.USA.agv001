@@ -2,11 +2,9 @@ import React from 'react';
 import Link from 'next/link';
 import { Metadata } from 'next';
 import { siteConfig } from '@/config/site';
-import { Button } from '@/components/ui/Button';
-import { CinematicPageHero } from '@/components/hero/CinematicPageHero';
 
 export const metadata: Metadata = {
-  title: 'Free Interactive Tools & Safety Generators for Contractors | Avorria',
+  title: 'Interactive Contractor Tools & Field Calculators | Avorria',
   description:
     'Free interactive tools for US commercial and trade contractors: Job Hazard Analysis (JHA) generator, contractor quote calculator, and safety plan builders.',
   alternates: {
@@ -21,153 +19,155 @@ const TOOLS = [
     category: 'Safety & OSHA',
     standard: 'OSHA 1926 Aligned',
     description:
-      'Step-by-step interactive tool to identify workplace hazards, assign OSHA control measures, and generate job-ready PDF summaries for field crews.',
-    featured: true,
-    actionText: 'Launch Free JHA Generator',
+      'Step-by-step interactive tool to identify workplace hazards, assign OSHA control measures, and generate job-ready documentation for field crews.',
+    actionText: 'Launch JHA Generator',
   },
   {
-    title: 'Contractor Quote & Margin Calculator',
-    slug: 'tools/contractor-quote-calculator',
+    title: 'Contractor Estimate Worksheet',
+    slug: 'resources/estimate-worksheet',
     category: 'Estimating & Finance',
-    standard: 'Burden & Overhead Modeling',
+    standard: 'Direct Burden & Markup Modeling',
     description:
-      'Calculate real labor burden, direct materials, equipment rental, overhead markup, and target profit margins to prevent underbidding commercial projects.',
-    featured: false,
-    actionText: 'Calculate Bid Margins',
+      'Calculate burdened labor rates, direct materials, equipment rental, overhead markup, and target profit margins for commercial tender submissions.',
+    actionText: 'Open Estimate Worksheet',
   },
   {
-    title: 'Contractor Compliance Checklist Tool',
-    slug: 'guides/contractor-compliance-checklist',
-    category: 'Compliance & Audit',
-    standard: '30-Point Verification Audit',
+    title: 'Contract Change Order Generator',
+    slug: 'resources/change-order-form',
+    category: 'Commercial Contracts',
+    standard: 'AIA G701 Aligned',
     description:
-      'Evaluate your business entity registration, active COI coverage, state trade licensing, and OSHA written hazard communication standards.',
-    featured: false,
-    actionText: 'Open Compliance Checklist',
+      'Document scope additions, unforeseen site condition costs, and schedule adjustments before commencing unauthorized field work.',
+    actionText: 'Create Change Order',
   },
   {
-    title: 'Job Safety Analysis (JSA) Builder',
-    slug: 'templates/job-safety-analysis-jsa',
-    category: 'Safety & Training',
-    standard: 'Daily Field Briefing',
+    title: 'Daily Construction Field Report',
+    slug: 'resources/daily-construction-report',
+    category: 'Project Operations',
+    standard: 'Contemporaneous Field Records',
     description:
-      'Structured 3-column field hazard analysis designed for daily crew briefings and site safety meetings before daily work commences.',
-    featured: false,
-    actionText: 'View JSA Builder',
+      'Capture weather, trade headcount, equipment on site, deliveries, inspections passed, delays, and daily safety observations.',
+    actionText: 'Generate Daily Report',
   },
   {
-    title: 'Site Safety Plan (HASP) Generator',
-    slug: 'templates/construction-safety-plan',
-    category: 'Commercial Pre-Qual',
-    standard: 'Site-Specific Written Manual',
+    title: 'Site Safety Audit Checklist',
+    slug: 'resources/site-safety-inspection',
+    category: 'Safety & Compliance',
+    standard: 'OSHA 29 CFR 1926',
     description:
-      'Build a site-specific written health and safety manual required for commercial general contractor pre-qualification.',
-    featured: false,
-    actionText: 'View Safety Plan',
+      'Comprehensive jobsite inspection covering fall protection, PPE enforcement, electrical GFCI protection, excavation, and hazard communication.',
+    actionText: 'Open Safety Audit',
   },
   {
-    title: 'Toolbox Talk Meeting Log Builder',
-    slug: 'templates/toolbox-talk',
+    title: 'Toolbox Talk Attendance Roster',
+    slug: 'resources/safety-meeting-toolbox-talk-record',
     category: 'Workforce Training',
     standard: 'OSHA 29 CFR 1926.21',
     description:
-      'Document weekly safety training meetings with signed crew attendance rosters to satisfy OSHA audit standards and general contractor requirements.',
-    featured: false,
-    actionText: 'View Toolbox Talk Log',
+      'Document weekly safety training meetings with signed crew attendance rosters to satisfy OSHA inspection and GC prequalification standards.',
+    actionText: 'Build Meeting Roster',
   },
 ];
 
 export default function ToolsIndexPage() {
   return (
-    <div className="min-h-screen bg-surface-page text-navy-800">
-      <CinematicPageHero
-        eyebrow="CONTRACTOR UTILITIES · 100% FREE TO USE"
-        title={<>Free tools for<br />American trade contractors.</>}
-        subtitle="Field-tested digital utilities engineered to streamline job hazard evaluations, calculate accurate commercial profit margins, and keep your crews compliant."
-        primaryCta={{ label: 'Launch Free JHA Generator', href: '/tools/job-hazard-analysis-jha-generator' }}
-        secondaryCta={{ label: 'Quote & Margin Calculator', href: '/tools/contractor-quote-calculator' }}
-        backgroundImage="/images/hero-tools.jpg"
-        backgroundAlt="Trade contractor tools and job site digital utilities"
-        trustItems={['JHA Generator', 'Quote Calculator', 'Compliance Checklist', 'JSA Builder', 'Safety Plan Manual', 'Toolbox Talk Log']}
-      />
+    <div className="min-h-screen bg-[#030712] text-slate-100 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto space-y-12">
+        {/* Header */}
+        <div className="text-center max-w-3xl mx-auto space-y-4">
+          <div className="inline-flex items-center gap-2 px-3 py-1 bg-slate-900 border border-slate-800 text-sky-400 text-xs font-bold uppercase tracking-wider">
+            CONTRACTOR UTILITIES · PROFESSIONAL JOB TOOLS
+          </div>
+          <h1 className="text-3xl sm:text-5xl font-black text-white tracking-tight leading-tight">
+            Field Utilities &amp; Commercial Calculators
+          </h1>
+          <p className="text-sm sm:text-base text-slate-400 leading-relaxed max-w-2xl mx-auto">
+            Practical digital utilities engineered for American trade contractors to evaluate site hazards, model commercial margins, and document compliance.
+          </p>
+        </div>
 
-      {/* Featured Primary Tool: JHA Generator */}
-      <section className="py-12 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto">
-        <div className="rounded-2xl border-2 border-brand-500/30 bg-gradient-to-br from-blue-50/50 via-white to-slate-50 p-8 sm:p-12 shadow-sm relative overflow-hidden">
-          <div className="max-w-3xl space-y-4 relative z-10">
-            <div className="flex items-center gap-3">
-              <span className="px-2.5 py-0.5 rounded bg-brand-600 text-white font-mono text-xs font-bold uppercase tracking-wider">
-                Flagship Tool
-              </span>
-              <span className="font-mono text-xs text-slate-500">Instant PDF Export · No Credit Card</span>
-            </div>
-            <h2 className="text-2xl sm:text-3xl font-black text-navy-900">
-              Interactive Job Hazard Analysis (JHA) Generator
-            </h2>
-            <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
-              Select your trade, identify site-specific hazards across 7 risk categories, and automatically generate
-              an OSHA 1926-aligned Job Hazard Analysis document with engineering controls, administrative safeguards,
-              and PPE requirements.
-            </p>
-            <div className="pt-4 flex flex-wrap items-center gap-4">
-              <Button href="/tools/job-hazard-analysis-jha-generator" size="lg" variant="primary">
-                Launch Free JHA Generator →
-              </Button>
-              <Button href="/templates/job-hazard-analysis-jha" size="lg" variant="secondary">
-                View Sample JHA Template
-              </Button>
-            </div>
+        {/* Featured Flagship Card */}
+        <div className="bg-[#090d16] border border-slate-800 p-8 sm:p-10 space-y-4 max-w-4xl mx-auto">
+          <div className="flex items-center gap-2">
+            <span className="px-2 py-0.5 bg-sky-950 border border-sky-800 text-sky-400 text-[10px] font-bold uppercase">
+              Flagship Field Tool
+            </span>
+            <span className="text-xs text-slate-500">OSHA 29 CFR 1926 Aligned</span>
+          </div>
+          <h2 className="text-2xl font-black text-white">
+            Job Hazard Analysis (JHA) Field Generator
+          </h2>
+          <p className="text-xs sm:text-sm text-slate-400 leading-relaxed max-w-3xl">
+            Select your trade scope, break down sequenced job steps, enforce engineering and administrative safeguards, and export clean, project-ready JHA documentation for on-site safety briefings.
+          </p>
+          <div className="pt-2 flex flex-wrap gap-4">
+            <Link
+              href="/tools/job-hazard-analysis-jha-generator"
+              className="px-6 py-2.5 bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold text-xs uppercase tracking-wider transition-colors"
+            >
+              Launch JHA Generator →
+            </Link>
+            <Link
+              href="/resources/site-safety-inspection"
+              className="px-6 py-2.5 bg-[#030712] hover:bg-slate-900 border border-slate-700 text-slate-300 font-bold text-xs uppercase tracking-wider transition-colors"
+            >
+              Site Safety Inspection Checklist
+            </Link>
           </div>
         </div>
-      </section>
 
-      {/* Tools Grid */}
-      <section className="py-12 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto space-y-8">
-        <div className="flex items-center justify-between border-b border-slate-200 pb-4">
-          <h2 className="text-xl font-bold text-navy-900">All Interactive Utilities</h2>
-          <span className="text-xs font-mono text-slate-500">6 Available Tools</span>
-        </div>
-
+        {/* Tools Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {TOOLS.map((tool) => (
             <div
               key={tool.slug}
-              className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm hover:border-slate-300 transition-all flex flex-col justify-between"
+              className="bg-[#090d16] border border-slate-800 hover:border-slate-700 p-6 flex flex-col justify-between transition-colors group"
             >
               <div className="space-y-3">
                 <div className="flex items-center justify-between text-xs">
-                  <span className="font-mono text-brand-600 font-semibold uppercase">{tool.category}</span>
-                  <span className="font-mono text-slate-400 text-[11px]">{tool.standard}</span>
+                  <span className="text-sky-400 font-bold uppercase text-[11px] tracking-wider">
+                    {tool.category}
+                  </span>
+                  <span className="text-slate-500 text-[11px]">{tool.standard}</span>
                 </div>
-                <h3 className="text-lg font-bold text-navy-900 leading-snug">{tool.title}</h3>
-                <p className="text-slate-600 text-xs leading-relaxed">{tool.description}</p>
+
+                <h3 className="text-base font-bold text-white group-hover:text-sky-400 transition-colors leading-snug">
+                  <Link href={`/${tool.slug}`}>{tool.title}</Link>
+                </h3>
+
+                <p className="text-xs text-slate-400 leading-relaxed line-clamp-3">
+                  {tool.description}
+                </p>
               </div>
-              <div className="pt-6 border-t border-slate-100 mt-6">
-                <Button href={`/${tool.slug}`} size="sm" variant="secondary" className="w-full">
+
+              <div className="pt-6 border-t border-slate-800 mt-6">
+                <Link
+                  href={`/${tool.slug}`}
+                  className="w-full block py-2 px-3 text-center bg-[#030712] hover:bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-200 font-bold text-xs uppercase tracking-wider transition-colors"
+                >
                   {tool.actionText} →
-                </Button>
+                </Link>
               </div>
             </div>
           ))}
         </div>
-      </section>
 
-      {/* Dark Conversion Anchor */}
-      <section className="bg-[#070c18] text-white py-16 px-4 sm:px-6 lg:px-8 border-t border-slate-800 text-center mt-12">
-        <div className="max-w-3xl mx-auto space-y-6">
-          <h2 className="text-2xl sm:text-3xl font-black tracking-tight">
-            Need to save and organize your documents?
-          </h2>
-          <p className="text-slate-400 text-sm max-w-xl mx-auto leading-relaxed">
-            Create a free Avorria account to save generated JHAs to your cloud workspace, add custom company branding, and attach documents to your verified Contractor Passport.
+        {/* Bottom Banner */}
+        <div className="p-8 bg-[#090d16] border border-slate-800 text-center space-y-4 max-w-3xl mx-auto">
+          <h3 className="text-lg font-bold text-white">Full 25-Resource Commercial Library Available</h3>
+          <p className="text-xs text-slate-400 max-w-xl mx-auto leading-relaxed">
+            Access our complete catalogue of contractor capability statements, AIA-aligned qualification forms, bid proposals, and project handover audits.
           </p>
-          <div className="pt-2 flex justify-center gap-4">
-            <Button href="/sign-up" size="lg" variant="primary">
-              Create Free Account
-            </Button>
+          <div className="pt-1">
+            <Link
+              href="/resources"
+              className="inline-block px-6 py-2.5 bg-sky-500 hover:bg-sky-400 text-slate-950 text-xs font-bold uppercase tracking-wider transition-colors"
+            >
+              Browse Full Resource Catalogue →
+            </Link>
           </div>
         </div>
-      </section>
+      </div>
     </div>
   );
 }

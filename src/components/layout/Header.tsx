@@ -116,6 +116,23 @@ const RESOURCE_ITEMS: NavDropdownItem[] = [
 
 type DropdownKey = 'platform' | 'win-work' | 'resources' | null;
 
+const DARK_HERO_ROUTES = new Set([
+  '/',
+  '/platform',
+  '/create',
+  '/comply',
+  '/prove',
+  '/win-work',
+  '/contractor-passport',
+  '/tools',
+  '/templates',
+  '/pricing',
+  '/contractors',
+  '/states',
+  '/industries',
+  '/tools/job-hazard-analysis-jha-generator',
+]);
+
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [mobileExpandedSection, setMobileExpandedSection] = useState<string | null>(null);
@@ -127,6 +144,9 @@ export function Header() {
   const [assembled, setAssembled] = useState(true);
   const [assembling, setAssembling] = useState(false);
   const closeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  const isLight = !DARK_HERO_ROUTES.has(pathname);
+  const isScrolledOrOpen = scrolled || mobileMenuOpen || activeDropdown !== null;
 
   // Brand mark entrance animation
   useEffect(() => {
@@ -210,13 +230,76 @@ export function Header() {
     setMobileExpandedSection((prev) => (prev === section ? null : section));
   };
 
+  const getNavBtnClass = (section: 'platform' | 'win-work' | 'resources') => {
+    const active = isSectionActive(section) || activeDropdown === section;
+    if (isLight) {
+      return active
+        ? 'text-slate-900 bg-slate-900/5 font-normal'
+        : 'text-slate-800 hover:text-black hover:bg-slate-900/5';
+    }
+    return active
+      ? 'text-white bg-white/[0.08] font-normal'
+      : 'text-slate-300 hover:text-white hover:bg-white/[0.05]';
+  };
+
+  const getChevronClass = (section: 'platform' | 'win-work' | 'resources') => {
+    const open = activeDropdown === section;
+    if (isLight) {
+      return open ? 'rotate-180 text-sky-600' : 'text-slate-600';
+    }
+    return open ? 'rotate-180 text-sky-400' : 'text-slate-400';
+  };
+
+  const getPricingBtnClass = () => {
+    const active = isSectionActive('pricing');
+    if (isLight) {
+      return active
+        ? 'text-slate-900 bg-slate-900/5 font-normal'
+        : 'text-slate-800 hover:text-black hover:bg-slate-900/5';
+    }
+    return active
+      ? 'text-white bg-white/[0.08] font-normal'
+      : 'text-slate-300 hover:text-white hover:bg-white/[0.05]';
+  };
+
+  const dropdownPanelClass = `absolute top-full left-0 mt-2 rounded-[8px] p-5 backdrop-blur-xl animate-in fade-in slide-in-from-top-1 duration-150 z-50 font-sans ${
+    isLight
+      ? 'bg-white/98 border border-sky-500/30 shadow-2xl shadow-slate-900/10 ring-1 ring-sky-500/10'
+      : 'bg-[#07132b]/95 border border-sky-500/20 shadow-2xl shadow-[#020817]/90 ring-1 ring-sky-400/10'
+  }`;
+  const dropdownHeaderBorderClass = isLight ? 'border-b border-slate-100' : 'border-b border-white/[0.08]';
+  const dropdownEyebrowClass = `text-[11px] font-mono tracking-[0.2em] uppercase font-medium block ${
+    isLight ? 'text-sky-600' : 'text-[#38bdf8]'
+  }`;
+  const dropdownSubtextClass = `text-[14px] font-light mt-0.5 ${isLight ? 'text-slate-600' : 'text-slate-400'}`;
+  const dropdownItemClass = `group p-2.5 rounded-[6px] border border-transparent transition-all text-left block ${
+    isLight
+      ? 'hover:bg-slate-50 hover:border-slate-200/70'
+      : 'hover:bg-white/[0.05] hover:border-white/[0.06]'
+  }`;
+  const dropdownItemTitleClass = `text-[16px] font-light transition-colors ${
+    isLight ? 'text-slate-900 group-hover:text-sky-600' : 'text-white group-hover:text-sky-400'
+  }`;
+  const dropdownBadgeClass = `text-[10px] font-mono px-1.5 py-0.5 rounded border ${
+    isLight
+      ? 'bg-slate-100 text-slate-600 border-slate-200'
+      : 'bg-white/[0.05] text-slate-400 border-white/[0.05]'
+  }`;
+  const dropdownItemDescClass = `text-[14px] font-light mt-1 leading-snug transition-colors ${
+    isLight ? 'text-slate-500 group-hover:text-slate-700' : 'text-slate-400 group-hover:text-slate-300'
+  }`;
+
   return (
     <>
       <header
         className={`fixed top-0 inset-x-0 z-50 w-full transition-all duration-300 ${
-          scrolled || mobileMenuOpen || activeDropdown !== null
-            ? 'border-b border-sky-500/20 bg-[#07132b]/80 backdrop-blur-lg shadow-lg shadow-[#020817]/50'
-            : 'border-b border-white/[0.06] bg-gradient-to-b from-[#040813]/95 via-[#040813]/60 to-transparent'
+          isLight
+            ? isScrolledOrOpen
+              ? 'border-b border-sky-500/40 bg-white/95 backdrop-blur-lg shadow-sm shadow-sky-500/5'
+              : 'border-b border-transparent bg-transparent'
+            : isScrolledOrOpen
+              ? 'border-b border-sky-500/20 bg-[#07132b]/80 backdrop-blur-lg shadow-lg shadow-[#020817]/50'
+              : 'border-b border-white/[0.06] bg-gradient-to-b from-[#040813]/95 via-[#040813]/60 to-transparent'
         }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-[72px] flex items-center justify-between">
@@ -230,11 +313,17 @@ export function Header() {
               <span
                 ref={markRef}
                 data-brand-mark
-                className="brand-mark relative block w-8 sm:w-9 transition-all duration-500 ease-brand group-hover:scale-105 text-sky-400"
+                className={`brand-mark relative block w-8 sm:w-9 transition-all duration-500 ease-brand group-hover:scale-105 ${
+                  isLight ? 'text-sky-600' : 'text-sky-400'
+                }`}
               >
                 <BrandMark state={assembled ? 'solid' : 'wire'} className="block w-full" />
               </span>
-              <span className="text-[20px] font-extralight tracking-tight transition-colors duration-300 text-white">
+              <span
+                className={`text-[20px] font-extralight tracking-tight transition-colors duration-300 ${
+                  isLight ? 'text-slate-900 group-hover:text-black' : 'text-white'
+                }`}
+              >
                 Avorria
               </span>
             </Link>
@@ -251,36 +340,30 @@ export function Header() {
                   type="button"
                   onClick={() => toggleDropdown('platform')}
                   aria-expanded={activeDropdown === 'platform'}
-                  className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-[4px] text-[15px] font-extralight tracking-tight transition-all duration-150 focus:outline-none ${
-                    isSectionActive('platform') || activeDropdown === 'platform'
-                      ? 'text-white bg-white/[0.08] font-normal'
-                      : 'text-slate-300 hover:text-white hover:bg-white/[0.05]'
-                  }`}
+                  className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-[4px] text-[15px] font-extralight tracking-tight transition-all duration-150 focus:outline-none ${getNavBtnClass('platform')}`}
                 >
                   <span>Platform</span>
-                  <ChevronDown
-                    className={`w-3.5 h-3.5 text-slate-400 transition-transform duration-200 ${
-                      activeDropdown === 'platform' ? 'rotate-180 text-sky-400' : ''
-                    }`}
-                  />
+                  <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${getChevronClass('platform')}`} />
                 </button>
 
                 {/* Platform Mega Menu Panel */}
                 {activeDropdown === 'platform' && (
-                  <div className="absolute top-full left-0 mt-2 w-[720px] rounded-[8px] bg-[#07132b]/95 border border-sky-500/20 shadow-2xl shadow-[#020817]/90 p-5 backdrop-blur-xl ring-1 ring-sky-400/10 animate-in fade-in slide-in-from-top-1 duration-150 z-50 font-sans">
-                    <div className="flex items-center justify-between pb-3 mb-3 border-b border-white/[0.08]">
+                  <div className={`w-[720px] ${dropdownPanelClass}`}>
+                    <div className={`flex items-center justify-between pb-3 mb-3 ${dropdownHeaderBorderClass}`}>
                       <div>
-                        <span className="text-[11px] font-mono tracking-[0.2em] uppercase text-[#38bdf8] font-medium block">
+                        <span className={dropdownEyebrowClass}>
                           OPERATIONAL SUITE
                         </span>
-                        <p className="text-[14px] font-light text-slate-400 mt-0.5">
+                        <p className={dropdownSubtextClass}>
                           Infrastructure built specifically for US commercial trade contractors.
                         </p>
                       </div>
                       <Link
                         href="/platform"
                         onClick={() => setActiveDropdown(null)}
-                        className="inline-flex items-center gap-1 text-[14px] text-sky-400 hover:text-sky-300 font-light transition-colors"
+                        className={`inline-flex items-center gap-1 text-[14px] font-light transition-colors ${
+                          isLight ? 'text-sky-600 hover:text-sky-700' : 'text-sky-400 hover:text-sky-300'
+                        }`}
                       >
                         <span>Platform Overview</span>
                         <ArrowRight className="w-3.5 h-3.5" />
@@ -293,19 +376,19 @@ export function Header() {
                           key={item.title}
                           href={item.href}
                           onClick={() => setActiveDropdown(null)}
-                          className="group p-2.5 rounded-[6px] hover:bg-white/[0.05] border border-transparent hover:border-white/[0.06] transition-all text-left block"
+                          className={dropdownItemClass}
                         >
                           <div className="flex items-center justify-between gap-2">
-                            <span className="text-[16px] font-light text-white group-hover:text-sky-400 transition-colors">
+                            <span className={dropdownItemTitleClass}>
                               {item.title}
                             </span>
                             {item.badge && (
-                              <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-white/[0.05] text-slate-400 border border-white/[0.05]">
+                              <span className={dropdownBadgeClass}>
                                 {item.badge}
                               </span>
                             )}
                           </div>
-                          <p className="text-[14px] font-light text-slate-400 mt-1 leading-snug group-hover:text-slate-300 transition-colors line-clamp-2">
+                          <p className={`line-clamp-2 ${dropdownItemDescClass}`}>
                             {item.description}
                           </p>
                         </Link>
@@ -325,29 +408,21 @@ export function Header() {
                   type="button"
                   onClick={() => toggleDropdown('win-work')}
                   aria-expanded={activeDropdown === 'win-work'}
-                  className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-[4px] text-[15px] font-extralight tracking-tight transition-all duration-150 focus:outline-none ${
-                    isSectionActive('win-work') || activeDropdown === 'win-work'
-                      ? 'text-white bg-white/[0.08] font-normal'
-                      : 'text-slate-300 hover:text-white hover:bg-white/[0.05]'
-                  }`}
+                  className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-[4px] text-[15px] font-extralight tracking-tight transition-all duration-150 focus:outline-none ${getNavBtnClass('win-work')}`}
                 >
                   <span>Win Work</span>
-                  <ChevronDown
-                    className={`w-3.5 h-3.5 text-slate-400 transition-transform duration-200 ${
-                      activeDropdown === 'win-work' ? 'rotate-180 text-sky-400' : ''
-                    }`}
-                  />
+                  <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${getChevronClass('win-work')}`} />
                 </button>
 
                 {/* Win Work Mega Menu Panel */}
                 {activeDropdown === 'win-work' && (
-                  <div className="absolute top-full left-0 mt-2 w-[540px] rounded-[8px] bg-[#07132b]/95 border border-sky-500/20 shadow-2xl shadow-[#020817]/90 p-5 backdrop-blur-xl ring-1 ring-sky-400/10 animate-in fade-in slide-in-from-top-1 duration-150 z-50 font-sans">
-                    <div className="flex items-center justify-between pb-3 mb-3 border-b border-white/[0.08]">
+                  <div className={`w-[540px] ${dropdownPanelClass}`}>
+                    <div className={`flex items-center justify-between pb-3 mb-3 ${dropdownHeaderBorderClass}`}>
                       <div>
-                        <span className="text-[11px] font-mono tracking-[0.2em] uppercase text-[#38bdf8] font-medium block">
+                        <span className={dropdownEyebrowClass}>
                           COMMERCIAL ACQUISITION
                         </span>
-                        <p className="text-[14px] font-light text-slate-400 mt-0.5">
+                        <p className={dropdownSubtextClass}>
                           Position your business to win high-value commercial bids and client partnerships.
                         </p>
                       </div>
@@ -359,19 +434,19 @@ export function Header() {
                           key={item.title}
                           href={item.href}
                           onClick={() => setActiveDropdown(null)}
-                          className="group p-2.5 rounded-[6px] hover:bg-white/[0.05] border border-transparent hover:border-white/[0.06] transition-all text-left block"
+                          className={dropdownItemClass}
                         >
                           <div className="flex items-center justify-between gap-2">
-                            <span className="text-[16px] font-light text-white group-hover:text-sky-400 transition-colors">
+                            <span className={dropdownItemTitleClass}>
                               {item.title}
                             </span>
                             {item.badge && (
-                              <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-white/[0.05] text-slate-400 border border-white/[0.05]">
+                              <span className={dropdownBadgeClass}>
                                 {item.badge}
                               </span>
                             )}
                           </div>
-                          <p className="text-[14px] font-light text-slate-400 mt-1 leading-snug group-hover:text-slate-300 transition-colors">
+                          <p className={dropdownItemDescClass}>
                             {item.description}
                           </p>
                         </Link>
@@ -391,29 +466,21 @@ export function Header() {
                   type="button"
                   onClick={() => toggleDropdown('resources')}
                   aria-expanded={activeDropdown === 'resources'}
-                  className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-[4px] text-[15px] font-extralight tracking-tight transition-all duration-150 focus:outline-none ${
-                    isSectionActive('resources') || activeDropdown === 'resources'
-                      ? 'text-white bg-white/[0.08] font-normal'
-                      : 'text-slate-300 hover:text-white hover:bg-white/[0.05]'
-                  }`}
+                  className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-[4px] text-[15px] font-extralight tracking-tight transition-all duration-150 focus:outline-none ${getNavBtnClass('resources')}`}
                 >
                   <span>Resources</span>
-                  <ChevronDown
-                    className={`w-3.5 h-3.5 text-slate-400 transition-transform duration-200 ${
-                      activeDropdown === 'resources' ? 'rotate-180 text-sky-400' : ''
-                    }`}
-                  />
+                  <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${getChevronClass('resources')}`} />
                 </button>
 
                 {/* Resources Mega Menu Panel */}
                 {activeDropdown === 'resources' && (
-                  <div className="absolute top-full left-0 mt-2 w-[720px] rounded-[8px] bg-[#07132b]/95 border border-sky-500/20 shadow-2xl shadow-[#020817]/90 p-5 backdrop-blur-xl ring-1 ring-sky-400/10 animate-in fade-in slide-in-from-top-1 duration-150 z-50 font-sans">
-                    <div className="flex items-center justify-between pb-3 mb-3 border-b border-white/[0.08]">
+                  <div className={`w-[720px] ${dropdownPanelClass}`}>
+                    <div className={`flex items-center justify-between pb-3 mb-3 ${dropdownHeaderBorderClass}`}>
                       <div>
-                        <span className="text-[11px] font-mono tracking-[0.2em] uppercase text-[#38bdf8] font-medium block">
+                        <span className={dropdownEyebrowClass}>
                           TECHNICAL LIBRARY & STANDARDS
                         </span>
-                        <p className="text-[14px] font-light text-slate-400 mt-0.5">
+                        <p className={dropdownSubtextClass}>
                           Free safety tools, templates, and US statutory licensing requirements.
                         </p>
                       </div>
@@ -425,19 +492,19 @@ export function Header() {
                           key={item.title}
                           href={item.href}
                           onClick={() => setActiveDropdown(null)}
-                          className="group p-2.5 rounded-[6px] hover:bg-white/[0.05] border border-transparent hover:border-white/[0.06] transition-all text-left block"
+                          className={dropdownItemClass}
                         >
                           <div className="flex items-center justify-between gap-2">
-                            <span className="text-[16px] font-light text-white group-hover:text-sky-400 transition-colors">
+                            <span className={dropdownItemTitleClass}>
                               {item.title}
                             </span>
                             {item.badge && (
-                              <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-white/[0.05] text-slate-400 border border-white/[0.05]">
+                              <span className={dropdownBadgeClass}>
                                 {item.badge}
                               </span>
                             )}
                           </div>
-                          <p className="text-[14px] font-light text-slate-400 mt-1 leading-snug group-hover:text-slate-300 transition-colors line-clamp-2">
+                          <p className={`line-clamp-2 ${dropdownItemDescClass}`}>
                             {item.description}
                           </p>
                         </Link>
@@ -450,11 +517,7 @@ export function Header() {
               {/* 4. PRICING (Strictly Direct Link — NO DROPDOWN CHEVRON) */}
               <Link
                 href="/pricing"
-                className={`inline-flex items-center px-3.5 py-1.5 rounded-[4px] text-[15px] font-extralight tracking-tight transition-all duration-150 ${
-                  isSectionActive('pricing')
-                    ? 'text-white bg-white/[0.08] font-normal'
-                    : 'text-slate-300 hover:text-white hover:bg-white/[0.05]'
-                }`}
+                className={`inline-flex items-center px-3.5 py-1.5 rounded-[4px] text-[15px] font-extralight tracking-tight transition-all duration-150 ${getPricingBtnClass()}`}
               >
                 <span>Pricing</span>
               </Link>
@@ -465,7 +528,9 @@ export function Header() {
           <div className="hidden sm:flex items-center gap-5">
             <Link
               href="/sign-in"
-              className="text-[15px] font-extralight text-slate-300 hover:text-white transition-colors focus:outline-none"
+              className={`text-[15px] font-extralight transition-colors focus:outline-none ${
+                isLight ? 'text-slate-800 hover:text-black font-normal' : 'text-slate-300 hover:text-white'
+              }`}
             >
               Sign In
             </Link>
@@ -488,7 +553,11 @@ export function Header() {
             <button
               type="button"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 rounded-[4px] text-slate-300 hover:text-white hover:bg-white/[0.05] focus:outline-none"
+              className={`p-2 rounded-[4px] focus:outline-none transition-colors ${
+                isLight
+                  ? 'text-slate-800 hover:text-black hover:bg-slate-100'
+                  : 'text-slate-300 hover:text-white hover:bg-white/[0.05]'
+              }`}
               aria-label="Toggle Navigation Menu"
             >
               {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -498,34 +567,48 @@ export function Header() {
 
         {/* Mobile Navigation Drawer */}
         {mobileMenuOpen && (
-          <div className="xl:hidden border-b border-sky-500/20 bg-[#07132b]/95 backdrop-blur-xl px-4 pt-3 pb-6 space-y-4 max-h-[80vh] overflow-y-auto">
+          <div
+            className={`xl:hidden border-b px-4 pt-3 pb-6 space-y-4 max-h-[80vh] overflow-y-auto backdrop-blur-xl ${
+              isLight
+                ? 'border-sky-500/30 bg-white/98 text-slate-900 shadow-xl'
+                : 'border-sky-500/20 bg-[#07132b]/95 text-white'
+            }`}
+          >
             {/* Mobile Accordions */}
             <div className="space-y-1">
               {/* Platform Mobile Section */}
-              <div className="border-b border-white/[0.06] pb-1">
+              <div className={`border-b pb-1 ${isLight ? 'border-slate-100' : 'border-white/[0.06]'}`}>
                 <button
                   type="button"
                   onClick={() => toggleMobileSection('platform')}
-                  className="w-full flex items-center justify-between py-2.5 px-2 text-left text-sm font-normal text-white"
+                  className={`w-full flex items-center justify-between py-2.5 px-2 text-left text-sm font-normal ${
+                    isLight ? 'text-slate-900' : 'text-white'
+                  }`}
                 >
                   <span>Platform</span>
                   <ChevronDown
-                    className={`w-4 h-4 text-slate-400 transition-transform ${
-                      mobileExpandedSection === 'platform' ? 'rotate-180 text-sky-400' : ''
+                    className={`w-4 h-4 transition-transform ${
+                      isLight
+                        ? mobileExpandedSection === 'platform' ? 'rotate-180 text-sky-600' : 'text-slate-500'
+                        : mobileExpandedSection === 'platform' ? 'rotate-180 text-sky-400' : 'text-slate-400'
                     }`}
                   />
                 </button>
                 {mobileExpandedSection === 'platform' && (
-                  <div className="pl-3 pr-2 py-2 space-y-2 bg-white/[0.02] rounded-[6px] font-sans">
+                  <div
+                    className={`pl-3 pr-2 py-2 space-y-2 rounded-[6px] font-sans ${
+                      isLight ? 'bg-slate-50 border border-slate-100' : 'bg-white/[0.02]'
+                    }`}
+                  >
                     {PLATFORM_ITEMS.map((item) => (
                       <Link
                         key={item.title}
                         href={item.href}
                         onClick={() => setMobileMenuOpen(false)}
-                        className="block py-1.5 text-slate-300 hover:text-white"
+                        className={`block py-1.5 ${isLight ? 'text-slate-800 hover:text-black' : 'text-slate-300 hover:text-white'}`}
                       >
-                        <span className="text-[15px] font-light text-white block">{item.title}</span>
-                        <span className="text-[12px] font-light text-slate-400 block leading-snug mt-0.5">{item.description}</span>
+                        <span className={`text-[15px] font-light block ${isLight ? 'text-slate-900' : 'text-white'}`}>{item.title}</span>
+                        <span className={`text-[12px] font-light block leading-snug mt-0.5 ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>{item.description}</span>
                       </Link>
                     ))}
                   </div>
@@ -533,30 +616,38 @@ export function Header() {
               </div>
 
               {/* Win Work Mobile Section */}
-              <div className="border-b border-white/[0.06] pb-1">
+              <div className={`border-b pb-1 ${isLight ? 'border-slate-100' : 'border-white/[0.06]'}`}>
                 <button
                   type="button"
                   onClick={() => toggleMobileSection('win-work')}
-                  className="w-full flex items-center justify-between py-2.5 px-2 text-left text-sm font-normal text-white"
+                  className={`w-full flex items-center justify-between py-2.5 px-2 text-left text-sm font-normal ${
+                    isLight ? 'text-slate-900' : 'text-white'
+                  }`}
                 >
                   <span>Win Work</span>
                   <ChevronDown
-                    className={`w-4 h-4 text-slate-400 transition-transform ${
-                      mobileExpandedSection === 'win-work' ? 'rotate-180 text-sky-400' : ''
+                    className={`w-4 h-4 transition-transform ${
+                      isLight
+                        ? mobileExpandedSection === 'win-work' ? 'rotate-180 text-sky-600' : 'text-slate-500'
+                        : mobileExpandedSection === 'win-work' ? 'rotate-180 text-sky-400' : 'text-slate-400'
                     }`}
                   />
                 </button>
                 {mobileExpandedSection === 'win-work' && (
-                  <div className="pl-3 pr-2 py-2 space-y-2 bg-white/[0.02] rounded-[6px] font-sans">
+                  <div
+                    className={`pl-3 pr-2 py-2 space-y-2 rounded-[6px] font-sans ${
+                      isLight ? 'bg-slate-50 border border-slate-100' : 'bg-white/[0.02]'
+                    }`}
+                  >
                     {WIN_WORK_ITEMS.map((item) => (
                       <Link
                         key={item.title}
                         href={item.href}
                         onClick={() => setMobileMenuOpen(false)}
-                        className="block py-1.5 text-slate-300 hover:text-white"
+                        className={`block py-1.5 ${isLight ? 'text-slate-800 hover:text-black' : 'text-slate-300 hover:text-white'}`}
                       >
-                        <span className="text-[15px] font-light text-white block">{item.title}</span>
-                        <span className="text-[12px] font-light text-slate-400 block leading-snug mt-0.5">{item.description}</span>
+                        <span className={`text-[15px] font-light block ${isLight ? 'text-slate-900' : 'text-white'}`}>{item.title}</span>
+                        <span className={`text-[12px] font-light block leading-snug mt-0.5 ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>{item.description}</span>
                       </Link>
                     ))}
                   </div>
@@ -564,30 +655,38 @@ export function Header() {
               </div>
 
               {/* Resources Mobile Section */}
-              <div className="border-b border-white/[0.06] pb-1">
+              <div className={`border-b pb-1 ${isLight ? 'border-slate-100' : 'border-white/[0.06]'}`}>
                 <button
                   type="button"
                   onClick={() => toggleMobileSection('resources')}
-                  className="w-full flex items-center justify-between py-2.5 px-2 text-left text-sm font-normal text-white"
+                  className={`w-full flex items-center justify-between py-2.5 px-2 text-left text-sm font-normal ${
+                    isLight ? 'text-slate-900' : 'text-white'
+                  }`}
                 >
                   <span>Resources</span>
                   <ChevronDown
-                    className={`w-4 h-4 text-slate-400 transition-transform ${
-                      mobileExpandedSection === 'resources' ? 'rotate-180 text-sky-400' : ''
+                    className={`w-4 h-4 transition-transform ${
+                      isLight
+                        ? mobileExpandedSection === 'resources' ? 'rotate-180 text-sky-600' : 'text-slate-500'
+                        : mobileExpandedSection === 'resources' ? 'rotate-180 text-sky-400' : 'text-slate-400'
                     }`}
                   />
                 </button>
                 {mobileExpandedSection === 'resources' && (
-                  <div className="pl-3 pr-2 py-2 space-y-2 bg-white/[0.02] rounded-[6px] font-sans">
+                  <div
+                    className={`pl-3 pr-2 py-2 space-y-2 rounded-[6px] font-sans ${
+                      isLight ? 'bg-slate-50 border border-slate-100' : 'bg-white/[0.02]'
+                    }`}
+                  >
                     {RESOURCE_ITEMS.map((item) => (
                       <Link
                         key={item.title}
                         href={item.href}
                         onClick={() => setMobileMenuOpen(false)}
-                        className="block py-1.5 text-slate-300 hover:text-white"
+                        className={`block py-1.5 ${isLight ? 'text-slate-800 hover:text-black' : 'text-slate-300 hover:text-white'}`}
                       >
-                        <span className="text-[15px] font-light text-white block">{item.title}</span>
-                        <span className="text-[12px] font-light text-slate-400 block leading-snug mt-0.5">{item.description}</span>
+                        <span className={`text-[15px] font-light block ${isLight ? 'text-slate-900' : 'text-white'}`}>{item.title}</span>
+                        <span className={`text-[12px] font-light block leading-snug mt-0.5 ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>{item.description}</span>
                       </Link>
                     ))}
                   </div>
@@ -599,7 +698,9 @@ export function Header() {
                 <Link
                   href="/pricing"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="block py-2.5 px-2 text-sm font-normal text-white hover:text-sky-400"
+                  className={`block py-2.5 px-2 text-sm font-normal transition-colors ${
+                    isLight ? 'text-slate-900 hover:text-sky-600' : 'text-white hover:text-sky-400'
+                  }`}
                 >
                   Pricing
                 </Link>
@@ -607,11 +708,15 @@ export function Header() {
             </div>
 
             {/* Mobile Auth Actions */}
-            <div className="pt-4 border-t border-white/[0.08] flex flex-col gap-2.5">
+            <div className={`pt-4 border-t flex flex-col gap-2.5 ${isLight ? 'border-slate-100' : 'border-white/[0.08]'}`}>
               <Link
                 href="/sign-in"
                 onClick={() => setMobileMenuOpen(false)}
-                className="text-center py-2.5 text-sm font-extralight text-slate-300 hover:text-white border border-white/10 rounded-[6px]"
+                className={`text-center py-2.5 text-sm font-extralight rounded-[6px] transition-colors ${
+                  isLight
+                    ? 'text-slate-800 hover:text-black border border-slate-200 bg-slate-50'
+                    : 'text-slate-300 hover:text-white border border-white/10'
+                }`}
               >
                 Sign In to Account
               </Link>
