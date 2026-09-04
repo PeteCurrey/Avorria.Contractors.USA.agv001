@@ -74,33 +74,34 @@ export function CinematicPageHero({
 
   return (
     <section className="relative w-full min-h-screen lg:h-screen lg:max-h-screen flex flex-col justify-between bg-[#040813] overflow-hidden pt-[74px] lg:pt-[76px] pb-3 lg:pb-4">
-      {/* ── 1. CINEMATIC COMPOSITE: PAGE-SPECIFIC IMAGE + AMERICAN FLAG OVERLAY ── */}
+      {/* ── 1. CINEMATIC COMPOSITE: CLEAR HD BACKGROUND + AMERICAN FLAG OVERLAY ── */}
       <div className="absolute inset-0 z-0 select-none pointer-events-none overflow-hidden">
-        {/* Page-Specific High Quality Background Artwork */}
+        {/* Clear HD Page-Specific Background Artwork */}
         <Image
           src={backgroundImage}
           alt={backgroundAlt}
           fill
           priority
           sizes="100vw"
-          className="object-cover object-center opacity-70 scale-[1.01]"
+          className="object-cover object-center opacity-90 scale-[1.01]"
         />
 
-        {/* American Flag Overlay Layer (Gracefully Blended) */}
-        <div className="absolute inset-0 mix-blend-screen opacity-35 overflow-hidden">
+        {/* American Flag Overlay Layer (Isolated Flag to Match Home Page) */}
+        <div className="absolute inset-0 mix-blend-screen opacity-70 overflow-hidden">
           <Image
-            src="/images/hero-american-flag-construction.jpg"
-            alt="American flag flowing over construction skyline"
+            src="/images/hero-american-flag-overlay.jpg"
+            alt="American flag billowing over American job sites"
             fill
+            priority
             sizes="100vw"
-            className="object-cover object-center"
+            className="object-cover object-left"
           />
         </div>
 
-        {/* Atmospheric Dark Scrims for text legibility & unified brand identity */}
-        <div className="absolute inset-0 bg-gradient-to-r from-[#040813]/95 via-[#040813]/75 to-[#040813]/35" />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#040813]/90 via-transparent to-[#040813]" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_35%,rgba(2,132,199,0.14)_0%,transparent_60%)]" />
+        {/* Atmospheric Scrims for Text Contrast While Preserving HD Clarity */}
+        <div className="absolute inset-0 bg-gradient-to-r from-[#040813]/90 via-[#040813]/50 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#040813]/80 via-transparent to-[#040813]/90" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_35%,rgba(2,132,199,0.10)_0%,transparent_60%)]" />
       </div>
 
       {/* ── 2. HERO CONTENT (Vertically Centered & Aligned with Header Logo) ── */}
