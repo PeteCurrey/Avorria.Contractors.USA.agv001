@@ -10,9 +10,22 @@ import { Input } from '@/components/ui/Input';
 import { Select } from '@/components/ui/Select';
 import { BusinessDocument } from '@/types/database';
 import { calculateDaysRemaining } from '@/lib/compliance/engine';
+import { CreateDocumentHub } from '@/components/documents/CreateDocumentHub';
+
+type PageTab = 'vault' | 'create';
 
 export default function DocumentVaultPage() {
+  const [activeTab, setActiveTab] = useState<PageTab>('vault');
   const [documents, setDocuments] = useState<BusinessDocument[]>([]);
+  const [generatedDocs, setGeneratedDocs] = useState<Array<{
+    id: string;
+    title: string;
+    document_type: string;
+    document_status: string;
+    generation_method: string;
+    version_number: number;
+    created_at: string;
+  }>>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [activeCategory, setActiveCategory] = useState<string>('all');
   const [showUploadModal, setShowUploadModal] = useState(false);
@@ -28,10 +41,17 @@ export default function DocumentVaultPage() {
 
   const fetchDocs = async () => {
     try {
-      const res = await fetch('/api/contractor/documents');
-      if (res.ok) {
-        const json = await res.json();
+      const [vaultRes, genRes] = await Promise.all([
+        fetch('/api/contractor/documents'),
+        fetch('/api/contractor/documents/engine'),
+      ]);
+      if (vaultRes.ok) {
+        const json = await vaultRes.json();
         setDocuments(json.documents || []);
+      }
+      if (genRes.ok) {
+        const json = await genRes.json();
+        setGeneratedDocs(json.documents || []);
       }
     } catch (err) {
       console.error('Failed to load documents', err);
@@ -110,142 +130,233 @@ export default function DocumentVaultPage() {
     return true;
   });
 
+  const statusBadgeVariant = (status: string) => {
+    if (status === 'final') return 'current' as const;
+    if (status === 'draft') return 'primary' as const;
+    if (status === 'superseded') return 'expired' as const;
+    return 'neutral' as const;
+  };
+
+  const docTypeLabel = (type: string) => {
+    const MAP: Record<string, string> = {
+      jha: 'JHA', jsa: 'JSA', 'safety-plan': 'Safety Plan',
+      'toolbox-talk': 'Toolbox Talk', quote: 'Quote',
+      proposal: 'Proposal', 'scope-of-work': 'Scope of Work',
+      'change-order': 'Change Order', 'daily-report': 'Daily Report',
+    };
+    return MAP[type] || type.replace(/_/g, ' ').replace(/-/g, ' ');
+  };
+
   return (
     <div className="max-w-6xl mx-auto space-y-8 text-left">
       {/* Header Bar */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-surface-border pb-6">
         <div>
-          <h1 className="text-2xl font-black text-white tracking-tight">Document Vault</h1>
+          <h1 className="text-2xl font-black text-white tracking-tight">Document Center</h1>
           <p className="text-xs text-slate-400 mt-1">
-            Centralized repository for Certificates of Insurance, state trade licenses, safety programs, and versioned records.
+            Create professional documents and manage your compliance evidence vault.
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
-          <Link href="/app/documents/create/jha">
-            <Button size="sm" variant="secondary">
-              ⚡ JHA Generator
-            </Button>
-          </Link>
+        <div className="flex items-center gap-2">
           <Button
             size="sm"
-            variant="primary"
+            variant="outline"
             onClick={() => {
               setSelectedParentDoc(null);
               setShowUploadModal(true);
             }}
           >
-            + Upload Document
+            + Upload Evidence
+          </Button>
+          <Button size="sm" variant="primary" onClick={() => setActiveTab('create')}>
+            + Create Document
           </Button>
         </div>
       </div>
 
-      {/* Category Filter Pills */}
-      <div className="flex flex-wrap items-center gap-2">
-        {categories.map((cat) => (
+      {/* Tab Navigation */}
+      <div className="flex gap-1 border-b border-surface-border">
+        {([
+          { id: 'vault', label: '📁 Evidence Vault', count: filteredDocs.length },
+          { id: 'create', label: '⚡ Create Documents' },
+        ] as const).map((tab) => (
           <button
-            key={cat.id}
-            type="button"
-            onClick={() => setActiveCategory(cat.id)}
-            className={`px-3 py-1.5 rounded-md text-xs font-semibold transition-colors ${
-              activeCategory === cat.id
-                ? 'bg-brand-600 text-white shadow-sm'
-                : 'bg-surface-subtle text-slate-400 hover:text-white border border-surface-border'
+            key={tab.id}
+            onClick={() => setActiveTab(tab.id as PageTab)}
+            className={`px-4 py-2.5 text-xs font-semibold border-b-2 transition-colors flex items-center gap-1.5 ${
+              activeTab === tab.id
+                ? 'border-brand-500 text-white'
+                : 'border-transparent text-slate-500 hover:text-slate-300'
             }`}
           >
-            {cat.label}
+            {tab.label}
+            {'count' in tab && tab.count > 0 && (
+              <span className="px-1.5 py-0.5 rounded-full bg-surface-elevated text-slate-400 text-[10px] font-mono">
+                {tab.count}
+              </span>
+            )}
           </button>
         ))}
       </div>
 
-      {/* Document List or Empty State */}
-      {isLoading ? (
-        <div className="py-20 text-center text-slate-400 space-y-3">
-          <div className="w-8 h-8 border-2 border-brand-500 border-t-transparent rounded-full animate-spin mx-auto" />
-          <p className="text-xs font-mono">Loading Document Vault...</p>
-        </div>
-      ) : filteredDocs.length === 0 ? (
-        <Card variant="default" className="py-12 text-center space-y-4 max-w-lg mx-auto">
-          <span className="text-4xl">📁</span>
-          <CardTitle className="text-base">Your Document Vault is Ready</CardTitle>
-          <CardDescription className="text-xs max-w-sm mx-auto">
-            Upload your first Certificate of Insurance, trade license, or safety plan to establish your verified contractor record.
-          </CardDescription>
-          <Button size="md" variant="primary" onClick={() => setShowUploadModal(true)}>
-            Upload Your First Document
-          </Button>
-        </Card>
-      ) : (
-        <div className="space-y-3">
-          {filteredDocs.map((doc) => {
-            const daysRemaining = calculateDaysRemaining(doc.expires_at);
-            let status: 'current' | 'expiring' | 'expired' = 'current';
-            if (daysRemaining !== undefined) {
-              if (daysRemaining < 0) status = 'expired';
-              else if (daysRemaining <= 60) status = 'expiring';
-            }
-
-            return (
-              <div
-                key={doc.id}
-                className="p-4 rounded-xl bg-surface-card border border-surface-border hover:border-surface-borderLight transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4 text-xs"
-              >
-                <div className="space-y-1">
-                  <div className="flex items-center gap-2">
-                    <span className="font-bold text-white text-sm">{doc.title}</span>
-                    <Badge variant="neutral" size="sm">
-                      v{doc.version_number}.0
-                    </Badge>
-                  </div>
-                  <div className="text-slate-400 flex flex-wrap items-center gap-3 text-[11px]">
-                    <span className="capitalize font-mono text-brand-400">
-                      {doc.document_type.replace('_', ' ')}
-                    </span>
-                    {doc.issuing_organisation && <span>• Issuer: {doc.issuing_organisation}</span>}
-                    {doc.expires_at && (
-                      <span>
-                        • Expires: {new Date(doc.expires_at).toLocaleDateString()}
-                        {daysRemaining !== undefined && (
-                          <span className={daysRemaining <= 30 ? 'text-amber-400 ml-1' : 'text-slate-400 ml-1'}>
-                            ({daysRemaining > 0 ? `${daysRemaining}d left` : 'Expired'})
-                          </span>
-                        )}
-                      </span>
-                    )}
-                  </div>
-                  {doc.notes && <div className="text-[11px] text-slate-500 italic mt-0.5">{doc.notes}</div>}
-                </div>
-
-                <div className="flex items-center gap-3 shrink-0">
-                  <StatusIndicator
-                    status={status}
-                    label={status === 'current' ? 'Current' : status === 'expiring' ? 'Expiring Soon' : 'Expired'}
-                  />
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() => {
-                      setSelectedParentDoc(doc);
-                      setDocTitle(`${doc.title} (Renewal)`);
-                      setDocType(doc.document_type);
-                      setShowUploadModal(true);
-                    }}
-                  >
-                    + New Version
-                  </Button>
-                  <button
-                    type="button"
-                    onClick={() => handleArchive(doc.id)}
-                    className="text-slate-500 hover:text-rose-400 transition-colors p-1"
-                    title="Archive Document"
-                  >
-                    ✕
-                  </button>
-                </div>
+      {/* EVIDENCE VAULT TAB */}
+      {activeTab === 'vault' && (
+        <div className="space-y-6">
+          {/* Generated Documents section */}
+          {generatedDocs.length > 0 && (
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <h2 className="text-sm font-bold text-white">Generated Documents</h2>
+                <span className="text-[11px] text-slate-500 font-mono">{generatedDocs.length} document{generatedDocs.length !== 1 ? 's' : ''}</span>
               </div>
-            );
-          })}
+              <div className="space-y-2">
+                {generatedDocs.slice(0, 8).map((doc) => (
+                  <Link key={doc.id} href={`/app/documents/${doc.id}`}>
+                    <div className="p-3.5 rounded-xl bg-surface-card border border-surface-border hover:border-brand-500/50 transition-all flex items-center justify-between gap-4 cursor-pointer">
+                      <div className="flex items-center gap-3 min-w-0">
+                        <span className="text-lg shrink-0">
+                          {doc.document_type.startsWith('jh') || doc.document_type.includes('safety') || doc.document_type.includes('toolbox') ? '🦺' :
+                           doc.document_type === 'quote' || doc.document_type === 'proposal' || doc.document_type.includes('scope') || doc.document_type.includes('change') ? '📋' : '📝'}
+                        </span>
+                        <div className="min-w-0">
+                          <div className="font-bold text-white text-xs truncate">{doc.title}</div>
+                          <div className="text-[11px] text-slate-500 font-mono mt-0.5">
+                            {docTypeLabel(doc.document_type)} · v{doc.version_number}.0 · {new Date(doc.created_at).toLocaleDateString('en-US')}
+                          </div>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2 shrink-0">
+                        <Badge variant={statusBadgeVariant(doc.document_status)} size="sm">
+                          {doc.document_status}
+                        </Badge>
+                        <Badge variant={doc.generation_method === 'ai' ? 'verified' : 'neutral'} size="sm">
+                          {doc.generation_method === 'ai' ? '⚡ AI' : '📋'}
+                        </Badge>
+                      </div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Compliance Evidence section */}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <h2 className="text-sm font-bold text-white">Compliance Evidence</h2>
+              {/* Category Filter Pills */}
+              <div className="flex flex-wrap items-center gap-1">
+                {categories.map((cat) => (
+                  <button
+                    key={cat.id}
+                    type="button"
+                    onClick={() => setActiveCategory(cat.id)}
+                    className={`px-2.5 py-1 rounded-md text-[11px] font-semibold transition-colors ${
+                      activeCategory === cat.id
+                        ? 'bg-brand-600 text-white shadow-sm'
+                        : 'bg-surface-subtle text-slate-400 hover:text-white border border-surface-border'
+                    }`}
+                  >
+                    {cat.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {isLoading ? (
+              <div className="py-16 text-center text-slate-400 space-y-3">
+                <div className="w-8 h-8 border-2 border-brand-500 border-t-transparent rounded-full animate-spin mx-auto" />
+                <p className="text-xs font-mono">Loading Document Vault...</p>
+              </div>
+            ) : filteredDocs.length === 0 ? (
+              <Card variant="default" className="py-12 text-center space-y-4 max-w-lg mx-auto">
+                <span className="text-4xl">📁</span>
+                <CardTitle className="text-base">No Compliance Evidence Yet</CardTitle>
+                <CardDescription className="text-xs max-w-sm mx-auto">
+                  Upload your Certificate of Insurance, trade licenses, or OSHA cards to build your verified contractor record.
+                </CardDescription>
+                <Button size="md" variant="primary" onClick={() => setShowUploadModal(true)}>
+                  Upload Your First Document
+                </Button>
+              </Card>
+            ) : (
+              <div className="space-y-2">
+                {filteredDocs.map((doc) => {
+                  const daysRemaining = calculateDaysRemaining(doc.expires_at);
+                  let status: 'current' | 'expiring' | 'expired' = 'current';
+                  if (daysRemaining !== undefined) {
+                    if (daysRemaining < 0) status = 'expired';
+                    else if (daysRemaining <= 60) status = 'expiring';
+                  }
+
+                  return (
+                    <div
+                      key={doc.id}
+                      className="p-4 rounded-xl bg-surface-card border border-surface-border hover:border-surface-borderLight transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4 text-xs"
+                    >
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-2">
+                          <span className="font-bold text-white text-sm">{doc.title}</span>
+                          <Badge variant="neutral" size="sm">v{doc.version_number}.0</Badge>
+                        </div>
+                        <div className="text-slate-400 flex flex-wrap items-center gap-3 text-[11px]">
+                          <span className="capitalize font-mono text-brand-400">
+                            {doc.document_type.replace('_', ' ')}
+                          </span>
+                          {doc.issuing_organisation && <span>• Issuer: {doc.issuing_organisation}</span>}
+                          {doc.expires_at && (
+                            <span>
+                              • Expires: {new Date(doc.expires_at).toLocaleDateString()}
+                              {daysRemaining !== undefined && (
+                                <span className={daysRemaining <= 30 ? 'text-amber-400 ml-1' : 'text-slate-400 ml-1'}>
+                                  ({daysRemaining > 0 ? `${daysRemaining}d left` : 'Expired'})
+                                </span>
+                              )}
+                            </span>
+                          )}
+                        </div>
+                        {doc.notes && <div className="text-[11px] text-slate-500 italic mt-0.5">{doc.notes}</div>}
+                      </div>
+
+                      <div className="flex items-center gap-3 shrink-0">
+                        <StatusIndicator
+                          status={status}
+                          label={status === 'current' ? 'Current' : status === 'expiring' ? 'Expiring Soon' : 'Expired'}
+                        />
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => {
+                            setSelectedParentDoc(doc);
+                            setDocTitle(`${doc.title} (Renewal)`);
+                            setDocType(doc.document_type);
+                            setShowUploadModal(true);
+                          }}
+                        >
+                          + New Version
+                        </Button>
+                        <button
+                          type="button"
+                          onClick={() => handleArchive(doc.id)}
+                          className="text-slate-500 hover:text-rose-400 transition-colors p-1"
+                          title="Archive Document"
+                        >
+                          ✕
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
         </div>
+      )}
+
+      {/* CREATE DOCUMENTS TAB */}
+      {activeTab === 'create' && (
+        <CreateDocumentHub />
       )}
 
       {/* UPLOAD / NEW VERSION MODAL */}
@@ -281,7 +392,7 @@ export default function DocumentVaultPage() {
                   onChange={(e) => setDocType(e.target.value)}
                   options={[
                     { value: 'insurance_coi', label: 'Certificate of Insurance (COI)' },
-                    { value: 'workers_comp', label: 'Workers’ Compensation Policy' },
+                    { value: 'workers_comp', label: "Workers' Compensation Policy" },
                     { value: 'trade_license', label: 'State / Municipal Trade License' },
                     { value: 'safety_policy', label: 'Written Safety Program / HASP' },
                     { value: 'osha_certificate', label: 'OSHA 10 / 30 Training Card' },

@@ -9,14 +9,16 @@
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
     "test:security": "tsx scripts/test-multi-tenant-security.ts",
-    "test:core-loop": "tsx scripts/test-contractor-core-loop.ts"
+    "test:core-loop": "tsx scripts/test-contractor-core-loop.ts",
+    "test:engine": "tsx scripts/test-document-engine.ts",
+    "test": "npm run test:security && npm run test:core-loop && npm run test:engine"
   },
   "dependencies": {
     "@supabase/ssr": "^0.5.2",
     "@supabase/supabase-js": "^2.49.1",
     "clsx": "^2.1.1",
     "lucide-react": "^0.475.0",
-    "next": "15.2.1",
+    "next": "15.5.25",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "tailwind-merge": "^3.0.2",

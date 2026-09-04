@@ -474,19 +474,31 @@ export async function finalizeGeneratedDocument(
   target.updated_at = new Date().toISOString();
 
   // Also bridge into business_documents vault so it's accessible everywhere
+  const vaultTypeMap: Record<string, string> = {
+    jha: 'safety_jha',
+    jsa: 'safety_jsa',
+    'safety-plan': 'safety_plan',
+    'toolbox-talk': 'safety_toolbox_talk',
+    quote: 'commercial_quote',
+    proposal: 'commercial_proposal',
+    'scope-of-work': 'commercial_scope_of_work',
+    'change-order': 'commercial_change_order',
+    'daily-report': 'operational_daily_report',
+  };
+
   const vaultEntry: BusinessDocument = {
     id: `doc-${docId.replace('gen-', '')}`,
     organisation_id: orgId,
     title: target.title,
-    document_type: 'safety_jha',
+    document_type: vaultTypeMap[target.document_type] || 'operational_document',
     file_path: `/storage/org_${orgId}/${docId}.pdf`,
     file_size_bytes: 1024 * 180,
     mime_type: 'application/pdf',
     visibility: 'private',
     status: 'active',
-    version_number: 1,
+    version_number: target.version_number,
     issuing_organisation: ws.organisation.name,
-    notes: 'Signed and finalized site-specific Job Hazard Analysis.',
+    notes: `Finalized ${target.document_type.toUpperCase()} document. Reviewed by ${reviewerName}.`,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
   };
@@ -497,12 +509,110 @@ export async function finalizeGeneratedDocument(
     id: `log-${Date.now()}`,
     action: 'Document Finalized',
     timestamp: new Date().toISOString(),
-    details: `Finalized JHA "${target.title}" with human review sign-off by ${reviewerName}.`,
+    details: `Finalized ${target.document_type.toUpperCase()} "${target.title}" with human review sign-off by ${reviewerName}.`,
   });
 
   store[orgId] = ws;
   saveTenantsStore(store);
   return target;
+}
+
+/**
+ * Retrieves a single generated document by ID
+ */
+export async function getGeneratedDocument(
+  orgId: string,
+  docId: string
+): Promise<GeneratedDocument | null> {
+  const store = loadTenantsStore();
+  const ws = store[orgId] || (await getContractorWorkspace(orgId));
+  return ws.generatedDocuments.find((d) => d.id === docId) || null;
+}
+
+/**
+ * Updates an editable draft generated document
+ */
+export async function updateGeneratedDocument(
+  orgId: string,
+  docId: string,
+  updates: {
+    title?: string;
+    documentPayload?: Record<string, unknown>;
+  }
+): Promise<GeneratedDocument> {
+  const store = loadTenantsStore();
+  const ws = store[orgId] || (await getContractorWorkspace(orgId));
+
+  const target = ws.generatedDocuments.find((d) => d.id === docId);
+  if (!target) throw new Error('Document not found.');
+
+  if (target.document_status === 'final') {
+    throw new Error('Finalized documents are locked. Create a new version to modify.');
+  }
+
+  if (updates.title) target.title = updates.title;
+  if (updates.documentPayload) target.document_payload = updates.documentPayload;
+  target.updated_at = new Date().toISOString();
+
+  ws.auditLogs.unshift({
+    id: `log-${Date.now()}`,
+    action: 'Generated Document Edited',
+    timestamp: new Date().toISOString(),
+    details: `Updated draft "${target.title}".`,
+  });
+
+  store[orgId] = ws;
+  saveTenantsStore(store);
+  return target;
+}
+
+/**
+ * Creates a new version (e.g. v2.0) of a generated document without losing history
+ */
+export async function createGeneratedDocumentVersion(
+  orgId: string,
+  parentDocId: string
+): Promise<GeneratedDocument> {
+  const store = loadTenantsStore();
+  const ws = store[orgId] || (await getContractorWorkspace(orgId));
+
+  const parent = ws.generatedDocuments.find((d) => d.id === parentDocId);
+  if (!parent) throw new Error('Parent document not found.');
+
+  // Mark parent as superseded if it was final
+  if (parent.document_status === 'final') {
+    parent.document_status = 'superseded';
+    parent.updated_at = new Date().toISOString();
+  }
+
+  const newVersionDoc: GeneratedDocument = {
+    ...parent,
+    id: `gen-${Date.now()}`,
+    parent_document_id: parentDocId,
+    version_number: parent.version_number + 1,
+    document_status: 'draft',
+    user_review_status: 'unreviewed',
+    title: `${parent.title.replace(/\s\(v\d+\)$/, '')} (v${parent.version_number + 1})`,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+    finalised_at: undefined,
+    finalised_by: undefined,
+    reviewed_at: undefined,
+    reviewed_by: undefined,
+  };
+
+  ws.generatedDocuments.unshift(newVersionDoc);
+
+  ws.auditLogs.unshift({
+    id: `log-${Date.now()}`,
+    action: 'Document Version Created',
+    timestamp: new Date().toISOString(),
+    details: `Created version ${newVersionDoc.version_number} for "${newVersionDoc.title}".`,
+  });
+
+  store[orgId] = ws;
+  saveTenantsStore(store);
+  return newVersionDoc;
 }
 
 /**

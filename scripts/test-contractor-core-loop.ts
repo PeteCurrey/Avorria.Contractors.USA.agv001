@@ -164,7 +164,53 @@ async function runCoreLoopTest() {
   const postPubPassport = await getPassportDetails(TEST_ORG_ID);
   console.log(`   ✓ Published Status: ${postPubPassport.isPublished ? 'PUBLISHED' : 'PRIVATE'}`);
 
-  console.log('\n🎉 ALL 10 CORE ENGINE JOURNEY MILESTONES COMPLETED WITH REAL PERSISTENCE.');
+  // 10. Phase 4: Universal Document Engine - Commercial Quote Workflow
+  console.log('\n11. Universal Document Engine: Creating Commercial Quote with Line-Items...');
+  const { generateUniversalDocumentDraft } = await import('../src/lib/documents/engine');
+  const quoteDraft = await generateUniversalDocumentDraft(
+    {
+      documentType: 'quote',
+      project: {
+        name: 'Dell Childrens Hospital Expansion',
+        clientName: 'Dell Childrens Healthcare',
+        siteLocation: 'Austin, TX',
+        projectReference: 'PRJ-2026-DCH',
+      },
+      customInputs: {
+        laborCost: 18500,
+        materialsCost: 9200,
+        taxRatePercent: 8.25,
+      },
+      useAiIfAvailable: false,
+    },
+    {
+      name: 'Vance Commercial Electric LLC',
+      primaryTrade: 'electrical-contracting',
+      primaryState: 'TX',
+      licenseNumber: 'TX-TECL-44120',
+    }
+  );
+  console.log(`   ✓ Quote Draft: "${quoteDraft.title}", Subtotal: $${quoteDraft.payload.financialSummary?.subtotal.toFixed(2)}, Total: $${quoteDraft.payload.financialSummary?.totalAmount.toFixed(2)}`);
+
+  const savedQuote = await saveGeneratedDocument(TEST_ORG_ID, {
+    title: quoteDraft.title,
+    documentType: 'quote',
+    documentPayload: quoteDraft.payload as unknown as Record<string, unknown>,
+    aiAssisted: false,
+    generationMethod: 'template',
+    generationModel: quoteDraft.generationModel,
+  });
+
+  const finalizedQuote = await finalizeGeneratedDocument(TEST_ORG_ID, savedQuote.id, 'Marcus Vance');
+  console.log(`   ✓ Quote Finalized and Bridged to Vault (v${finalizedQuote.version_number}.0, Status: ${finalizedQuote.document_status})`);
+
+  // 11. Phase 4: Version Branching (v2.0)
+  console.log('\n12. Document Engine: Branching to v2.0 without destroying historical baseline...');
+  const { createGeneratedDocumentVersion } = await import('../src/lib/tenant/repository');
+  const v2Quote = await createGeneratedDocumentVersion(TEST_ORG_ID, savedQuote.id);
+  console.log(`   ✓ New Version Created: v${v2Quote.version_number}.0 (Status: ${v2Quote.document_status}, Parent: ${v2Quote.parent_document_id})`);
+
+  console.log('\n🎉 ALL 12 CORE ENGINE & CREATION ENGINE JOURNEY MILESTONES COMPLETED WITH REAL PERSISTENCE.');
 }
 
 runCoreLoopTest().catch((err) => {

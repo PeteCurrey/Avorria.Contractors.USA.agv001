@@ -1,15 +1,20 @@
 /**
  * AVORRIA CMS & SEO CONTENT PROVIDER
- * 
+ *
  * Implements a dual-layer content architecture:
  * 1. Database layer: Checks PostgreSQL/Supabase `seo_pages` for dynamic updates made via Admin CMS.
  * 2. Static fallback layer: Gracefully falls back to typed seed registry (`src/lib/seo/registry.ts`)
  *    ensuring zero-downtime and ultra-fast static build generation.
+ *
+ * NOTE: We use createClient from @supabase/supabase-js directly (no cookies) here because:
+ * - The `seo_pages` table is a public read — no auth session is required.
+ * - Using the server client (which calls `cookies()`) would break static generation
+ *   with a DYNAMIC_SERVER_USAGE error during `next build`.
  */
 
 import { SeoPageModel } from '@/types/seo';
 import { INITIAL_SEO_PAGES, getSeoPageBySlug } from './registry';
-import { createClient } from '@/lib/supabase/server';
+import { createClient } from '@supabase/supabase-js';
 
 export async function getSeoPage(slug: string): Promise<SeoPageModel | null> {
   const cleanSlug = slug.replace(/^\/+|\/+$/g, '');
@@ -17,7 +22,10 @@ export async function getSeoPage(slug: string): Promise<SeoPageModel | null> {
   // 1. Check Database layer if Supabase is configured
   if (process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
     try {
-      const supabase = await createClient();
+      const supabase = createClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+      );
       const { data, error } = await supabase
         .from('seo_pages')
         .select('*')

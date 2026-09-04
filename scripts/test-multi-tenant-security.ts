@@ -104,6 +104,7 @@ const TENANT_TABLES = [
   'qualifications',
   'equipment',
   'generated_documents',
+  'project_context',
   'quotes',
   'proposals',
   'projects',
@@ -198,6 +199,60 @@ export function runSecurityVerification(): SecurityAssertionResult[] {
     operation: 'SELECT',
     testDescription: 'Anonymous user cannot read private document storage objects',
     passed: canAnonReadStorage === false,
+  });
+
+  // ──────────────────────────────────────────────────────────────
+  // Phase 4 Additions: Generated Documents & Project Context
+  // ──────────────────────────────────────────────────────────────
+
+  // Test 7: generated_documents cross-org isolation
+  const canAReadBGeneratedDocs = evaluateRlsPolicy('generated_documents', 'SELECT', TENANT_A_USER, ORG_B_ID);
+  results.push({
+    table: 'generated_documents',
+    operation: 'SELECT',
+    testDescription: 'Org A user cannot SELECT generated_documents belonging to Org B',
+    passed: canAReadBGeneratedDocs === false,
+  });
+
+  const canAInsertBGeneratedDocs = evaluateRlsPolicy('generated_documents', 'INSERT', TENANT_A_USER, ORG_B_ID);
+  results.push({
+    table: 'generated_documents',
+    operation: 'INSERT',
+    testDescription: 'Org A user cannot INSERT generated_documents into Org B',
+    passed: canAInsertBGeneratedDocs === false,
+  });
+
+  const canAUpdateBGeneratedDocs = evaluateRlsPolicy('generated_documents', 'UPDATE', TENANT_A_USER, ORG_B_ID);
+  results.push({
+    table: 'generated_documents',
+    operation: 'UPDATE',
+    testDescription: 'Org A user cannot UPDATE generated_documents owned by Org B',
+    passed: canAUpdateBGeneratedDocs === false,
+  });
+
+  const canADeleteBGeneratedDocs = evaluateRlsPolicy('generated_documents', 'DELETE', TENANT_A_USER, ORG_B_ID);
+  results.push({
+    table: 'generated_documents',
+    operation: 'DELETE',
+    testDescription: 'Org A user cannot DELETE generated_documents owned by Org B',
+    passed: canADeleteBGeneratedDocs === false,
+  });
+
+  const canAnonReadGeneratedDocs = evaluateRlsPolicy('generated_documents', 'SELECT', ANONYMOUS_USER, ORG_A_ID);
+  results.push({
+    table: 'generated_documents',
+    operation: 'SELECT',
+    testDescription: 'Anonymous user cannot read any generated_documents (private by default)',
+    passed: canAnonReadGeneratedDocs === false,
+  });
+
+  // Test 8: project_context cross-org isolation
+  const canAReadBProjectCtx = evaluateRlsPolicy('project_context', 'SELECT', TENANT_A_USER, ORG_B_ID);
+  results.push({
+    table: 'project_context',
+    operation: 'SELECT',
+    testDescription: 'Org A user cannot SELECT project_context records belonging to Org B',
+    passed: canAReadBProjectCtx === false,
   });
 
   return results;

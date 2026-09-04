@@ -30,3 +30,4 @@ env.local
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+/.data/

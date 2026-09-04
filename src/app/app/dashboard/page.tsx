@@ -72,8 +72,8 @@ export default function DashboardPage() {
         </div>
 
         <div className="flex items-center gap-3">
-          <Button href="/app/documents/create/jha" size="sm" variant="primary">
-            + Create JHA Document
+          <Button href="/app/documents" size="sm" variant="primary">
+            + Create Document
           </Button>
           <Button href="/app/passport" size="sm" variant="outline">
             Contractor Passport ↗
@@ -230,41 +230,70 @@ export default function DashboardPage() {
         {/* Right 5 Cols: Quick Launchers */}
         <div className="lg:col-span-5 space-y-4">
           <Card variant="default">
-            <CardTitle className="text-base mb-3">Quick Document Actions</CardTitle>
+            <CardTitle className="text-base mb-3">Quick Create</CardTitle>
             <div className="space-y-2.5 text-xs">
-              <Link
-                href="/app/documents/create/jha"
-                className="p-3 rounded-lg bg-surface-subtle border border-surface-border hover:border-brand-500 transition-all flex items-center justify-between block"
-              >
-                <div>
-                  <div className="font-bold text-white">Create Job Hazard Analysis (JHA)</div>
-                  <div className="text-[11px] text-slate-400">Site-specific task hazards & OSHA controls</div>
-                </div>
-                <span className="text-brand-400 font-bold">⚡</span>
-              </Link>
+              {[
+                { href: '/app/documents/create/jha', label: 'Job Hazard Analysis (JHA)', sub: 'Task hazards, OSHA controls, PPE requirements', icon: '🦺', code: 'SAF-JHA' },
+                { href: '/app/documents/create/quote', label: 'Contractor Quote', sub: 'Priced line items, tax, payment terms', icon: '💰', code: 'COM-QUO' },
+                { href: '/app/documents/create/safety-plan', label: 'Site Safety Plan (HASP)', sub: 'Comprehensive site safety program', icon: '📋', code: 'SAF-HASP' },
+                { href: '/app/documents/create/proposal', label: 'Bid Proposal', sub: 'Competitive full proposal with credentials', icon: '📑', code: 'COM-PRP' },
+              ].map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="p-3 rounded-lg bg-surface-subtle border border-surface-border hover:border-brand-500 transition-all flex items-center justify-between group"
+                >
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    <span className="text-base shrink-0">{item.icon}</span>
+                    <div className="min-w-0">
+                      <div className="font-bold text-white text-xs truncate">{item.label}</div>
+                      <div className="text-[11px] text-slate-500 truncate">{item.sub}</div>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2 shrink-0">
+                    <span className="text-[10px] font-mono text-slate-600 group-hover:text-brand-400 transition-colors">{item.code}</span>
+                    <span className="text-brand-400 font-bold group-hover:translate-x-0.5 transition-transform">→</span>
+                  </div>
+                </Link>
+              ))}
 
               <Link
                 href="/app/documents"
-                className="p-3 rounded-lg bg-surface-subtle border border-surface-border hover:border-brand-500 transition-all flex items-center justify-between block"
+                className="text-center block text-[11px] text-slate-500 hover:text-brand-400 transition-colors pt-1 pb-0.5"
               >
-                <div>
-                  <div className="font-bold text-white">Upload Certificate of Insurance</div>
-                  <div className="text-[11px] text-slate-400">General Liability or Workers’ Comp COI</div>
-                </div>
-                <span className="text-brand-400 font-bold">📄</span>
-              </Link>
-
-              <Link
-                href="/app/passport"
-                className="p-3 rounded-lg bg-surface-subtle border border-surface-border hover:border-brand-500 transition-all flex items-center justify-between block"
-              >
-                <div>
-                  <div className="font-bold text-white">Review Contractor Passport</div>
-                  <div className="text-[11px] text-slate-400">Client prequalification identity & sharing</div>
-                </div>
-                <span className="text-brand-400 font-bold">🛡️</span>
+                View all document types →
               </Link>
             </div>
+          </Card>
+
+          {/* Recent Generated Documents */}
+          <Card variant="default">
+            <CardTitle className="text-base mb-3">Recent Documents</CardTitle>
+            {ws?.generatedDocuments && ws.generatedDocuments.length > 0 ? (
+              <div className="space-y-2">
+                {ws.generatedDocuments.slice(0, 4).map((doc) => (
+                  <Link key={doc.id} href={`/app/documents/${doc.id}`}>
+                    <div className="flex items-center justify-between p-2.5 rounded-lg hover:bg-surface-subtle transition-colors cursor-pointer border border-transparent hover:border-surface-border">
+                      <div className="min-w-0">
+                        <div className="text-xs font-semibold text-white truncate">{doc.title}</div>
+                        <div className="text-[11px] text-slate-500 font-mono mt-0.5">{new Date(doc.created_at).toLocaleDateString('en-US')} · v{doc.version_number}.0</div>
+                      </div>
+                      <Badge variant={doc.document_status === 'final' ? 'current' : 'primary'} size="sm">
+                        {doc.document_status}
+                      </Badge>
+                    </div>
+                  </Link>
+                ))}
+                <Link href="/app/documents" className="block text-center text-[11px] text-slate-500 hover:text-brand-400 transition-colors pt-1">
+                  View all documents →
+                </Link>
+              </div>
+            ) : (
+              <div className="py-6 text-center text-xs text-slate-500 space-y-3">
+                <span className="text-3xl block">📄</span>
+                <p>No documents created yet. Use Quick Create above to generate your first professional document.</p>
+              </div>
+            )}
           </Card>
         </div>
       </div>
