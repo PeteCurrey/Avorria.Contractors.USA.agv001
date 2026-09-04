@@ -13,6 +13,68 @@ interface WorkspaceShellProps {
   children: React.ReactNode;
 }
 
+const PRIMARY_NAV = [
+  {
+    label: 'OVERVIEW',
+    href: '/workspace',
+    exact: true,
+  },
+  {
+    label: 'BUSINESS',
+    href: '/workspace/settings',
+  },
+  {
+    label: 'CREATE',
+    href: '/workspace/create',
+  },
+  {
+    label: 'COMPLY',
+    href: '/workspace/comply',
+  },
+  {
+    label: 'PROVE',
+    href: '/workspace/prove',
+  },
+  {
+    label: 'WIN WORK',
+    href: '/workspace/win-work',
+  },
+  {
+    label: 'DOCUMENTS',
+    href: '/workspace/documents',
+  },
+  {
+    label: 'ASSETS',
+    href: '/workspace/assets',
+  },
+  {
+    label: 'TEAM',
+    href: '/workspace/team',
+  },
+];
+
+const SECONDARY_NAV = [
+  {
+    label: 'SETTINGS',
+    href: '/workspace/settings',
+  },
+  {
+    label: 'HELP',
+    href: '/help',
+  },
+];
+
+function getHour(): number {
+  return new Date().getHours();
+}
+
+function getGreeting(): string {
+  const h = getHour();
+  if (h < 12) return 'GOOD MORNING';
+  if (h < 17) return 'GOOD AFTERNOON';
+  return 'GOOD EVENING';
+}
+
 export function WorkspaceShell({
   organization,
   user,
@@ -25,6 +87,7 @@ export function WorkspaceShell({
   const [notifs, setNotifs] = useState(notifications);
   const [unread, setUnread] = useState(initialUnreadCount);
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
   async function markAllNotificationsRead() {
     try {
@@ -36,217 +99,318 @@ export function WorkspaceShell({
     }
   }
 
-  const navItems = [
-    { label: 'Dashboard', href: '/workspace', icon: 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6' },
-    { label: 'Comply', href: '/workspace/comply', icon: 'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z' },
-    { label: 'Prove (Passport)', href: '/workspace/prove', icon: 'M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2' },
-    { label: 'Create (AI Docs)', href: '/workspace/create', icon: 'M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z' },
-    { label: 'Assets', href: '/workspace/assets', icon: 'M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10' },
-    { label: 'Documents', href: '/workspace/documents', icon: 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z' },
-    { label: 'Team', href: '/workspace/team', icon: 'M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z' },
-    { label: 'Settings', href: '/workspace/settings', icon: 'M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z M15 12a3 3 0 11-6 0 3 3 0 016 0z' },
-  ];
+  function isActive(href: string, exact?: boolean) {
+    if (exact) return pathname === href;
+    // BUSINESS → settings: treat specially since SETTINGS also links there
+    if (href === '/workspace/settings') return false; // avoid double-highlight; handled below
+    return pathname.startsWith(href);
+  }
+
+  // Special: highlight BUSINESS when on settings, highlight SETTINGS only when
+  // we're on settings and came from the secondary nav context (not possible to distinguish,
+  // so we just highlight both — acceptable UX)
+  function isNavActive(href: string, exact?: boolean) {
+    if (exact) return pathname === href;
+    return pathname.startsWith(href);
+  }
+
+  const locationStr = [
+    organization.hq_address?.city,
+    organization.hq_address?.state,
+  ]
+    .filter(Boolean)
+    .join(', ');
 
   return (
-    <div className="min-h-screen bg-[#030712] text-slate-100 flex font-sans antialiased">
-      {/* ── LEFT SIDEBAR (SHARP ZERO-RADIUS) ── */}
-      <aside className="w-64 bg-[#090d16] border-r border-slate-800 flex flex-col justify-between shrink-0 hidden md:flex">
-        <div className="space-y-6">
-          {/* Logo / Org Header */}
-          <div className="p-5 border-b border-slate-800">
-            <Link href="/workspace" className="block space-y-1">
-              <div className="flex items-center gap-2">
-                <span className="w-2.5 h-2.5 bg-sky-500 inline-block" />
-                <span className="font-mono text-xs font-bold text-white tracking-wider uppercase">
-                  AVORRIA WORKSPACE
+    <div className="min-h-screen bg-slate-50 text-slate-900 flex font-sans antialiased">
+      {/* ── LEFT SIDEBAR ── */}
+      <aside className="w-56 bg-white border-r border-slate-200 flex flex-col justify-between shrink-0 hidden md:flex">
+        {/* Logo / Brand */}
+        <div>
+          <div className="px-5 py-4 border-b border-slate-100">
+            <Link href="/workspace" className="block">
+              <div className="flex items-center gap-2 mb-2">
+                <span className="w-2 h-2 bg-brand-600 inline-block" />
+                <span className="text-[10px] font-mono font-bold text-brand-600 tracking-[0.15em] uppercase">
+                  AVORRIA
                 </span>
               </div>
-              <div className="font-sans text-sm font-bold text-slate-200 truncate">
-                {organization.name}
-              </div>
-              <div className="text-[10px] font-mono text-slate-500 uppercase">
-                {organization.primary_trade} • {organization.states_licensed.join(', ') || 'USA'}
+              <div className="text-[10px] font-mono text-slate-400 uppercase tracking-wider">
+                CONTRACTOR WORKSPACE
               </div>
             </Link>
           </div>
 
-          {/* Navigation Links */}
-          <nav className="px-3 space-y-1">
-            <div className="px-3 pb-2 text-[10px] font-mono uppercase tracking-wider text-slate-500">
-              OPERATING PILLARS
+          {/* Primary Navigation */}
+          <nav className="py-3" aria-label="Primary navigation">
+            <div className="px-4 pb-1 pt-2 text-[9px] font-mono uppercase tracking-[0.15em] text-slate-400">
+              WORKSPACE
             </div>
-
-            {navItems.map((item) => {
-              const isActive =
-                item.href === '/workspace'
-                  ? pathname === '/workspace'
-                  : pathname.startsWith(item.href);
-
+            {PRIMARY_NAV.map((item) => {
+              const active = isNavActive(item.href, item.exact);
               return (
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`flex items-center gap-3 px-3 py-2 text-xs font-medium border transition-colors ${
-                    isActive
-                      ? 'bg-[#111c30] border-sky-500/50 text-sky-400 font-bold'
-                      : 'border-transparent text-slate-400 hover:text-slate-200 hover:bg-slate-900/60'
+                  className={`flex items-center px-4 py-2 text-[11px] font-mono tracking-[0.08em] transition-colors ${
+                    active
+                      ? 'text-brand-700 bg-brand-50 border-l-2 border-brand-600 font-bold'
+                      : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50 border-l-2 border-transparent'
                   }`}
+                  aria-current={active ? 'page' : undefined}
                 >
-                  <svg
-                    className={`w-4 h-4 shrink-0 ${isActive ? 'text-sky-400' : 'text-slate-500'}`}
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path strokeLinecap="square" strokeLinejoin="miter" strokeWidth="2" d={item.icon} />
-                  </svg>
-                  <span>{item.label}</span>
+                  {item.label}
                 </Link>
               );
             })}
-
           </nav>
         </div>
 
-        {/* Bottom User Info */}
-        <div className="p-4 border-t border-slate-800 bg-[#060a14] flex items-center justify-between text-xs">
-          <div className="truncate">
-            <div className="font-bold text-slate-200 truncate">{user.full_name}</div>
-            <div className="text-[10px] font-mono text-slate-500 capitalize">{user.role}</div>
+        {/* Secondary Navigation + User */}
+        <div>
+          <nav className="py-2 border-t border-slate-100" aria-label="Secondary navigation">
+            {SECONDARY_NAV.map((item) => {
+              const active = pathname.startsWith(item.href);
+              return (
+                <Link
+                  key={item.href + item.label}
+                  href={item.href}
+                  className={`flex items-center px-4 py-2 text-[11px] font-mono tracking-[0.08em] transition-colors ${
+                    active && item.href !== '/help'
+                      ? 'text-slate-700 bg-slate-50 border-l-2 border-slate-300 font-bold'
+                      : 'text-slate-400 hover:text-slate-700 hover:bg-slate-50 border-l-2 border-transparent'
+                  }`}
+                >
+                  {item.label}
+                </Link>
+              );
+            })}
+          </nav>
+
+          {/* User panel */}
+          <div className="px-4 py-3 border-t border-slate-100">
+            <div className="text-[11px] font-semibold text-slate-700 truncate">{user.full_name}</div>
+            <div className="text-[10px] font-mono text-slate-400 uppercase tracking-wider">
+              {user.role}
+            </div>
           </div>
-          <Link
-            href="/workspace/settings"
-            className="text-slate-400 hover:text-white p-1 text-sm font-mono"
-            title="Settings"
-          >
-            ⚙
-          </Link>
         </div>
       </aside>
 
       {/* ── MAIN CONTENT AREA ── */}
       <div className="flex-1 flex flex-col min-w-0">
-        {/* TOP BAR */}
-        <header className="h-14 border-b border-slate-800 bg-[#090d16] px-4 sm:px-8 flex items-center justify-between shrink-0">
-          <div className="flex items-center gap-3">
-            {/* Mobile Title */}
-            <div className="md:hidden font-bold text-sm text-white flex items-center gap-1.5">
-              <span className="w-2 h-2 bg-sky-500 inline-block" />
-              <span>{organization.name}</span>
-            </div>
 
-            {/* Org Switcher indicator */}
-            <div className="hidden md:flex items-center gap-2 border border-slate-800 bg-[#030712] px-3 py-1.5 text-xs font-mono">
-              <span className="text-slate-500">ORG:</span>
-              <span className="text-slate-200 font-bold">{organization.name}</span>
-              <span className="text-[9px] bg-slate-800 text-slate-400 px-1 py-0.2 uppercase ml-1">
-                {organization.subscription_tier}
-              </span>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-4">
-            {/* Notification Bell */}
-            <div className="relative">
+        {/* TOP COMMAND BAR */}
+        <header className="border-b border-slate-200 bg-white shrink-0">
+          <div className="px-5 sm:px-8 h-14 flex items-center justify-between gap-4">
+            {/* Left — Greeting + Location */}
+            <div className="flex items-center gap-4 min-w-0">
+              {/* Mobile hamburger */}
               <button
                 type="button"
-                onClick={() => setShowNotifications(!showNotifications)}
-                className="relative p-2 text-slate-400 hover:text-white border border-slate-800 hover:border-slate-700 bg-[#030712] transition-colors"
-                title="Notifications"
+                className="md:hidden p-1.5 text-slate-500 hover:text-slate-800 border border-slate-200"
+                onClick={() => setMobileNavOpen(!mobileNavOpen)}
+                aria-label="Toggle navigation"
               >
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="square" strokeWidth="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                  <path strokeLinecap="square" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
                 </svg>
-                {unread > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-amber-500 text-black font-mono font-bold text-[9px] px-1 py-0 leading-tight">
-                    {unread}
-                  </span>
-                )}
               </button>
 
-              {/* Notification Dropdown Panel */}
-              {showNotifications && (
-                <div className="absolute right-0 mt-2 w-80 sm:w-96 bg-[#090d16] border border-slate-700 shadow-2xl z-50 p-4 space-y-3">
-                  <div className="flex items-center justify-between border-b border-slate-800 pb-2">
-                    <span className="font-mono text-xs font-bold uppercase text-slate-200">
-                      Notifications ({notifs.length})
-                    </span>
-                    {unread > 0 && (
-                      <button
-                        type="button"
-                        onClick={markAllNotificationsRead}
-                        className="text-[10px] font-mono text-sky-400 hover:underline"
-                      >
-                        Mark all read
-                      </button>
-                    )}
-                  </div>
-
-                  <div className="max-h-80 overflow-y-auto space-y-2">
-                    {notifs.length === 0 ? (
-                      <div className="text-center py-6 text-xs text-slate-500 font-mono">
-                        No notifications.
-                      </div>
-                    ) : (
-                      notifs.map((n) => (
-                        <div
-                          key={n.id}
-                          className={`p-3 text-xs border ${
-                            n.read_at ? 'border-slate-800/60 bg-[#030712]/50 text-slate-400' : 'border-amber-500/40 bg-amber-950/10 text-slate-200 font-medium'
-                          }`}
-                        >
-                          <div className="text-[10px] font-mono uppercase text-slate-500">
-                            {new Date(n.sent_at).toLocaleDateString()} • {n.type.replace(/_/g, ' ')}
-                          </div>
-                          <div className="mt-1 leading-snug">{n.message}</div>
-                        </div>
-                      ))
-                    )}
-                  </div>
+              <div className="hidden md:block min-w-0">
+                <div className="text-[10px] font-mono font-bold tracking-[0.12em] text-slate-800">
+                  {getGreeting()},{' '}
+                  <span className="text-brand-600">{organization.name.toUpperCase()}</span>
                 </div>
-              )}
+                <div className="text-[10px] font-mono text-slate-400 tracking-wider">
+                  {locationStr ? `${locationStr} · ` : ''}CONTRACTOR WORKSPACE
+                </div>
+              </div>
+
+              {/* Mobile: just org name */}
+              <div className="md:hidden text-[11px] font-mono font-bold text-slate-800 truncate">
+                {organization.name}
+              </div>
             </div>
 
-            {/* User Profile Menu */}
-            <div className="relative">
+            {/* Right — Search / Notifications / Account */}
+            <div className="flex items-center gap-2">
+              {/* Search */}
               <button
                 type="button"
-                onClick={() => setShowUserMenu(!showUserMenu)}
-                className="flex items-center gap-2 border border-slate-800 bg-[#030712] px-3 py-1.5 text-xs text-slate-300 hover:text-white"
+                className="hidden sm:flex items-center gap-2 border border-slate-200 bg-slate-50 px-3 py-1.5 text-[11px] font-mono text-slate-400 hover:text-slate-600 hover:border-slate-300 transition-colors"
+                aria-label="Search workspace"
               >
-                <span className="font-medium">{user.full_name}</span>
-                <span className="font-mono text-[10px] text-slate-500">▼</span>
+                <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path
+                    strokeLinecap="square"
+                    strokeWidth="2"
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                  />
+                </svg>
+                <span className="hidden lg:inline">SEARCH</span>
               </button>
 
-              {showUserMenu && (
-                <div className="absolute right-0 mt-2 w-48 bg-[#090d16] border border-slate-700 shadow-2xl z-50 p-2 text-xs space-y-1">
-                  <div className="px-3 py-2 border-b border-slate-800">
-                    <div className="font-bold text-white">{user.full_name}</div>
-                    <div className="text-[10px] font-mono text-slate-500 truncate">{user.email || 'No email set'}</div>
+              {/* Notifications */}
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowNotifications(!showNotifications);
+                    setShowUserMenu(false);
+                  }}
+                  className="relative p-2 text-slate-500 hover:text-slate-800 border border-slate-200 hover:border-slate-300 bg-white transition-colors"
+                  aria-label={`Notifications${unread > 0 ? `, ${unread} unread` : ''}`}
+                >
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path
+                      strokeLinecap="square"
+                      strokeWidth="2"
+                      d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+                    />
+                  </svg>
+                  {unread > 0 && (
+                    <span className="absolute -top-0.5 -right-0.5 bg-red-600 text-white font-mono font-bold text-[8px] px-1 py-0 leading-tight min-w-[14px] text-center">
+                      {unread}
+                    </span>
+                  )}
+                </button>
+
+                {/* Notification dropdown */}
+                {showNotifications && (
+                  <div className="absolute right-0 mt-1 w-80 sm:w-96 bg-white border border-slate-200 shadow-lg z-50">
+                    <div className="flex items-center justify-between px-4 py-3 border-b border-slate-100">
+                      <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-700">
+                        NOTIFICATIONS ({notifs.length})
+                      </span>
+                      {unread > 0 && (
+                        <button
+                          type="button"
+                          onClick={markAllNotificationsRead}
+                          className="text-[10px] font-mono text-brand-600 hover:underline"
+                        >
+                          Mark all read
+                        </button>
+                      )}
+                    </div>
+                    <div className="max-h-72 overflow-y-auto">
+                      {notifs.length === 0 ? (
+                        <div className="text-center py-8 text-[11px] font-mono text-slate-400">
+                          No notifications.
+                        </div>
+                      ) : (
+                        notifs.map((n) => (
+                          <div
+                            key={n.id}
+                            className={`px-4 py-3 border-b border-slate-100 text-xs ${
+                              n.read_at
+                                ? 'text-slate-500'
+                                : 'text-slate-800 bg-blue-50/50'
+                            }`}
+                          >
+                            <div className="text-[9px] font-mono uppercase text-slate-400 mb-0.5">
+                              {new Date(n.sent_at).toLocaleDateString('en-US', {
+                                month: 'short',
+                                day: 'numeric',
+                              })}{' '}
+                              · {n.type.replace(/_/g, ' ')}
+                            </div>
+                            <div className="leading-snug">{n.message}</div>
+                          </div>
+                        ))
+                      )}
+                    </div>
                   </div>
-                  <Link
-                    href="/workspace/settings"
-                    className="block px-3 py-1.5 text-slate-300 hover:bg-slate-800 hover:text-white"
-                    onClick={() => setShowUserMenu(false)}
-                  >
-                    Account Settings
-                  </Link>
-                  <Link
-                    href="/sign-in"
-                    className="block px-3 py-1.5 text-rose-400 hover:bg-slate-800 hover:text-rose-300"
-                    onClick={() => setShowUserMenu(false)}
-                  >
-                    Sign Out
-                  </Link>
-                </div>
-              )}
+                )}
+              </div>
+
+              {/* Account menu */}
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowUserMenu(!showUserMenu);
+                    setShowNotifications(false);
+                  }}
+                  className="flex items-center gap-2 border border-slate-200 bg-white px-3 py-1.5 text-[11px] font-mono text-slate-600 hover:text-slate-900 hover:border-slate-300 transition-colors"
+                >
+                  <span className="hidden sm:inline font-semibold">{user.full_name}</span>
+                  <svg className="w-3 h-3 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="square" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+
+                {showUserMenu && (
+                  <div className="absolute right-0 mt-1 w-48 bg-white border border-slate-200 shadow-lg z-50">
+                    <div className="px-4 py-3 border-b border-slate-100">
+                      <div className="text-[11px] font-bold text-slate-800">{user.full_name}</div>
+                      <div className="text-[10px] font-mono text-slate-400 truncate">
+                        {user.email ?? 'No email set'}
+                      </div>
+                    </div>
+                    <Link
+                      href="/workspace/settings"
+                      className="block px-4 py-2 text-[11px] font-mono text-slate-600 hover:bg-slate-50 hover:text-slate-900"
+                      onClick={() => setShowUserMenu(false)}
+                    >
+                      ACCOUNT SETTINGS
+                    </Link>
+                    <Link
+                      href="/sign-in"
+                      className="block px-4 py-2 text-[11px] font-mono text-red-600 hover:bg-red-50 hover:text-red-700"
+                      onClick={() => setShowUserMenu(false)}
+                    >
+                      SIGN OUT
+                    </Link>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </header>
 
+        {/* Mobile nav drawer */}
+        {mobileNavOpen && (
+          <div className="md:hidden bg-white border-b border-slate-200 py-3 shadow-sm">
+            <nav className="px-4 space-y-0.5" aria-label="Mobile navigation">
+              {PRIMARY_NAV.map((item) => {
+                const active = isNavActive(item.href, item.exact);
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    onClick={() => setMobileNavOpen(false)}
+                    className={`block px-3 py-2 text-[11px] font-mono tracking-[0.08em] ${
+                      active
+                        ? 'text-brand-700 bg-brand-50 font-bold'
+                        : 'text-slate-500 hover:text-slate-800'
+                    }`}
+                  >
+                    {item.label}
+                  </Link>
+                );
+              })}
+              <div className="border-t border-slate-100 mt-2 pt-2">
+                {SECONDARY_NAV.map((item) => (
+                  <Link
+                    key={item.label}
+                    href={item.href}
+                    onClick={() => setMobileNavOpen(false)}
+                    className="block px-3 py-2 text-[11px] font-mono text-slate-400 hover:text-slate-700"
+                  >
+                    {item.label}
+                  </Link>
+                ))}
+              </div>
+            </nav>
+          </div>
+        )}
+
         {/* PAGE CONTENT */}
-        <main className="flex-1 p-4 sm:p-8 max-w-7xl w-full mx-auto space-y-8">
-          {children}
+        <main className="flex-1 overflow-auto">
+          <div className="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6">
+            {children}
+          </div>
         </main>
       </div>
     </div>

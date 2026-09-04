@@ -1,21 +1,54 @@
 import React from 'react';
-import { getSessionContext } from '@/lib/workspace/context';
-import { listDocuments } from '@/lib/workspace/db';
-import { CreateHubClient } from './CreateHubClient';
+import { getWorkspaceContext } from '@/lib/workspace/context';
+import {
+  listProjects,
+  listCapabilities,
+  listCaseStudies,
+  listReferences,
+  getCommercialProfile,
+  calculateCommercialReadiness,
+} from '@/lib/create/evidence-store';
+import { listCredentials, listDocuments } from '@/lib/workspace/db';
+import { CreateHub } from './CreateHub';
 
 export const dynamic = 'force-dynamic';
 
 export default async function CreatePage() {
-  const session = await getSessionContext();
-  const allDocs = await listDocuments(session.organization.id);
-  // Filter to AI-generated documents
-  const aiDocs = allDocs.filter((d) => d.generated_by === 'ai');
+  const { organization, user } = await getWorkspaceContext();
+  const orgId = organization.id;
+
+  const [
+    projects,
+    capabilities,
+    caseStudies,
+    references,
+    profile,
+    credentials,
+    documents,
+    readiness,
+  ] = await Promise.all([
+    listProjects(orgId),
+    listCapabilities(orgId),
+    listCaseStudies(orgId),
+    listReferences(orgId),
+    getCommercialProfile(orgId),
+    listCredentials(orgId),
+    listDocuments(orgId),
+    calculateCommercialReadiness(orgId),
+  ]);
 
   return (
-    <CreateHubClient
-      organization={session.organization}
-      user={session.user}
-      documents={aiDocs}
+    <CreateHub
+      organization={organization}
+      user={user}
+      projects={projects}
+      capabilities={capabilities}
+      caseStudies={caseStudies}
+      references={references}
+      profile={profile}
+      credentials={credentials}
+      documents={documents}
+      readiness={readiness}
     />
   );
 }

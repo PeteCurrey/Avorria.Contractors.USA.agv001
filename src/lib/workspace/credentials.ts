@@ -62,11 +62,17 @@ export function computeCredentialStatus(
 export interface CreateCredentialInput {
   org_id: string;
   type: CredentialType;
+  title?: string;
   carrier_or_authority?: string;
   policy_or_license_number?: string;
   coverage_amount?: number;
   effective_date?: string;
   expiration_date?: string;
+  review_date?: string;
+  holder?: string;
+  issue_date?: string;
+  notes?: string;
+  verification_state?: 'contractor_supplied' | 'document_supported' | 'verified';
   state?: string;
   document_file_url?: string;
   document_title?: string;
@@ -74,11 +80,17 @@ export interface CreateCredentialInput {
 
 export interface UpdateCredentialInput {
   type?: CredentialType;
+  title?: string;
   carrier_or_authority?: string;
   policy_or_license_number?: string;
   coverage_amount?: number;
   effective_date?: string;
   expiration_date?: string;
+  review_date?: string;
+  holder?: string;
+  issue_date?: string;
+  notes?: string;
+  verification_state?: 'contractor_supplied' | 'document_supported' | 'verified';
   state?: string;
   document_file_url?: string;
   document_title?: string;
@@ -115,7 +127,12 @@ export async function createCredential(input: CreateCredentialInput): Promise<Cr
 
   // If a document file is attached, create a linked document record
   if (input.document_file_url) {
-    const docType = input.type === 'trade_license' ? 'license' : 'coi';
+    let docType: WorkspaceDocument['type'] = 'coi';
+    if (input.type === 'trade_license') {
+      docType = 'license';
+    } else if (input.type.startsWith('safety_')) {
+      docType = 'safety_plan';
+    }
     const doc: WorkspaceDocument = {
       id: `doc_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
       org_id: input.org_id,
@@ -132,16 +149,23 @@ export async function createCredential(input: CreateCredentialInput): Promise<Cr
   }
 
   const status = computeCredentialStatus(input.expiration_date);
+  const verificationState = input.verification_state || (documentId ? 'document_supported' : 'contractor_supplied');
 
   const cred: Credential = {
     id: `crd_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
     org_id: input.org_id,
     type: input.type,
+    title: input.title,
     carrier_or_authority: input.carrier_or_authority,
     policy_or_license_number: input.policy_or_license_number,
     coverage_amount: input.coverage_amount,
     effective_date: input.effective_date,
     expiration_date: input.expiration_date,
+    review_date: input.review_date,
+    holder: input.holder,
+    issue_date: input.issue_date,
+    notes: input.notes,
+    verification_state: verificationState,
     document_id: documentId,
     status,
     state: input.state,
@@ -165,12 +189,18 @@ export async function updateCredential(
 
   let documentId = existing.document_id;
   if (input.document_file_url) {
-    const docType = (input.type || existing.type) === 'trade_license' ? 'license' : 'coi';
+    const targetType = input.type || existing.type;
+    let docType: WorkspaceDocument['type'] = 'coi';
+    if (targetType === 'trade_license') {
+      docType = 'license';
+    } else if (targetType.startsWith('safety_')) {
+      docType = 'safety_plan';
+    }
     const doc: WorkspaceDocument = {
       id: `doc_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
       org_id: existing.org_id,
       type: docType,
-      title: input.document_title || `${(input.type || existing.type).replace(/_/g, ' ')} Document`,
+      title: input.document_title || `${targetType.replace(/_/g, ' ')} Document`,
       file_url: input.document_file_url,
       version: 1,
       generated_by: 'uploaded',
@@ -183,15 +213,24 @@ export async function updateCredential(
 
   const expirationDate = input.expiration_date !== undefined ? input.expiration_date : existing.expiration_date;
   const status = computeCredentialStatus(expirationDate);
+  const verificationState = input.verification_state !== undefined
+    ? input.verification_state
+    : (documentId ? 'document_supported' : existing.verification_state || 'contractor_supplied');
 
   const updated: Credential = {
     ...existing,
     type: input.type || existing.type,
+    title: input.title !== undefined ? input.title : existing.title,
     carrier_or_authority: input.carrier_or_authority !== undefined ? input.carrier_or_authority : existing.carrier_or_authority,
     policy_or_license_number: input.policy_or_license_number !== undefined ? input.policy_or_license_number : existing.policy_or_license_number,
     coverage_amount: input.coverage_amount !== undefined ? input.coverage_amount : existing.coverage_amount,
     effective_date: input.effective_date !== undefined ? input.effective_date : existing.effective_date,
     expiration_date: expirationDate,
+    review_date: input.review_date !== undefined ? input.review_date : existing.review_date,
+    holder: input.holder !== undefined ? input.holder : existing.holder,
+    issue_date: input.issue_date !== undefined ? input.issue_date : existing.issue_date,
+    notes: input.notes !== undefined ? input.notes : existing.notes,
+    verification_state: verificationState,
     state: input.state !== undefined ? input.state : existing.state,
     document_id: documentId,
     status,

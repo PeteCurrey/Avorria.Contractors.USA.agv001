@@ -10,8 +10,14 @@ export type CredentialType =
   | 'workers_comp'
   | 'umbrella'
   | 'auto'
+  | 'professional_liability'
   | 'trade_license'
   | 'osha_card'
+  | 'safety_policy'
+  | 'safety_plan'
+  | 'safety_training'
+  | 'safety_certificate'
+  | 'safety_review'
   | 'other';
 
 export type CredentialStatus =
@@ -105,11 +111,17 @@ export interface Credential {
   id: string;
   org_id: string;
   type: CredentialType;
+  title?: string;
   carrier_or_authority?: string;
   policy_or_license_number?: string;
   coverage_amount?: number;
   effective_date?: string;
   expiration_date?: string;
+  review_date?: string;
+  holder?: string;
+  issue_date?: string;
+  notes?: string;
+  verification_state?: 'contractor_supplied' | 'document_supported' | 'verified';
   document_id?: string;
   status: CredentialStatus;
   state?: string;
