@@ -178,8 +178,8 @@ export default function DocumentVaultPage() {
       {/* Tab Navigation */}
       <div className="flex gap-1 border-b border-surface-border">
         {([
-          { id: 'vault', label: '📁 Evidence Vault', count: filteredDocs.length },
-          { id: 'create', label: '⚡ Create Documents' },
+          { id: 'vault', label: 'Evidence Vault', count: filteredDocs.length },
+          { id: 'create', label: 'Create Documents' },
         ] as const).map((tab) => (
           <button
             key={tab.id}
@@ -213,12 +213,8 @@ export default function DocumentVaultPage() {
               <div className="space-y-2">
                 {generatedDocs.slice(0, 8).map((doc) => (
                   <Link key={doc.id} href={`/app/documents/${doc.id}`}>
-                    <div className="p-3.5 rounded-xl bg-surface-card border border-surface-border hover:border-brand-500/50 transition-all flex items-center justify-between gap-4 cursor-pointer">
+                    <div className="p-3.5 rounded-lg bg-surface-card border border-surface-border hover:border-brand-500/50 transition-all flex items-center justify-between gap-4 cursor-pointer">
                       <div className="flex items-center gap-3 min-w-0">
-                        <span className="text-lg shrink-0">
-                          {doc.document_type.startsWith('jh') || doc.document_type.includes('safety') || doc.document_type.includes('toolbox') ? '🦺' :
-                           doc.document_type === 'quote' || doc.document_type === 'proposal' || doc.document_type.includes('scope') || doc.document_type.includes('change') ? '📋' : '📝'}
-                        </span>
                         <div className="min-w-0">
                           <div className="font-bold text-white text-xs truncate">{doc.title}</div>
                           <div className="text-[11px] text-slate-500 font-mono mt-0.5">
@@ -231,7 +227,7 @@ export default function DocumentVaultPage() {
                           {doc.document_status}
                         </Badge>
                         <Badge variant={doc.generation_method === 'ai' ? 'verified' : 'neutral'} size="sm">
-                          {doc.generation_method === 'ai' ? '⚡ AI' : '📋'}
+                          {doc.generation_method === 'ai' ? 'AI' : 'Template'}
                         </Badge>
                       </div>
                     </div>

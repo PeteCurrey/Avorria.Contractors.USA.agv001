@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { Metadata } from 'next';
 import { siteConfig } from '@/config/site';
 import { Button } from '@/components/ui/Button';
-import { CinematicPageHero } from '@/components/hero/CinematicPageHero';
+import { ProductHero } from '@/components/hero/ProductHero';
 
 export const metadata: Metadata = {
   title: 'Win More High-Value Contractor Bids | Avorria Win Work',
@@ -17,16 +17,20 @@ export const metadata: Metadata = {
 export default function WinWorkPage() {
   return (
     <div className="min-h-screen bg-surface-page text-navy-800">
-      <CinematicPageHero
+      <ProductHero
         eyebrow="OPERATIONAL PILLAR 05 · WIN WORK"
         title={<>Look ready when the<br />opportunity arrives.</>}
         subtitle="Tier-1 general contractors and commercial project owners do not award bids solely on price. They award to trade contractors who eliminate risk through structured safety planning, verified compliance, and immediate pre-qualification readiness."
         primaryCta={{ label: 'Build Your Pre-Qual Pack', href: '/sign-up' }}
         secondaryCta={{ label: 'Try Quote & Margin Calculator', href: '/tools/contractor-quote-calculator' }}
-        backgroundImage="/images/hero-win-work.jpg"
-        backgroundAlt="NYC skyline construction cranes at golden hour sunset"
+        pillars={[
+          { title: 'Commercial Pre-Qual Packs', description: 'Package COIs, licenses, safety plans, and EMR records into a structured digital dossier for rapid GC review.' },
+          { title: 'Margin-Protected Estimating', description: 'Burden multipliers, overhead recovery, and markup calculations built for trade contractor cost structures.' },
+          { title: 'Verified Contractor Passport', description: 'Share a single secure URL containing your verified credentials, safety records, and company profile.' },
+        ]}
         trustItems={['Pre-Qual Packs', 'Commercial Proposals', 'Quote Calculator', 'Verified Passport', 'Change Orders']}
       />
+
 
       {/* Main Narrative: Three Strategic Levers */}
       <section className="py-20 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto">

@@ -2,12 +2,12 @@ import React from 'react';
 import Link from 'next/link';
 import { Metadata } from 'next';
 import { siteConfig } from '@/config/site';
-import { CinematicPageHero } from '@/components/hero/CinematicPageHero';
+import { ProductHero } from '@/components/hero/ProductHero';
 
 export const metadata: Metadata = {
   title: 'Contractor Compliance & Readiness Monitoring | Avorria Comply',
   description:
-    'Track Certificates of Insurance (COI), state trade licenses, workers’ comp, and OSHA safety programs. Automated renewal alerts keep your business job-site ready.',
+    "Track Certificates of Insurance (COI), state trade licenses, workers' comp, and OSHA safety programs. Automated renewal alerts keep your business job-site ready.",
   alternates: {
     canonical: `${siteConfig.url}/comply`,
   },
@@ -59,14 +59,17 @@ export default function ComplyPage() {
 
   return (
     <div className="w-full bg-white text-navy-800">
-      <CinematicPageHero
+      <ProductHero
         eyebrow="PILLAR 03 / COMPLIANCE & READINESS"
         title={<>Know what you need.<br />Know what's current.</>}
         subtitle="Contractor compliance is not one-size-fits-all. Avorria organizes your business records by distinguishing legal statutory rules, trade engineering standards, client contract requirements, and internal platform readiness."
         primaryCta={{ label: 'Start Tracking Compliance Free', href: '/sign-up' }}
         secondaryCta={{ label: 'View Compliance Checklist', href: '/guides/contractor-compliance-checklist' }}
-        backgroundImage="/images/hero-comply.jpg"
-        backgroundAlt="Compliance audit review on commercial construction job site"
+        pillars={[
+          { title: 'Certificate of Insurance Tracking', description: 'Monitor COI expiry, occurrence limits, aggregate coverage, and endorsement status in one place.' },
+          { title: 'Trade License Monitoring', description: 'Track state licensing board status, designated qualifying parties, and renewal windows across jurisdictions.' },
+          { title: 'Readiness Score & Alerts', description: 'Dynamic readiness score across 9 core categories with automated 60, 30, and 14-day renewal alerts.' },
+        ]}
         trustItems={['COI Tracking', 'License Monitoring', 'OSHA Alignment', 'Readiness Score', 'Renewal Alerts']}
       />
 
@@ -88,7 +91,7 @@ export default function ComplyPage() {
           {CONTEXT_TIERS.map((tier) => (
             <div
               key={tier.title}
-              className="p-8 rounded-2xl bg-slate-50 border border-slate-200 space-y-4 flex flex-col justify-between"
+              className="p-8 rounded-lg bg-slate-50 border border-slate-200 space-y-4 flex flex-col justify-between"
             >
               <div className="space-y-3">
                 <h3 className="text-xl font-bold text-navy-900">{tier.title}</h3>
@@ -112,7 +115,7 @@ export default function ComplyPage() {
         </div>
 
         {/* Regulatory Disclaimer Box */}
-        <div className="p-6 rounded-xl bg-amber-50/70 border border-amber-200 text-xs text-amber-950 space-y-2 leading-relaxed">
+        <div className="p-6 rounded-lg bg-amber-50/70 border border-amber-200 text-xs text-amber-950 space-y-2 leading-relaxed">
           <strong className="block text-sm font-bold text-amber-900">
             Statutory Legal & Regulatory Boundary Notice
           </strong>

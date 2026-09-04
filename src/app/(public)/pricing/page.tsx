@@ -4,59 +4,88 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { PRICING_PLANS } from '@/config/plans';
 import { Button } from '@/components/ui/Button';
-import { CinematicPageHero } from '@/components/hero/CinematicPageHero';
+import { CheckCircle2 } from 'lucide-react';
 
 export default function PricingPage() {
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'annual'>('annual');
 
+  const trustItems = [
+    'Cancel Anytime',
+    '30-Day Guarantee',
+    'No Setup Fees',
+    'Commercial Pre-Qual Ready',
+    'Enterprise Data Isolation',
+  ];
+
   return (
     <div className="min-h-screen bg-surface-page text-navy-800">
-      <CinematicPageHero
-        eyebrow="PREDICTABLE CONTRACTOR SUBSCRIPTIONS"
-        title={<>Transparent pricing for<br />serious contractors.</>}
-        subtitle="From independent specialty trades generating their first JHA to growing multi-crew firms managing commercial pre-qualification dossiers."
-        backgroundImage="/images/hero-pricing.jpg"
-        backgroundAlt="Commercial construction project planning and predictable contractor investment"
-        trustItems={['Cancel Anytime', '30-Day Money Back', 'Instant Activation', 'No Setup Fees', 'Commercial Pre-Qual Ready']}
-      >
-        {/* Billing Interval Toggle (Dark Themed within Hero) */}
-        <div className="pt-2 flex items-center gap-3">
-          <span
-            className={`text-xs sm:text-sm font-light transition-colors ${
-              billingCycle === 'monthly' ? 'text-white font-normal' : 'text-slate-400'
-            }`}
-          >
-            Monthly Billing
-          </span>
-          <button
-            type="button"
-            role="switch"
-            aria-checked={billingCycle === 'annual'}
-            onClick={() => setBillingCycle(billingCycle === 'monthly' ? 'annual' : 'monthly')}
-            className="w-14 h-7 min-h-[28px] max-h-[28px] shrink-0 rounded-full bg-white/20 border border-white/30 p-1 transition-colors relative inline-flex items-center focus:outline-none focus:ring-2 focus:ring-[#38bdf8]/50 cursor-pointer backdrop-blur-sm"
-            aria-label="Toggle Billing Interval"
-          >
-            <div
-              className={`w-5 h-5 rounded-full bg-[#0284c7] transition-transform duration-200 shadow-sm ${
-                billingCycle === 'annual' ? 'translate-x-7' : 'translate-x-0'
-              }`}
-            />
-          </button>
-          <span
-            className={`text-xs sm:text-sm font-light flex items-center gap-2 transition-colors ${
-              billingCycle === 'annual' ? 'text-white font-normal' : 'text-slate-400'
-            }`}
-          >
-            <span>Annual Billing</span>
-            <span className="text-[10px] sm:text-[11px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-mono">
-              Save ~20%
+      {/* ── CLEAN ABOVE-THE-FOLD ENTERPRISE PRICING HEADER ── */}
+      <section className="bg-white border-b border-slate-200/80 pt-10 pb-8 px-4 sm:px-6 lg:px-8 text-center">
+        <div className="max-w-4xl mx-auto space-y-4">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-sky-600/20 bg-sky-50">
+            <span className="w-1.5 h-1.5 rounded-full bg-sky-600" />
+            <span className="text-[11px] font-mono font-semibold tracking-[0.16em] uppercase text-sky-800">
+              TRANSPARENT COMMERCIAL PRICING
             </span>
-          </span>
+          </div>
+
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extralight text-navy-900 tracking-tight leading-tight">
+            Predictable investment for serious contractors.
+          </h1>
+
+          <p className="text-slate-600 text-sm sm:text-base max-w-2xl mx-auto font-normal leading-relaxed">
+            From independent specialty trades generating their first JHA to growing multi-crew firms managing commercial pre-qualification dossiers.
+          </p>
+
+          {/* Billing Interval Toggle */}
+          <div className="pt-4 flex items-center justify-center gap-3">
+            <span
+              className={`text-xs sm:text-sm transition-colors ${
+                billingCycle === 'monthly' ? 'text-navy-950 font-medium' : 'text-slate-500'
+              }`}
+            >
+              Monthly Billing
+            </span>
+            <button
+              type="button"
+              role="switch"
+              aria-checked={billingCycle === 'annual'}
+              onClick={() => setBillingCycle(billingCycle === 'monthly' ? 'annual' : 'monthly')}
+              className="w-14 h-7 min-h-[28px] max-h-[28px] shrink-0 rounded-full bg-slate-200 border border-slate-300 p-1 transition-colors relative inline-flex items-center focus:outline-none focus:ring-2 focus:ring-sky-500/50 cursor-pointer"
+              aria-label="Toggle Billing Interval"
+            >
+              <div
+                className={`w-5 h-5 rounded-full bg-[#0284c7] transition-transform duration-200 shadow-sm ${
+                  billingCycle === 'annual' ? 'translate-x-7' : 'translate-x-0'
+                }`}
+              />
+            </button>
+            <span
+              className={`text-xs sm:text-sm flex items-center gap-2 transition-colors ${
+                billingCycle === 'annual' ? 'text-navy-950 font-medium' : 'text-slate-500'
+              }`}
+            >
+              <span>Annual Billing</span>
+              <span className="text-[10px] sm:text-[11px] px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 font-mono font-medium">
+                Save ~20%
+              </span>
+            </span>
+          </div>
+
+          {/* Trust points */}
+          <div className="pt-5 flex flex-wrap items-center justify-center gap-3 text-[11px] text-slate-500">
+            {trustItems.map((item) => (
+              <div key={item} className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-50 border border-slate-200/80">
+                <CheckCircle2 className="w-3.5 h-3.5 text-sky-600 shrink-0" />
+                <span>{item}</span>
+              </div>
+            ))}
+          </div>
         </div>
-      </CinematicPageHero>
+      </section>
 
       {/* Pricing Plans Grid */}
-      <section className="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+      <section className="py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch">
           {PRICING_PLANS.map((plan) => {
             const isVerified = plan.id === 'verified';
@@ -79,7 +108,7 @@ export default function PricingPage() {
             return (
               <div
                 key={plan.id}
-                className={`rounded-xl bg-white border p-6 flex flex-col justify-between transition-all ${
+                className={`rounded-lg bg-white border p-6 flex flex-col justify-between transition-all ${
                   isVerified
                     ? 'border-brand-600 ring-2 ring-brand-500/20 shadow-md relative'
                     : isPro
@@ -172,7 +201,7 @@ export default function PricingPage() {
         </div>
 
         <div className="space-y-4">
-          <div className="p-6 rounded-xl bg-white border border-slate-200 shadow-sm space-y-2">
+          <div className="p-6 rounded-lg bg-white border border-slate-200 shadow-sm space-y-2">
             <h3 className="font-bold text-navy-900 text-base">
               Can I start on the Free Starter plan and upgrade later?
             </h3>
@@ -181,7 +210,7 @@ export default function PricingPage() {
             </p>
           </div>
 
-          <div className="p-6 rounded-xl bg-white border border-slate-200 shadow-sm space-y-2">
+          <div className="p-6 rounded-lg bg-white border border-slate-200 shadow-sm space-y-2">
             <h3 className="font-bold text-navy-900 text-base">
               What is required for the Verified Contractor plan?
             </h3>
@@ -190,7 +219,7 @@ export default function PricingPage() {
             </p>
           </div>
 
-          <div className="p-6 rounded-xl bg-white border border-slate-200 shadow-sm space-y-2">
+          <div className="p-6 rounded-lg bg-white border border-slate-200 shadow-sm space-y-2">
             <h3 className="font-bold text-navy-900 text-base">
               Are payments and billing data secure?
             </h3>
@@ -199,7 +228,7 @@ export default function PricingPage() {
             </p>
           </div>
 
-          <div className="p-6 rounded-xl bg-white border border-slate-200 shadow-sm space-y-2">
+          <div className="p-6 rounded-lg bg-white border border-slate-200 shadow-sm space-y-2">
             <h3 className="font-bold text-navy-900 text-base">
               Does Avorria issue government contractor licenses?
             </h3>

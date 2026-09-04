@@ -2,7 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import { Metadata } from 'next';
 import { siteConfig } from '@/config/site';
-import { CinematicPageHero } from '@/components/hero/CinematicPageHero';
+import { ProductHero } from '@/components/hero/ProductHero';
 
 export const metadata: Metadata = {
   title: 'Contractor Credibility & Evidence Verification | Avorria Prove',
@@ -44,16 +44,20 @@ export default function ProvePage() {
 
   return (
     <div className="w-full bg-white text-navy-800">
-      <CinematicPageHero
+      <ProductHero
         eyebrow="PILLAR 04 / EVIDENCE & CREDIBILITY"
         title={<>Turn your credentials into<br />evidence clients can understand.</>}
         subtitle="Hollow claims don't get contractors onto tier-1 commercial job sites. Avorria transforms your active insurance policies, state trade licenses, and safety programs into an auditable credential that risk managers and general contractors respect."
         primaryCta={{ label: 'Start Verification Process', href: '/sign-up' }}
         secondaryCta={{ label: 'Explore Contractor Passport', href: '/contractor-passport' }}
-        backgroundImage="/images/hero-prove.jpg"
-        backgroundAlt="Verified contractors presenting credentials on commercial construction site"
+        pillars={[
+          { title: 'Documentary Evidence Upload', description: 'Secure encrypted vault for COIs, state trade licenses, safety manuals, and EMR records.' },
+          { title: 'Structured Criteria Review', description: 'Audited against trade standards: active effective dates, statutory limits, and qualifying party alignment.' },
+          { title: 'Permanent Audit Trail', description: 'Every document version, review sign-off, and expiration change is permanently preserved and immutable.' },
+        ]}
         trustItems={['Entity Verification', 'Trade License Audit', 'Insurance Review', 'Safety Program Audit', 'Passport Publication']}
       />
+
 
       {/* The Evidence-to-Verification Architecture (Light Theme) */}
       <section className="py-20 lg:py-28 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-20">
@@ -71,7 +75,7 @@ export default function ProvePage() {
 
         {/* 4 Steps Architecture Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <div className="p-6 rounded-xl bg-slate-50 border border-slate-200 space-y-3">
+          <div className="p-6 rounded-lg bg-slate-50 border border-slate-200 space-y-3">
             <div className="w-8 h-8 rounded bg-brand-50 text-brand-700 font-mono font-bold text-xs flex items-center justify-center border border-brand-200">
               01
             </div>
@@ -81,7 +85,7 @@ export default function ProvePage() {
             </p>
           </div>
 
-          <div className="p-6 rounded-xl bg-slate-50 border border-slate-200 space-y-3">
+          <div className="p-6 rounded-lg bg-slate-50 border border-slate-200 space-y-3">
             <div className="w-8 h-8 rounded bg-brand-50 text-brand-700 font-mono font-bold text-xs flex items-center justify-center border border-brand-200">
               02
             </div>
@@ -91,7 +95,7 @@ export default function ProvePage() {
             </p>
           </div>
 
-          <div className="p-6 rounded-xl bg-slate-50 border border-slate-200 space-y-3">
+          <div className="p-6 rounded-lg bg-slate-50 border border-slate-200 space-y-3">
             <div className="w-8 h-8 rounded bg-brand-50 text-brand-700 font-mono font-bold text-xs flex items-center justify-center border border-brand-200">
               03
             </div>
@@ -101,7 +105,7 @@ export default function ProvePage() {
             </p>
           </div>
 
-          <div className="p-6 rounded-xl bg-slate-50 border border-slate-200 space-y-3">
+          <div className="p-6 rounded-lg bg-slate-50 border border-slate-200 space-y-3">
             <div className="w-8 h-8 rounded bg-brand-50 text-brand-700 font-mono font-bold text-xs flex items-center justify-center border border-brand-200">
               04
             </div>
@@ -125,7 +129,7 @@ export default function ProvePage() {
             {CRITERIA.map((crit) => (
               <div
                 key={crit.title}
-                className="p-5 rounded-xl bg-slate-50 border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+                className="p-5 rounded-lg bg-slate-50 border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4"
               >
                 <div className="space-y-1">
                   <div className="font-bold text-navy-900 text-sm">{crit.title}</div>

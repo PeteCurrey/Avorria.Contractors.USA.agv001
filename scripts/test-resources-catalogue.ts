@@ -12,7 +12,7 @@ import { renderResourceToDocxBuffer } from '../src/lib/resources/docx-generator'
 async function runResourcesTestSuite() {
   console.log('════════════════════════════════════════════════════════════════════════');
   console.log('AVORRIA CONTRACTOR USA — RESOURCES QUALITY OVERHAUL TEST SUITE');
-  console.log('25 Core Launch Resources, PDF / DOCX Engines & Professional Quality Standard');
+  console.log('26 Core Launch Resources, PDF / DOCX Engines & Professional Quality Standard');
   console.log('════════════════════════════════════════════════════════════════════════\n');
 
   let passed = 0;
@@ -45,8 +45,8 @@ async function runResourcesTestSuite() {
   // ── 1. Catalogue Structure & Integrity ──
   console.log('--- 1. Catalogue Structure & Completeness ---');
 
-  test('Catalogue contains exactly 25 launch resources', () => {
-    assert.strictEqual(CONTRACTOR_RESOURCES.length, 25, `Expected 25 resources, found ${CONTRACTOR_RESOURCES.length}`);
+  test('Catalogue contains exactly 26 launch resources', () => {
+    assert.strictEqual(CONTRACTOR_RESOURCES.length, 26, `Expected 26 resources, found ${CONTRACTOR_RESOURCES.length}`);
   });
 
   test('All 6 commercial pillars are represented', () => {
@@ -62,7 +62,7 @@ async function runResourcesTestSuite() {
     assert.strictEqual(estimating.length, 5, `Expected 5 Estimating resources, found ${estimating.length}`);
     assert.strictEqual(ops.length, 5, `Expected 5 Operations resources, found ${ops.length}`);
     assert.strictEqual(sub.length, 4, `Expected 4 Subcontractor resources, found ${sub.length}`);
-    assert.strictEqual(safety.length, 4, `Expected 4 Safety resources, found ${safety.length}`);
+    assert.strictEqual(safety.length, 5, `Expected 5 Safety resources, found ${safety.length}`);
     assert.strictEqual(biz.length, 2, `Expected 2 Business resources, found ${biz.length}`);
   });
 
@@ -148,6 +148,7 @@ async function runResourcesTestSuite() {
     'daily-construction-report',
     'subcontractor-scope-of-work',
     'contractor-incident-report',
+    'job-hazard-analysis-jha-generator',
   ];
 
   for (const slug of docxSampleResources) {

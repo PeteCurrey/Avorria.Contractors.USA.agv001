@@ -34,6 +34,8 @@ export function DocumentDetailClient({
   const [attendees, setAttendees] = useState<string[]>([]);
   const [isSavingAttendance, setIsSavingAttendance] = useState(false);
   const [attendanceSaved, setAttendanceSaved] = useState(false);
+  const [actionError, setActionError] = useState<string | null>(null);
+
 
   // Canvas Drawing
   const startDrawing = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
@@ -96,9 +98,10 @@ export function DocumentDetailClient({
 
       setDoc(data.document);
       setShowSignModal(false);
+      setActionError(null);
       router.refresh();
     } catch (err: any) {
-      alert(`Signature error: ${err.message}`);
+      setActionError(`Signature failed: ${err.message}`);
     } finally {
       setIsSigning(false);
     }
@@ -114,6 +117,7 @@ export function DocumentDetailClient({
   const handleSaveAttendance = async () => {
     if (attendees.length === 0) return;
     setIsSavingAttendance(true);
+    setActionError(null);
     try {
       const res = await fetch('/api/workspace/toolbox-talks/attendance', {
         method: 'POST',
@@ -128,7 +132,7 @@ export function DocumentDetailClient({
       if (!res.ok) throw new Error(data.error || 'Failed to save attendance');
       setAttendanceSaved(true);
     } catch (err: any) {
-      alert(`Attendance error: ${err.message}`);
+      setActionError(`Attendance error: ${err.message}`);
     } finally {
       setIsSavingAttendance(false);
     }
@@ -136,6 +140,16 @@ export function DocumentDetailClient({
 
   return (
     <div className="max-w-7xl mx-auto space-y-6">
+      {/* Action error banner */}
+      {actionError && (
+        <div className="flex items-start gap-3 p-4 rounded-lg bg-red-950/40 border border-red-800/60 text-sm text-red-300">
+          <svg className="w-4 h-4 mt-0.5 shrink-0 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+          </svg>
+          <span className="flex-1">{actionError}</span>
+          <button onClick={() => setActionError(null)} className="text-red-500 hover:text-red-300 font-bold text-xs uppercase tracking-wide shrink-0">Dismiss</button>
+        </div>
+      )}
       {/* Top Header */}
       <div className="bg-[#090d16] border border-slate-800 p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>

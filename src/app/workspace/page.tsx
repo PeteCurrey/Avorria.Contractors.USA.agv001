@@ -1,19 +1,29 @@
 /**
- * AVORRIA CONTRACTOR WORKSPACE — DASHBOARD
+ * AVORRIA CONTRACTOR WORKSPACE — OPERATIONS CONTROL CENTER
  *
- * Six sections answering the contractor's four core questions:
- *   01. WORK-READY STATUS   — Is my business ready?
- *   02. YOUR ATTENTION      — What requires my attention?
- *   03. WIN WORK            — What opportunities can I pursue?
- *   04. COMPLIANCE POSITION — What is my compliance standing?
- *   05. RECENT ACTIVITY     — Operational ledger
- *   06. BUSINESS SNAPSHOT   — Verified identity record
+ * Enterprise Operations Platform for US Commercial & Industrial Contractors.
+ * Art-directed, high-density, restrained operational UI.
+ *
+ * Information Hierarchy:
+ *   LEVEL 1 — Immediate Attention Queue (Urgent actions, expirations, gaps)
+ *   LEVEL 2 — Operational State (Work-Ready Standing, Pipeline & Opportunities)
+ *   LEVEL 3 — Compliance Posture & Expiration Watchlist
+ *   LEVEL 4 — Operational Ledger (Recent Events) & Verified Identity Snapshot
  */
 
 import React from 'react';
 import Link from 'next/link';
 import { getWorkspaceContext } from '@/lib/workspace/context';
-import { getDashboardData, DashboardAttentionItem, DashboardActivity } from '@/lib/workspace/dashboard';
+import {
+  getDashboardData,
+  DashboardAttentionItem,
+  DashboardActivity,
+  DashboardOpportunity,
+  ComplianceBreakdown,
+  ComplianceTimelineItem,
+  WorkReadyArea,
+  BusinessSnapshot,
+} from '@/lib/workspace/dashboard';
 
 export const dynamic = 'force-dynamic';
 
@@ -25,42 +35,45 @@ function formatTimestamp(iso: string): string {
   const d = new Date(iso);
   if (isNaN(d.getTime())) return '—';
   const now = new Date();
+  const diffMs = now.getTime() - d.getTime();
+  const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+
+  if (diffHours < 1) {
+    const diffMins = Math.max(1, Math.floor(diffMs / (1000 * 60)));
+    return `${diffMins}m ago`;
+  }
+  if (diffHours < 24) {
+    return `${diffHours}h ago`;
+  }
+
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  const yesterday = new Date(today.getTime() - 86400000);
   const entryDay = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+  const diffDays = Math.floor((today.getTime() - entryDay.getTime()) / 86400000);
 
-  const time = d.toLocaleTimeString('en-US', {
-    hour: '2-digit',
-    minute: '2-digit',
-    hour12: false,
-  });
+  if (diffDays === 1) return 'Yesterday';
+  if (diffDays < 7) return `${diffDays}d ago`;
 
-  if (entryDay.getTime() === today.getTime()) return time;
-  if (entryDay.getTime() === yesterday.getTime()) return `Yesterday ${time}`;
-  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) + ' ' + time;
+  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 }
 
 function formatCheckedAt(iso: string): string {
   const d = new Date(iso);
   if (isNaN(d.getTime())) return '—';
-  const now = new Date();
-  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  const entryDay = new Date(d.getFullYear(), d.getMonth(), d.getDate());
-  const time = d.toLocaleTimeString('en-US', {
+  return d.toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
     hour: '2-digit',
     minute: '2-digit',
     hour12: false,
   });
-  if (entryDay.getTime() === today.getTime()) return `Today, ${time}`;
-  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) + ', ' + time;
 }
 
 function formatCurrency(min?: number, max?: number): string {
   if (!min && !max) return '—';
   function fmt(n: number) {
-    if (n >= 1_000_000) return `\$${(n / 1_000_000).toFixed(1)}M`;
-    if (n >= 1_000) return `\$${Math.round(n / 1_000)}k`;
-    return `\$${n}`;
+    if (n >= 1_000_000) return `$${(n / 1_000_000).toFixed(1)}M`;
+    if (n >= 1_000) return `$${Math.round(n / 1_000)}k`;
+    return `$${n}`;
   }
   if (min && max) return `${fmt(min)}–${fmt(max)}`;
   if (min) return `${fmt(min)}+`;
@@ -68,96 +81,296 @@ function formatCurrency(min?: number, max?: number): string {
 }
 
 // ─────────────────────────────────────────────────────────────
-// SECTION COMPONENTS
+// COMPACT OPERATIONAL COMPONENTS
 // ─────────────────────────────────────────────────────────────
 
-function SectionLabel({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="text-[9px] font-mono font-bold tracking-[0.18em] text-slate-400 uppercase mb-0.5">
-      {children}
-    </div>
-  );
-}
-
-function SectionHeading({ children }: { children: React.ReactNode }) {
-  return (
-    <h2 className="text-[13px] font-mono font-bold tracking-[0.08em] text-slate-800 uppercase">
-      {children}
-    </h2>
-  );
-}
-
-function SectionSubtext({ children }: { children: React.ReactNode }) {
-  return <p className="text-xs text-slate-500 mt-0.5">{children}</p>;
-}
-
-function StatusBadge({
+function OperationalStatusTag({
   status,
   variant,
 }: {
   status: string;
-  variant: 'green' | 'amber' | 'red' | 'blue' | 'slate';
+  variant: 'emerald' | 'amber' | 'red' | 'sky' | 'slate';
 }) {
   const variants = {
-    green: 'bg-emerald-50 text-emerald-700 border-emerald-200',
-    amber: 'bg-amber-50 text-amber-700 border-amber-200',
-    red: 'bg-red-50 text-red-700 border-red-200',
-    blue: 'bg-blue-50 text-blue-700 border-blue-200',
-    slate: 'bg-slate-100 text-slate-600 border-slate-200',
+    emerald: 'bg-emerald-50 text-emerald-800 border-emerald-200',
+    amber: 'bg-amber-50 text-amber-800 border-amber-200',
+    red: 'bg-red-50 text-red-800 border-red-200',
+    sky: 'bg-sky-50 text-sky-800 border-sky-200',
+    slate: 'bg-slate-100 text-slate-700 border-slate-200',
   };
+
+  const dots = {
+    emerald: 'bg-emerald-500',
+    amber: 'bg-amber-500',
+    red: 'bg-red-500',
+    sky: 'bg-sky-500',
+    slate: 'bg-slate-400',
+  };
+
   return (
     <span
-      className={`inline-block px-1.5 py-0.5 text-[9px] font-mono font-bold tracking-[0.1em] border ${variants[variant]}`}
+      className={`inline-flex items-center gap-1.5 px-2 py-0.5 text-[11px] font-mono font-medium border rounded-[2px] tracking-tight ${variants[variant]}`}
     >
-      {status}
+      <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${dots[variant]}`} />
+      <span>{status}</span>
     </span>
   );
 }
 
-function PriorityBadge({ priority }: { priority: 'HIGH' | 'MEDIUM' | 'LOW' }) {
-  const map = {
-    HIGH: 'bg-red-600 text-white',
-    MEDIUM: 'bg-amber-500 text-white',
-    LOW: 'bg-slate-400 text-white',
-  };
-  return (
-    <span
-      className={`inline-block px-1.5 py-0.5 text-[9px] font-mono font-bold tracking-[0.1em] ${map[priority]} shrink-0`}
-    >
-      {priority}
-    </span>
-  );
-}
+// ─────────────────────────────────────────────────────────────
+// 01. OPERATIONAL HEADER & TICKER
+// ─────────────────────────────────────────────────────────────
 
-function ActionButton({
-  label,
-  href,
+function OperationalControlHeader({
+  organizationName,
+  readinessScore,
+  attentionCount,
+  recordCount,
+  expiringCount,
 }: {
-  label: string;
-  href: string;
+  organizationName: string;
+  readinessScore: number;
+  attentionCount: number;
+  recordCount: number;
+  expiringCount: number;
 }) {
+  const isWorkReady = readinessScore >= 80;
+  const isActionNeeded = attentionCount > 0;
+
   return (
-    <Link
-      href={href}
-      className="inline-block px-3 py-1 text-[10px] font-mono font-bold tracking-[0.08em] border border-brand-600 text-brand-700 hover:bg-brand-600 hover:text-white transition-colors"
-    >
-      {label}
-    </Link>
+    <div className="space-y-3">
+      {/* Top action bar */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 pb-3 border-b border-slate-200">
+        <div>
+          <div className="flex items-center gap-2">
+            <h1 className="text-base font-semibold text-slate-900 tracking-tight">
+              Operations Control Center
+            </h1>
+            <span className="text-slate-300 font-light">|</span>
+            <span className="text-xs font-mono text-slate-500">
+              {organizationName}
+            </span>
+          </div>
+          <p className="text-xs text-slate-500 mt-0.5">
+            Real-time compliance posture, verified credentials, and active contract pipeline.
+          </p>
+        </div>
+
+        <div className="flex items-center gap-2 shrink-0">
+          <Link
+            href="/workspace/create"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-slate-900 hover:bg-slate-800 text-white rounded-[4px] transition-colors shadow-xs"
+          >
+            <span>+ Create Document</span>
+          </Link>
+          <Link
+            href="/workspace/passport"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 rounded-[4px] transition-colors"
+          >
+            <span>Contractor Passport ↗</span>
+          </Link>
+        </div>
+      </div>
+
+      {/* Operational Ticker Metrics */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5">
+        {/* Metric 1: Readiness Standing */}
+        <div className="bg-white border border-slate-200 rounded-[4px] px-3.5 py-2.5 flex items-center justify-between">
+          <div>
+            <div className="text-[10px] font-mono text-slate-400 uppercase tracking-wider">
+              Work-Ready Standing
+            </div>
+            <div className="flex items-baseline gap-1.5 mt-0.5">
+              <span className="text-xl font-bold font-mono text-slate-900">
+                {readinessScore}%
+              </span>
+              <span className={`text-[11px] font-medium ${isWorkReady ? 'text-emerald-700' : 'text-amber-700'}`}>
+                {isWorkReady ? 'Pre-Qualified' : 'Pending Gaps'}
+              </span>
+            </div>
+          </div>
+          <div className={`w-2 h-2 rounded-full ${isWorkReady ? 'bg-emerald-500' : 'bg-amber-500'}`} />
+        </div>
+
+        {/* Metric 2: Attention Items */}
+        <div className={`bg-white border rounded-[4px] px-3.5 py-2.5 flex items-center justify-between ${
+          isActionNeeded ? 'border-amber-300 bg-amber-50/20' : 'border-slate-200'
+        }`}>
+          <div>
+            <div className="text-[10px] font-mono text-slate-400 uppercase tracking-wider">
+              Immediate Attention
+            </div>
+            <div className="flex items-baseline gap-1.5 mt-0.5">
+              <span className={`text-xl font-bold font-mono ${isActionNeeded ? 'text-amber-900' : 'text-slate-900'}`}>
+                {attentionCount}
+              </span>
+              <span className={`text-[11px] font-medium ${isActionNeeded ? 'text-amber-700' : 'text-emerald-700'}`}>
+                {isActionNeeded ? (attentionCount === 1 ? 'Action Required' : 'Actions Required') : 'All Clear'}
+              </span>
+            </div>
+          </div>
+          <div className={`w-2 h-2 rounded-full ${isActionNeeded ? 'bg-amber-500' : 'bg-emerald-500'}`} />
+        </div>
+
+        {/* Metric 3: Active Records */}
+        <div className="bg-white border border-slate-200 rounded-[4px] px-3.5 py-2.5 flex items-center justify-between">
+          <div>
+            <div className="text-[10px] font-mono text-slate-400 uppercase tracking-wider">
+              Compliance Vault
+            </div>
+            <div className="flex items-baseline gap-1.5 mt-0.5">
+              <span className="text-xl font-bold font-mono text-slate-900">
+                {recordCount}
+              </span>
+              <span className="text-[11px] text-slate-500">
+                Active Records
+              </span>
+            </div>
+          </div>
+          <Link href="/workspace/comply" className="text-[10px] font-mono text-brand-600 hover:underline">
+            View →
+          </Link>
+        </div>
+
+        {/* Metric 4: Expiring Watchlist */}
+        <div className="bg-white border border-slate-200 rounded-[4px] px-3.5 py-2.5 flex items-center justify-between">
+          <div>
+            <div className="text-[10px] font-mono text-slate-400 uppercase tracking-wider">
+              Expiring (60d)
+            </div>
+            <div className="flex items-baseline gap-1.5 mt-0.5">
+              <span className={`text-xl font-bold font-mono ${expiringCount > 0 ? 'text-amber-700' : 'text-slate-900'}`}>
+                {expiringCount}
+              </span>
+              <span className="text-[11px] text-slate-500">
+                Credentials
+              </span>
+            </div>
+          </div>
+          <div className={`w-2 h-2 rounded-full ${expiringCount > 0 ? 'bg-amber-400' : 'bg-slate-300'}`} />
+        </div>
+      </div>
+    </div>
   );
 }
 
 // ─────────────────────────────────────────────────────────────
-// SECTION 01 — WORK-READY STATUS
+// 02. LEVEL 1 — ATTENTION DESK (URGENT OPERATIONAL ITEMS)
 // ─────────────────────────────────────────────────────────────
 
-type WorkReadyArea = {
-  label: string;
-  status: string;
-  isGood: boolean;
-  href: string;
-};
+function AttentionDesk({ items }: { items: DashboardAttentionItem[] }) {
+  if (items.length === 0) {
+    return (
+      <div className="bg-white border border-slate-200 rounded-[4px] px-4 py-3 flex items-center justify-between gap-3">
+        <div className="flex items-center gap-2.5">
+          <div className="w-5 h-5 rounded-full bg-emerald-50 border border-emerald-200 flex items-center justify-center shrink-0">
+            <svg className="w-3 h-3 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeWidth="2.5" d="M5 13l4 4L19 7" />
+            </svg>
+          </div>
+          <div>
+            <span className="text-xs font-semibold text-slate-800">
+              Operational Attention: All Requirements Satisfied
+            </span>
+            <span className="text-xs text-slate-500 ml-2 hidden sm:inline">
+              No immediate credential expirations, documentation lapses, or passport gaps found.
+            </span>
+          </div>
+        </div>
+        <Link
+          href="/workspace/comply"
+          className="text-xs font-mono text-slate-500 hover:text-slate-800 shrink-0"
+        >
+          Audit Ledger →
+        </Link>
+      </div>
+    );
+  }
 
-function WorkReadySection({
+  return (
+    <div className="bg-white border border-slate-200 rounded-[4px] overflow-hidden">
+      <div className="px-4 py-2.5 bg-slate-50/80 border-b border-slate-200 flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <span className="w-2 h-2 rounded-full bg-red-500 shrink-0" />
+          <h2 className="text-xs font-semibold text-slate-900 uppercase tracking-wider font-mono">
+            Action Required ({items.length})
+          </h2>
+          <span className="text-slate-400 text-xs hidden sm:inline">
+            Resolve these items to maintain verified tier and owner RFP eligibility.
+          </span>
+        </div>
+        <Link
+          href="/workspace/comply"
+          className="text-[11px] font-mono text-brand-600 hover:text-brand-700 font-medium"
+        >
+          View All Requirements →
+        </Link>
+      </div>
+
+      <div className="divide-y divide-slate-100">
+        {items.map((item) => {
+          const isHigh = item.priority === 'HIGH';
+          const isExpired = item.state === 'EXPIRED';
+
+          return (
+            <div
+              key={item.id}
+              className="px-4 py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-slate-50/60 transition-colors"
+            >
+              <div className="flex items-start gap-3 min-w-0">
+                <span
+                  className={`mt-0.5 text-[9px] font-mono font-bold tracking-wider px-1.5 py-0.5 rounded-[2px] shrink-0 uppercase ${
+                    isHigh
+                      ? 'bg-red-50 text-red-700 border border-red-200'
+                      : 'bg-amber-50 text-amber-800 border border-amber-200'
+                  }`}
+                >
+                  {item.priority}
+                </span>
+
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-semibold text-slate-900 truncate">
+                      {item.title}
+                    </span>
+                    <span className="text-[11px] font-mono text-slate-400">
+                      ({item.state.replace(/_/g, ' ')})
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-slate-500 mt-0.5">
+                    {item.description || item.dueLabel}
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3 shrink-0 self-end sm:self-center">
+                <span className={`text-[11px] font-mono ${isExpired ? 'text-red-600 font-semibold' : 'text-slate-500'}`}>
+                  {item.dueLabel}
+                </span>
+                <Link
+                  href={item.href}
+                  className={`px-2.5 py-1 text-xs font-medium rounded-[3px] border transition-colors ${
+                    isHigh
+                      ? 'bg-red-600 hover:bg-red-700 text-white border-transparent'
+                      : 'bg-white hover:bg-slate-50 text-slate-800 border-slate-300'
+                  }`}
+                >
+                  {item.action} →
+                </Link>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────
+// 03. LEVEL 2 — WORK-READY ASSESSMENT PANEL
+// ─────────────────────────────────────────────────────────────
+
+function WorkReadyPanel({
   score,
   calculatedAt,
   areas,
@@ -166,81 +379,106 @@ function WorkReadySection({
   calculatedAt: string;
   areas: WorkReadyArea[];
 }) {
-  const scoreLabel = score >= 80 ? 'WORK-READY' : score >= 50 ? 'IN PROGRESS' : 'ATTENTION REQUIRED';
-  const scoreColor =
-    score >= 80 ? 'text-emerald-700' : score >= 50 ? 'text-amber-700' : 'text-red-700';
-  const barColor =
-    score >= 80 ? 'bg-emerald-500' : score >= 50 ? 'bg-amber-500' : 'bg-red-500';
+  const isOptimal = score >= 80;
+  const isModerate = score >= 50 && score < 80;
+
+  const scoreColor = isOptimal
+    ? 'text-emerald-700'
+    : isModerate
+    ? 'text-amber-700'
+    : 'text-red-700';
+
+  const barColor = isOptimal
+    ? 'bg-emerald-500'
+    : isModerate
+    ? 'bg-amber-500'
+    : 'bg-red-500';
+
+  const statusDescription = isOptimal
+    ? 'Verified Contractor Standard — All core compliance thresholds satisfied for institutional procurement.'
+    : isModerate
+    ? 'In Progress — Essential trade licenses or insurance documents require submission.'
+    : 'Action Required — Critical credentials missing or expired.';
 
   return (
-    <div className="bg-white border border-slate-200">
-      <div className="grid grid-cols-1 lg:grid-cols-12">
-        {/* Score column */}
-        <div className="lg:col-span-4 p-6 sm:p-8 border-b lg:border-b-0 lg:border-r border-slate-100">
-          <SectionLabel>SECTION 01</SectionLabel>
-          <SectionHeading>WORK-READY STATUS</SectionHeading>
+    <div className="bg-white border border-slate-200 rounded-[4px] overflow-hidden flex flex-col h-full">
+      <div className="px-4 py-3 border-b border-slate-200 flex items-center justify-between">
+        <div>
+          <h2 className="text-xs font-semibold text-slate-900 uppercase tracking-wider font-mono">
+            Work-Ready Standing & Verification
+          </h2>
+          <p className="text-[11px] text-slate-500 mt-0.5">
+            Algorithmically evaluated against federal, state, and general contractor criteria.
+          </p>
+        </div>
+        <span className="text-[10px] font-mono text-slate-400">
+          Audited {formatCheckedAt(calculatedAt)}
+        </span>
+      </div>
 
-          <div className="mt-5 space-y-1">
-            <div className={`font-mono text-5xl font-bold tracking-tight ${scoreColor}`}>
-              {score}
-              <span className="text-2xl text-slate-300 ml-0.5">/100</span>
+      <div className="p-4 space-y-4 flex-1 flex flex-col justify-between">
+        {/* Score & Progress Metric */}
+        <div className="space-y-2">
+          <div className="flex items-baseline justify-between">
+            <div className="flex items-baseline gap-2">
+              <span className={`text-3xl font-bold font-mono tracking-tight ${scoreColor}`}>
+                {score}
+              </span>
+              <span className="text-xs font-mono text-slate-400">/ 100 PTS</span>
             </div>
-            <div className={`text-[10px] font-mono font-bold tracking-[0.15em] ${scoreColor}`}>
-              {scoreLabel}
-            </div>
+            <span
+              className={`text-xs font-mono font-semibold tracking-wide uppercase px-2 py-0.5 rounded-[2px] ${
+                isOptimal
+                  ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
+                  : 'bg-amber-50 text-amber-800 border border-amber-200'
+              }`}
+            >
+              {isOptimal ? 'Work-Ready Tier' : 'Provisional Tier'}
+            </span>
           </div>
 
-          {/* Score bar */}
-          <div className="mt-4 w-full bg-slate-100 h-1">
+          {/* Progress Bar */}
+          <div className="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
             <div
-              className={`${barColor} h-full transition-all duration-700`}
+              className={`h-full ${barColor} transition-all duration-500 rounded-full`}
               style={{ width: `${score}%` }}
             />
           </div>
 
-          <div className="mt-4 text-[10px] font-mono text-slate-400">
-            Last checked: {formatCheckedAt(calculatedAt)}
-          </div>
+          <p className="text-xs text-slate-600 leading-relaxed pt-1">
+            {statusDescription}
+          </p>
         </div>
 
-        {/* Sub-areas column */}
-        <div className="lg:col-span-8 p-6 sm:p-8">
-          <div className="text-[10px] font-mono font-bold tracking-[0.12em] text-slate-400 mb-4">
-            CONTRIBUTING AREAS
+        {/* Contributing Operational Sub-Areas */}
+        <div className="pt-2 border-t border-slate-100">
+          <div className="text-[10px] font-mono text-slate-400 uppercase tracking-wider mb-2">
+            Prequalification Framework
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+
+          <div className="grid grid-cols-2 gap-2">
             {areas.map((area) => (
               <Link
                 key={area.label}
                 href={area.href}
-                className="group block p-4 border border-slate-100 hover:border-slate-300 transition-colors"
+                className="group p-2.5 rounded-[3px] border border-slate-200 hover:border-slate-300 hover:bg-slate-50 transition-colors flex items-center justify-between"
               >
-                <div className="text-[9px] font-mono font-bold tracking-[0.15em] text-slate-400 mb-2">
-                  {area.label.toUpperCase()}
+                <div>
+                  <div className="text-[10px] font-mono text-slate-500 uppercase tracking-wider">
+                    {area.label}
+                  </div>
+                  <div className="text-xs font-semibold text-slate-900 mt-0.5 group-hover:text-brand-600 transition-colors">
+                    {area.status}
+                  </div>
                 </div>
                 <div
-                  className={`text-sm font-mono font-bold ${
-                    area.isGood ? 'text-emerald-600' : 'text-slate-400'
-                  } group-hover:text-slate-800 transition-colors`}
-                >
-                  {area.status}
-                </div>
-                <div className="mt-2">
-                  <span
-                    className={`inline-block w-1.5 h-1.5 ${
-                      area.isGood ? 'bg-emerald-500' : 'bg-amber-400'
-                    }`}
-                  />
-                </div>
+                  className={`w-1.5 h-1.5 rounded-full shrink-0 ${
+                    area.isGood ? 'bg-emerald-500' : 'bg-amber-400'
+                  }`}
+                />
               </Link>
             ))}
           </div>
-
-          <p className="mt-5 text-[11px] text-slate-400 leading-relaxed">
-            Score calculated server-side from active insurance coverage, trade licensing, safety
-            documentation, and Contractor Passport completeness. Click any area to review the
-            underlying records.
-          </p>
         </div>
       </div>
     </div>
@@ -248,223 +486,113 @@ function WorkReadySection({
 }
 
 // ─────────────────────────────────────────────────────────────
-// SECTION 02 — YOUR ATTENTION
+// 04. LEVEL 2 — CONTRACT OPPORTUNITIES & BID PIPELINE
 // ─────────────────────────────────────────────────────────────
 
-function AttentionSection({ items }: { items: DashboardAttentionItem[] }) {
-  const actionLabel: Record<string, string> = {
-    RENEW: 'RENEW',
-    COMPLETE: 'COMPLETE',
-    REVIEW: 'REVIEW',
-    UPLOAD: 'UPLOAD',
-    PUBLISH: 'PUBLISH',
-  };
-
-  return (
-    <div className="bg-white border border-slate-200">
-      <div className="px-6 sm:px-8 py-5 border-b border-slate-100 flex items-center justify-between gap-4">
-        <div>
-          <SectionLabel>SECTION 02</SectionLabel>
-          <SectionHeading>YOUR ATTENTION</SectionHeading>
-          {items.length > 0 ? (
-            <SectionSubtext>
-              {items.length === 1
-                ? 'One item needs your attention.'
-                : `${
-                    items.length === 2
-                      ? 'Two'
-                      : items.length === 3
-                      ? 'Three'
-                      : items.length === 4
-                      ? 'Four'
-                      : items.length === 5
-                      ? 'Five'
-                      : items.length
-                  } items need your attention.`}
-            </SectionSubtext>
-          ) : (
-            <SectionSubtext>You are clear. Nothing requires your attention.</SectionSubtext>
-          )}
-        </div>
-        <Link
-          href="/workspace/comply"
-          className="text-[10px] font-mono text-brand-600 hover:underline shrink-0"
-        >
-          VIEW COMPLY →
-        </Link>
-      </div>
-
-      {items.length === 0 ? (
-        <div className="px-8 py-10 text-center">
-          <div className="inline-flex items-center justify-center w-8 h-8 border border-emerald-200 bg-emerald-50 mb-4">
-            <svg className="w-4 h-4 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="square" strokeWidth="2.5" d="M5 13l4 4L19 7" />
-            </svg>
-          </div>
-          <div className="text-sm font-mono font-bold text-slate-700">ALL CLEAR</div>
-          <p className="text-xs text-slate-400 mt-1 max-w-sm mx-auto">
-            You are clear. Nothing requires your attention right now. Keep your credentials current
-            to maintain your readiness score.
-          </p>
-        </div>
-      ) : (
-        <div className="divide-y divide-slate-100">
-          {items.map((item) => (
-            <div
-              key={item.id}
-              className="px-6 sm:px-8 py-4 flex items-center gap-4 hover:bg-slate-50 transition-colors"
-            >
-              <PriorityBadge priority={item.priority} />
-              <div className="flex-1 min-w-0">
-                <div className="text-[12px] font-semibold text-slate-800">{item.title}</div>
-                <div className="text-[11px] text-slate-500 mt-0.5 truncate">{item.dueLabel}</div>
-              </div>
-              <div className="hidden md:block shrink-0">
-                <StatusBadge
-                  status={item.state}
-                  variant={
-                    item.state === 'EXPIRED'
-                      ? 'red'
-                      : item.state === 'EXPIRING SOON'
-                      ? 'red'
-                      : item.state === 'MISSING'
-                      ? 'amber'
-                      : item.state === 'DRAFT'
-                      ? 'slate'
-                      : 'slate'
-                  }
-                />
-              </div>
-              <ActionButton label={actionLabel[item.action] ?? item.action} href={item.href} />
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-}
-
-// ─────────────────────────────────────────────────────────────
-// SECTION 03 — WIN WORK (STUB)
-// ─────────────────────────────────────────────────────────────
-
-type DashboardOpportunity = {
-  id: string;
-  title: string;
-  location: string;
-  trade: string;
-  estimatedValueMin?: number;
-  estimatedValueMax?: number;
-  matchScore: number;
-  status: string;
-  href: string;
-};
-
-function WinWorkSection({
+function OpportunitiesTable({
   opportunities,
-  matchedCount,
-  awaitingCount,
 }: {
   opportunities: DashboardOpportunity[];
-  matchedCount: number;
-  awaitingCount: number;
 }) {
   return (
-    <div className="bg-white border border-slate-200">
-      <div className="px-6 sm:px-8 py-5 border-b border-slate-100 flex items-center justify-between gap-4">
+    <div className="bg-white border border-slate-200 rounded-[4px] overflow-hidden flex flex-col h-full">
+      <div className="px-4 py-3 border-b border-slate-200 flex items-center justify-between">
         <div>
-          <SectionLabel>SECTION 03</SectionLabel>
-          <SectionHeading>WIN WORK</SectionHeading>
-          {opportunities.length > 0 ? (
-            <SectionSubtext>Opportunities relevant to your business.</SectionSubtext>
-          ) : (
-            <SectionSubtext>Your profile is ready. Opportunities will surface as they become available.</SectionSubtext>
-          )}
+          <h2 className="text-xs font-semibold text-slate-900 uppercase tracking-wider font-mono">
+            Contract Opportunities & Bid Pipeline
+          </h2>
+          <p className="text-[11px] text-slate-500 mt-0.5">
+            Projects and RFPs matched against your trade scope, service area, and passport standing.
+          </p>
         </div>
         <Link
           href="/workspace/win-work"
-          className="text-[10px] font-mono text-brand-600 hover:underline shrink-0"
+          className="text-xs font-mono text-brand-600 hover:text-brand-700 font-medium shrink-0"
         >
-          VIEW ALL →
+          View Pipeline ({opportunities.length}) →
         </Link>
       </div>
 
       {opportunities.length > 0 ? (
-        <>
-          {/* Metrics bar */}
-          <div className="px-6 sm:px-8 py-3 bg-slate-50 border-b border-slate-100 flex items-center gap-6">
-            <div className="text-[11px] font-mono text-slate-600">
-              <span className="font-bold text-slate-800">{matchedCount}</span> matched opportunities
-            </div>
-            <div className="w-px h-3 bg-slate-200" />
-            <div className="text-[11px] font-mono text-slate-600">
-              <span className="font-bold text-amber-600">{awaitingCount}</span> responses awaiting review
-            </div>
-          </div>
-
-          {/* Opportunity table */}
-          <div className="overflow-x-auto">
-            <table className="w-full text-xs">
-              <thead>
-                <tr className="border-b border-slate-100">
-                  {['OPPORTUNITY', 'LOCATION', 'TRADE', 'EST. VALUE', 'MATCH', 'STATUS', ''].map(
-                    (col) => (
-                      <th
-                        key={col}
-                        className="px-4 sm:px-6 py-3 text-left text-[9px] font-mono font-bold tracking-[0.12em] text-slate-400"
-                      >
-                        {col}
-                      </th>
-                    )
-                  )}
+        <div className="overflow-x-auto">
+          <table className="w-full text-left text-xs">
+            <thead>
+              <tr className="bg-slate-50/70 border-b border-slate-200 text-[10px] font-mono text-slate-500 uppercase tracking-wider">
+                <th className="py-2.5 px-4 font-medium">Project / Opportunity</th>
+                <th className="py-2.5 px-3 font-medium">Location</th>
+                <th className="py-2.5 px-3 font-medium">Trade Scope</th>
+                <th className="py-2.5 px-3 font-medium">Est. Value</th>
+                <th className="py-2.5 px-3 font-medium">Match</th>
+                <th className="py-2.5 px-3 font-medium">Status</th>
+                <th className="py-2.5 px-4 text-right font-medium">Action</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100">
+              {opportunities.map((opp) => (
+                <tr key={opp.id} className="hover:bg-slate-50/60 transition-colors">
+                  <td className="py-2.5 px-4 font-medium text-slate-900">
+                    {opp.title}
+                  </td>
+                  <td className="py-2.5 px-3 text-slate-600 font-mono text-[11px]">
+                    {opp.location}
+                  </td>
+                  <td className="py-2.5 px-3 text-slate-600 font-mono text-[11px]">
+                    {opp.trade}
+                  </td>
+                  <td className="py-2.5 px-3 text-slate-900 font-mono font-medium">
+                    {formatCurrency(opp.estimatedValueMin, opp.estimatedValueMax)}
+                  </td>
+                  <td className="py-2.5 px-3">
+                    <span className="font-mono text-xs font-bold text-brand-700">
+                      {opp.matchScore}%
+                    </span>
+                  </td>
+                  <td className="py-2.5 px-3">
+                    <OperationalStatusTag
+                      status={opp.status}
+                      variant={opp.status === 'MATCHED' ? 'emerald' : 'sky'}
+                    />
+                  </td>
+                  <td className="py-2.5 px-4 text-right">
+                    <Link
+                      href={opp.href}
+                      className="text-xs font-medium text-brand-600 hover:text-brand-800 hover:underline"
+                    >
+                      Review →
+                    </Link>
+                  </td>
                 </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100">
-                {opportunities.map((opp) => (
-                  <tr key={opp.id} className="hover:bg-slate-50 transition-colors">
-                    <td className="px-4 sm:px-6 py-3 font-medium text-slate-800">{opp.title}</td>
-                    <td className="px-4 sm:px-6 py-3 font-mono text-slate-500">{opp.location}</td>
-                    <td className="px-4 sm:px-6 py-3 font-mono text-slate-500">{opp.trade}</td>
-                    <td className="px-4 sm:px-6 py-3 font-mono text-slate-600">
-                      {formatCurrency(opp.estimatedValueMin, opp.estimatedValueMax)}
-                    </td>
-                    <td className="px-4 sm:px-6 py-3">
-                      <span className="font-mono font-bold text-brand-700">{opp.matchScore}%</span>
-                    </td>
-                    <td className="px-4 sm:px-6 py-3">
-                      <StatusBadge status={opp.status} variant="blue" />
-                    </td>
-                    <td className="px-4 sm:px-6 py-3">
-                      <ActionButton label="VIEW" href={opp.href} />
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </>
+              ))}
+            </tbody>
+          </table>
+        </div>
       ) : (
-        /* Empty state */
-        <div className="px-8 py-10 text-center">
-          <div className="text-[11px] font-mono font-bold text-slate-600 mb-2">
-            NO ACTIVE OPPORTUNITIES
+        <div className="p-6 text-center space-y-3 my-auto">
+          <div className="w-8 h-8 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center mx-auto text-slate-400">
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeWidth="1.75" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
           </div>
-          <p className="text-xs text-slate-400 max-w-sm mx-auto leading-relaxed">
-            Your profile is ready. Avorria will surface relevant opportunities as they become
-            available. Keep your credentials and passport current to maximise your match quality.
-          </p>
-          <div className="mt-5 flex items-center justify-center gap-3">
+          <div className="space-y-1 max-w-sm mx-auto">
+            <div className="text-xs font-semibold text-slate-800">
+              No Active Project Matches
+            </div>
+            <p className="text-[11px] text-slate-500 leading-relaxed">
+              Commercial projects and owner requests matching your trade scope will surface here automatically as clients post opportunities.
+            </p>
+          </div>
+          <div className="pt-2 flex items-center justify-center gap-2 text-xs">
             <Link
-              href="/workspace/settings"
-              className="inline-block px-4 py-2 text-[10px] font-mono font-bold tracking-[0.08em] border border-slate-800 text-slate-800 hover:bg-slate-800 hover:text-white transition-colors"
+              href="/workspace/passport"
+              className="px-3 py-1 bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 rounded-[3px] transition-colors"
             >
-              REVIEW BUSINESS PROFILE
+              Verify Passport Criteria
             </Link>
             <Link
-              href="/workspace/prove"
-              className="inline-block px-4 py-2 text-[10px] font-mono font-bold tracking-[0.08em] border border-brand-600 text-brand-700 hover:bg-brand-600 hover:text-white transition-colors"
+              href="/workspace/win-work"
+              className="px-3 py-1 bg-slate-900 text-white rounded-[3px] hover:bg-slate-800 transition-colors"
             >
-              UPDATE PASSPORT
+              Open Win Work Desk
             </Link>
           </div>
         </div>
@@ -474,170 +602,119 @@ function WinWorkSection({
 }
 
 // ─────────────────────────────────────────────────────────────
-// SECTION 04 — COMPLIANCE POSITION
+// 05. LEVEL 3 — COMPLIANCE POSTURE & EXPIRATION WATCHLIST
 // ─────────────────────────────────────────────────────────────
 
-type ComplianceBreakdown = {
-  overall: number;
-  licenses: number;
-  insurance: number;
-  safety: number;
-  certifications: number;
-  recordCount: number;
-};
-
-type ComplianceTimelineItem = {
-  credentialId: string;
-  credentialTitle: string;
-  credentialType: string;
-  expirationDate: string;
-  bucket: string;
-  daysRemaining: number;
-  href: string;
-};
-
-function ComplianceBar({
-  label,
-  value,
-}: {
-  label: string;
-  value: number;
-}) {
-  const color =
-    value >= 90 ? 'bg-emerald-500' : value >= 60 ? 'bg-amber-400' : 'bg-red-500';
-  const textColor =
-    value >= 90 ? 'text-emerald-700' : value >= 60 ? 'text-amber-700' : 'text-red-700';
-
-  return (
-    <div className="space-y-1.5">
-      <div className="flex items-center justify-between">
-        <span className="text-[10px] font-mono font-bold tracking-[0.1em] text-slate-500">
-          {label}
-        </span>
-        <span className={`text-[11px] font-mono font-bold ${textColor}`}>{value}%</span>
-      </div>
-      <div className="w-full bg-slate-100 h-0.5">
-        <div
-          className={`${color} h-full transition-all duration-500`}
-          style={{ width: `${value}%` }}
-        />
-      </div>
-    </div>
-  );
-}
-
-const TIMELINE_LABELS: Record<string, string> = {
-  TODAY: 'TODAY',
-  '14_DAYS': '14 DAYS',
-  '30_DAYS': '30 DAYS',
-  '60_DAYS': '60 DAYS',
-  '90_DAYS': '90 DAYS',
-  CURRENT: 'CURRENT',
-};
-
-function ComplianceSection({
+function CompliancePosture({
   breakdown,
   timeline,
 }: {
   breakdown: ComplianceBreakdown;
   timeline: ComplianceTimelineItem[];
 }) {
-  const overallColor =
-    breakdown.overall >= 80
-      ? 'text-emerald-700'
-      : breakdown.overall >= 50
-      ? 'text-amber-700'
-      : 'text-red-700';
+  const categories = [
+    { label: 'Trade Licenses', value: breakdown.licenses },
+    { label: 'Commercial Insurance (COIs)', value: breakdown.insurance },
+    { label: 'Safety Programs & JHA', value: breakdown.safety },
+    { label: 'Workforce Certifications', value: breakdown.certifications },
+  ];
 
   return (
-    <div className="bg-white border border-slate-200">
-      <div className="px-6 sm:px-8 py-5 border-b border-slate-100 flex items-center justify-between gap-4">
+    <div className="bg-white border border-slate-200 rounded-[4px] overflow-hidden flex flex-col h-full">
+      <div className="px-4 py-3 border-b border-slate-200 flex items-center justify-between">
         <div>
-          <SectionLabel>SECTION 04</SectionLabel>
-          <SectionHeading>COMPLIANCE POSITION</SectionHeading>
-          <SectionSubtext>
-            Based on {breakdown.recordCount} active{' '}
-            {breakdown.recordCount === 1 ? 'record' : 'records'}.
-          </SectionSubtext>
+          <h2 className="text-xs font-semibold text-slate-900 uppercase tracking-wider font-mono">
+            Compliance Posture
+          </h2>
+          <p className="text-[11px] text-slate-500 mt-0.5">
+            Audited across {breakdown.recordCount} active credentials & policies.
+          </p>
         </div>
-        <Link href="/workspace/comply" className="text-[10px] font-mono text-brand-600 hover:underline shrink-0">
-          OPEN COMPLY →
+        <Link
+          href="/workspace/comply"
+          className="text-xs font-mono text-brand-600 hover:text-brand-700 font-medium"
+        >
+          Manage COIs →
         </Link>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2">
-        {/* Left: breakdown */}
-        <div className="p-6 sm:p-8 border-b lg:border-b-0 lg:border-r border-slate-100 space-y-6">
-          <div className="flex items-baseline gap-3">
-            <span className={`font-mono text-4xl font-bold tracking-tight ${overallColor}`}>
-              {breakdown.overall}%
-            </span>
-            <span className="text-[10px] font-mono font-bold tracking-[0.12em] text-slate-400">
-              READY
-            </span>
-          </div>
-
-          <div className="space-y-4">
-            <ComplianceBar label="LICENSES" value={breakdown.licenses} />
-            <ComplianceBar label="INSURANCE" value={breakdown.insurance} />
-            <ComplianceBar label="SAFETY" value={breakdown.safety} />
-            <ComplianceBar label="CERTIFICATIONS" value={breakdown.certifications} />
-          </div>
+      <div className="p-4 space-y-4">
+        {/* Category Breakdown Bars */}
+        <div className="space-y-3">
+          {categories.map((cat) => (
+            <div key={cat.label} className="space-y-1">
+              <div className="flex items-center justify-between text-xs">
+                <span className="text-slate-700 font-medium">{cat.label}</span>
+                <span className="font-mono text-xs font-semibold text-slate-900">
+                  {cat.value}%
+                </span>
+              </div>
+              <div className="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
+                <div
+                  className={`h-full rounded-full transition-all duration-500 ${
+                    cat.value >= 80
+                      ? 'bg-emerald-500'
+                      : cat.value >= 50
+                      ? 'bg-amber-400'
+                      : 'bg-red-400'
+                  }`}
+                  style={{ width: `${cat.value}%` }}
+                />
+              </div>
+            </div>
+          ))}
         </div>
 
-        {/* Right: expiry timeline */}
-        <div className="p-6 sm:p-8">
-          <div className="text-[10px] font-mono font-bold tracking-[0.12em] text-slate-400 mb-4">
-            EXPIRATION TIMELINE
+        {/* 90-Day Expiration Timeline */}
+        <div className="pt-3 border-t border-slate-100 space-y-2">
+          <div className="flex items-center justify-between">
+            <span className="text-[10px] font-mono text-slate-400 uppercase tracking-wider">
+              Upcoming Expirations (90d)
+            </span>
+            <span className="text-[10px] font-mono text-slate-400">
+              {timeline.length} Monitored
+            </span>
           </div>
 
-          {timeline.length === 0 ? (
-            <div className="py-6 text-center">
-              <div className="text-[11px] font-mono font-bold text-emerald-700 mb-1">ALL CLEAR</div>
-              <p className="text-[11px] text-slate-400">
-                No credentials expiring within 90 days.
-              </p>
-            </div>
-          ) : (
-            <div className="space-y-2">
-              {/* Bucket headers */}
-              {['TODAY', '14_DAYS', '30_DAYS', '60_DAYS', '90_DAYS'].map((bucket) => {
-                const items = timeline.filter((t) => t.bucket === bucket);
-                if (items.length === 0) return null;
-                const bucketColor: Record<string, string> = {
-                  TODAY: 'text-red-700 border-red-300 bg-red-50',
-                  '14_DAYS': 'text-red-600 border-red-200 bg-red-50',
-                  '30_DAYS': 'text-amber-700 border-amber-200 bg-amber-50',
-                  '60_DAYS': 'text-amber-600 border-amber-100 bg-amber-50',
-                  '90_DAYS': 'text-slate-600 border-slate-200 bg-slate-50',
-                };
+          {timeline.length > 0 ? (
+            <div className="space-y-1.5 max-h-48 overflow-y-auto pr-1">
+              {timeline.slice(0, 5).map((item) => {
+                const isUrgent = item.daysRemaining <= 30;
                 return (
-                  <div key={bucket}>
-                    <div
-                      className={`text-[9px] font-mono font-bold tracking-[0.12em] px-2 py-0.5 border inline-block mb-1.5 ${bucketColor[bucket]}`}
-                    >
-                      {TIMELINE_LABELS[bucket]}
+                  <Link
+                    key={item.credentialId}
+                    href={item.href}
+                    className="flex items-center justify-between p-2 rounded-[3px] border border-slate-100 hover:border-slate-200 hover:bg-slate-50 transition-colors text-xs"
+                  >
+                    <div className="min-w-0 pr-2">
+                      <div className="font-medium text-slate-800 truncate">
+                        {item.credentialTitle}
+                      </div>
+                      <div className="text-[10px] font-mono text-slate-400">
+                        {item.credentialType}
+                      </div>
                     </div>
-                    {items.map((item) => (
-                      <Link
-                        key={item.credentialId}
-                        href={item.href}
-                        className="flex items-center justify-between py-1.5 px-3 border border-slate-100 hover:border-slate-300 hover:bg-slate-50 transition-colors mb-1 group"
-                      >
-                        <span className="text-[11px] text-slate-700 truncate group-hover:text-slate-900">
-                          {item.credentialTitle}
-                        </span>
-                        <span className="text-[10px] font-mono text-slate-400 shrink-0 ml-2">
-                          {item.daysRemaining <= 0
-                            ? 'EXPIRED'
-                            : `${item.daysRemaining}d`}
-                        </span>
-                      </Link>
-                    ))}
-                  </div>
+                    <span
+                      className={`text-[11px] font-mono font-semibold shrink-0 ${
+                        item.daysRemaining <= 0
+                          ? 'text-red-600'
+                          : isUrgent
+                          ? 'text-amber-600'
+                          : 'text-slate-600'
+                      }`}
+                    >
+                      {item.daysRemaining <= 0
+                        ? 'EXPIRED'
+                        : `${item.daysRemaining}d`}
+                    </span>
+                  </Link>
                 );
               })}
             </div>
+          ) : (
+            <div className="py-3 text-center text-xs text-slate-400 bg-slate-50/50 rounded-[3px] border border-dashed border-slate-200">
+              No credentials expiring within the next 90 days.
+            </div>
           )}
         </div>
       </div>
@@ -646,90 +723,67 @@ function ComplianceSection({
 }
 
 // ─────────────────────────────────────────────────────────────
-// SECTION 05 — RECENT ACTIVITY
+// 06. LEVEL 4 — OPERATIONAL TIMELINE & RECENT ACTIVITY
 // ─────────────────────────────────────────────────────────────
 
-const EVENT_TYPE_LABELS: Record<string, string> = {
-  VERIFICATION: 'VERIFICATION',
-  DOCUMENT: 'DOCUMENT',
-  COMPLIANCE: 'COMPLIANCE',
-  SUBMISSION: 'SUBMISSION',
-  PASSPORT: 'PASSPORT',
-  SYSTEM: 'SYSTEM',
-};
-
-const EVENT_TYPE_COLORS: Record<string, string> = {
-  VERIFICATION: 'text-emerald-700 bg-emerald-50 border-emerald-200',
-  DOCUMENT: 'text-brand-700 bg-blue-50 border-blue-200',
-  COMPLIANCE: 'text-amber-700 bg-amber-50 border-amber-200',
-  SUBMISSION: 'text-slate-700 bg-slate-100 border-slate-200',
-  PASSPORT: 'text-emerald-700 bg-emerald-50 border-emerald-200',
-  SYSTEM: 'text-slate-500 bg-slate-50 border-slate-200',
-};
-
-function ActivitySection({ activities }: { activities: DashboardActivity[] }) {
+function ActivityLedger({ activities }: { activities: DashboardActivity[] }) {
   return (
-    <div className="bg-white border border-slate-200">
-      <div className="px-6 sm:px-8 py-5 border-b border-slate-100">
-        <SectionLabel>SECTION 05</SectionLabel>
-        <SectionHeading>ACTIVITY</SectionHeading>
-        <SectionSubtext>Operational ledger — chronological record of workspace events.</SectionSubtext>
-      </div>
-
-      {activities.length === 0 ? (
-        <div className="px-8 py-10 text-center">
-          <div className="text-[11px] font-mono font-bold text-slate-500 mb-1">
-            NO ACTIVITY RECORDED
-          </div>
-          <p className="text-xs text-slate-400 max-w-sm mx-auto">
-            Workspace events will appear here as you add credentials, documents, and records.
+    <div className="bg-white border border-slate-200 rounded-[4px] overflow-hidden flex flex-col h-full">
+      <div className="px-4 py-3 border-b border-slate-200 flex items-center justify-between">
+        <div>
+          <h2 className="text-xs font-semibold text-slate-900 uppercase tracking-wider font-mono">
+            Operational Activity Ledger
+          </h2>
+          <p className="text-[11px] text-slate-500 mt-0.5">
+            Immutable audit record of documents, credentials, and verification checks.
           </p>
         </div>
-      ) : (
-        <div className="px-6 sm:px-8 py-4">
-          <div className="relative">
-            {/* Vertical line */}
-            <div className="absolute left-[72px] top-0 bottom-0 w-px bg-slate-100" aria-hidden="true" />
+        <span className="text-xs font-mono text-slate-400">Live</span>
+      </div>
 
-            <div className="space-y-0">
-              {activities.map((event, i) => (
-                <div key={event.id} className="flex gap-4 py-2.5 relative">
-                  {/* Timestamp */}
-                  <div className="w-[72px] shrink-0 text-right">
-                    <span className="text-[10px] font-mono text-slate-400 leading-tight block">
-                      {formatTimestamp(event.timestamp)}
-                    </span>
+      {activities.length > 0 ? (
+        <div className="divide-y divide-slate-100 max-h-96 overflow-y-auto">
+          {activities.slice(0, 8).map((event) => {
+            const eventTags: Record<string, string> = {
+              VERIFICATION: 'bg-emerald-50 text-emerald-800 border-emerald-200',
+              DOCUMENT: 'bg-blue-50 text-blue-800 border-blue-200',
+              COMPLIANCE: 'bg-amber-50 text-amber-800 border-amber-200',
+              SUBMISSION: 'bg-slate-100 text-slate-700 border-slate-200',
+              PASSPORT: 'bg-sky-50 text-sky-800 border-sky-200',
+              SYSTEM: 'bg-slate-50 text-slate-600 border-slate-200',
+            };
+
+            return (
+              <div key={event.id} className="p-3 text-xs flex items-start gap-2.5 hover:bg-slate-50/60 transition-colors">
+                <span
+                  className={`text-[9px] font-mono font-semibold uppercase px-1.5 py-0.5 rounded-[2px] border shrink-0 mt-0.5 ${
+                    eventTags[event.eventType] || eventTags.SYSTEM
+                  }`}
+                >
+                  {event.eventType}
+                </span>
+
+                <div className="min-w-0 flex-1">
+                  <div className="text-slate-800 font-medium leading-snug">
+                    {event.description}
                   </div>
-
-                  {/* Dot */}
-                  <div className="flex items-start pt-1 shrink-0 relative z-10">
-                    <div className="w-1.5 h-1.5 border border-slate-300 bg-white -ml-[3px]" />
-                  </div>
-
-                  {/* Content */}
-                  <div className="flex-1 min-w-0 pb-2 border-b border-slate-50 last:border-0">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <span
-                        className={`inline-block px-1 py-0 text-[9px] font-mono font-bold tracking-[0.08em] border ${
-                          EVENT_TYPE_COLORS[event.eventType] ?? 'text-slate-500 bg-slate-50 border-slate-200'
-                        }`}
-                      >
-                        {EVENT_TYPE_LABELS[event.eventType] ?? event.eventType}
-                      </span>
-                      {event.reference && (
-                        <span className="text-[10px] font-mono text-slate-400 truncate">
-                          {event.reference}
-                        </span>
-                      )}
+                  {event.reference && (
+                    <div className="text-[10px] font-mono text-slate-400 mt-0.5">
+                      REF: {event.reference}
                     </div>
-                    <div className="text-[12px] text-slate-700 mt-0.5 leading-snug">
-                      {event.description}
-                    </div>
-                  </div>
+                  )}
                 </div>
-              ))}
-            </div>
-          </div>
+
+                <span className="text-[10px] font-mono text-slate-400 shrink-0 mt-0.5">
+                  {formatTimestamp(event.timestamp)}
+                </span>
+              </div>
+            );
+          })}
+        </div>
+      ) : (
+        <div className="p-6 text-center text-xs text-slate-400 my-auto">
+          No recent workspace activity recorded yet.
         </div>
       )}
     </div>
@@ -737,124 +791,124 @@ function ActivitySection({ activities }: { activities: DashboardActivity[] }) {
 }
 
 // ─────────────────────────────────────────────────────────────
-// SECTION 06 — BUSINESS SNAPSHOT
+// 07. LEVEL 4 — VERIFIED BUSINESS IDENTITY RECORD
 // ─────────────────────────────────────────────────────────────
 
-type BusinessSnapshot = {
-  name: string;
-  legalName?: string;
-  primaryTrade: string;
-  city?: string;
-  state?: string;
-  statesServed: string[];
-  licenseStatus: string;
-  insuranceStatus: string;
-  passportStatus: string;
-  passportSlug?: string;
-  entityType?: string;
-};
-
-function SnapshotRow({ label, value, variant }: { label: string; value: string; variant?: 'green' | 'amber' | 'red' | 'slate' }) {
-  return (
-    <div className="flex items-center justify-between py-2.5 border-b border-slate-50 last:border-0">
-      <span className="text-[10px] font-mono font-bold tracking-[0.1em] text-slate-400">{label}</span>
-      {variant ? (
-        <StatusBadge status={value} variant={variant} />
-      ) : (
-        <span className="text-[12px] font-semibold text-slate-800">{value || '—'}</span>
-      )}
-    </div>
-  );
-}
-
-function BusinessSnapshotSection({ snapshot }: { snapshot: BusinessSnapshot }) {
-  function licenseVariant(s: string): 'green' | 'amber' | 'red' | 'slate' {
-    if (s === 'VERIFIED' || s === 'ACTIVE') return 'green';
-    if (s === 'EXPIRED') return 'red';
-    return 'amber';
+function BusinessIdentityMatrix({ snapshot }: { snapshot: BusinessSnapshot }) {
+  function getTag(status: string) {
+    if (status === 'VERIFIED' || status === 'ACTIVE') {
+      return <OperationalStatusTag status={status} variant="emerald" />;
+    }
+    if (status === 'EXPIRED') {
+      return <OperationalStatusTag status={status} variant="red" />;
+    }
+    return <OperationalStatusTag status={status} variant="amber" />;
   }
 
   return (
-    <div className="bg-white border border-slate-200">
-      <div className="px-6 sm:px-8 py-5 border-b border-slate-100 flex items-center justify-between gap-4">
+    <div className="bg-white border border-slate-200 rounded-[4px] overflow-hidden">
+      <div className="px-4 py-3 border-b border-slate-200 flex items-center justify-between">
         <div>
-          <SectionLabel>SECTION 06</SectionLabel>
-          <SectionHeading>BUSINESS SNAPSHOT</SectionHeading>
-          <SectionSubtext>Verified corporate identity record.</SectionSubtext>
+          <h2 className="text-xs font-semibold text-slate-900 uppercase tracking-wider font-mono">
+            Verified Contractor Identity Record
+          </h2>
+          <p className="text-[11px] text-slate-500 mt-0.5">
+            US State licensing, commercial insurance standing, and public verification profile.
+          </p>
         </div>
         <Link
           href="/workspace/settings"
-          className="text-[10px] font-mono text-brand-600 hover:underline shrink-0"
+          className="text-xs font-mono text-brand-600 hover:text-brand-700 font-medium"
         >
-          VIEW BUSINESS PROFILE →
+          Edit Business Entity →
         </Link>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-slate-100">
-        {/* Identity */}
-        <div className="px-6 sm:px-8 py-5">
-          <div className="text-[9px] font-mono font-bold tracking-[0.15em] text-slate-400 mb-3">
-            IDENTITY
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 divide-y md:divide-y-0 md:divide-x divide-slate-100 text-xs">
+        {/* Cell 1: Entity Name & Legal Structure */}
+        <div className="p-4 space-y-1.5">
+          <div className="text-[10px] font-mono text-slate-400 uppercase tracking-wider">
+            Entity & Structure
           </div>
-          <SnapshotRow label="COMPANY" value={snapshot.name} />
+          <div className="font-semibold text-slate-900 text-sm">
+            {snapshot.name}
+          </div>
+          <div className="text-slate-500 text-[11px]">
+            {snapshot.entityType || 'Commercial Contractor'}
+          </div>
           {snapshot.legalName && snapshot.legalName !== snapshot.name && (
-            <SnapshotRow label="LEGAL NAME" value={snapshot.legalName} />
+            <div className="text-[11px] font-mono text-slate-400">
+              Legal: {snapshot.legalName}
+            </div>
           )}
-          {snapshot.entityType && (
-            <SnapshotRow label="ENTITY TYPE" value={snapshot.entityType} />
-          )}
-          <SnapshotRow label="PRIMARY TRADE" value={snapshot.primaryTrade} />
-          <SnapshotRow
-            label="LOCATION"
-            value={[snapshot.city, snapshot.state].filter(Boolean).join(', ') || '—'}
-          />
-          <SnapshotRow
-            label="STATES SERVED"
-            value={snapshot.statesServed.length > 0 ? snapshot.statesServed.join(', ') : '—'}
-          />
         </div>
 
-        {/* Status */}
-        <div className="px-6 sm:px-8 py-5">
-          <div className="text-[9px] font-mono font-bold tracking-[0.15em] text-slate-400 mb-3">
-            STATUS
+        {/* Cell 2: Trade & Geographic Scope */}
+        <div className="p-4 space-y-1.5">
+          <div className="text-[10px] font-mono text-slate-400 uppercase tracking-wider">
+            Trade & Operating Scope
           </div>
-          <SnapshotRow
-            label="LICENSE"
-            value={snapshot.licenseStatus}
-            variant={licenseVariant(snapshot.licenseStatus)}
-          />
-          <SnapshotRow
-            label="INSURANCE"
-            value={snapshot.insuranceStatus}
-            variant={licenseVariant(snapshot.insuranceStatus)}
-          />
-          <SnapshotRow
-            label="CONTRACTOR PASSPORT"
-            value={snapshot.passportStatus}
-            variant={
-              snapshot.passportStatus === 'ACTIVE'
-                ? 'green'
-                : snapshot.passportStatus === 'DRAFT'
-                ? 'amber'
-                : 'slate'
-            }
-          />
+          <div className="font-medium text-slate-800">
+            {snapshot.primaryTrade}
+          </div>
+          <div className="text-slate-500 text-[11px]">
+            HQ: {[snapshot.city, snapshot.state].filter(Boolean).join(', ') || 'United States'}
+          </div>
+          <div className="text-[11px] font-mono text-slate-400">
+            States: {snapshot.statesServed.length > 0 ? snapshot.statesServed.join(', ') : 'Single State'}
+          </div>
+        </div>
 
-          {snapshot.passportSlug && (
-            <div className="mt-4 pt-3 border-t border-slate-50">
-              <Link
-                href={`/contractors/${snapshot.passportSlug}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 text-[10px] font-mono font-bold text-brand-600 hover:underline"
-              >
-                VIEW PUBLIC PASSPORT
-                <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="square" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                </svg>
-              </Link>
+        {/* Cell 3: Verification Standing */}
+        <div className="p-4 space-y-1.5">
+          <div className="text-[10px] font-mono text-slate-400 uppercase tracking-wider">
+            Verification Standing
+          </div>
+          <div className="flex items-center justify-between py-0.5">
+            <span className="text-slate-600">License Verification</span>
+            {getTag(snapshot.licenseStatus)}
+          </div>
+          <div className="flex items-center justify-between py-0.5">
+            <span className="text-slate-600">Insurance (COI)</span>
+            {getTag(snapshot.insuranceStatus)}
+          </div>
+        </div>
+
+        {/* Cell 4: Passport Link & Sharing */}
+        <div className="p-4 space-y-2 flex flex-col justify-between">
+          <div>
+            <div className="text-[10px] font-mono text-slate-400 uppercase tracking-wider">
+              Public Contractor Passport
             </div>
+            <div className="flex items-center gap-2 mt-1">
+              <span className={`w-2 h-2 rounded-full ${
+                snapshot.passportStatus === 'ACTIVE' ? 'bg-emerald-500' : 'bg-amber-400'
+              }`} />
+              <span className="font-medium text-slate-900">
+                {snapshot.passportStatus === 'ACTIVE' ? 'Published' : 'Draft Mode'}
+              </span>
+            </div>
+          </div>
+
+          {snapshot.passportSlug ? (
+            <Link
+              href={`/contractors/${snapshot.passportSlug}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 text-xs font-medium text-brand-700 bg-brand-50 hover:bg-brand-100 rounded-[3px] transition-colors"
+            >
+              <span>View Public Passport</span>
+              <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+              </svg>
+            </Link>
+          ) : (
+            <Link
+              href="/workspace/passport"
+              className="inline-flex items-center justify-center px-3 py-1.5 text-xs font-medium text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-[3px] transition-colors"
+            >
+              Configure Passport
+            </Link>
           )}
         </div>
       </div>
@@ -863,43 +917,66 @@ function BusinessSnapshotSection({ snapshot }: { snapshot: BusinessSnapshot }) {
 }
 
 // ─────────────────────────────────────────────────────────────
-// PAGE
+// MAIN DASHBOARD COMPOSITION
 // ─────────────────────────────────────────────────────────────
 
 export default async function WorkspaceDashboardPage() {
   const { organization } = await getWorkspaceContext();
   const data = await getDashboardData(organization);
 
+  const expiringCount = data.complianceTimeline.filter(
+    (t) => t.daysRemaining <= 60
+  ).length;
+
   return (
-    <div className="space-y-5">
-      {/* Section 01: Work-Ready Status */}
-      <WorkReadySection
-        score={data.readinessScore}
-        calculatedAt={data.calculatedAt}
-        areas={data.workReadyAreas}
+    <div className="space-y-4">
+      {/* 01. Operational Header & Metrics Ticker */}
+      <OperationalControlHeader
+        organizationName={organization.name}
+        readinessScore={data.readinessScore}
+        attentionCount={data.attentionItems.length}
+        recordCount={data.complianceBreakdown.recordCount}
+        expiringCount={expiringCount}
       />
 
-      {/* Section 02: Your Attention */}
-      <AttentionSection items={data.attentionItems} />
+      {/* 02. LEVEL 1 — Immediate Attention Queue */}
+      <AttentionDesk items={data.attentionItems} />
 
-      {/* Section 03: Win Work */}
-      <WinWorkSection
-        opportunities={data.opportunities}
-        matchedCount={data.opportunities.length}
-        awaitingCount={data.opportunities.filter((o) => o.status === 'REVIEWING').length}
-      />
+      {/* 03. LEVEL 2 — Core Operational Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
+        {/* Left Col (5 of 12 cols on desktop): Work-Ready Assessment */}
+        <div className="lg:col-span-5">
+          <WorkReadyPanel
+            score={data.readinessScore}
+            calculatedAt={data.calculatedAt}
+            areas={data.workReadyAreas}
+          />
+        </div>
 
-      {/* Sections 04 + 05: Compliance + Activity side by side on lg */}
-      <div className="grid grid-cols-1 xl:grid-cols-2 gap-5">
-        <ComplianceSection
-          breakdown={data.complianceBreakdown}
-          timeline={data.complianceTimeline}
-        />
-        <ActivitySection activities={data.recentActivity} />
+        {/* Right Col (7 of 12 cols on desktop): Opportunities & Pipeline */}
+        <div className="lg:col-span-7">
+          <OpportunitiesTable opportunities={data.opportunities} />
+        </div>
       </div>
 
-      {/* Section 06: Business Snapshot */}
-      <BusinessSnapshotSection snapshot={data.businessSnapshot} />
+      {/* 04. LEVEL 3 & 4 — Compliance Posture & Activity Ledger */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
+        {/* Left: Compliance Posture & Expiration Watchlist */}
+        <div className="lg:col-span-6">
+          <CompliancePosture
+            breakdown={data.complianceBreakdown}
+            timeline={data.complianceTimeline}
+          />
+        </div>
+
+        {/* Right: Operational Activity Ledger */}
+        <div className="lg:col-span-6">
+          <ActivityLedger activities={data.recentActivity} />
+        </div>
+      </div>
+
+      {/* 05. LEVEL 4 — Verified Business Identity Matrix */}
+      <BusinessIdentityMatrix snapshot={data.businessSnapshot} />
     </div>
   );
 }

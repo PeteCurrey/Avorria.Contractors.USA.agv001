@@ -131,9 +131,9 @@ export function RequestDetailClient({ initialPack, initialReadiness }: RequestDe
                 type="button"
                 onClick={() => handleStatusTransition('active')}
                 disabled={isUpdating}
-                className="px-3.5 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-500 text-white text-xs font-bold transition-all shadow-sm"
+                className="px-3.5 py-2.5 rounded-lg bg-brand-600 hover:bg-brand-500 text-white text-xs font-bold transition-all shadow-sm"
               >
-                🚀 Activate Request
+                Activate Request
               </button>
               <button
                 type="button"

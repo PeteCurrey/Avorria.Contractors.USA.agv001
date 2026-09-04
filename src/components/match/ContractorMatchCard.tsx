@@ -7,6 +7,7 @@ import {
   CanonicalEvidenceState,
   OverallMatchStatus,
 } from '@/lib/match/types';
+import { ShieldCheck } from 'lucide-react';
 
 interface ContractorMatchCardProps {
   candidate: EvaluatedContractorMatch;
@@ -26,7 +27,7 @@ export function ContractorMatchCard({
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white overflow-hidden shadow-xs hover:shadow-sm transition-shadow">
+    <div className="rounded-lg border border-slate-200 bg-white overflow-hidden shadow-xs hover:shadow-sm transition-shadow">
       {/* Top Header */}
       <div className="p-5 sm:p-6 bg-slate-50/70 border-b border-slate-200">
         <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
@@ -35,8 +36,8 @@ export function ContractorMatchCard({
               <h3 className="text-base font-bold text-slate-900">{candidate.businessName}</h3>
 
               {candidate.verificationStatus === 'verified' && (
-                <span className="inline-flex items-center gap-1 text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300">
-                  <span>🛡️</span>
+                <span className="inline-flex items-center gap-1.5 text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300">
+                  <ShieldCheck className="w-3.5 h-3.5 shrink-0" />
                   <span>Verified by Avorria</span>
                   {candidate.verificationReference && (
                     <span className="font-mono text-[10px] text-emerald-700">

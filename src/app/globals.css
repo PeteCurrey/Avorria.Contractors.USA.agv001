@@ -11,7 +11,7 @@ body {
   color: var(--foreground);
   background: var(--background);
   font-family: var(--font-work-sans), 'Work Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  font-weight: 200;
+  font-weight: 300;
   letter-spacing: -0.01em;
   min-height: 100vh;
   text-rendering: optimizeLegibility;
@@ -20,14 +20,14 @@ body {
 
 button, input, select, textarea {
   font-family: var(--font-work-sans), 'Work Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  font-weight: 200;
+  font-weight: 300;
   letter-spacing: -0.01em;
 }
 
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-work-sans), 'Work Sans', sans-serif !important;
-  font-weight: 200 !important;
-  letter-spacing: -0.03em;
+  font-weight: 400 !important;
+  letter-spacing: -0.025em;
 }
 
 /* Accessibility Focus Ring Standards */

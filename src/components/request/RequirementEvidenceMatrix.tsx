@@ -8,6 +8,7 @@ import {
   EvidenceAlignmentStatus,
 } from '@/lib/request/types';
 import { VerifiedByAvorriaBadge } from '@/components/passport/VerifiedByAvorriaBadge';
+import { ShieldCheck } from 'lucide-react';
 
 interface RequirementEvidenceMatrixProps {
   candidate: ContractorMatchPreviewResult;
@@ -19,15 +20,15 @@ export function RequirementEvidenceMatrix({
   showPassportLink = true,
 }: RequirementEvidenceMatrixProps) {
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white overflow-hidden shadow-sm">
+    <div className="rounded-lg border border-slate-200 bg-white overflow-hidden shadow-sm">
       {/* Contractor Header Bar */}
       <div className="p-5 sm:p-6 bg-slate-50/70 border-b border-slate-200 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <div className="flex flex-wrap items-center gap-2 mb-1.5">
             <h3 className="text-base font-bold text-slate-900">{candidate.businessName}</h3>
             {candidate.isVerified && (
-              <span className="inline-flex items-center gap-1 text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300">
-                <span>🛡️</span>
+              <span className="inline-flex items-center gap-1.5 text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300">
+                <ShieldCheck className="w-3.5 h-3.5 shrink-0" />
                 <span>Verified by Avorria</span>
                 {candidate.verificationReference && (
                   <span className="font-mono text-[10px] text-emerald-700">({candidate.verificationReference})</span>

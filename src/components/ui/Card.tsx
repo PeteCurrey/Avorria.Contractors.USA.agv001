@@ -25,7 +25,7 @@ export function Card({
 
   return (
     <div
-      className={`rounded-lg p-6 ${variants[variant]} ${className}`}
+      className={`rounded p-5 ${variants[variant]} ${className}`}
       {...props}
     >
       {children}

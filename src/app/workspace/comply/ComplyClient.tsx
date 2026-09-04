@@ -146,13 +146,14 @@ export function ComplyClient({ organization, initialCredentials }: ComplyClientP
       setCredentials((prev) => prev.filter((c) => c.id !== id));
       router.refresh();
     } catch (err: unknown) {
-      alert(err instanceof Error ? err.message : 'Delete failed');
+      setError(err instanceof Error ? err.message : 'Delete failed');
     }
   }
 
   async function triggerRenewalCheck() {
     setIsRunningAlerts(true);
     setAlertSuccessMessage(null);
+    setError(null);
 
     try {
       const res = await fetch('/api/workspace/alerts/renewal', { method: 'POST' });
@@ -164,7 +165,7 @@ export function ComplyClient({ organization, initialCredentials }: ComplyClientP
       );
       router.refresh();
     } catch (err: unknown) {
-      alert(err instanceof Error ? err.message : 'Error triggering check');
+      setError(err instanceof Error ? err.message : 'Renewal check failed — please try again');
     } finally {
       setIsRunningAlerts(false);
     }

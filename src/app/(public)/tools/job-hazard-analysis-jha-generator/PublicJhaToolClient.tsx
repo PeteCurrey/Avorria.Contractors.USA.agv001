@@ -71,11 +71,92 @@ export function PublicJhaToolClient() {
   const [taskDescription, setTaskDescription] = useState('Switchgear replacement and heavy feeder wire pull');
   const [customControl, setCustomControl] = useState('');
   const [isGenerated, setIsGenerated] = useState(true);
+  const [isExportingPdf, setIsExportingPdf] = useState(false);
+  const [isExportingDocx, setIsExportingDocx] = useState(false);
+  const [exportError, setExportError] = useState<string | null>(null);
 
   const currentSteps = PRESET_HAZARDS[trade] || PRESET_HAZARDS['Electrical Contracting'];
 
   const handlePrint = () => {
     window.print();
+  };
+
+  const handleDownloadPdf = async () => {
+    setIsExportingPdf(true);
+    setExportError(null);
+    try {
+      const res = await fetch('/api/resources/job-hazard-analysis-jha-generator/pdf', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          formData: {
+            projectName,
+            tradeScope: trade,
+            competentPerson,
+            taskDescription,
+          },
+          tableRows: currentSteps.map((s) => ({
+            sequenceStep: s.taskStep,
+            potentialHazards: s.hazardDescription,
+            controlMeasures: s.controlMeasures.join('; '),
+            requiredPpe: s.requiredPpe.join(', '),
+          })),
+        }),
+      });
+      if (!res.ok) throw new Error('PDF export failed — please try again');
+      const blob = await res.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `SC-JHA-01_job-hazard-analysis.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (err: any) {
+      setExportError(err.message || 'PDF export failed');
+    } finally {
+      setIsExportingPdf(false);
+    }
+  };
+
+  const handleDownloadDocx = async () => {
+    setIsExportingDocx(true);
+    setExportError(null);
+    try {
+      const res = await fetch('/api/resources/job-hazard-analysis-jha-generator/docx', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          formData: {
+            projectName,
+            tradeScope: trade,
+            competentPerson,
+            taskDescription,
+          },
+          tableRows: currentSteps.map((s) => ({
+            sequenceStep: s.taskStep,
+            potentialHazards: s.hazardDescription,
+            controlMeasures: s.controlMeasures.join('; '),
+            requiredPpe: s.requiredPpe.join(', '),
+          })),
+        }),
+      });
+      if (!res.ok) throw new Error('DOCX export failed — please try again');
+      const blob = await res.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `SC-JHA-01_job-hazard-analysis.docx`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (err: any) {
+      setExportError(err.message || 'Word export failed');
+    } finally {
+      setIsExportingDocx(false);
+    }
   };
 
   return (
@@ -156,14 +237,51 @@ export function PublicJhaToolClient() {
             </div>
           </div>
 
-          <div className="pt-2 flex justify-end gap-3">
-            <button
-              type="button"
-              onClick={handlePrint}
-              className="px-4 py-2 bg-white hover:bg-slate-50 border border-slate-300 text-slate-700 text-xs font-bold uppercase tracking-wider transition-colors rounded-[4px]"
+          {exportError && (
+            <div className="p-3 bg-red-50 border border-red-200 text-red-700 text-xs rounded-[4px] flex items-center justify-between">
+              <span>{exportError}</span>
+              <button
+                type="button"
+                onClick={() => setExportError(null)}
+                className="text-red-500 hover:text-red-700 uppercase font-bold text-[10px]"
+              >
+                Dismiss
+              </button>
+            </div>
+          )}
+
+          <div className="pt-2 flex flex-wrap items-center justify-between gap-3">
+            <Link
+              href="/resources/job-hazard-analysis-jha-generator"
+              className="text-xs text-sky-700 hover:text-sky-900 font-medium"
             >
-              Print JHA Document
-            </button>
+              Open in Full Interactive Resource Workspace →
+            </Link>
+            <div className="flex flex-wrap items-center gap-2">
+              <button
+                type="button"
+                disabled={isExportingPdf}
+                onClick={handleDownloadPdf}
+                className="px-4 py-2 bg-[#0284c7] hover:bg-[#0369a1] disabled:opacity-50 text-white text-xs font-bold uppercase tracking-wider transition-colors rounded-[4px] flex items-center gap-1.5"
+              >
+                {isExportingPdf ? 'Exporting PDF...' : 'Download PDF'}
+              </button>
+              <button
+                type="button"
+                disabled={isExportingDocx}
+                onClick={handleDownloadDocx}
+                className="px-4 py-2 bg-slate-800 hover:bg-slate-900 disabled:opacity-50 text-white text-xs font-bold uppercase tracking-wider transition-colors rounded-[4px] flex items-center gap-1.5"
+              >
+                {isExportingDocx ? 'Exporting Word...' : 'Download Word (.docx)'}
+              </button>
+              <button
+                type="button"
+                onClick={handlePrint}
+                className="px-4 py-2 bg-white hover:bg-slate-50 border border-slate-300 text-slate-700 text-xs font-bold uppercase tracking-wider transition-colors rounded-[4px]"
+              >
+                Print / Browser PDF
+              </button>
+            </div>
           </div>
         </div>
 
@@ -323,7 +441,7 @@ export function PublicJhaToolClient() {
               href="/resources"
               className="px-4 py-2 bg-white hover:bg-slate-50 border border-slate-300 text-slate-700 text-xs font-bold uppercase tracking-wider transition-colors rounded-[4px]"
             >
-              View All 25 Resources →
+              View All 26 Resources →
             </Link>
           </div>
         </div>

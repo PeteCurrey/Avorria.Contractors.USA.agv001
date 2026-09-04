@@ -7,6 +7,7 @@ import { DirectorySearchParams } from '@/lib/directory/types';
 import { ContractorCard } from '@/components/directory/ContractorCard';
 import { DirectorySearchFilters } from '@/components/directory/DirectorySearchFilters';
 import { ShortlistProvider } from '@/components/shortlist/ShortlistContext';
+import { ShieldCheck } from 'lucide-react';
 
 interface Props {
   searchParams: Promise<{
@@ -119,8 +120,9 @@ export default async function ContractorsDirectoryPage({ searchParams }: Props) 
 
             {/* Regulatory Transparency Callout */}
             <div className="p-4 rounded-xl bg-navy-900/90 border border-navy-700/80 max-w-2xl text-xs text-slate-300 leading-relaxed space-y-1 font-extralight">
-              <div className="font-bold text-white flex items-center gap-2">
-                <span>🛡️ Verified by Avorria Standards</span>
+              <div className="font-bold text-white flex items-center gap-1.5">
+                <ShieldCheck className="w-4 h-4 text-sky-400 shrink-0" />
+                <span>Verified by Avorria Standards</span>
               </div>
               <p>
                 Verification indicates that Avorria compliance reviewers have examined specified evidence against our published criteria. Avorria is not a government licensing body, statutory regulator, or insurance carrier.{' '}

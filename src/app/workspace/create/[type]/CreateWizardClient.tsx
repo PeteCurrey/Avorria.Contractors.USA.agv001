@@ -24,6 +24,7 @@ export function CreateWizardClient({ docType, organization, user }: CreateWizard
   const [signerName, setSignerName] = useState(user.full_name || '');
   const [isSigning, setIsSigning] = useState(false);
   const [signSuccess, setSignSuccess] = useState(false);
+  const [signatureError, setSignatureError] = useState<string | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [isDrawing, setIsDrawing] = useState(false);
 
@@ -253,10 +254,10 @@ export function CreateWizardClient({ docType, organization, user }: CreateWizard
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    const signatureDataUrl = canvas.toDataURL('image/png');
     setIsSigning(true);
-
+    setSignatureError(null);
     try {
+      const signatureDataUrl = canvas.toDataURL('image/png');
       const res = await fetch(`/api/documents/${generatedDoc.id}/sign`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -275,7 +276,7 @@ export function CreateWizardClient({ docType, organization, user }: CreateWizard
       setSignSuccess(true);
       setStep(3);
     } catch (err: any) {
-      alert(`Signature failed: ${err.message}`);
+      setSignatureError(err.message || 'Signature failed — please try again');
     } finally {
       setIsSigning(false);
     }
@@ -742,6 +743,22 @@ export function CreateWizardClient({ docType, organization, user }: CreateWizard
             <h3 className="font-mono text-xs font-bold text-slate-400 uppercase tracking-wider border-b border-slate-800 pb-2">
               DIGITAL SIGNATURE EXECUTION (LOCKS DOCUMENT AS READ-ONLY)
             </h3>
+
+            {signatureError && (
+              <div className="flex items-start gap-3 p-3.5 rounded-lg bg-red-950/40 border border-red-800/60 text-xs font-mono text-red-300">
+                <svg className="w-4 h-4 shrink-0 text-red-400 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="square" strokeWidth="2" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+                </svg>
+                <span className="flex-1">{signatureError}</span>
+                <button
+                  type="button"
+                  onClick={() => setSignatureError(null)}
+                  className="text-red-400 hover:text-red-200 uppercase font-bold text-[10px]"
+                >
+                  Dismiss
+                </button>
+              </div>
+            )}
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-3">

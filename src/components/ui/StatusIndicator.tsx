@@ -1,6 +1,16 @@
 import React from 'react';
 
-export type StatusType = 'current' | 'expiring' | 'expired' | 'missing' | 'verified';
+// Coherent 7-state status system for Avorria Contractor
+// Used consistently across the entire application
+export type StatusType =
+  | 'active'
+  | 'current'   // alias for active
+  | 'expiring'
+  | 'expired'
+  | 'missing'
+  | 'pending'
+  | 'draft'
+  | 'verified';
 
 export interface StatusIndicatorProps {
   status: StatusType;
@@ -8,47 +18,85 @@ export interface StatusIndicatorProps {
   className?: string;
 }
 
-export function StatusIndicator({ status, label, className = '' }: StatusIndicatorProps) {
-  const configs: Record<StatusType, { dotColor: string; defaultLabel: string; textColor: string }> = {
-    current: {
-      dotColor: 'bg-emerald-400',
-      defaultLabel: 'Current',
-      textColor: 'text-emerald-300',
-    },
-    expiring: {
-      dotColor: 'bg-amber-400',
-      defaultLabel: 'Expiring Soon',
-      textColor: 'text-amber-300',
-    },
-    expired: {
-      dotColor: 'bg-rose-400',
-      defaultLabel: 'Expired',
-      textColor: 'text-rose-300',
-    },
-    missing: {
-      dotColor: 'bg-slate-500',
-      defaultLabel: 'Missing',
-      textColor: 'text-slate-400',
-    },
-    verified: {
-      dotColor: 'bg-brand-400',
-      defaultLabel: 'Verified',
-      textColor: 'text-brand-300',
-    },
-  };
+const configs: Record<StatusType, { dotColor: string; defaultLabel: string; textColor: string; filled: boolean }> = {
+  active: {
+    dotColor: 'bg-emerald-500',
+    defaultLabel: 'Active',
+    textColor: 'text-emerald-600 dark:text-emerald-400',
+    filled: true,
+  },
+  current: {
+    dotColor: 'bg-emerald-500',
+    defaultLabel: 'Current',
+    textColor: 'text-emerald-600 dark:text-emerald-400',
+    filled: true,
+  },
+  expiring: {
+    dotColor: 'bg-amber-400',
+    defaultLabel: 'Expiring',
+    textColor: 'text-amber-600 dark:text-amber-400',
+    filled: true,
+  },
+  expired: {
+    dotColor: 'bg-red-500',
+    defaultLabel: 'Expired',
+    textColor: 'text-red-600 dark:text-red-400',
+    filled: true,
+  },
+  missing: {
+    dotColor: 'border-slate-400',
+    defaultLabel: 'Missing',
+    textColor: 'text-slate-500 dark:text-slate-400',
+    filled: false,
+  },
+  pending: {
+    dotColor: 'border-brand-400',
+    defaultLabel: 'Pending',
+    textColor: 'text-brand-600 dark:text-brand-400',
+    filled: false,
+  },
+  draft: {
+    dotColor: 'border-slate-400',
+    defaultLabel: 'Draft',
+    textColor: 'text-slate-500 dark:text-slate-400',
+    filled: false,
+  },
+  verified: {
+    dotColor: 'bg-brand-500',
+    defaultLabel: 'Verified',
+    textColor: 'text-brand-600 dark:text-brand-400',
+    filled: true,
+  },
+};
 
+export function StatusIndicator({ status, label, className = '' }: StatusIndicatorProps) {
   const config = configs[status];
   const displayLabel = label || config.defaultLabel;
 
   return (
-    <span className={`inline-flex items-center gap-2 text-xs font-medium ${config.textColor} ${className}`}>
-      <span className="relative flex h-2 w-2">
-        {status === 'current' || status === 'verified' ? (
-          <span className={`animate-ping absolute inline-flex h-full w-full rounded-full ${config.dotColor} opacity-75`} />
-        ) : null}
-        <span className={`relative inline-flex rounded-full h-2 w-2 ${config.dotColor}`} />
-      </span>
+    <span className={`inline-flex items-center gap-1.5 text-xs font-medium ${config.textColor} ${className}`}>
+      {config.filled ? (
+        <span className={`inline-flex rounded-full h-1.5 w-1.5 shrink-0 ${config.dotColor}`} />
+      ) : (
+        <span className={`inline-flex rounded-full h-1.5 w-1.5 shrink-0 border ${config.dotColor}`} />
+      )}
       <span>{displayLabel}</span>
     </span>
+  );
+}
+
+// Compact dot-only version for use in tables
+export function StatusDot({ status, className = '' }: { status: StatusType; className?: string }) {
+  const config = configs[status];
+  return config.filled ? (
+    <span
+      className={`inline-flex rounded-full h-1.5 w-1.5 shrink-0 ${config.dotColor} ${className}`}
+      title={config.defaultLabel}
+    />
+  ) : (
+    <span
+      className={`inline-flex rounded-full h-1.5 w-1.5 shrink-0 border ${config.dotColor} ${className}`}
+      title={config.defaultLabel}
+    />
   );
 }

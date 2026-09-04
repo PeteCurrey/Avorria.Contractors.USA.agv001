@@ -6,7 +6,7 @@ export type ResourceCategory =
   | 'safety-compliance'
   | 'business-administration';
 
-export type ResourceType = 'generator' | 'template' | 'checklist' | 'form' | 'worksheet';
+export type ResourceType = 'generator' | 'template' | 'checklist' | 'form' | 'worksheet' | 'register' | 'guide' | 'pack';
 
 export interface ResourceField {
   id: string;
@@ -103,6 +103,9 @@ export const RESOURCE_TYPES: { id: ResourceType; label: string }[] = [
   { id: 'checklist', label: 'Checklists' },
   { id: 'form', label: 'Forms' },
   { id: 'worksheet', label: 'Worksheets' },
+  { id: 'register', label: 'Registers' },
+  { id: 'guide', label: 'Guides' },
+  { id: 'pack', label: 'Packs' },
 ];
 
 export const CONTRACTOR_RESOURCES: ContractorResource[] = [
@@ -376,18 +379,21 @@ export const CONTRACTOR_RESOURCES: ContractorResource[] = [
         fields: [
           { id: 'coNumber', label: 'Change Order Number', type: 'text', defaultValue: 'CO-003', required: true },
           { id: 'projectName', label: 'Project Name & Number', type: 'text', defaultValue: 'Centennial Tower Core & Shell (Job #2026-104)', required: true },
-          { id: 'contractDate', label: 'Original Subcontract Date', type: 'date', defaultValue: '2026-03-15' },
+          { id: 'clientName', label: 'Client / Prime General Contractor', type: 'text', defaultValue: 'Manhattan Construction Group LLC', required: true },
+          { id: 'contractDate', label: 'Original Subcontract Agreement Date', type: 'date', defaultValue: '2026-03-15' },
           { id: 'originalContractSum', label: 'Original Subcontract Amount ($)', type: 'number', defaultValue: 285000, required: true },
+          { id: 'priorApprovedChanges', label: 'Prior Approved Change Orders ($)', type: 'number', defaultValue: 14200 },
         ],
       },
       {
         id: 'cho-details',
-        title: '02 / Scope Modification & Financial Impact',
+        title: '02 / Scope Modification, Justification & Terms',
         fields: [
-          { id: 'description', label: 'Detailed Description of Change', type: 'textarea', defaultValue: 'Reroute 4” electrical feeder conduit around newly installed HVAC chiller ducting on Level 3 ceiling plenum. Install two additional 90-degree sweeps and 45 LF of galvanized rigid conduit.', required: true },
-          { id: 'reason', label: 'Reason for Change', type: 'text', defaultValue: 'Unforeseen architectural/MEP spatial clash not indicated on bid drawings.' },
+          { id: 'description', label: 'Detailed Description of Scope Addition / Modification', type: 'textarea', defaultValue: 'Reroute 4” electrical feeder conduit around newly installed HVAC chiller ducting on Level 3 ceiling plenum. Install two additional 90-degree sweeps and 45 LF of galvanized rigid conduit.', required: true },
+          { id: 'reason', label: 'Reason for Change / Originating RFI Reference', type: 'text', defaultValue: 'Unforeseen architectural/MEP clash per Architect Response to RFI-042.' },
           { id: 'costImpact', label: 'Net Cost Adjustment (Add/Deduct $) (+)', type: 'number', defaultValue: 5840.00, required: true },
-          { id: 'scheduleImpact', label: 'Schedule Adjustment (Calendar Days)', type: 'number', defaultValue: 3 },
+          { id: 'scheduleImpact', label: 'Contract Time Adjustment (Calendar Days)', type: 'number', defaultValue: 3 },
+          { id: 'exclusionsAssumptions', label: 'Exclusions & Technical Assumptions', type: 'textarea', defaultValue: 'Excludes overtime or premium labor rates; assumes unobstructed ceiling access during scheduled 07:00–15:30 work hours.' },
         ],
       },
     ],
@@ -532,30 +538,35 @@ export const CONTRACTOR_RESOURCES: ContractorResource[] = [
         id: 'dlr-header',
         title: '01 / Project & Environmental Context',
         fields: [
-          { id: 'projectName', label: 'Project Name', type: 'text', defaultValue: 'Plano Corporate Center Phase II', required: true },
+          { id: 'projectName', label: 'Project Name & Job Number', type: 'text', defaultValue: 'Plano Corporate Center Phase II (#2026-084)', required: true },
+          { id: 'siteAddress', label: 'Jobsite Physical Address', type: 'text', defaultValue: '5400 Legacy Drive, Plano, TX 75024', required: true },
+          { id: 'clientGC', label: 'General Contractor / Client Representative', type: 'text', defaultValue: 'Turner-Austin Commercial Builders' },
           { id: 'reportDate', label: 'Report Date', type: 'date', defaultValue: '2026-09-04', required: true },
-          { id: 'weatherConditions', label: 'Weather & Temperature', type: 'text', defaultValue: 'Clear, 84°F, Wind 8mph, Ground dry' },
-          { id: 'supervisor', label: 'Superintendent / Foreman', type: 'text', defaultValue: 'Marcus Vance' },
+          { id: 'weatherConditions', label: 'Weather, Temp & Ground Conditions', type: 'text', defaultValue: 'Clear, 84°F, Wind 8mph, Ground dry & stable' },
+          { id: 'supervisor', label: 'Superintendent / Lead Foreman', type: 'text', defaultValue: 'Marcus Vance, Master Electrician' },
         ],
       },
       {
         id: 'dlr-workforce',
-        title: '02 / Workforce & Equipment on Site',
+        title: '02 / Workforce, Subcontractors & Equipment on Site',
         fields: [
-          { id: 'journeymanCount', label: 'Journeyman Technicians on Site', type: 'number', defaultValue: 6 },
-          { id: 'apprenticeCount', label: 'Apprentices on Site', type: 'number', defaultValue: 3 },
-          { id: 'totalHoursWorked', label: 'Total Field Labor Hours', type: 'number', defaultValue: 72 },
-          { id: 'equipmentOnSite', label: 'Active Equipment (Booms, Scissor Lifts, Trenchers)', type: 'text', defaultValue: '2x JLG 2632 Scissor Lifts, 1x Greenlee 555 CX Electric Bender, 1x Threader' },
+          { id: 'journeymanCount', label: 'Direct Journeyman Headcount', type: 'number', defaultValue: 6 },
+          { id: 'apprenticeCount', label: 'Direct Apprentices / Helpers', type: 'number', defaultValue: 3 },
+          { id: 'totalHoursWorked', label: 'Total Direct Field Labor Hours', type: 'number', defaultValue: 72 },
+          { id: 'subcontractorsOnSite', label: 'Subcontractors / Second-Tier Trades', type: 'text', defaultValue: 'Corridor Firestop Specialties (2 Techs, 16 Hrs), Apex Trenching (1 Operator, 8 Hrs)' },
+          { id: 'equipmentOnSite', label: 'Active Equipment (Scissor Lifts, Benders, Threaders)', type: 'text', defaultValue: '2x JLG 2632 Scissor Lifts, 1x Greenlee 555 CX Bender, 1x Ridgid 300 Threader' },
+          { id: 'materialDeliveries', label: 'Material Deliveries Received & Inspected', type: 'text', defaultValue: 'Graybar Truck #4: 10,000 LF 12 AWG THHN Copper Wire, 40 sticks 1" EMT conduit. All verified undamaged.' },
         ],
       },
       {
         id: 'dlr-work-performed',
-        title: '03 / Work Performed & Field Observations',
+        title: '03 / Work Executed, Disruptions & Safety',
         fields: [
           { id: 'workPerformed', label: 'Work Executed Today (by Area & Milestone)', type: 'textarea', defaultValue: '1. Area A Level 2: Pulled 3,200 LF of 12 AWG circuit wiring through overhead conduit.\n2. Electrical Room 201: Terminated panelboard LP-2A; verified phase balance.\n3. Main Corridor: Installed emergency egress exit signs and tested battery backups.', required: true },
-          { id: 'inspectionsVisitors', label: 'Official Inspections & Visitors', type: 'text', defaultValue: 'City Electrical Inspector on site 10:30 AM; rough-in inspection passed for Level 2.' },
-          { id: 'delaysOrIssues', label: 'Delays, Disruptions or Obstructions Encountered', type: 'textarea', defaultValue: '45-minute delay on Level 2 West due to mechanical contractor testing ductwork in corridor.' },
-          { id: 'safetyObservations', label: 'Daily Safety Audit & Observations', type: 'text', defaultValue: '100% PPE compliance verified. Zero near-misses or incidents recorded today.' },
+          { id: 'inspectionsVisitors', label: 'Official Inspections, Testing & Visitors', type: 'text', defaultValue: 'City of Plano Senior Electrical Inspector on site 10:30 AM; Level 2 rough-in inspection passed green tag.' },
+          { id: 'delaysOrIssues', label: 'Delays, Disruptions or Unforeseen Conditions', type: 'textarea', defaultValue: '45-minute obstruction on Level 2 West due to mechanical contractor testing overhead ductwork without prior coordination.' },
+          { id: 'safetyObservations', label: 'Daily Safety Inspection & Hazard Controls', type: 'text', defaultValue: '100% PPE compliance verified. Tool lanyards inspected for elevated work. Zero recordable injuries or near-misses.' },
+          { id: 'nextDayActivities', label: 'Scheduled Next-Day Activities & Material Needs', type: 'textarea', defaultValue: 'Pull branch circuits for Level 2 East wing; begin rough-in of secondary switchboard feeders; receive Eaton panel interiors.' },
         ],
       },
     ],
@@ -640,7 +651,7 @@ export const CONTRACTOR_RESOURCES: ContractorResource[] = [
     code: 'PO-REG-14',
     category: 'project-operations',
     categoryName: 'Project Operations',
-    type: 'worksheet',
+    type: 'register',
     priority: 'P1',
     format: 'XLSX · PDF · PRINT',
     estimatedTime: '10 Mins',
@@ -863,6 +874,61 @@ export const CONTRACTOR_RESOURCES: ContractorResource[] = [
   },
 
   // ─── 5. SAFETY & COMPLIANCE ───────────────────────────────────────────────
+  {
+    id: 'res-job-hazard-analysis',
+    slug: 'job-hazard-analysis-jha-generator',
+    title: 'Job Hazard Analysis (JHA / JSA) Field Generator',
+    code: 'SC-JHA-01',
+    category: 'safety-compliance',
+    categoryName: 'Safety & Compliance',
+    type: 'generator',
+    priority: 'P0',
+    format: 'PDF · DOCX · PRINT',
+    estimatedTime: '8 Mins',
+    standard: 'OSHA 29 CFR 1926 Aligned',
+    typicalUse: 'Pre-Task Safety Planning & Field Hazard Control',
+    shortDescription: 'The flagship field safety tool. Sequenced job breakdown, physical hazard identification, hierarchy of controls, mandatory PPE matrix, and competent person review.',
+    fullDescription: 'Comprehensive Job Hazard Analysis (JHA / JSA) engineered around OSHA 1926 Safety & Health Regulations for Construction. Enables field supervisors to identify high-risk job tasks, establish engineering and administrative controls, mandate PPE standards, and capture signed worker acknowledgments.',
+    disclaimer: 'Operational field safety plan. Must be reviewed by an authorized competent person prior to work commencing. Does not substitute for formal engineering reviews or site-specific statutory safety requirements.',
+    sections: [
+      {
+        id: 'jha-context',
+        title: '01 / Project & Task Identification',
+        fields: [
+          { id: 'projectName', label: 'Project / Jobsite Name', type: 'text', defaultValue: 'Centennial Plaza Commercial Complex', required: true },
+          { id: 'tradeScope', label: 'Primary Trade Classification', type: 'select', options: ['Electrical Contracting', 'HVAC & Mechanical', 'Commercial Plumbing', 'Commercial Roofing', 'Concrete & Masonry', 'Structural Steel', 'General Construction'], defaultValue: 'Electrical Contracting', required: true },
+          { id: 'taskDescription', label: 'Specific Task / Scope of Work', type: 'text', defaultValue: 'Main switchgear replacement and 4000A feeder conduit pull', required: true },
+          { id: 'competentPerson', label: 'Competent Person / Lead Supervisor', type: 'text', defaultValue: 'Marcus Vance, OSHA 30-Hour Supervisor', required: true },
+        ],
+      },
+      {
+        id: 'jha-controls',
+        title: '02 / Hazard Identification & Control Measures',
+        fields: [
+          { id: 'sequencedSteps', label: 'Sequenced Job Task Steps', type: 'textarea', defaultValue: '1. De-energize upstream disconnect and verify zero energy (LOTO).\n2. Rig and stage new 4000A switchgear cabinet using certified forklift.\n3. Pull 4 sets of 500 kcmil copper conductors through rigid metallic conduit.\n4. Torque mechanical lugs to manufacturer spec and megger test cables.', required: true },
+          { id: 'identifiedHazards', label: 'Identified Hazards & Energy Sources', type: 'textarea', defaultValue: 'Arc flash potential up to 40 cal/cm², stored capacitive energy, heavy pinch points, overhead rigging loads, wire pulling tension snapback.', required: true },
+          { id: 'controlMeasures', label: 'Required Control Measures (Hierarchy of Controls)', type: 'textarea', defaultValue: '1. Elimination: Lockout/tagout with master lockout hasps and calibrated CAT IV meter testing.\n2. Engineering: Dedicated ground clusters applied; wire puller anchored with anti-reverse clutch.\n3. Administrative: Barricade 15ft exclusion perimeter around active switchgear.', required: true },
+          { id: 'requiredPpe', label: 'Mandatory PPE Specification', type: 'text', defaultValue: 'NFPA 70E Category 4 Suit (40 cal/cm²), Class 2 Dielectric Gloves (17kV), ANSI Hard Hat, ASTM Steel-Toe Boots' },
+        ],
+      },
+      {
+        id: 'jha-emergency',
+        title: '03 / Emergency Procedures & Communication',
+        fields: [
+          { id: 'nearestHospital', label: 'Designated Medical Facility / Hospital', type: 'text', defaultValue: 'Methodist Dallas Medical Center (Ph: 214-947-8181)' },
+          { id: 'emergencyContact', label: 'Jobsite Safety Hotline / Contact', type: 'text', defaultValue: 'Marcus Vance (Mobile: 214-555-0194)' },
+          { id: 'musterPoint', label: 'Emergency Evacuation Muster Point', type: 'text', defaultValue: 'East Parking Lot Gate 3 by Main Contractor Site Trailer' },
+        ],
+      },
+    ],
+    checklistItems: [
+      { id: 'jha-c1', category: 'Energy Isolation', requirement: 'Upstream feeder breaker opened, locked out, and tagged with individual safety padlocks', responsibleParty: 'Lead Electrician', status: 'passed' },
+      { id: 'jha-c2', category: 'Zero-Energy Verification', requirement: 'Live-dead-live meter test performed with calibrated Category IV 1000V multimeter', responsibleParty: 'Competent Person', status: 'passed' },
+      { id: 'jha-c3', category: 'Personal Protective Equipment', requirement: '100% hard hats, safety glasses with side shields, and cut-resistant gloves verified on crew', responsibleParty: 'Foreman', status: 'passed' },
+      { id: 'jha-c4', category: 'Exclusion Barricades', requirement: 'Danger high voltage boundary taped off; unauthorized trade personnel excluded from electrical room', responsibleParty: 'Safety Lead', status: 'passed' },
+      { id: 'jha-c5', category: 'Pre-Task Briefing', requirement: 'All crew members briefed on sequenced steps and emergency disconnect locations prior to start', responsibleParty: 'Superintendent', status: 'passed' },
+    ],
+  },
   {
     id: 'res-safety-inspection',
     slug: 'site-safety-inspection',

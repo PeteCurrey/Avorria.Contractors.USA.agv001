@@ -198,7 +198,7 @@ export default function SignUpPage() {
           </p>
 
           <p className="text-[11px] font-extralight text-neutral-400 max-w-sm mx-auto leading-relaxed">
-            Free Starter Tier • No Credit Card Required • Instant Activation
+            Free Starter Tier • No Credit Card Required • Immediate Workspace Access
           </p>
         </div>
       </form>

@@ -152,27 +152,85 @@ export async function renderResourceToDocxBuffer(payload: ResourceDocxPayload): 
     bodyXml += `</w:tbl>`;
   }
 
-  // 4. Commercial Sign-off Block
+  // 4. Scheduled Line Items / Action Register Table (if present)
+  const activeTableRows = tableRows || resource.defaultTableRows;
+  if (activeTableRows && activeTableRows.length > 0) {
+    bodyXml += `
+      <w:p>
+        <w:pPr><w:spacing w:before="240" w:after="120"/></w:pPr>
+        <w:r><w:rPr><w:b/><w:sz w:val="24"/><w:color w:val="0F172A"/></w:rPr><w:t>SCHEDULED LINE ITEMS &amp; ACTION SCHEDULE</w:t></w:r>
+      </w:p>
+      <w:tbl>
+        <w:tblPr>
+          <w:tblW w:w="0" w:type="auto"/>
+          <w:tblBorders>
+            <w:top w:val="single" w:sz="4" w:space="0" w:color="CBD5E1"/>
+            <w:left w:val="single" w:sz="4" w:space="0" w:color="CBD5E1"/>
+            <w:bottom w:val="single" w:sz="4" w:space="0" w:color="CBD5E1"/>
+            <w:right w:val="single" w:sz="4" w:space="0" w:color="CBD5E1"/>
+            <w:insideH w:val="single" w:sz="4" w:space="0" w:color="E2E8F0"/>
+            <w:insideV w:val="single" w:sz="4" w:space="0" w:color="E2E8F0"/>
+          </w:tblBorders>
+        </w:tblPr>
+    `;
+
+    for (const row of activeTableRows) {
+      const col1 = String(row.id || row.key || '•');
+      const col2 = String(row.description || row.item || Object.values(row)[1] || '');
+      const col3 = String(row.owner || row.qty || Object.values(row)[2] || '');
+      const col4 = String(row.status || row.unitPrice || Object.values(row)[3] || '');
+
+      bodyXml += `
+        <w:tr>
+          <w:tc><w:tcPr><w:tcW w:w="1200" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="F8FAFC"/></w:tcPr><w:p><w:r><w:rPr><w:b/><w:sz w:val="18"/><w:color w:val="0A1428"/></w:rPr><w:t>${escapeXml(col1)}</w:t></w:r></w:p></w:tc>
+          <w:tc><w:tcPr><w:tcW w:w="4800" w:type="dxa"/></w:tcPr><w:p><w:r><w:rPr><w:sz w:val="18"/><w:color w:val="0F172A"/></w:rPr><w:t>${escapeXml(col2)}</w:t></w:r></w:p></w:tc>
+          <w:tc><w:tcPr><w:tcW w:w="1500" w:type="dxa"/></w:tcPr><w:p><w:r><w:rPr><w:sz w:val="18"/><w:color w:val="64748B"/></w:rPr><w:t>${escapeXml(col3)}</w:t></w:r></w:p></w:tc>
+          <w:tc><w:tcPr><w:tcW w:w="1500" w:type="dxa"/></w:tcPr><w:p><w:r><w:rPr><w:b/><w:sz w:val="18"/><w:color w:val="0F172A"/></w:rPr><w:t>${escapeXml(col4)}</w:t></w:r></w:p></w:tc>
+        </w:tr>
+      `;
+    }
+    bodyXml += `</w:tbl>`;
+  }
+
+  // 5. Formal Commercial Execution & Authorization Table (No crude underscores)
   bodyXml += `
-    <w:p><w:pPr><w:spacing w:before="360" w:after="120"/></w:pPr><w:r><w:rPr><w:b/><w:sz w:val="20"/><w:color w:val="0F172A"/></w:rPr><w:t>COMMERCIAL SIGNATURE &amp; AUTHORIZATION</w:t></w:r></w:p>
+    <w:p><w:pPr><w:spacing w:before="360" w:after="120"/></w:pPr><w:r><w:rPr><w:b/><w:sz w:val="20"/><w:color w:val="0F172A"/></w:rPr><w:t>COMMERCIAL EXECUTION &amp; RECORD CERTIFICATION</w:t></w:r></w:p>
     <w:tbl>
       <w:tblPr>
         <w:tblW w:w="0" w:type="auto"/>
         <w:tblBorders>
-          <w:top w:val="single" w:sz="4" w:space="0" w:color="CBD5E1"/>
-          <w:left w:val="single" w:sz="4" w:space="0" w:color="CBD5E1"/>
-          <w:bottom w:val="single" w:sz="4" w:space="0" w:color="CBD5E1"/>
-          <w:right w:val="single" w:sz="4" w:space="0" w:color="CBD5E1"/>
+          <w:top w:val="single" w:sz="6" w:space="0" w:color="CBD5E1"/>
+          <w:left w:val="single" w:sz="6" w:space="0" w:color="CBD5E1"/>
+          <w:bottom w:val="single" w:sz="6" w:space="0" w:color="CBD5E1"/>
+          <w:right w:val="single" w:sz="6" w:space="0" w:color="CBD5E1"/>
           <w:insideH w:val="single" w:sz="4" w:space="0" w:color="E2E8F0"/>
           <w:insideV w:val="single" w:sz="4" w:space="0" w:color="E2E8F0"/>
         </w:tblBorders>
       </w:tblPr>
       <w:tr>
-        <w:tc><w:tcPr><w:tcW w:w="4500" w:type="dxa"/></w:tcPr><w:p><w:r><w:rPr><w:b/><w:sz w:val="18"/></w:rPr><w:t>Contractor Authorized Signatory:</w:t></w:r></w:p><w:p><w:spacing w:before="240"/><w:r><w:t>Signature: ___________________________</w:t></w:r></w:p><w:p><w:r><w:t>Date: _______________________________</w:t></w:r></w:p></w:tc>
-        <w:tc><w:tcPr><w:tcW w:w="4500" w:type="dxa"/></w:tcPr><w:p><w:r><w:rPr><w:b/><w:sz w:val="18"/></w:rPr><w:t>Client / General Contractor Signatory:</w:t></w:r></w:p><w:p><w:spacing w:before="240"/><w:r><w:t>Signature: ___________________________</w:t></w:r></w:p><w:p><w:r><w:t>Date: _______________________________</w:t></w:r></w:p></w:tc>
+        <w:tc><w:tcPr><w:tcW w:w="4500" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="F8FAFC"/></w:tcPr>
+          <w:p><w:r><w:rPr><w:b/><w:sz w:val="18"/><w:color w:val="0A1428"/></w:rPr><w:t>AUTHORIZED CONTRACTOR SIGNATORY</w:t></w:r></w:p>
+        </w:tc>
+        <w:tc><w:tcPr><w:tcW w:w="4500" w:type="dxa"/><w:shd w:val="clear" w:color="auto" w:fill="F8FAFC"/></w:tcPr>
+          <w:p><w:r><w:rPr><w:b/><w:sz w:val="18"/><w:color w:val="0A1428"/></w:rPr><w:t>CLIENT / GENERAL CONTRACTOR ACCEPTANCE</w:t></w:r></w:p>
+        </w:tc>
+      </w:tr>
+      <w:tr>
+        <w:tc><w:tcPr><w:tcW w:w="4500" w:type="dxa"/></w:tcPr>
+          <w:p><w:spacing w:after="80"/><w:r><w:rPr><w:sz w:val="16"/><w:color w:val="64748B"/></w:rPr><w:t>Printed Name: __________________________</w:t></w:r></w:p>
+          <w:p><w:spacing w:after="80"/><w:r><w:rPr><w:sz w:val="16"/><w:color w:val="64748B"/></w:rPr><w:t>Title / Role:   __________________________</w:t></w:r></w:p>
+          <w:p><w:spacing w:after="80"/><w:r><w:rPr><w:sz w:val="16"/><w:color w:val="64748B"/></w:rPr><w:t>Signature:     __________________________</w:t></w:r></w:p>
+          <w:p><w:r><w:rPr><w:sz w:val="16"/><w:color w:val="64748B"/></w:rPr><w:t>Execution Date: ________________________</w:t></w:r></w:p>
+        </w:tc>
+        <w:tc><w:tcPr><w:tcW w:w="4500" w:type="dxa"/></w:tcPr>
+          <w:p><w:spacing w:after="80"/><w:r><w:rPr><w:sz w:val="16"/><w:color w:val="64748B"/></w:rPr><w:t>Printed Name: __________________________</w:t></w:r></w:p>
+          <w:p><w:spacing w:after="80"/><w:r><w:rPr><w:sz w:val="16"/><w:color w:val="64748B"/></w:rPr><w:t>Title / Role:   __________________________</w:t></w:r></w:p>
+          <w:p><w:spacing w:after="80"/><w:r><w:rPr><w:sz w:val="16"/><w:color w:val="64748B"/></w:rPr><w:t>Signature:     __________________________</w:t></w:r></w:p>
+          <w:p><w:r><w:rPr><w:sz w:val="16"/><w:color w:val="64748B"/></w:rPr><w:t>Execution Date: ________________________</w:t></w:r></w:p>
+        </w:tc>
       </w:tr>
     </w:tbl>
-    <w:p><w:pPr><w:spacing w:before="240"/></w:pPr><w:r><w:rPr><w:sz w:val="16"/><w:color w:val="94A3B8"/><w:i/></w:rPr><w:t>${escapeXml(resource.disclaimer)}</w:t></w:r></w:p>
+    <w:p><w:pPr><w:spacing w:before="240"/></w:pPr><w:r><w:rPr><w:sz w:val="16"/><w:color w:val="94A3B8"/><w:i/></w:rPr><w:t>Review Notice: Review this document against the applicable contract, project requirements and governing law before use.</w:t></w:r></w:p>
   `;
 
   // Assemble full WordprocessingML document.xml

@@ -2,7 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import { Metadata } from 'next';
 import { siteConfig } from '@/config/site';
-import { CinematicPageHero } from '@/components/hero/CinematicPageHero';
+import { ProductHero } from '@/components/hero/ProductHero';
 
 export const metadata: Metadata = {
   title: 'Contractor Passport | Professional Credential Infrastructure | Avorria',
@@ -51,14 +51,17 @@ export default function ContractorPassportPage() {
 
   return (
     <div className="w-full bg-white text-navy-800">
-      <CinematicPageHero
+      <ProductHero
         eyebrow="THE AVORRIA CONTRACTOR PASSPORT"
         title={<>Your business. Your credentials.<br />One professional Passport.</>}
         subtitle="Eliminate disorganized PDF attachments, lost insurance certificates, and amateur email threads. The Contractor Passport organizes the verifiable facts of your business into an authoritative digital credential."
         primaryCta={{ label: 'Build Your Passport Free', href: '/sign-up' }}
         secondaryCta={{ label: 'How Verification Works', href: '/prove' }}
-        backgroundImage="/images/hero-passport.jpg"
-        backgroundAlt="Contractor credential dossier and verification workbench"
+        pillars={[
+          { title: 'Unified Digital Dossier', description: 'Consolidate active COIs, state trade licenses, safety programs, and corporate identities into one secure record.' },
+          { title: 'Auditable Standing', description: 'Rigorous validation against published criteria with immutable audit trails and real-time status.' },
+          { title: 'One-Click GC Sharing', description: 'Share verified credentials instantly with general contractors and project owners via secure QR link.' },
+        ]}
         trustItems={['Created', 'Complete', 'Published', 'Verified']}
       />
 
@@ -80,7 +83,7 @@ export default function ContractorPassportPage() {
           {PASSPORT_STATES.map((st) => (
             <div
               key={st.state}
-              className="p-6 rounded-2xl bg-slate-50 border border-slate-200 flex flex-col justify-between space-y-6"
+              className="p-6 rounded-lg bg-slate-50 border border-slate-200 flex flex-col justify-between space-y-6"
             >
               <div className="space-y-3">
                 <div className="flex items-center justify-between">

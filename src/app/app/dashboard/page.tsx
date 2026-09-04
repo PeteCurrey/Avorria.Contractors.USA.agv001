@@ -3,10 +3,9 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { ReadinessGauge } from '@/components/ui/ReadinessGauge';
-import { StatusIndicator } from '@/components/ui/StatusIndicator';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
-import { Card, CardTitle, CardDescription } from '@/components/ui/Card';
+import { Card, CardTitle } from '@/components/ui/Card';
 import { EvaluatedRequirement } from '@/lib/compliance/engine';
 import { DynamicReadinessResult } from '@/lib/scoring/readiness-service';
 import { ContractorWorkspaceData } from '@/lib/tenant/repository';
@@ -48,9 +47,9 @@ export default function DashboardPage() {
 
   if (isLoading) {
     return (
-      <div className="py-20 text-center text-slate-400 space-y-3">
-        <div className="w-8 h-8 border-2 border-brand-500 border-t-transparent rounded-full animate-spin mx-auto" />
-        <p className="text-xs font-mono">Loading active contractor workspace...</p>
+      <div className="py-24 text-center text-slate-400 space-y-3">
+        <div className="w-6 h-6 border-2 border-brand-500 border-t-transparent rounded-full animate-spin mx-auto" />
+        <p className="text-xs font-mono text-slate-500">Loading contractor operations workspace...</p>
       </div>
     );
   }
@@ -97,229 +96,241 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="max-w-6xl space-y-8 text-left">
-      {/* Top Welcome Bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-surface-border pb-6">
+    <div className="max-w-6xl space-y-6 text-left antialiased font-sans">
+      {/* Top Operational Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-surface-border pb-5">
         <div>
-          <div className="flex items-center gap-3">
-            <h1 className="text-2xl font-black text-white tracking-tight">
+          <div className="flex items-center gap-2.5">
+            <h1 className="text-xl font-bold text-white tracking-tight">
               {ws?.organisation.name || 'Contractor Workspace'}
             </h1>
-            <Badge variant="neutral" size="sm">
+            <span className="text-[10px] font-mono px-2 py-0.5 rounded-[2px] bg-surface-elevated text-slate-400 border border-surface-border uppercase">
               {ws?.serviceAreas.primaryState || 'US'}
-            </Badge>
+            </span>
           </div>
-          <p className="text-xs text-slate-400 mt-1">
-            {ws?.trades.map((t) => t.replace('-', ' ')).join(', ')} • {ws?.profile.employee_count || 1} Personnel
+          <p className="text-xs text-slate-400 mt-1 font-mono">
+            {ws?.trades.map((t) => t.replace('-', ' ')).join(', ')} • {ws?.profile.employee_count || 1} Workforce Personnel
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2.5">
           <Button href="/app/documents" size="sm" variant="primary">
             + Create Document
           </Button>
           <Button href="/app/passport" size="sm" variant="outline">
-            Contractor Passport ↗
+            Passport ↗
           </Button>
         </div>
       </div>
 
-      {/* Onboarding Incomplete Banner if Applicable */}
+      {/* Onboarding Notice if Applicable */}
       {!isOnboardingComplete && (
-        <div className="p-4 rounded-xl bg-brand-950/80 border border-brand-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div className="space-y-1">
-            <div className="text-xs font-bold text-white flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-brand-400 animate-ping" />
+        <div className="p-3.5 rounded bg-surface-card border border-amber-900/60 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="space-y-0.5">
+            <div className="text-xs font-semibold text-amber-300 flex items-center gap-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
               <span>Contractor Onboarding Incomplete</span>
             </div>
-            <p className="text-xs text-slate-300">
-              Complete your business profile and existing credentials baseline to unlock your verified readiness score.
+            <p className="text-xs text-slate-400">
+              Complete your business profile and existing credentials baseline to calculate your verified readiness score.
             </p>
           </div>
-          <Button href="/app/onboarding" size="sm" variant="primary">
+          <Button href="/app/onboarding" size="sm" variant="secondary" className="shrink-0 text-xs">
             Resume Onboarding →
           </Button>
         </div>
       )}
 
-      {/* 3 Core Questions Grid */}
+      {/* 3 Core Operational Panels */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        {/* 1. WHERE AM I? (Readiness Gauge) */}
-        <Card variant="default" className="p-5 flex flex-col justify-between">
+        {/* Panel 1: Readiness Standing */}
+        <Card variant="dark" className="p-4 flex flex-col justify-between">
           <div className="space-y-1">
-            <span className="text-[11px] font-mono text-slate-400 uppercase">01 / WHERE AM I?</span>
-            <div className="text-xl font-bold text-white">Contractor Readiness</div>
+            <span className="text-[10px] font-mono text-slate-500 uppercase tracking-wider">
+              OPERATIONAL STATUS
+            </span>
+            <div className="text-sm font-semibold text-white">Contractor Readiness</div>
           </div>
+
           <div className="my-4 flex flex-col items-center justify-center">
             {readiness?.status === 'assessment_in_progress' ? (
-              <div className="text-center py-4 space-y-2">
-                <span className="text-2xl">⏳</span>
-                <div className="text-xs font-bold text-amber-400">Assessment in Progress</div>
-                <div className="text-[10px] text-slate-400 max-w-[200px] leading-relaxed">
-                  Upload evidence or complete onboarding to calculate verified readiness.
+              <div className="text-center py-4 space-y-1.5">
+                <div className="w-2 h-2 rounded-full bg-amber-400 mx-auto" />
+                <div className="text-xs font-semibold text-amber-400">Assessment in Progress</div>
+                <div className="text-[11px] text-slate-400 max-w-[200px] leading-relaxed">
+                  Upload evidence or complete onboarding to calculate readiness.
                 </div>
               </div>
             ) : (
               <ReadinessGauge score={readiness?.score || 0} size="md" showLabel />
             )}
           </div>
+
           <div className="text-[10px] text-slate-500 font-mono text-center">
-            Measures completion against Avorria criteria.
+            Evaluated against Avorria prequalification standards
           </div>
         </Card>
 
-        {/* 2. WHAT DO I NEED TO DO? (Priority Actions) */}
-        <Card variant="default" className="p-5 flex flex-col justify-between">
+        {/* Panel 2: Action Queue */}
+        <Card variant="dark" className="p-4 flex flex-col justify-between">
           <div className="space-y-1">
-            <span className="text-[11px] font-mono text-slate-400 uppercase">02 / WHAT DO I NEED TO DO?</span>
-            <div className="text-xl font-bold text-white">
-              {missingReqs.length + expiringReqs.length} Action Items
+            <span className="text-[10px] font-mono text-slate-500 uppercase tracking-wider">
+              ACTION QUEUE
+            </span>
+            <div className="text-sm font-semibold text-white">
+              {missingReqs.length + expiringReqs.length} Attention Items
             </div>
           </div>
 
-          <div className="my-3 space-y-2 text-xs">
+          <div className="my-3 space-y-1.5 text-xs">
             {readiness?.outstandingItems.slice(0, 3).map((item) => (
               <div
                 key={item.id}
-                className="p-2.5 rounded bg-surface-subtle border border-surface-border flex items-center justify-between"
+                className="p-2 rounded bg-surface-subtle border border-surface-border flex items-center justify-between"
               >
-                <div className="truncate pr-2 text-slate-300 font-medium">{item.title}</div>
+                <div className="truncate pr-2 text-slate-300 font-medium text-[11px]">{item.title}</div>
                 <Link
                   href={item.actionHref}
-                  className="text-[11px] font-bold text-brand-400 hover:text-brand-300 shrink-0"
+                  className="text-[10px] font-mono font-medium text-brand-400 hover:text-brand-300 shrink-0"
                 >
                   {item.actionLabel} →
                 </Link>
               </div>
             ))}
             {(!readiness?.outstandingItems || readiness.outstandingItems.length === 0) && (
-              <div className="p-4 text-center text-xs text-slate-500">
-                No immediate action required. All current criteria satisfied.
+              <div className="py-6 text-center text-xs text-slate-500">
+                All current operational criteria satisfied.
               </div>
             )}
           </div>
 
-          <Link href="/app/compliance" className="text-xs text-brand-400 hover:underline font-semibold block text-center">
-            View All Requirements Matrix →
+          <Link href="/app/compliance" className="text-xs text-brand-400 hover:underline font-mono text-center block">
+            View Requirements Matrix →
           </Link>
         </Card>
 
-        {/* 3. WHAT DO I HAVE? (Active Document Records) */}
-        <Card variant="default" className="p-5 flex flex-col justify-between">
+        {/* Panel 3: Active Records */}
+        <Card variant="dark" className="p-4 flex flex-col justify-between">
           <div className="space-y-1">
-            <span className="text-[11px] font-mono text-slate-400 uppercase">03 / WHAT DO I HAVE?</span>
-            <div className="text-xl font-bold text-white">
+            <span className="text-[10px] font-mono text-slate-500 uppercase tracking-wider">
+              COMPLIANCE VAULT
+            </span>
+            <div className="text-sm font-semibold text-white">
               {activeDocs.length} Active Records
             </div>
           </div>
 
           <div className="my-3 space-y-2 text-xs">
-            <div className="flex justify-between py-1.5 border-b border-surface-border text-slate-300">
+            <div className="flex justify-between py-1 border-b border-surface-border text-slate-300">
               <span>Document Vault Files</span>
-              <span className="font-mono font-bold text-white">{activeDocs.length}</span>
+              <span className="font-mono font-semibold text-white">{activeDocs.length}</span>
             </div>
-            <div className="flex justify-between py-1.5 border-b border-surface-border text-slate-300">
+            <div className="flex justify-between py-1 border-b border-surface-border text-slate-300">
               <span>Finalized Safety JHAs</span>
-              <span className="font-mono font-bold text-white">
+              <span className="font-mono font-semibold text-white">
                 {ws?.generatedDocuments.filter((d) => d.document_status === 'final').length || 0}
               </span>
             </div>
-            <div className="flex justify-between py-1.5 text-slate-300">
+            <div className="flex justify-between py-1 text-slate-300">
               <span>Expiring Credentials (60d)</span>
-              <span className="font-mono font-bold text-amber-400">{expiringReqs.length}</span>
+              <span className={`font-mono font-semibold ${expiringReqs.length > 0 ? 'text-amber-400' : 'text-slate-400'}`}>
+                {expiringReqs.length}
+              </span>
             </div>
           </div>
 
-          <Link href="/app/documents" className="text-xs text-brand-400 hover:underline font-semibold block text-center">
+          <Link href="/app/documents" className="text-xs text-brand-400 hover:underline font-mono text-center block">
             Open Document Vault →
           </Link>
         </Card>
       </div>
 
-      {/* PROVE STAGE: Your Avorria Passport */}
-      <Card variant="elevated" className="p-6 border-brand-500/40 bg-brand-950/20 space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-surface-border pb-4">
-          <div className="space-y-1">
+      {/* Verified Passport Standing Section */}
+      <div className="bg-surface-card border border-surface-border rounded p-4 space-y-3">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-surface-border pb-3">
+          <div>
             <div className="flex items-center gap-2">
-              <span className="px-2 py-0.5 rounded bg-brand-950 border border-brand-700 text-brand-300 font-mono text-[10px] font-bold uppercase tracking-wider">
-                STAGE 4 · PROVE
-              </span>
-              <h2 className="text-lg font-bold text-white">Your Avorria Passport & Trust Standing</h2>
+              <span className="w-1.5 h-1.5 rounded-full bg-brand-500" />
+              <h2 className="text-xs font-mono font-semibold uppercase tracking-wider text-white">
+                Avorria Contractor Passport Standing
+              </h2>
             </div>
-            <p className="text-xs text-slate-400">
-              Transform your operational evidence into verified credentials for project owners and general contractors.
+            <p className="text-xs text-slate-400 mt-0.5">
+              Verified digital credentials presented to project owners, institutional buyers, and general contractors.
             </p>
           </div>
-          <div className="flex items-center gap-2">
-            <Button href="/app/passport" size="sm" variant="outline">
-              Manage Passport →
-            </Button>
-          </div>
+          <Link
+            href="/app/passport"
+            className="text-xs font-mono text-brand-400 hover:text-brand-300 font-medium shrink-0"
+          >
+            Manage Passport →
+          </Link>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
-          {/* 1. Passport Status */}
-          <div className="p-3.5 rounded-xl bg-surface-card border border-surface-border space-y-1">
-            <div className="text-[11px] font-mono text-slate-400 uppercase">Passport Completion</div>
-            <div className="text-sm font-bold text-white">
-              {passportCompletion >= 100 ? 'Complete' : `${passportCompletion}% Satisfied`}
+        <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 text-xs">
+          <div className="p-3 rounded bg-surface-subtle border border-surface-border">
+            <div className="text-[10px] font-mono text-slate-500 uppercase">Passport Completion</div>
+            <div className="text-sm font-semibold text-white mt-1">
+              {passportCompletion >= 100 ? '100% Satisfied' : `${passportCompletion}% Satisfied`}
             </div>
-            <div className="text-[10px] text-slate-500">
-              {passportCompletion >= 100 ? 'All baseline items fulfilled' : 'Requires profile details'}
+            <div className="text-[10px] text-slate-500 mt-0.5">
+              {passportCompletion >= 100 ? 'Baseline fulfilled' : 'Requires profile info'}
             </div>
           </div>
 
-          {/* 2. Public Profile */}
-          <div className="p-3.5 rounded-xl bg-surface-card border border-surface-border space-y-1">
-            <div className="text-[11px] font-mono text-slate-400 uppercase">Public Profile</div>
-            <div className="text-sm font-bold text-white flex items-center gap-1.5">
-              <span className={`w-2 h-2 rounded-full ${isPassportPublished ? 'bg-emerald-400' : 'bg-slate-500'}`} />
+          <div className="p-3 rounded bg-surface-subtle border border-surface-border">
+            <div className="text-[10px] font-mono text-slate-500 uppercase">Public Profile</div>
+            <div className="text-sm font-semibold text-white mt-1 flex items-center gap-1.5">
+              <span className={`w-1.5 h-1.5 rounded-full ${isPassportPublished ? 'bg-emerald-400' : 'bg-slate-500'}`} />
               <span>{isPassportPublished ? 'Published' : 'Private'}</span>
             </div>
-            <div className="text-[10px] text-slate-500">
-              {isPassportPublished ? 'Accessible to clients via link' : 'Hidden from public index'}
+            <div className="text-[10px] text-slate-500 mt-0.5">
+              {isPassportPublished ? 'Accessible to clients' : 'Hidden from public index'}
             </div>
           </div>
 
-          {/* 3. Verification */}
-          <div className="p-3.5 rounded-xl bg-surface-card border border-surface-border space-y-1">
-            <div className="text-[11px] font-mono text-slate-400 uppercase">Avorria Verification</div>
-            <div className="text-sm font-bold text-white">
+          <div className="p-3 rounded bg-surface-subtle border border-surface-border">
+            <div className="text-[10px] font-mono text-slate-500 uppercase">Avorria Verification</div>
+            <div className="text-sm font-semibold text-white mt-1">
               {isVerified ? 'Verified by Avorria' : verificationStatus.replace(/_/g, ' ')}
             </div>
-            <div className="text-[10px] text-brand-400 font-mono">
+            <div className="text-[10px] text-brand-400 font-mono mt-0.5 truncate">
               {isVerified ? verificationRef : 'Human evidence review'}
             </div>
           </div>
 
-          {/* 4. Next Step Action */}
-          <div className="p-3.5 rounded-xl bg-brand-950/50 border border-brand-800 space-y-2 flex flex-col justify-between">
-            <div className="space-y-0.5">
-              <div className="text-[10px] font-mono text-brand-300 uppercase font-bold">Next Action</div>
-              <div className="text-xs font-bold text-white">{nextActionLabel}</div>
+          <div className="p-3 rounded bg-surface-subtle border border-surface-border flex flex-col justify-between">
+            <div>
+              <div className="text-[10px] font-mono text-brand-400 uppercase font-medium">Recommended Action</div>
+              <div className="text-xs font-semibold text-white mt-0.5">{nextActionLabel}</div>
             </div>
-            <Button href={nextActionHref} size="sm" variant="primary" className="w-full text-xs">
+            <Link
+              href={nextActionHref}
+              className="mt-2 text-center py-1 text-xs font-medium bg-brand-600 hover:bg-brand-500 text-white rounded-[3px] transition-colors"
+            >
               {nextActionCta} →
-            </Button>
+            </Link>
           </div>
         </div>
-      </Card>
+      </div>
 
       {/* Category Breakdown & Document Vault Preview */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
         {/* Left 7 Cols: Category Readiness Breakdown */}
-        <div className="lg:col-span-7 space-y-4">
-          <Card variant="default">
-            <CardTitle className="text-base mb-4">Operational Readiness Breakdown</CardTitle>
+        <div className="lg:col-span-7">
+          <Card variant="dark" className="h-full">
+            <CardTitle className="text-xs font-mono font-semibold uppercase tracking-wider text-slate-300 mb-4">
+              Operational Readiness Breakdown
+            </CardTitle>
             {readiness?.categoryBreakdown && readiness.categoryBreakdown.length > 0 ? (
               <div className="space-y-3">
                 {readiness.categoryBreakdown.map((cat) => (
                   <div key={cat.category} className="space-y-1">
-                    <div className="flex justify-between text-xs font-semibold text-slate-300">
+                    <div className="flex justify-between text-xs font-medium text-slate-300">
                       <span>{cat.label}</span>
                       <span className="font-mono text-white">{cat.percentage}%</span>
                     </div>
-                    <div className="w-full h-2 rounded-full bg-surface-subtle overflow-hidden border border-surface-border">
+                    <div className="w-full h-1.5 rounded-full bg-surface-subtle overflow-hidden border border-surface-border">
                       <div
                         className="h-full bg-brand-500 rounded-full transition-all duration-500"
                         style={{ width: `${cat.percentage}%` }}
@@ -339,71 +350,64 @@ export default function DashboardPage() {
           </Card>
         </div>
 
-        {/* Right 5 Cols: Quick Launchers */}
+        {/* Right 5 Cols: Quick Launchers & Recent Documents */}
         <div className="lg:col-span-5 space-y-4">
-          <Card variant="default">
-            <CardTitle className="text-base mb-3">Quick Create</CardTitle>
-            <div className="space-y-2.5 text-xs">
+          <Card variant="dark">
+            <CardTitle className="text-xs font-mono font-semibold uppercase tracking-wider text-slate-300 mb-3">
+              Standard Creation Tools
+            </CardTitle>
+            <div className="space-y-1.5 text-xs">
               {[
-                { href: '/app/documents/create/jha', label: 'Job Hazard Analysis (JHA)', sub: 'Task hazards, OSHA controls, PPE requirements', icon: '🦺', code: 'SAF-JHA' },
-                { href: '/app/documents/create/quote', label: 'Contractor Quote', sub: 'Priced line items, tax, payment terms', icon: '💰', code: 'COM-QUO' },
-                { href: '/app/documents/create/safety-plan', label: 'Site Safety Plan (HASP)', sub: 'Comprehensive site safety program', icon: '📋', code: 'SAF-HASP' },
-                { href: '/app/documents/create/proposal', label: 'Bid Proposal', sub: 'Competitive full proposal with credentials', icon: '📑', code: 'COM-PRP' },
+                { href: '/app/documents/create/jha', label: 'Job Hazard Analysis (JHA)', sub: 'OSHA compliance & PPE controls', code: 'SAF-JHA' },
+                { href: '/app/documents/create/quote', label: 'Contractor Estimate & Quote', sub: 'Priced line items & payment terms', code: 'COM-QUO' },
+                { href: '/app/documents/create/safety-plan', label: 'Site Safety Plan (HASP)', sub: 'Site safety and hazardous material plan', code: 'SAF-HASP' },
+                { href: '/app/documents/create/proposal', label: 'Formal Bid Proposal', sub: 'Turnkey bid proposal with verified passport', code: 'COM-PRP' },
               ].map((item) => (
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="p-3 rounded-lg bg-surface-subtle border border-surface-border hover:border-brand-500 transition-all flex items-center justify-between group"
+                  className="p-2.5 rounded bg-surface-subtle border border-surface-border hover:border-slate-600 transition-all flex items-center justify-between group"
                 >
-                  <div className="flex items-center gap-2.5 min-w-0">
-                    <span className="text-base shrink-0">{item.icon}</span>
-                    <div className="min-w-0">
-                      <div className="font-bold text-white text-xs truncate">{item.label}</div>
-                      <div className="text-[11px] text-slate-500 truncate">{item.sub}</div>
+                  <div className="min-w-0 pr-2">
+                    <div className="font-medium text-white text-xs truncate group-hover:text-brand-300 transition-colors">
+                      {item.label}
                     </div>
+                    <div className="text-[10px] text-slate-500 truncate">{item.sub}</div>
                   </div>
-                  <div className="flex items-center gap-2 shrink-0">
-                    <span className="text-[10px] font-mono text-slate-600 group-hover:text-brand-400 transition-colors">{item.code}</span>
-                    <span className="text-brand-400 font-bold group-hover:translate-x-0.5 transition-transform">→</span>
-                  </div>
+                  <span className="text-[10px] font-mono text-slate-500 group-hover:text-brand-400 shrink-0">
+                    {item.code} →
+                  </span>
                 </Link>
               ))}
-
-              <Link
-                href="/app/documents"
-                className="text-center block text-[11px] text-slate-500 hover:text-brand-400 transition-colors pt-1 pb-0.5"
-              >
-                View all document types →
-              </Link>
             </div>
           </Card>
 
           {/* Recent Generated Documents */}
-          <Card variant="default">
-            <CardTitle className="text-base mb-3">Recent Documents</CardTitle>
+          <Card variant="dark">
+            <CardTitle className="text-xs font-mono font-semibold uppercase tracking-wider text-slate-300 mb-3">
+              Recent Documents
+            </CardTitle>
             {ws?.generatedDocuments && ws.generatedDocuments.length > 0 ? (
-              <div className="space-y-2">
-                {ws.generatedDocuments.slice(0, 4).map((doc) => (
+              <div className="space-y-1.5">
+                {ws.generatedDocuments.slice(0, 3).map((doc) => (
                   <Link key={doc.id} href={`/app/documents/${doc.id}`}>
-                    <div className="flex items-center justify-between p-2.5 rounded-lg hover:bg-surface-subtle transition-colors cursor-pointer border border-transparent hover:border-surface-border">
-                      <div className="min-w-0">
-                        <div className="text-xs font-semibold text-white truncate">{doc.title}</div>
-                        <div className="text-[11px] text-slate-500 font-mono mt-0.5">{new Date(doc.created_at).toLocaleDateString('en-US')} · v{doc.version_number}.0</div>
+                    <div className="flex items-center justify-between p-2 rounded hover:bg-surface-subtle transition-colors border border-surface-border">
+                      <div className="min-w-0 pr-2">
+                        <div className="text-xs font-medium text-white truncate">{doc.title}</div>
+                        <div className="text-[10px] text-slate-500 font-mono">
+                          {new Date(doc.created_at).toLocaleDateString('en-US')} · v{doc.version_number}.0
+                        </div>
                       </div>
-                      <Badge variant={doc.document_status === 'final' ? 'current' : 'primary'} size="sm">
+                      <Badge variant={doc.document_status === 'final' ? 'success' : 'info'} size="sm">
                         {doc.document_status}
                       </Badge>
                     </div>
                   </Link>
                 ))}
-                <Link href="/app/documents" className="block text-center text-[11px] text-slate-500 hover:text-brand-400 transition-colors pt-1">
-                  View all documents →
-                </Link>
               </div>
             ) : (
-              <div className="py-6 text-center text-xs text-slate-500 space-y-3">
-                <span className="text-3xl block">📄</span>
-                <p>No documents created yet. Use Quick Create above to generate your first professional document.</p>
+              <div className="py-4 text-center text-xs text-slate-500">
+                No documents generated yet. Use creation tools above.
               </div>
             )}
           </Card>

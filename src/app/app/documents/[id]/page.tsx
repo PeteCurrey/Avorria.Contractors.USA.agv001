@@ -176,7 +176,7 @@ export default function DocumentViewPage({ params }: DocumentViewPageProps) {
               {doc.documentStatus.replace('_', ' ').toUpperCase()}
             </Badge>
             <Badge variant={doc.generationMethod === 'ai' ? 'verified' : 'neutral'} size="sm">
-              {doc.generationMethod === 'ai' ? '⚡ AI-Generated' : '📋 Template'}
+              {doc.generationMethod === 'ai' ? 'AI-Generated' : 'Template'}
             </Badge>
             <span className="font-mono text-slate-400 text-[11px]">v{doc.versionNumber}.0</span>
           </div>

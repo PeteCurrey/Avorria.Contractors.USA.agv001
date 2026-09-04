@@ -9,6 +9,7 @@ import {
   getInvitation,
   getInvitationEvents,
 } from '@/lib/respond/repository';
+import { ShieldCheck, Info } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
 
@@ -93,15 +94,15 @@ export default async function ClientInspectResponsePage({ params }: Props) {
             <Link
               href={`/contractors/${invitation.contractor_slug}`}
               target="_blank"
-              className="px-4 py-2 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 text-xs font-bold transition-all shadow-2xs flex items-center gap-1.5"
+              className="px-4 py-2 rounded-lg border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 text-xs font-bold transition-all shadow-xs flex items-center gap-1.5"
             >
-              <span>🛡️</span>
+              <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
               <span>Open Public Passport ↗</span>
             </Link>
           )}
           <Link
             href={`/client/requests/${pack.id}/responses`}
-            className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold transition-all"
+            className="px-4 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold transition-all"
           >
             All Responses
           </Link>
@@ -109,9 +110,9 @@ export default async function ClientInspectResponsePage({ params }: Props) {
       </div>
 
       {/* Institutional Evidence Notice */}
-      <div className="rounded-2xl border border-sky-200 bg-sky-50/70 p-5 text-xs text-sky-950 space-y-1 shadow-2xs">
+      <div className="rounded-lg border border-sky-200 bg-sky-50/70 p-5 text-xs text-sky-950 space-y-1 shadow-xs">
         <div className="font-bold flex items-center gap-1.5 text-sky-900">
-          <span>ℹ️</span>
+          <Info className="w-4 h-4 text-sky-700 shrink-0" />
           <span>Three-Layer Evidence Model</span>
         </div>
         <p className="text-sky-800 leading-relaxed">

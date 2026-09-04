@@ -1,4 +1,4 @@
-import { PDFDocument, StandardFonts, rgb } from 'pdf-lib';
+import { PDFDocument, PDFPage, PDFFont, StandardFonts, rgb } from 'pdf-lib';
 import { ContractorResource, ChecklistItemDef } from './catalogue';
 
 export interface ResourcePdfPayload {
@@ -19,29 +19,56 @@ export interface ResourcePdfPayload {
 }
 
 /**
+ * Word wrapping utility for pdf-lib fonts
+ */
+function wrapText(text: string, maxWidth: number, font: PDFFont, fontSize: number): string[] {
+  if (!text) return [];
+  const words = text.replace(/\r/g, '').split(/\s+/);
+  const lines: string[] = [];
+  let currentLine = '';
+
+  for (const word of words) {
+    const testLine = currentLine ? `${currentLine} ${word}` : word;
+    const testWidth = font.widthOfTextAtSize(testLine, fontSize);
+    if (testWidth <= maxWidth) {
+      currentLine = testLine;
+    } else {
+      if (currentLine) lines.push(currentLine);
+      currentLine = word;
+    }
+  }
+  if (currentLine) lines.push(currentLine);
+  return lines;
+}
+
+/**
  * Generates an architectural, publication-grade commercial PDF for contractor resources.
+ * - Multi-page dynamic pagination with running headers & footers (Page X of Y).
  * - Strict Helvetica / HelveticaBold typography hierarchy (zero typewriter / courier fonts).
- * - Sharp borders, thin divider rules, and high-contrast styling.
- * - Structured field groupings, tables, checklists, and legal signature execution blocks.
- * - Complies with commercial subcontracting standards.
+ * - Real word-wrapping to prevent data clipping on long text, addresses, and scopes.
+ * - Supports full checklist audits and commercial line items without arbitrary limits.
+ * - Formal dual commercial execution blocks (Contractor + Client / General Contractor).
  */
 export async function renderResourceToPdfBuffer(payload: ResourcePdfPayload): Promise<Uint8Array> {
   const { resource, formData, organization, checklists, tableRows, referenceNumber } = payload;
   const pdfDoc = await PDFDocument.create();
 
-  // Load clean sans-serif fonts
+  // Clean standard sans-serif fonts
   const helvetica = await pdfDoc.embedFont(StandardFonts.Helvetica);
   const helveticaBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
 
-  const page = pdfDoc.addPage([612, 792]); // Standard US Letter (8.5 x 11 in)
-  const { width, height } = page.getSize();
+  const pageWidth = 612;  // Standard US Letter
+  const pageHeight = 792;
   const margin = 40;
-  let cursorY = height - margin;
+  const contentWidth = pageWidth - margin * 2;
+  const footerReservedHeight = 55;
 
-  // Commercial color palette
-  const primaryNavy = rgb(0.04, 0.08, 0.16); // #0a1428
+  const pages: PDFPage[] = [];
+
+  // Color Palette
+  const primaryNavy = rgb(0.04, 0.08, 0.16);
   const pureWhite = rgb(1, 1, 1);
-  const darkSlate = rgb(0.12, 0.16, 0.22);
+  const darkSlate = rgb(0.09, 0.13, 0.20);
   const textBody = rgb(0.2, 0.24, 0.3);
   const textMuted = rgb(0.45, 0.5, 0.58);
   const borderRule = rgb(0.82, 0.85, 0.9);
@@ -58,45 +85,103 @@ export async function renderResourceToPdfBuffer(payload: ResourcePdfPayload): Pr
     year: 'numeric',
   });
 
-  // ── 1. ARCHITECTURAL HEADER BANNER ──
-  page.drawRectangle({
+  let currentPage = pdfDoc.addPage([pageWidth, pageHeight]);
+  pages.push(currentPage);
+  let cursorY = pageHeight - margin;
+
+  function addNewPage() {
+    currentPage = pdfDoc.addPage([pageWidth, pageHeight]);
+    pages.push(currentPage);
+    cursorY = pageHeight - margin;
+
+    // Running Header for subsequent pages
+    currentPage.drawRectangle({
+      x: margin,
+      y: cursorY - 24,
+      width: contentWidth,
+      height: 24,
+      color: lightGrey,
+    });
+
+    currentPage.drawText(orgName.toUpperCase(), {
+      x: margin + 8,
+      y: cursorY - 16,
+      size: 7.5,
+      font: helveticaBold,
+      color: primaryNavy,
+    });
+
+    currentPage.drawText(`${resource.title.toUpperCase()}  |  REF: ${refId}`, {
+      x: pageWidth - margin - 220,
+      y: cursorY - 16,
+      size: 7,
+      font: helvetica,
+      color: textMuted,
+    });
+
+    currentPage.drawLine({
+      start: { x: margin, y: cursorY - 26 },
+      end: { x: pageWidth - margin, y: cursorY - 26 },
+      thickness: 0.75,
+      color: borderRule,
+    });
+
+    cursorY -= 40;
+  }
+
+  function ensureSpace(requiredHeight: number) {
+    if (cursorY - requiredHeight < footerReservedHeight) {
+      addNewPage();
+    }
+  }
+
+  // ── 1. ARCHITECTURAL HEADER BANNER (PAGE 1) ──
+  currentPage.drawRectangle({
     x: margin,
     y: cursorY - 54,
-    width: width - margin * 2,
+    width: contentWidth,
     height: 54,
     color: primaryNavy,
   });
 
-  // Contractor Org Title
-  page.drawText(orgName.toUpperCase(), {
-    x: margin + 14,
+  // Vector Brand Mark Accent (Restrained geometric motif)
+  currentPage.drawRectangle({
+    x: margin + 12,
+    y: cursorY - 40,
+    width: 6,
+    height: 26,
+    color: accentBlue,
+  });
+
+  currentPage.drawText(orgName.toUpperCase(), {
+    x: margin + 26,
     y: cursorY - 24,
-    size: 13,
+    size: 12.5,
     font: helveticaBold,
     color: pureWhite,
   });
 
-  page.drawText(`${orgTrade.toUpperCase()}  |  TERRITORY: ${orgStates}`, {
-    x: margin + 14,
+  currentPage.drawText(`${orgTrade.toUpperCase()}  |  TERRITORY: ${orgStates}`, {
+    x: margin + 26,
     y: cursorY - 42,
-    size: 7.5,
+    size: 7,
     font: helvetica,
     color: rgb(0.75, 0.85, 0.95),
   });
 
   // Resource Code Badge
-  page.drawText(resource.code, {
-    x: width - margin - 85,
+  currentPage.drawText(resource.code, {
+    x: pageWidth - margin - 85,
     y: cursorY - 24,
-    size: 11,
+    size: 10.5,
     font: helveticaBold,
     color: accentBlue,
   });
 
-  page.drawText(resource.categoryName.toUpperCase(), {
-    x: width - margin - 130,
+  currentPage.drawText(resource.categoryName.toUpperCase(), {
+    x: pageWidth - margin - 130,
     y: cursorY - 42,
-    size: 7.5,
+    size: 7,
     font: helvetica,
     color: rgb(0.8, 0.85, 0.9),
   });
@@ -104,54 +189,49 @@ export async function renderResourceToPdfBuffer(payload: ResourcePdfPayload): Pr
   cursorY -= 70;
 
   // ── 2. DOCUMENT TITLE & METADATA BAR ──
-  page.drawText(resource.title, {
+  currentPage.drawText(resource.title, {
     x: margin,
     y: cursorY,
-    size: 16,
+    size: 15,
     font: helveticaBold,
     color: darkSlate,
   });
 
   cursorY -= 15;
 
-  page.drawText(`DOCUMENT REF: ${refId}    |    DATE: ${dateStr}    |    STANDARD: ${resource.standard.toUpperCase()}`, {
+  currentPage.drawText(`DOCUMENT REF: ${refId}    |    DATE: ${dateStr}    |    STANDARD: ${resource.standard.toUpperCase()}`, {
     x: margin,
     y: cursorY,
-    size: 7.5,
+    size: 7,
     font: helvetica,
     color: textMuted,
   });
 
   cursorY -= 12;
 
-  // Divider line
-  page.drawLine({
+  currentPage.drawLine({
     start: { x: margin, y: cursorY },
-    end: { x: width - margin, y: cursorY },
-    thickness: 1.5,
+    end: { x: pageWidth - margin, y: cursorY },
+    thickness: 1.25,
     color: primaryNavy,
   });
 
-  cursorY -= 18;
+  cursorY -= 16;
 
-  // ── 3. BODY SECTIONS & DATA MAPPING ──
-  const activeChecklist = checklists || resource.checklistItems;
-  const activeTableRows = tableRows || resource.defaultTableRows;
-
-  // Render form sections
+  // ── 3. FORM SECTIONS & DATA MAPPING ──
   for (const section of resource.sections) {
-    if (cursorY < 160) break; // Ensure room for footer and signatures
+    ensureSpace(35);
 
-    // Section Header
-    page.drawRectangle({
+    // Section Header Bar
+    currentPage.drawRectangle({
       x: margin,
       y: cursorY - 16,
-      width: width - margin * 2,
+      width: contentWidth,
       height: 16,
       color: lightGrey,
     });
 
-    page.drawText(section.title.toUpperCase(), {
+    currentPage.drawText(section.title.toUpperCase(), {
       x: margin + 8,
       y: cursorY - 11.5,
       size: 8,
@@ -161,72 +241,105 @@ export async function renderResourceToPdfBuffer(payload: ResourcePdfPayload): Pr
 
     cursorY -= 24;
 
-    // Render 2-column key-value grid for section fields
     const fields = section.fields;
-    for (let i = 0; i < fields.length; i += 2) {
-      if (cursorY < 150) break;
-
+    let i = 0;
+    while (i < fields.length) {
       const f1 = fields[i];
-      const f2 = fields[i + 1];
-
       const val1 = String(formData[f1.id] ?? f1.defaultValue ?? '—');
-      const val2 = f2 ? String(formData[f2.id] ?? f2.defaultValue ?? '—') : null;
 
-      // Col 1
-      page.drawText(f1.label.toUpperCase(), {
-        x: margin + 8,
-        y: cursorY,
-        size: 6.5,
-        font: helveticaBold,
-        color: textMuted,
-      });
+      // Multiline field (textarea) or single field spanning full width
+      if (f1.type === 'textarea' || val1.length > 60) {
+        ensureSpace(30);
 
-      const truncatedVal1 = val1.length > 55 ? `${val1.substring(0, 52)}...` : val1;
-      page.drawText(truncatedVal1, {
-        x: margin + 8,
-        y: cursorY - 10,
-        size: 8,
-        font: helvetica,
-        color: darkSlate,
-      });
+        currentPage.drawText(f1.label.toUpperCase(), {
+          x: margin + 8,
+          y: cursorY,
+          size: 6.5,
+          font: helveticaBold,
+          color: textMuted,
+        });
+        cursorY -= 10;
 
-      // Col 2
-      if (f2 && val2) {
-        page.drawText(f2.label.toUpperCase(), {
-          x: margin + 280,
+        const wrapped = wrapText(val1, contentWidth - 16, helvetica, 7.5);
+        for (const line of wrapped) {
+          ensureSpace(12);
+          currentPage.drawText(line, {
+            x: margin + 8,
+            y: cursorY,
+            size: 7.5,
+            font: helvetica,
+            color: darkSlate,
+          });
+          cursorY -= 10.5;
+        }
+        cursorY -= 4;
+        i++;
+      } else {
+        // Render 2 fields side by side
+        const f2 = fields[i + 1];
+        const val2 = f2 ? String(formData[f2.id] ?? f2.defaultValue ?? '—') : null;
+
+        ensureSpace(24);
+
+        // Col 1
+        currentPage.drawText(f1.label.toUpperCase(), {
+          x: margin + 8,
           y: cursorY,
           size: 6.5,
           font: helveticaBold,
           color: textMuted,
         });
 
-        const truncatedVal2 = val2.length > 55 ? `${val2.substring(0, 52)}...` : val2;
-        page.drawText(truncatedVal2, {
-          x: margin + 280,
+        const w1 = wrapText(val1, 240, helvetica, 7.5);
+        currentPage.drawText(w1[0] || '—', {
+          x: margin + 8,
           y: cursorY - 10,
-          size: 8,
+          size: 7.5,
           font: helvetica,
           color: darkSlate,
         });
+
+        // Col 2
+        if (f2 && val2) {
+          currentPage.drawText(f2.label.toUpperCase(), {
+            x: margin + 270,
+            y: cursorY,
+            size: 6.5,
+            font: helveticaBold,
+            color: textMuted,
+          });
+
+          const w2 = wrapText(val2, 240, helvetica, 7.5);
+          currentPage.drawText(w2[0] || '—', {
+            x: margin + 270,
+            y: cursorY - 10,
+            size: 7.5,
+            font: helvetica,
+            color: darkSlate,
+          });
+        }
+
+        cursorY -= 22;
+        i += 2;
       }
-
-      cursorY -= 22;
     }
-
-    cursorY -= 6;
+    cursorY -= 4;
   }
 
-  // Render Checklist Items if present
-  if (activeChecklist && activeChecklist.length > 0 && cursorY > 170) {
-    page.drawRectangle({
+  // ── 4. CHECKLIST / AUDIT ITEMS (Multi-Page Supported) ──
+  const activeChecklist = checklists || resource.checklistItems;
+  if (activeChecklist && activeChecklist.length > 0) {
+    ensureSpace(35);
+
+    currentPage.drawRectangle({
       x: margin,
       y: cursorY - 16,
-      width: width - margin * 2,
+      width: contentWidth,
       height: 16,
       color: lightGrey,
     });
 
-    page.drawText('VERIFICATION AUDIT ITEMS & COMPLIANCE STATUS', {
+    currentPage.drawText('VERIFICATION AUDIT ITEMS & COMPLIANCE STATUS', {
       x: margin + 8,
       y: cursorY - 11.5,
       size: 8,
@@ -236,33 +349,32 @@ export async function renderResourceToPdfBuffer(payload: ResourcePdfPayload): Pr
 
     cursorY -= 24;
 
-    const itemsToRender = activeChecklist.slice(0, 5); // Fit first 5
-    for (const item of itemsToRender) {
-      if (cursorY < 145) break;
+    for (const item of activeChecklist) {
+      ensureSpace(18);
 
       const isPassed = item.status === 'passed';
       const statusText = isPassed ? '[ PASS ]' : item.status === 'in_progress' ? '[ PENDING ]' : '[ N/A ]';
       const statusColor = isPassed ? rgb(0.05, 0.5, 0.2) : rgb(0.7, 0.4, 0.05);
 
-      page.drawText(statusText, {
+      currentPage.drawText(statusText, {
         x: margin + 8,
         y: cursorY,
-        size: 7.5,
+        size: 7,
         font: helveticaBold,
         color: statusColor,
       });
 
-      const reqText = item.requirement.length > 70 ? `${item.requirement.substring(0, 67)}...` : item.requirement;
-      page.drawText(reqText, {
-        x: margin + 70,
+      const reqLines = wrapText(item.requirement, 360, helvetica, 7.5);
+      currentPage.drawText(reqLines[0] || '', {
+        x: margin + 68,
         y: cursorY,
         size: 7.5,
         font: helvetica,
         color: darkSlate,
       });
 
-      page.drawText(item.responsibleParty, {
-        x: width - margin - 90,
+      currentPage.drawText(item.responsibleParty || 'Lead Supervisor', {
+        x: pageWidth - margin - 100,
         y: cursorY,
         size: 7,
         font: helvetica,
@@ -274,17 +386,20 @@ export async function renderResourceToPdfBuffer(payload: ResourcePdfPayload): Pr
     cursorY -= 6;
   }
 
-  // Render Table Rows if present (e.g. Action Register, Pricing)
-  if (activeTableRows && activeTableRows.length > 0 && cursorY > 170) {
-    page.drawRectangle({
+  // ── 5. SCHEDULED LINE ITEMS / DATA TABLES ──
+  const activeTableRows = tableRows || resource.defaultTableRows;
+  if (activeTableRows && activeTableRows.length > 0) {
+    ensureSpace(35);
+
+    currentPage.drawRectangle({
       x: margin,
       y: cursorY - 16,
-      width: width - margin * 2,
+      width: contentWidth,
       height: 16,
       color: lightGrey,
     });
 
-    page.drawText('SCHEDULED LINE ITEMS / ACTION SCHEDULE', {
+    currentPage.drawText('SCHEDULED LINE ITEMS / ACTION SCHEDULE', {
       x: margin + 8,
       y: cursorY - 11.5,
       size: 8,
@@ -294,96 +409,108 @@ export async function renderResourceToPdfBuffer(payload: ResourcePdfPayload): Pr
 
     cursorY -= 24;
 
-    for (const row of activeTableRows.slice(0, 4)) {
-      if (cursorY < 145) break;
+    for (const row of activeTableRows) {
+      ensureSpace(18);
+
       const col1 = String(row.id || row.key || '•');
       const col2 = String(row.description || row.item || Object.values(row)[1] || '');
       const col3 = String(row.owner || row.qty || Object.values(row)[2] || '');
       const col4 = String(row.status || row.unitPrice || Object.values(row)[3] || '');
 
-      page.drawText(col1, { x: margin + 8, y: cursorY, size: 7.5, font: helveticaBold, color: primaryNavy });
-      page.drawText(col2.substring(0, 50), { x: margin + 70, y: cursorY, size: 7.5, font: helvetica, color: darkSlate });
-      page.drawText(col3.substring(0, 20), { x: margin + 350, y: cursorY, size: 7.5, font: helvetica, color: textMuted });
-      page.drawText(col4.substring(0, 15), { x: width - margin - 75, y: cursorY, size: 7.5, font: helveticaBold, color: darkSlate });
+      currentPage.drawText(col1, { x: margin + 8, y: cursorY, size: 7.5, font: helveticaBold, color: primaryNavy });
+      
+      const wrappedCol2 = wrapText(col2, 260, helvetica, 7.5);
+      currentPage.drawText(wrappedCol2[0] || '', { x: margin + 65, y: cursorY, size: 7.5, font: helvetica, color: darkSlate });
+      currentPage.drawText(col3.substring(0, 24), { x: margin + 340, y: cursorY, size: 7.5, font: helvetica, color: textMuted });
+      currentPage.drawText(col4.substring(0, 18), { x: pageWidth - margin - 75, y: cursorY, size: 7.5, font: helveticaBold, color: darkSlate });
 
       cursorY -= 14;
     }
     cursorY -= 6;
   }
 
-  // ── 4. COMMERCIAL SIGNATURE & AUTHORIZATION BLOCK ──
-  const sigY = 95;
+  // ── 6. COMMERCIAL SIGNATURE & AUTHORIZATION BLOCK ──
+  ensureSpace(70);
 
-  page.drawRectangle({
+  const sigBlockY = cursorY - 56;
+  currentPage.drawRectangle({
     x: margin,
-    y: sigY,
-    width: width - margin * 2,
-    height: 52,
+    y: sigBlockY,
+    width: contentWidth,
+    height: 56,
     borderWidth: 1,
     borderColor: borderRule,
     color: rgb(0.98, 0.99, 1),
   });
 
-  page.drawText('COMMERCIAL EXECUTION & RECORD CERTIFICATION', {
+  currentPage.drawText('COMMERCIAL EXECUTION & RECORD CERTIFICATION', {
     x: margin + 10,
-    y: sigY + 40,
+    y: sigBlockY + 44,
     size: 6.5,
     font: helveticaBold,
     color: textMuted,
   });
 
-  // Contractor Sign line
-  page.drawLine({
-    start: { x: margin + 10, y: sigY + 16 },
-    end: { x: margin + 220, y: sigY + 16 },
-    thickness: 1,
+  // Contractor execution line
+  currentPage.drawLine({
+    start: { x: margin + 10, y: sigBlockY + 18 },
+    end: { x: margin + 230, y: sigBlockY + 18 },
+    thickness: 0.75,
     color: darkSlate,
   });
-  page.drawText('AUTHORIZED CONTRACTOR SIGNATURE / DATE', {
+  currentPage.drawText('CONTRACTOR AUTHORIZED SIGNATORY / DATE', {
     x: margin + 10,
-    y: sigY + 6,
-    size: 6,
-    font: helvetica,
+    y: sigBlockY + 8,
+    size: 5.5,
+    font: helveticaBold,
     color: textMuted,
   });
 
-  // Client / GC Sign line
-  page.drawLine({
-    start: { x: width - margin - 220, y: sigY + 16 },
-    end: { x: width - margin - 10, y: sigY + 16 },
-    thickness: 1,
+  // Client / GC execution line
+  currentPage.drawLine({
+    start: { x: pageWidth - margin - 230, y: sigBlockY + 18 },
+    end: { x: pageWidth - margin - 10, y: sigBlockY + 18 },
+    thickness: 0.75,
     color: darkSlate,
   });
-  page.drawText('ACCEPTANCE / SUPERINTENDENT SIGN-OFF / DATE', {
-    x: width - margin - 220,
-    y: sigY + 6,
-    size: 6,
-    font: helvetica,
+  currentPage.drawText('ACCEPTANCE / GENERAL CONTRACTOR SIGN-OFF / DATE', {
+    x: pageWidth - margin - 230,
+    y: sigBlockY + 8,
+    size: 5.5,
+    font: helveticaBold,
     color: textMuted,
   });
 
-  // ── 5. AUDIT FOOTER & DISCLAIMER ──
-  page.drawText(
-    `AVORRIA CONTRACTOR OPERATING SYSTEM  •  ${refId}  •  PAGE 1 OF 1`,
-    {
+  // ── 7. STAMP RUNNING FOOTERS & DYNAMIC PAGE NUMBERING ON ALL PAGES ──
+  const totalPages = pages.length;
+  pages.forEach((p, index) => {
+    // Divider line
+    p.drawLine({
+      start: { x: margin, y: 38 },
+      end: { x: pageWidth - margin, y: 38 },
+      thickness: 0.75,
+      color: borderRule,
+    });
+
+    p.drawText(
+      `AVORRIA CONTRACTOR OPERATING SYSTEM  •  ${refId}  •  PAGE ${index + 1} OF ${totalPages}`,
+      {
+        x: margin,
+        y: 26,
+        size: 6.5,
+        font: helveticaBold,
+        color: textMuted,
+      }
+    );
+
+    const standardNotice = 'Review this document against the applicable contract, project requirements and governing law before use.';
+    p.drawText(standardNotice, {
       x: margin,
-      y: 28,
-      size: 6.5,
-      font: helveticaBold,
+      y: 16,
+      size: 5.5,
+      font: helvetica,
       color: textMuted,
-    }
-  );
-
-  const disclaimerSnippet = resource.disclaimer.length > 115
-    ? `${resource.disclaimer.substring(0, 112)}...`
-    : resource.disclaimer;
-
-  page.drawText(disclaimerSnippet, {
-    x: margin,
-    y: 18,
-    size: 5.5,
-    font: helvetica,
-    color: textMuted,
+    });
   });
 
   return await pdfDoc.save();

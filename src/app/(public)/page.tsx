@@ -4,6 +4,7 @@ import { Metadata } from 'next';
 import { siteConfig } from '@/config/site';
 import { CinematicHero } from '@/components/hero/CinematicHero';
 import { RealContractorDocumentPreview } from '@/components/home/RealDocumentPreview';
+import { FileText, ShieldCheck, ClipboardCheck } from 'lucide-react';
 
 export const metadata: Metadata = {
   title: 'Avorria | The Operating Platform for American Trade Contractors',
@@ -53,7 +54,7 @@ export default function HomePage() {
           {/* Pillar 1 & 2 Dual Split Band */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
             {/* Pillar 1: Business */}
-            <div className="lg:col-span-6 p-8 lg:p-10 rounded-2xl bg-slate-50 border border-slate-200 flex flex-col justify-between space-y-6">
+            <div className="lg:col-span-6 p-8 lg:p-10 rounded-lg bg-slate-50 border border-slate-200 flex flex-col justify-between space-y-6">
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-mono font-bold text-brand-700 uppercase tracking-wider bg-brand-50 px-2.5 py-1 rounded border border-brand-200">
@@ -88,7 +89,7 @@ export default function HomePage() {
             </div>
 
             {/* Pillar 2: Create */}
-            <div className="lg:col-span-6 p-8 lg:p-10 rounded-2xl bg-white border-2 border-slate-300/80 shadow-sm flex flex-col justify-between space-y-6">
+            <div className="lg:col-span-6 p-8 lg:p-10 rounded-lg bg-white border-2 border-slate-300/80 shadow-sm flex flex-col justify-between space-y-6">
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-mono font-bold text-brand-700 uppercase tracking-wider bg-brand-50 px-2.5 py-1 rounded border border-brand-200">
@@ -124,7 +125,7 @@ export default function HomePage() {
           {/* Pillar 3, 4, 5 Triplet Band */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* Pillar 3: Comply */}
-            <div className="p-8 rounded-2xl bg-slate-50 border border-slate-200 flex flex-col justify-between space-y-6">
+            <div className="p-8 rounded-lg bg-slate-50 border border-slate-200 flex flex-col justify-between space-y-6">
               <div className="space-y-3">
                 <div className="text-xs font-mono font-bold text-brand-700 uppercase tracking-wider">
                   Pillar 03 / Readiness
@@ -145,7 +146,7 @@ export default function HomePage() {
             </div>
 
             {/* Pillar 4: Prove */}
-            <div className="p-8 rounded-2xl bg-slate-50 border border-slate-200 flex flex-col justify-between space-y-6">
+            <div className="p-8 rounded-lg bg-slate-50 border border-slate-200 flex flex-col justify-between space-y-6">
               <div className="space-y-3">
                 <div className="text-xs font-mono font-bold text-brand-700 uppercase tracking-wider">
                   Pillar 04 / Evidence
@@ -166,7 +167,7 @@ export default function HomePage() {
             </div>
 
             {/* Pillar 5: Win */}
-            <div className="p-8 rounded-2xl bg-slate-50 border border-slate-200 flex flex-col justify-between space-y-6">
+            <div className="p-8 rounded-lg bg-slate-50 border border-slate-200 flex flex-col justify-between space-y-6">
               <div className="space-y-3">
                 <div className="text-xs font-mono font-bold text-brand-700 uppercase tracking-wider">
                   Pillar 05 / Revenue
@@ -442,7 +443,7 @@ export default function HomePage() {
 
           {/* Right Passport Mockup Composition */}
           <div className="lg:col-span-7">
-            <div className="rounded-2xl bg-white border-2 border-slate-300 shadow-2xl p-6 sm:p-8 space-y-6">
+            <div className="rounded-lg bg-white border-2 border-slate-300 shadow-2xl p-6 sm:p-8 space-y-6">
               {/* Passport Header Strip */}
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-200">
                 <div>
@@ -534,7 +535,7 @@ export default function HomePage() {
 
           {/* 3-Stage Verification Timeline */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-left">
-            <div className="p-8 rounded-2xl bg-white border border-slate-200 space-y-4">
+            <div className="p-8 rounded-lg bg-white border border-slate-200 space-y-4">
               <div className="w-10 h-10 rounded-full bg-brand-50 text-brand-700 font-medium font-mono flex items-center justify-center border border-brand-200 text-sm">
                 01
               </div>
@@ -544,7 +545,7 @@ export default function HomePage() {
               </p>
             </div>
 
-            <div className="p-8 rounded-2xl bg-white border border-slate-200 space-y-4">
+            <div className="p-8 rounded-lg bg-white border border-slate-200 space-y-4">
               <div className="w-10 h-10 rounded-full bg-brand-50 text-brand-700 font-medium font-mono flex items-center justify-center border border-brand-200 text-sm">
                 02
               </div>
@@ -554,7 +555,7 @@ export default function HomePage() {
               </p>
             </div>
 
-            <div className="p-8 rounded-2xl bg-white border border-slate-200 space-y-4">
+            <div className="p-8 rounded-lg bg-white border border-slate-200 space-y-4">
               <div className="w-10 h-10 rounded-full bg-brand-50 text-brand-700 font-medium font-mono flex items-center justify-center border border-brand-200 text-sm">
                 03
               </div>
@@ -585,24 +586,30 @@ export default function HomePage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="p-8 rounded-2xl bg-navy-900/80 border border-navy-700/80 space-y-4">
-              <span className="text-2xl">📋</span>
+            <div className="p-8 rounded-lg bg-navy-900/80 border border-navy-700/80 space-y-4">
+              <div className="w-10 h-10 rounded bg-sky-500/10 border border-sky-500/20 flex items-center justify-center text-sky-400">
+                <FileText className="w-5 h-5" />
+              </div>
               <h3 className="text-xl font-light text-white">Itemized Quotes & Proposals</h3>
               <p className="text-xs text-slate-300 leading-relaxed font-extralight">
                 Generate clean, branded commercial quotations with transparent labor, material schedules of values, and professional acceptance sign-offs.
               </p>
             </div>
 
-            <div className="p-8 rounded-2xl bg-navy-900/80 border border-navy-700/80 space-y-4">
-              <span className="text-2xl">🛡️</span>
+            <div className="p-8 rounded-lg bg-navy-900/80 border border-navy-700/80 space-y-4">
+              <div className="w-10 h-10 rounded bg-sky-500/10 border border-sky-500/20 flex items-center justify-center text-sky-400">
+                <ShieldCheck className="w-5 h-5" />
+              </div>
               <h3 className="text-xl font-light text-white">Attached Passport Credentials</h3>
               <p className="text-xs text-slate-300 leading-relaxed font-extralight">
                 Every quote includes a live link to your verified Contractor Passport, proving insurance coverage and safety track record upfront.
               </p>
             </div>
 
-            <div className="p-8 rounded-2xl bg-navy-900/80 border border-navy-700/80 space-y-4">
-              <span className="text-2xl">📝</span>
+            <div className="p-8 rounded-lg bg-navy-900/80 border border-navy-700/80 space-y-4">
+              <div className="w-10 h-10 rounded bg-sky-500/10 border border-sky-500/20 flex items-center justify-center text-sky-400">
+                <ClipboardCheck className="w-5 h-5" />
+              </div>
               <h3 className="text-xl font-light text-white">Formal Change Orders</h3>
               <p className="text-xs text-slate-300 leading-relaxed font-extralight">
                 Protect your project profit margins with binding, audit-ready change orders that document scope modifications before additional work begins.

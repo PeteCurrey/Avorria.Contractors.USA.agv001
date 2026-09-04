@@ -77,6 +77,12 @@ const WIN_WORK_ITEMS: NavDropdownItem[] = [
 
 const RESOURCE_ITEMS: NavDropdownItem[] = [
   {
+    title: 'Resource Library',
+    href: '/resources',
+    description: '26 commercial-grade contractor documents, calculators, registers, and field forms.',
+    badge: '26 Assets',
+  },
+  {
     title: 'Free JHA Generator',
     href: '/tools/job-hazard-analysis-jha-generator',
     description: 'Create professional, OSHA-aligned Job Hazard Analyses in under two minutes.',
@@ -120,12 +126,6 @@ const DARK_HERO_ROUTES = new Set([
   '/',
   '/about',
   '/platform',
-  '/create',
-  '/comply',
-  '/prove',
-  '/win-work',
-  '/contractor-passport',
-  '/pricing',
   '/contractors',
   '/states',
   '/industries',

@@ -306,7 +306,7 @@ export function EvidenceRegisterClient({
       setReviewSuccessMessage('Evidence has been submitted for auditor review.');
       setReviewNotes('');
     } catch (err: unknown) {
-      alert(err instanceof Error ? err.message : 'Error submitting for review');
+      setFormError(err instanceof Error ? err.message : 'Failed to submit for review — please try again');
     } finally {
       setIsRequestingReview(false);
     }
@@ -330,7 +330,7 @@ export function EvidenceRegisterClient({
       }
       router.refresh();
     } catch (err: unknown) {
-      alert(err instanceof Error ? err.message : 'Error deleting evidence');
+      setFormError(err instanceof Error ? err.message : 'Failed to delete evidence — please try again');
     }
   }
 

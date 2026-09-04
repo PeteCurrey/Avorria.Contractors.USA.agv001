@@ -2,7 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import { Metadata } from 'next';
 import { siteConfig } from '@/config/site';
-import { CinematicPageHero } from '@/components/hero/CinematicPageHero';
+import { ProductHero } from '@/components/hero/ProductHero';
 
 export const metadata: Metadata = {
   title: 'Create Professional Contractor Documents | Avorria Document Engine',
@@ -106,14 +106,17 @@ export default function CreatePage() {
 
   return (
     <div className="w-full bg-white text-navy-800">
-      <CinematicPageHero
+      <ProductHero
         eyebrow="AVORRIA DOCUMENT ENGINE"
         title={<>Create professional contractor<br />documents in minutes.</>}
-        subtitle="Deterministic trade templates, real-world regulatory codes, and automated formatting. Create, review, digitally sign, and export audit-ready documents built for American job sites."
+        subtitle="Deterministic trade templates, real-world regulatory codes, and automated formatting. Create, review, and export audit-ready documents built for American job sites."
         primaryCta={{ label: 'Try Free JHA Generator', href: '/tools/job-hazard-analysis-jha-generator' }}
         secondaryCta={{ label: 'Sign Up for Document Vault', href: '/sign-up' }}
-        backgroundImage="/images/hero-create.jpg"
-        backgroundAlt="Safety officer reviewing Job Hazard Analysis on a commercial construction site"
+        pillars={[
+          { title: 'OSHA-Aligned Safety Forms', description: 'Job Hazard Analyses, Toolbox Talk Records, and Site Safety Inspection reports structured to OSHA 1926 and 1910.' },
+          { title: 'Commercial Documents', description: 'Bid proposals, quotes with burden multipliers, change orders, and invoice templates built for trade contracting.' },
+          { title: 'Operations Records', description: 'Daily construction reports, meeting minutes, project registers, subcontractor scope-of-work, and handover checklists.' },
+        ]}
         trustItems={['JHA Generator', 'Safety Plans (HASP)', 'Commercial Quotes', 'Change Orders', 'Toolbox Talks']}
       />
 

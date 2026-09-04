@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { MatchFilterOptions, MatchSortOption, OverallMatchStatus } from '@/lib/match/types';
+import { ShieldCheck } from 'lucide-react';
 
 interface MatchFiltersToolbarProps {
   filters: MatchFilterOptions;
@@ -61,13 +62,13 @@ export function MatchFiltersToolbar({
         <button
           type="button"
           onClick={() => onFilterChange({ ...filters, verificationOnly: !filters.verificationOnly })}
-          className={`px-3 py-1.5 rounded-xl font-bold transition-all border flex items-center gap-1.5 ${
+          className={`px-3 py-1.5 rounded-lg font-medium text-xs transition-all border flex items-center gap-1.5 ${
             filters.verificationOnly
-              ? 'bg-emerald-600 text-white border-emerald-600 shadow-2xs'
+              ? 'bg-emerald-600 text-white border-emerald-600 shadow-sm'
               : 'bg-white text-slate-700 border-slate-200 hover:border-slate-300'
           }`}
         >
-          <span>🛡️</span>
+          <ShieldCheck className="w-3.5 h-3.5 shrink-0" />
           <span>Verified Only</span>
         </button>
 

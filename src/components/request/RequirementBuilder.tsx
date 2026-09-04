@@ -8,6 +8,17 @@ import {
   RequirementProvenance,
   AddRequirementInput,
 } from '@/lib/request/types';
+import {
+  Shield,
+  FileCheck,
+  Award,
+  HardHat,
+  FolderArchive,
+  ClipboardList,
+  Building,
+  Sliders,
+  LucideIcon,
+} from 'lucide-react';
 
 interface RequirementBuilderProps {
   requirements: (RequirementItem | AddRequirementInput)[];
@@ -16,15 +27,15 @@ interface RequirementBuilderProps {
   readOnly?: boolean;
 }
 
-const CATEGORIES: { id: RequirementCategory; label: string; icon: string }[] = [
-  { id: 'insurance', label: 'Insurance', icon: '🛡️' },
-  { id: 'licence', label: 'Licence', icon: '📜' },
-  { id: 'credential', label: 'Credential', icon: '🎖️' },
-  { id: 'safety', label: 'Safety Program', icon: '🦺' },
-  { id: 'evidence', label: 'Evidence / Vault', icon: '📁' },
-  { id: 'scope', label: 'Scope Specific', icon: '📋' },
-  { id: 'site', label: 'Site / Access', icon: '🏗️' },
-  { id: 'other', label: 'Other Criteria', icon: '⚙️' },
+const CATEGORIES: { id: RequirementCategory; label: string; icon: LucideIcon }[] = [
+  { id: 'insurance', label: 'Insurance', icon: Shield },
+  { id: 'licence', label: 'Licence', icon: FileCheck },
+  { id: 'credential', label: 'Credential', icon: Award },
+  { id: 'safety', label: 'Safety Program', icon: HardHat },
+  { id: 'evidence', label: 'Evidence / Vault', icon: FolderArchive },
+  { id: 'scope', label: 'Scope Specific', icon: ClipboardList },
+  { id: 'site', label: 'Site / Access', icon: Building },
+  { id: 'other', label: 'Other Criteria', icon: Sliders },
 ];
 
 const QUICK_TEMPLATES: AddRequirementInput[] = [
@@ -162,7 +173,15 @@ export function RequirementBuilder({
               return (
                 <div key={reqId} className="p-4 sm:p-5 flex items-start justify-between gap-4 hover:bg-slate-50/50 transition-colors">
                   <div className="flex items-start gap-3 min-w-0">
-                    <span className="text-xl shrink-0 mt-0.5">{catInfo?.icon || '⚙️'}</span>
+                    {catInfo?.icon ? (
+                      <div className="p-1.5 rounded bg-slate-100 border border-slate-200 text-slate-600 shrink-0 mt-0.5">
+                        <catInfo.icon className="w-4 h-4" />
+                      </div>
+                    ) : (
+                      <div className="p-1.5 rounded bg-slate-100 border border-slate-200 text-slate-600 shrink-0 mt-0.5">
+                        <Sliders className="w-4 h-4" />
+                      </div>
+                    )}
                     <div className="min-w-0">
                       <div className="flex flex-wrap items-center gap-2 mb-1">
                         <span className="text-sm font-bold text-slate-900">{req.title}</span>
@@ -280,7 +299,7 @@ export function RequirementBuilder({
                           : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300'
                       }`}
                     >
-                      <span>{cat.icon}</span>
+                      <cat.icon className="w-4 h-4 shrink-0" />
                       <span className="truncate">{cat.label}</span>
                     </button>
                   ))}

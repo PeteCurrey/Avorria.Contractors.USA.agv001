@@ -278,12 +278,12 @@ export function UniversalCreatePage({ definition, customFields = [] }: Universal
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2 text-xs">
               <span className={`px-2 py-1 rounded font-semibold ${generatedDoc.generationMethod === 'ai' ? 'bg-brand-950 text-brand-400 border border-brand-800' : 'bg-surface-subtle text-slate-300 border border-surface-border'}`}>
-                {generatedDoc.generationMethod === 'ai' ? '⚡ AI-Generated Draft' : '📋 Template-Assisted Draft'}
+                {generatedDoc.generationMethod === 'ai' ? 'AI-Generated Draft' : 'Template-Assisted Draft'}
               </span>
               <span className="text-slate-500 font-mono text-[10px]">via {generatedDoc.generationModel}</span>
             </div>
             <Button size="sm" variant="ghost" onClick={() => setShowPreview(!showPreview)}>
-              {showPreview ? '← Back to Editor' : '🖨️ Preview / Print'}
+              {showPreview ? '← Back to Editor' : 'Preview / Print'}
             </Button>
           </div>
 

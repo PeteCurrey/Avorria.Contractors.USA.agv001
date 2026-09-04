@@ -66,7 +66,7 @@ export default function ComplianceWorkspacePage() {
           </Link>
           <Link href="/app/documents/create/jha">
             <Button size="sm" variant="secondary">
-              ⚡ Create JHA
+              Create JHA
             </Button>
           </Link>
         </div>

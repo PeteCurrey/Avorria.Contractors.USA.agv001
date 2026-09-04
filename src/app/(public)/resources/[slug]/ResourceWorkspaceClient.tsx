@@ -22,6 +22,7 @@ export function ResourceWorkspaceClient({ resource }: ResourceWorkspaceClientPro
   const [activeTab, setActiveTab] = useState<'workspace' | 'preview'>('workspace');
   const [isExportingPdf, setIsExportingPdf] = useState(false);
   const [isExportingDocx, setIsExportingDocx] = useState(false);
+  const [exportError, setExportError] = useState<string | null>(null);
 
   const handleFieldChange = (fieldId: string, value: any) => {
     setFormData((prev) => ({ ...prev, [fieldId]: value }));
@@ -39,6 +40,7 @@ export function ResourceWorkspaceClient({ resource }: ResourceWorkspaceClientPro
 
   const handleDownloadPdf = async () => {
     setIsExportingPdf(true);
+    setExportError(null);
     try {
       const res = await fetch(`/api/resources/${resource.slug}/pdf`, {
         method: 'POST',
@@ -50,7 +52,7 @@ export function ResourceWorkspaceClient({ resource }: ResourceWorkspaceClientPro
         }),
       });
 
-      if (!res.ok) throw new Error('PDF export failed');
+      if (!res.ok) throw new Error('PDF export failed — please try again');
       const blob = await res.blob();
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -61,7 +63,7 @@ export function ResourceWorkspaceClient({ resource }: ResourceWorkspaceClientPro
       a.remove();
       window.URL.revokeObjectURL(url);
     } catch (err: any) {
-      alert(`PDF Export Error: ${err.message}`);
+      setExportError(err.message || 'PDF export failed — please try again');
     } finally {
       setIsExportingPdf(false);
     }
@@ -69,6 +71,7 @@ export function ResourceWorkspaceClient({ resource }: ResourceWorkspaceClientPro
 
   const handleDownloadDocx = async () => {
     setIsExportingDocx(true);
+    setExportError(null);
     try {
       const res = await fetch(`/api/resources/${resource.slug}/docx`, {
         method: 'POST',
@@ -80,7 +83,7 @@ export function ResourceWorkspaceClient({ resource }: ResourceWorkspaceClientPro
         }),
       });
 
-      if (!res.ok) throw new Error('DOCX export failed');
+      if (!res.ok) throw new Error('Word export failed — please try again');
       const blob = await res.blob();
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -91,7 +94,7 @@ export function ResourceWorkspaceClient({ resource }: ResourceWorkspaceClientPro
       a.remove();
       window.URL.revokeObjectURL(url);
     } catch (err: any) {
-      alert(`DOCX Export Error: ${err.message}`);
+      setExportError(err.message || 'Word export failed — please try again');
     } finally {
       setIsExportingDocx(false);
     }
@@ -103,6 +106,23 @@ export function ResourceWorkspaceClient({ resource }: ResourceWorkspaceClientPro
 
   return (
     <div className="space-y-8">
+      {/* Export error banner */}
+      {exportError && (
+        <div className="flex items-start gap-3 p-4 rounded-lg bg-red-50 border border-red-200 text-sm text-red-800">
+          <svg className="w-4 h-4 mt-0.5 shrink-0 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+          </svg>
+          <div className="flex-1">
+            <span className="font-medium">Export error: </span>{exportError}
+          </div>
+          <button
+            onClick={() => setExportError(null)}
+            className="text-red-500 hover:text-red-700 font-bold text-xs uppercase tracking-wide shrink-0"
+          >
+            Dismiss
+          </button>
+        </div>
+      )}
       {/* Top Breadcrumb & Action Bar */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-200 pb-6 print:hidden">
         <div className="space-y-1">
