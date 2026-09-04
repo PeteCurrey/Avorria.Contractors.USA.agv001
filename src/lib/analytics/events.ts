@@ -25,7 +25,19 @@ export type AnalyticsEventType =
   | 'shortlist_contractor_added'
   | 'shortlist_contractor_removed'
   | 'enquiry_initiated'
-  | 'enquiry_submitted';
+  | 'enquiry_submitted'
+  | 'client_onboarding_started'
+  | 'client_onboarding_completed'
+  | 'contractor_saved'
+  | 'contractor_unsaved'
+  | 'contractor_connection_requested'
+  | 'contractor_connection_accepted'
+  | 'contractor_connection_declined'
+  | 'opportunity_created'
+  | 'contractor_invited_to_opportunity'
+  | 'opportunity_response_received'
+  | 'opportunity_viewed_by_contractor'
+  | 'opportunity_closed';
 
 export interface AnalyticsEvent {
   event: AnalyticsEventType;

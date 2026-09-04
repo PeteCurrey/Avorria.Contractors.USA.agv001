@@ -10,6 +10,8 @@ export type UserRole =
   | 'contractor_admin'
   | 'employee_user'
   | 'future_client'
+  | 'client_admin'
+  | 'client_member'
   | 'platform_admin';
 
 export type ProfileVisibility = 'private' | 'draft' | 'published' | 'suspended' | 'archived';
