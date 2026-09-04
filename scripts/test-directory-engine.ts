@@ -341,7 +341,7 @@ async function runDirectoryTests() {
     // TEST 5: DETERMINISTIC RANKING (VERIFIED FIRST)
     // ─────────────────────────────────────────────────────────────
     console.log('\n--- 5. Deterministic Ranking ---');
-    const rankingResults = await queryContractorDirectory({ location: 'TX', sort: 'relevance' });
+    const rankingResults = await queryContractorDirectory({ location: 'TX', sort: 'relevance', limit: 50 });
     const titanIndex = rankingResults.contractors.findIndex((c) => c.slug === mockPubVer.organisation.slug);
     const summitIndex = rankingResults.contractors.findIndex((c) => c.slug === mockPubUnver.organisation.slug);
 
