@@ -117,7 +117,7 @@ export function ResourceWorkspaceClient({ resource }: ResourceWorkspaceClientPro
               {resource.code}
             </span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-black text-navy-800 tracking-tight">
+          <h1 className="text-2xl sm:text-3xl font-extralight text-navy-900 tracking-tight">
             {resource.title}
           </h1>
           <p className="text-xs text-slate-500 max-w-2xl leading-relaxed">

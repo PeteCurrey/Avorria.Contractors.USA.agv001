@@ -29,29 +29,29 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     ref
   ) => {
     const baseStyles =
-      'inline-flex items-center justify-center font-semibold rounded transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed select-none active:scale-[0.99]';
+      'inline-flex items-center justify-center font-normal rounded-[6px] tracking-tight transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed select-none active:scale-[0.99]';
 
     const variants = {
       primary:
-        'bg-brand-600 hover:bg-brand-500 text-white shadow-sm border border-brand-500/40',
+        'bg-brand-600 hover:bg-brand-700 text-white shadow-sm border border-brand-700/50',
       secondary:
-        'bg-white hover:bg-slate-50 text-navy-800 border border-slate-300 shadow-sm dark:bg-surface-elevated dark:hover:bg-surface-card dark:text-slate-200 dark:border-surface-border dark:shadow-none',
+        'bg-white hover:bg-slate-50 text-navy-900 border border-slate-300 shadow-sm dark:bg-surface-elevated dark:hover:bg-surface-card dark:text-slate-200 dark:border-surface-border dark:shadow-none',
       'secondary-dark':
         'bg-white/[0.08] hover:bg-white/[0.14] text-white border border-white/20',
       outline:
-        'bg-transparent hover:bg-slate-100 text-navy-800 border border-slate-300 dark:text-slate-200 dark:border-surface-border dark:hover:bg-surface-elevated',
+        'bg-transparent hover:bg-slate-100 text-navy-900 border border-slate-300 dark:text-slate-200 dark:border-surface-border dark:hover:bg-surface-elevated',
       'outline-white':
         'bg-transparent hover:bg-white/10 text-white border border-white/30',
       ghost:
         'bg-transparent hover:bg-slate-100 text-slate-700 hover:text-navy-900 dark:text-slate-300 dark:hover:bg-surface-elevated dark:hover:text-white',
       danger:
-        'bg-rose-600 hover:bg-rose-500 text-white border border-rose-500/30',
+        'bg-rose-600 hover:bg-rose-700 text-white border border-rose-700/50',
     };
 
     const sizes = {
-      sm: 'text-xs px-3 py-1.5 gap-1.5',
-      md: 'text-sm px-4 py-2 gap-2',
-      lg: 'text-base px-6 py-3 gap-2.5',
+      sm: 'text-xs h-8 px-3 gap-1.5',
+      md: 'text-sm h-10 px-4 gap-2',
+      lg: 'text-base h-12 px-6 gap-2.5',
     };
 
     const combinedClasses = `${baseStyles} ${variants[variant]} ${sizes[size]} ${className}`;

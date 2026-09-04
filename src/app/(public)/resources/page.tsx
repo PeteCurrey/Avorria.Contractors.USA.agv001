@@ -19,13 +19,13 @@ export default function ResourcesIndexPage() {
       <div className="max-w-7xl mx-auto space-y-12">
         {/* Page Header */}
         <div className="text-center max-w-3xl mx-auto space-y-4">
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-sky-50 border border-sky-200 text-sky-700 text-xs font-bold uppercase tracking-wider rounded-sm">
+          <div className="inline-flex items-center gap-2 px-3 py-1 bg-brand-50 border border-brand-200 text-brand-700 text-xs font-mono font-medium uppercase tracking-wider rounded-[4px]">
             CONTRACTOR OPERATING LIBRARY · 25 PRODUCTION RESOURCES
           </div>
-          <h1 className="text-3xl sm:text-5xl font-black text-navy-800 tracking-tight leading-tight">
+          <h1 className="text-3xl sm:text-5xl font-extralight text-navy-900 tracking-tight leading-tight">
             Professional Contractor Resources &amp; Commercial Instruments
           </h1>
-          <p className="text-sm sm:text-base text-slate-600 leading-relaxed max-w-2xl mx-auto">
+          <p className="text-sm sm:text-base text-slate-600 leading-relaxed font-extralight max-w-2xl mx-auto">
             Standardized, field-tested documents, checklists, and generators engineered for American commercial builders and specialty trades. Ready for real-world jobsite and commercial deployment.
           </p>
         </div>

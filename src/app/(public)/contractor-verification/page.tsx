@@ -15,19 +15,18 @@ export const metadata: Metadata = {
 
 export default function ContractorVerificationOverviewPage() {
   return (
-    <div className="min-h-screen bg-surface-page py-16 px-4 sm:px-6 lg:px-8 text-slate-200">
-      <div className="max-w-4xl mx-auto space-y-12 text-left">
+    <div className="min-h-screen bg-surface-page py-16 px-4 sm:px-6 lg:px-8 text-navy-800">
+      <div className="max-w-5xl mx-auto space-y-14 text-left">
         {/* Hero Section */}
-        <div className="space-y-4 text-center sm:text-left border-b border-surface-border pb-10">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-950 border border-brand-800 text-brand-300 font-mono text-xs font-semibold">
-            <span>🛡️</span>
-            <span>Avorria Trust & Verification</span>
+        <div className="space-y-4 border-b border-slate-200 pb-10">
+          <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-[4px] bg-brand-50 border border-brand-200 text-brand-700 font-mono text-xs font-medium">
+            <span>STANDARDS & VERIFICATION PROGRAM</span>
           </div>
-          <h1 className="text-3xl sm:text-5xl font-black text-white tracking-tight">
+          <h1 className="text-3xl sm:text-5xl font-extralight text-navy-900 tracking-tight leading-tight">
             Evidence-Backed, Not Badge-Backed.
           </h1>
-          <p className="text-base sm:text-lg text-slate-300 max-w-2xl leading-relaxed">
-            Avorria verifies commercial contractors against published, objective verification criteria using submitted operational evidence. We believe serious contractors deserve professional proof, not automated vanity badges.
+          <p className="text-base sm:text-lg text-slate-600 max-w-2xl leading-relaxed font-extralight">
+            Avorria verifies commercial trade contractors against published, objective verification criteria using submitted operational evidence. We believe serious contractors deserve professional proof, not automated vanity badges.
           </p>
           <div className="pt-2 flex flex-wrap gap-3">
             <Button href="/verification/criteria" variant="primary">
@@ -41,39 +40,39 @@ export default function ContractorVerificationOverviewPage() {
 
         {/* 1. What Verification Means vs What It Does Not Mean */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-          <Card variant="elevated" className="p-6 space-y-3 border-emerald-800/60 bg-emerald-950/20">
-            <div className="flex items-center gap-2 text-emerald-400 font-bold text-sm">
-              <span>✓</span>
+          <div className="p-6 rounded-lg border border-emerald-200 bg-emerald-50/50 space-y-3 shadow-sm">
+            <div className="flex items-center gap-2 text-emerald-800 font-medium text-sm">
+              <span className="w-5 h-5 rounded-full bg-emerald-100 flex items-center justify-center font-bold text-xs">✓</span>
               <span>What Avorria Verification Means</span>
             </div>
-            <ul className="text-xs text-slate-300 space-y-2 leading-relaxed">
+            <ul className="text-xs text-slate-700 space-y-2 leading-relaxed font-extralight">
               <li>• <strong>Human Evidence Inspection:</strong> A qualified Avorria reviewer has inspected commercial filings, insurance certificates, licenses, and safety programs.</li>
               <li>• <strong>Cryptographic Integrity:</strong> Underlying evidence hashes are stored; modifying or removing evidence automatically triggers re-review.</li>
               <li>• <strong>Published Standards:</strong> Contractors are evaluated against public, objective criteria rather than arbitrary scoring.</li>
               <li>• <strong>Active Maintenance:</strong> Expired policies or revoked documents surface immediately as requiring renewal.</li>
             </ul>
-          </Card>
+          </div>
 
-          <Card variant="elevated" className="p-6 space-y-3 border-rose-800/60 bg-rose-950/20">
-            <div className="flex items-center gap-2 text-rose-400 font-bold text-sm">
-              <span>✕</span>
+          <div className="p-6 rounded-lg border border-rose-200 bg-rose-50/50 space-y-3 shadow-sm">
+            <div className="flex items-center gap-2 text-rose-800 font-medium text-sm">
+              <span className="w-5 h-5 rounded-full bg-rose-100 flex items-center justify-center font-bold text-xs">✕</span>
               <span>What Avorria Verification Does Not Mean</span>
             </div>
-            <ul className="text-xs text-slate-300 space-y-2 leading-relaxed">
+            <ul className="text-xs text-slate-700 space-y-2 leading-relaxed font-extralight">
               <li>• <strong>Not a Government Agency:</strong> Avorria is not a state licensing board, municipality, or governmental regulator.</li>
               <li>• <strong>Not OSHA Certification:</strong> Avorria does not certify OSHA compliance; safety programs are reviewed for structural alignment only.</li>
               <li>• <strong>Not an Insurance Underwriter:</strong> Avorria does not guarantee policy coverage or financial solvency of carriers.</li>
               <li>• <strong>Not a Prequalification Guarantee:</strong> Clients and general contractors must always perform project-specific due diligence.</li>
             </ul>
-          </Card>
+          </div>
         </div>
 
         {/* 2. The Four-State Trust Model */}
         <div className="space-y-6">
           <div className="space-y-1">
-            <span className="text-xs font-mono text-brand-400 uppercase tracking-wider">The Trust Progression</span>
-            <h2 className="text-2xl font-bold text-white">How Contractors Advance in Avorria</h2>
-            <p className="text-xs text-slate-400">
+            <span className="text-[11px] font-mono text-brand-700 uppercase tracking-wider font-medium">The Trust Progression</span>
+            <h2 className="text-2xl font-light text-navy-900 tracking-tight">How Contractors Advance in Avorria</h2>
+            <p className="text-xs text-slate-600 font-extralight">
               Avorria strictly separates profile completion, publication, and verification. They are never conflated.
             </p>
           </div>
@@ -101,10 +100,10 @@ export default function ContractorVerificationOverviewPage() {
                 desc: 'Avorria completes human evidence review and confirms compliance with published verification criteria.',
               },
             ].map((s) => (
-              <div key={s.step} className="p-4 rounded-xl bg-surface-card border border-surface-border space-y-2">
-                <span className="text-xs font-mono text-brand-400 font-bold">{s.step}</span>
-                <div className="font-bold text-white text-sm">{s.title}</div>
-                <p className="text-xs text-slate-400 leading-relaxed">{s.desc}</p>
+              <div key={s.step} className="p-5 rounded-lg bg-white border border-slate-200 shadow-sm space-y-2">
+                <span className="text-xs font-mono text-brand-700 font-medium">{s.step}</span>
+                <div className="font-medium text-navy-900 text-sm">{s.title}</div>
+                <p className="text-xs text-slate-600 leading-relaxed font-extralight">{s.desc}</p>
               </div>
             ))}
           </div>
@@ -113,8 +112,8 @@ export default function ContractorVerificationOverviewPage() {
         {/* 3. The 6 Verification Categories */}
         <div className="space-y-6">
           <div className="space-y-1">
-            <span className="text-xs font-mono text-brand-400 uppercase tracking-wider">Verification Scope</span>
-            <h2 className="text-2xl font-bold text-white">What Evidence We Inspect</h2>
+            <span className="text-[11px] font-mono text-brand-700 uppercase tracking-wider font-medium">Verification Scope</span>
+            <h2 className="text-2xl font-light text-navy-900 tracking-tight">What Evidence We Inspect</h2>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
@@ -126,21 +125,21 @@ export default function ContractorVerificationOverviewPage() {
               { title: 'Workforce Qualifications', desc: 'Supervisory OSHA 10/30-Hour Construction Safety credentials and applicable trade certifications.' },
               { title: 'Business Profile Coherence', desc: 'Audit of contractor trade declarations, verified operating radius, and workforce count.' },
             ].map((cat) => (
-              <div key={cat.title} className="p-4 rounded-xl bg-surface-subtle border border-surface-border space-y-1.5">
-                <div className="font-bold text-white text-sm">{cat.title}</div>
-                <p className="text-slate-400 leading-relaxed">{cat.desc}</p>
+              <div key={cat.title} className="p-5 rounded-lg bg-white border border-slate-200 shadow-sm space-y-1.5">
+                <div className="font-medium text-navy-900 text-sm">{cat.title}</div>
+                <p className="text-slate-600 leading-relaxed font-extralight">{cat.desc}</p>
               </div>
             ))}
           </div>
         </div>
 
         {/* 4. Mandatory Human Review Guarantee */}
-        <Card variant="default" className="p-6 sm:p-8 space-y-3 bg-surface-card border-slate-700">
+        <div className="p-6 sm:p-8 rounded-lg bg-white border border-slate-200 shadow-sm space-y-3">
           <div className="flex items-center gap-2">
-            <span className="w-3 h-3 rounded-full bg-blue-500" />
-            <h3 className="text-lg font-bold text-white">Human Review is Mandatory</h3>
+            <span className="w-2.5 h-2.5 rounded-full bg-brand-600" />
+            <h3 className="text-base font-medium text-navy-900">Human Review is Mandatory</h3>
           </div>
-          <p className="text-xs text-slate-300 leading-relaxed max-w-3xl">
+          <p className="text-xs text-slate-600 leading-relaxed font-extralight max-w-3xl">
             Avorria does not issue automated verification based solely on artificial intelligence, OCR scanning, or contractor self-attestation. Every verification record is evaluated by trained compliance reviewers who verify evidence against authoritative state registries and published standards.
           </p>
           <div className="pt-2">
@@ -148,7 +147,7 @@ export default function ContractorVerificationOverviewPage() {
               Explore All Criteria & Requirements →
             </Button>
           </div>
-        </Card>
+        </div>
       </div>
     </div>
   );

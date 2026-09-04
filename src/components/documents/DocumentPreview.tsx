@@ -21,7 +21,7 @@ export function DocumentPreview({
   generationModel,
 }: DocumentPreviewProps) {
   return (
-    <div className="bg-white text-slate-900 rounded-xl shadow-xl max-w-3xl mx-auto print:shadow-none print:rounded-none print:max-w-none">
+    <div className="bg-white text-slate-900 rounded-lg border border-slate-200 shadow-sm max-w-3xl mx-auto print:shadow-none print:rounded-none print:border-none print:max-w-none">
       {/* Document Header */}
       <div className="border-b-2 border-slate-800 p-8 pb-6">
         <div className="flex items-start justify-between gap-6">
@@ -29,18 +29,22 @@ export function DocumentPreview({
             <div className="text-xs font-mono text-slate-500 uppercase tracking-widest">
               {payload.documentType.toUpperCase().replace('-', ' ')} • {referenceNumber}
             </div>
-            <h1 className="text-xl sm:text-2xl font-black text-slate-900 leading-tight">{payload.title}</h1>
-            <div className="text-xs text-slate-500 mt-1 flex flex-wrap gap-x-4 gap-y-0.5">
+            <h1 className="text-xl sm:text-2xl font-light text-slate-900 leading-tight tracking-tight">{payload.title}</h1>
+            <div className="text-xs text-slate-500 mt-1 flex flex-wrap gap-x-4 gap-y-0.5 font-mono">
               <span>Issue Date: {payload.issueDate}</span>
               {payload.expiryDate && <span>Valid Until: {payload.expiryDate}</span>}
-              <span>Status: <strong>{documentStatus.replace('_', ' ').toUpperCase()}</strong></span>
+              <span>Status: <strong className="text-slate-800">{documentStatus.replace('_', ' ').toUpperCase()}</strong></span>
               <span>Version: v{versionNumber}.0</span>
             </div>
           </div>
 
           <div className="text-right shrink-0">
-            <div className="text-xs text-slate-400 font-mono">Powered by Avorria</div>
-            <div className="text-[10px] text-slate-300 mt-0.5">{generationMethod === 'ai' ? 'AI-Generated Draft' : 'Template-Assisted Draft'}</div>
+            <div className="text-xs text-slate-500 font-mono">Avorria Document Engine</div>
+            <div className="text-[10px] text-slate-400 font-mono mt-0.5">
+              {documentStatus === 'final' || documentStatus === 'approved'
+                ? 'Official Document'
+                : 'Standardized Operating Draft'}
+            </div>
           </div>
         </div>
 

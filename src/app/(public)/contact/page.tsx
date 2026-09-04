@@ -1,12 +1,7 @@
 import React from 'react';
 import { Metadata } from 'next';
 import { siteConfig } from '@/config/site';
-import { Button } from '@/components/ui/Button';
-import { Card, CardTitle, CardDescription } from '@/components/ui/Card';
-import { Badge } from '@/components/ui/Badge';
-import { Input } from '@/components/ui/Input';
-import { Textarea } from '@/components/ui/Textarea';
-import { Select } from '@/components/ui/Select';
+import { ContactFormClient } from './ContactFormClient';
 
 export const metadata: Metadata = {
   title: 'Contact Avorria | Support & Commercial Inquiries',
@@ -19,68 +14,77 @@ export const metadata: Metadata = {
 
 export default function ContactPage() {
   return (
-    <div className="space-y-16 py-12 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto text-slate-100">
-      {/* Header */}
-      <div className="text-center max-w-2xl mx-auto space-y-4">
-        <Badge variant="primary" size="md">GET IN TOUCH</Badge>
-        <h1 className="text-3xl sm:text-5xl font-black text-white tracking-tight">
-          Contact Our Team
-        </h1>
-        <p className="text-base text-slate-300 leading-relaxed">
-          Questions about platform features, pre-qualification workflows, or enterprise contractor accounts? We are here to help.
-        </p>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
-        {/* Contact Form */}
-        <div className="md:col-span-7">
-          <Card variant="default">
-            <form className="space-y-4 text-left">
-              <Input label="Your Name" placeholder="Marcus Vance" required />
-              <Input label="Company Name" placeholder="Apex Electrical Solutions LLC" required />
-              <Input label="Business Email" type="email" placeholder="owner@company.com" required />
-              <Select
-                label="Primary Trade"
-                options={[
-                  { value: 'electrical', label: 'Electrical Contractor' },
-                  { value: 'hvac', label: 'HVAC & Mechanical' },
-                  { value: 'plumbing', label: 'Commercial Plumbing' },
-                  { value: 'roofing', label: 'Commercial Roofing' },
-                  { value: 'gc', label: 'General Contracting' },
-                  { value: 'other', label: 'Other Specialty Trade' },
-                ]}
-              />
-              <Textarea
-                label="Message or Inquiry"
-                placeholder="How can our team help your business?"
-                rows={4}
-                required
-              />
-              <Button type="button" size="md" variant="primary" className="w-full">
-                Send Message
-              </Button>
-            </form>
-          </Card>
+    <div className="min-h-screen bg-surface-page py-16 px-4 sm:px-6 lg:px-8 text-navy-800">
+      <div className="max-w-5xl mx-auto space-y-12 text-left">
+        {/* Header */}
+        <div className="space-y-4 max-w-2xl border-b border-slate-200 pb-8">
+          <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-[4px] bg-brand-50 border border-brand-200 text-brand-700 font-mono text-xs font-medium">
+            <span>GET IN TOUCH</span>
+          </div>
+          <h1 className="text-3xl sm:text-5xl font-extralight text-navy-900 tracking-tight leading-tight">
+            Contact Our Team
+          </h1>
+          <p className="text-base text-slate-600 font-extralight leading-relaxed">
+            Questions about platform capabilities, contractor pre-qualification workflows, or enterprise contractor accounts? Our operations team is ready to assist.
+          </p>
         </div>
 
-        {/* Contact Information Sidebar */}
-        <div className="md:col-span-5 space-y-6 text-xs text-slate-300 text-left">
-          <div className="p-5 rounded-lg bg-surface-card border border-surface-border space-y-2">
-            <h3 className="font-bold text-white text-sm">Customer Support</h3>
-            <p className="text-slate-400">Available Monday through Friday, 8:00 AM – 6:00 PM CST.</p>
-            <div className="pt-2 font-mono text-brand-400">{siteConfig.supportEmail}</div>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          {/* Contact Form Component */}
+          <div className="lg:col-span-7">
+            <div className="bg-white border border-slate-200 rounded-lg p-6 sm:p-8 shadow-sm">
+              <ContactFormClient />
+            </div>
           </div>
 
-          <div className="p-5 rounded-lg bg-surface-card border border-surface-border space-y-2">
-            <h3 className="font-bold text-white text-sm">Commercial Partnerships</h3>
-            <p className="text-slate-400">For general contractor pre-qualification partnerships or carrier integrations.</p>
-            <div className="pt-2 font-mono text-brand-400">{siteConfig.contactEmail}</div>
-          </div>
+          {/* Contact Information Sidebar */}
+          <div className="lg:col-span-5 space-y-5 text-left">
+            <div className="p-6 rounded-lg bg-white border border-slate-200 shadow-sm space-y-2">
+              <div className="text-[11px] font-mono uppercase tracking-wider text-brand-700 font-medium">
+                Customer Support
+              </div>
+              <h3 className="text-base font-light text-navy-900">Contractor Assistance</h3>
+              <p className="text-xs text-slate-600 leading-relaxed font-extralight">
+                Available Monday through Friday, 8:00 AM – 6:00 PM CST for operational help with documents, COIs, and passport settings.
+              </p>
+              <div className="pt-2">
+                <a
+                  href={`mailto:${siteConfig.supportEmail}`}
+                  className="font-mono text-xs text-brand-600 hover:text-brand-700 font-medium"
+                >
+                  {siteConfig.supportEmail}
+                </a>
+              </div>
+            </div>
 
-          <div className="p-5 rounded-lg bg-surface-subtle border border-surface-border space-y-1.5 text-slate-400">
-            <h3 className="font-bold text-white text-sm">Headquarters</h3>
-            <p>Avorria Technologies Inc.</p>
-            <p>Austin, Texas, United States</p>
+            <div className="p-6 rounded-lg bg-white border border-slate-200 shadow-sm space-y-2">
+              <div className="text-[11px] font-mono uppercase tracking-wider text-brand-700 font-medium">
+                Commercial Partnerships
+              </div>
+              <h3 className="text-base font-light text-navy-900">General Contractor & Carrier Inquiries</h3>
+              <p className="text-xs text-slate-600 leading-relaxed font-extralight">
+                For commercial general contractors sourcing pre-qualified subcontractors or insurance brokerage integration inquiries.
+              </p>
+              <div className="pt-2">
+                <a
+                  href={`mailto:${siteConfig.contactEmail}`}
+                  className="font-mono text-xs text-brand-600 hover:text-brand-700 font-medium"
+                >
+                  {siteConfig.contactEmail}
+                </a>
+              </div>
+            </div>
+
+            <div className="p-6 rounded-lg bg-slate-50 border border-slate-200 space-y-2 text-xs text-slate-600 font-extralight">
+              <div className="text-[11px] font-mono uppercase tracking-wider text-slate-500 font-medium">
+                Corporate Entity
+              </div>
+              <div className="font-normal text-navy-900 text-sm">{siteConfig.legalName}</div>
+              <p>Austin, Texas, United States</p>
+              <p className="text-[11px] text-slate-500 pt-1 border-t border-slate-200">
+                US-First Professional Contractor Infrastructure.
+              </p>
+            </div>
           </div>
         </div>
       </div>

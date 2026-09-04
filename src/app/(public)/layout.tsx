@@ -7,13 +7,13 @@ import { Footer } from '@/components/layout/Footer';
 
 const FULLSCREEN_HERO_ROUTES = new Set([
   '/',
+  '/about',
   '/platform',
   '/create',
   '/comply',
   '/prove',
   '/win-work',
   '/contractor-passport',
-  '/templates',
   '/pricing',
 ]);
 

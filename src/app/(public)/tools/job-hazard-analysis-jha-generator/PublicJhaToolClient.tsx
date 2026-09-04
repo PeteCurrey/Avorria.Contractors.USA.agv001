@@ -94,7 +94,7 @@ export function PublicJhaToolClient() {
               OSHA 1926
             </span>
           </div>
-          <h1 className="text-3xl sm:text-4xl font-black text-navy-800 tracking-tight">
+          <h1 className="text-3xl sm:text-4xl font-extralight text-navy-900 tracking-tight">
             Job Hazard Analysis (JHA) Generator
           </h1>
           <p className="text-sm text-slate-500 max-w-3xl leading-relaxed">

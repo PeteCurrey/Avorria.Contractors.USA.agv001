@@ -75,13 +75,13 @@ export default function ToolsIndexPage() {
       <div className="max-w-7xl mx-auto space-y-12">
         {/* Header */}
         <div className="text-center max-w-3xl mx-auto space-y-4">
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-sky-50 border border-sky-200 text-sky-700 text-xs font-bold uppercase tracking-wider rounded-sm">
+          <div className="inline-flex items-center gap-2 px-3 py-1 bg-brand-50 border border-brand-200 text-brand-700 text-xs font-mono font-medium uppercase tracking-wider rounded-[4px]">
             CONTRACTOR UTILITIES · PROFESSIONAL JOB TOOLS
           </div>
-          <h1 className="text-3xl sm:text-5xl font-black text-navy-800 tracking-tight leading-tight">
+          <h1 className="text-3xl sm:text-5xl font-extralight text-navy-900 tracking-tight leading-tight">
             Field Utilities &amp; Commercial Calculators
           </h1>
-          <p className="text-sm sm:text-base text-slate-600 leading-relaxed max-w-2xl mx-auto">
+          <p className="text-sm sm:text-base text-slate-600 leading-relaxed font-extralight max-w-2xl mx-auto">
             Practical digital utilities engineered for American trade contractors to evaluate site hazards, model commercial margins, and document compliance.
           </p>
         </div>
@@ -89,12 +89,12 @@ export default function ToolsIndexPage() {
         {/* Featured Flagship Card */}
         <div className="bg-white border border-slate-200 shadow-sm p-8 sm:p-10 space-y-4 max-w-4xl mx-auto rounded-lg">
           <div className="flex items-center gap-2">
-            <span className="px-2 py-0.5 bg-sky-50 border border-sky-200 text-sky-700 text-[10px] font-bold uppercase rounded-sm">
+            <span className="px-2 py-0.5 bg-brand-50 border border-brand-200 text-brand-700 text-[10px] font-mono font-medium uppercase rounded-[4px]">
               Flagship Field Tool
             </span>
-            <span className="text-xs text-slate-500">OSHA 29 CFR 1926 Aligned</span>
+            <span className="text-xs text-slate-500 font-mono">OSHA 29 CFR 1926 Aligned</span>
           </div>
-          <h2 className="text-2xl font-black text-navy-800">
+          <h2 className="text-2xl font-light text-navy-900 tracking-tight">
             Job Hazard Analysis (JHA) Field Generator
           </h2>
           <p className="text-xs sm:text-sm text-slate-600 leading-relaxed max-w-3xl">

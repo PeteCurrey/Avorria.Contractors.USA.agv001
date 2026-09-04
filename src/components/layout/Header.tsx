@@ -118,13 +118,13 @@ type DropdownKey = 'platform' | 'win-work' | 'resources' | null;
 
 const DARK_HERO_ROUTES = new Set([
   '/',
+  '/about',
   '/platform',
   '/create',
   '/comply',
   '/prove',
   '/win-work',
   '/contractor-passport',
-  '/templates',
   '/pricing',
   '/contractors',
   '/states',

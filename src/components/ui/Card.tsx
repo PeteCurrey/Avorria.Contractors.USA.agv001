@@ -1,35 +1,31 @@
 import React from 'react';
 
 export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
-  variant?: 'default' | 'light' | 'light-bordered' | 'elevated' | 'subtle' | 'interactive' | 'interactive-light';
-  glowing?: boolean;
+  variant?: 'default' | 'light' | 'light-bordered' | 'elevated' | 'subtle' | 'interactive' | 'interactive-light' | 'dark';
 }
 
 export function Card({
   children,
   className = '',
   variant = 'default',
-  glowing = false,
   ...props
 }: CardProps) {
   const variants = {
     default: 'bg-white border border-slate-200 text-navy-800 shadow-sm dark:bg-surface-card dark:border-surface-border dark:text-slate-100 dark:shadow-none',
     light: 'bg-white border border-slate-200 text-navy-800 shadow-sm',
     'light-bordered': 'bg-slate-50/70 border border-slate-300 text-navy-800',
-    elevated: 'bg-white border border-slate-200 shadow-md text-navy-800 dark:bg-surface-elevated dark:border-surface-border dark:text-slate-100',
+    elevated: 'bg-white border border-slate-200 shadow-sm text-navy-800 dark:bg-surface-elevated dark:border-surface-border dark:text-slate-100',
     subtle: 'bg-slate-50 border border-slate-200 text-navy-800 dark:bg-surface-subtle dark:border-surface-border dark:text-slate-200',
     interactive:
-      'bg-white border border-slate-200 hover:border-brand-600 hover:shadow-md transition-all duration-150 cursor-pointer text-navy-800 dark:bg-surface-card dark:border-surface-border dark:hover:border-brand-500',
+      'bg-white border border-slate-200 hover:border-brand-600 hover:shadow-sm transition-all duration-150 cursor-pointer text-navy-800 dark:bg-surface-card dark:border-surface-border dark:hover:border-brand-500',
     'interactive-light':
-      'bg-white border border-slate-200 hover:border-brand-500 hover:shadow-md transition-all duration-150 cursor-pointer text-navy-800',
+      'bg-white border border-slate-200 hover:border-brand-500 hover:shadow-sm transition-all duration-150 cursor-pointer text-navy-800',
     dark: 'bg-surface-card border border-surface-border text-slate-100 shadow-none',
   };
 
-  const glowStyle = glowing ? 'border-brand-500/60 shadow-glow' : '';
-
   return (
     <div
-      className={`rounded-xl p-6 ${variants[variant]} ${glowStyle} ${className}`}
+      className={`rounded-lg p-6 ${variants[variant]} ${className}`}
       {...props}
     >
       {children}
@@ -56,7 +52,7 @@ export function CardTitle({
 }: React.HTMLAttributes<HTMLHeadingElement>) {
   return (
     <h3
-      className={`text-lg sm:text-xl font-bold text-navy-900 dark:text-white tracking-tight ${className}`}
+      className={`text-lg sm:text-xl font-normal text-navy-900 dark:text-white tracking-tight ${className}`}
       {...props}
     >
       {children}
