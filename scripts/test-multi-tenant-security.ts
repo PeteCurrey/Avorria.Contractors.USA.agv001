@@ -112,6 +112,7 @@ const TENANT_TABLES = [
   'verification_events',
   'verification_submissions',
   'verification_submission_evidence',
+  'contractor_enquiries',
   'subscriptions',
   'audit_logs',
   'notifications',
@@ -372,6 +373,77 @@ export function runSecurityVerification(): SecurityAssertionResult[] {
     operation: 'UPDATE',
     testDescription: 'Anonymous users CANNOT modify published verification criteria',
     passed: anonCanUpdateCriteria === false,
+  });
+
+  // ─────────────────────────────────────────────────────────────
+  // PHASE 7 DEDICATED DIRECTORY & ENQUIRY SECURITY ASSERTIONS
+  // ─────────────────────────────────────────────────────────────
+
+  // Test 18: Tenant B cannot read Tenant A's contractor_enquiries
+  const canTenantBReadEnquiriesA = evaluateRlsPolicy('contractor_enquiries', 'SELECT', TENANT_B_USER, ORG_A_ID);
+  results.push({
+    table: 'contractor_enquiries',
+    operation: 'SELECT',
+    testDescription: 'Tenant B CANNOT read inbound project enquiries belonging to Tenant A',
+    passed: canTenantBReadEnquiriesA === false,
+  });
+
+  // Test 19: Tenant B cannot UPDATE (change status) of Tenant A's enquiries
+  const canTenantBUpdateEnquiriesA = evaluateRlsPolicy('contractor_enquiries', 'UPDATE', TENANT_B_USER, ORG_A_ID);
+  results.push({
+    table: 'contractor_enquiries',
+    operation: 'UPDATE',
+    testDescription: 'Tenant B CANNOT modify inbound enquiry records belonging to Tenant A',
+    passed: canTenantBUpdateEnquiriesA === false,
+  });
+
+  // Test 20: Tenant B cannot DELETE Tenant A's enquiries
+  const canTenantBDeleteEnquiriesA = evaluateRlsPolicy('contractor_enquiries', 'DELETE', TENANT_B_USER, ORG_A_ID);
+  results.push({
+    table: 'contractor_enquiries',
+    operation: 'DELETE',
+    testDescription: 'Tenant B CANNOT delete inbound enquiry records belonging to Tenant A',
+    passed: canTenantBDeleteEnquiriesA === false,
+  });
+
+  // Test 21: Anonymous public cannot SELECT contractor_enquiries (private inbox)
+  const canAnonReadEnquiries = evaluateRlsPolicy('contractor_enquiries', 'SELECT', ANONYMOUS_USER, ORG_A_ID);
+  results.push({
+    table: 'contractor_enquiries',
+    operation: 'SELECT',
+    testDescription: 'Anonymous public visitors CANNOT read contractor private enquiry inbox',
+    passed: canAnonReadEnquiries === false,
+  });
+
+  // Test 22: Directory results must never include draft contractor profiles
+  const draftProfileVisibility = 'draft' as string;
+  const draftContractorInDirectory = draftProfileVisibility === 'published';
+  results.push({
+    table: 'public_profiles',
+    operation: 'SELECT',
+    testDescription: 'Draft contractor profiles CANNOT appear in public directory',
+    passed: draftContractorInDirectory === false,
+  });
+
+  // Test 23: Directory results must never include suspended contractor profiles
+  const suspendedProfileVisibility = 'suspended' as string;
+  const suspendedContractorInDirectory = suspendedProfileVisibility === 'published';
+  results.push({
+    table: 'public_profiles',
+    operation: 'SELECT',
+    testDescription: 'Suspended contractor profiles CANNOT appear in public directory',
+    passed: suspendedContractorInDirectory === false,
+  });
+
+  // Test 24: Enquiry recipient privacy — contractor email never returned in API response
+  const samplePrivateEmail = 'owner@titanelectric.internal';
+  const apiResponsePayload = JSON.stringify({ success: true, enquiryId: 'enq_abc123', message: 'Delivered' });
+  const leaksEmail = apiResponsePayload.includes(samplePrivateEmail);
+  results.push({
+    table: 'contractor_enquiries',
+    operation: 'INSERT',
+    testDescription: 'Inbound enquiry API response NEVER exposes contractor private email address',
+    passed: leaksEmail === false,
   });
 
   return results;

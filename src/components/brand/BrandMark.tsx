@@ -46,7 +46,7 @@ export function BrandMark({ state = 'solid', className = '', transitionMs = 520 
       viewBox={VIEW_BOX}
       className={`brand-mark-svg ${className}`}
       role="img"
-      aria-label="EntireFM"
+      aria-label="Avorria"
       shapeRendering="geometricPrecision"
     >
       <defs>

@@ -15,7 +15,9 @@
     "test:photo-compliance": "tsx scripts/test-photo-compliance.ts",
     "test:compliance": "npm run test:ask-avorria && npm run test:photo-compliance",
     "test:verification": "tsx scripts/test-verification-engine.ts",
-    "test": "npm run test:security && npm run test:core-loop && npm run test:engine && npm run test:verification"
+    "test:directory": "tsx scripts/test-directory-engine.ts",
+    "test": "npm run test:security && npm run test:core-loop && npm run test:engine && npm run test:verification && npm run test:directory"
+
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.123.0",

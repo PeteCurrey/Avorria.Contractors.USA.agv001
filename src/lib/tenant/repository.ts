@@ -12,6 +12,7 @@ import { evaluateContractorRequirements, EvaluatedRequirement } from '@/lib/comp
 import { computeDynamicReadinessScore, DynamicReadinessResult } from '@/lib/scoring/readiness-service';
 import { PassportPublicSettings } from '@/lib/passport/types';
 import { VerificationRecord, VerificationEvent, VerificationSubmission } from '@/lib/verification/types';
+import { ContractorEnquiry } from '@/lib/enquiry/types';
 
 export interface ContractorWorkspaceData {
   organisation: Organisation;
@@ -37,6 +38,7 @@ export interface ContractorWorkspaceData {
   verificationRecords?: VerificationRecord[];
   verificationEvents?: VerificationEvent[];
   verificationSubmissions?: VerificationSubmission[];
+  enquiries?: ContractorEnquiry[];
   passportSettings?: PassportPublicSettings;
   auditLogs: { id: string; action: string; timestamp: string; details: string }[];
 }
@@ -93,7 +95,7 @@ export async function getContractorWorkspace(orgId: string): Promise<ContractorW
     organisation: {
       id: orgId,
       name: 'My Contracting Business',
-      slug: `contractor-${orgId.slice(0, 8)}`,
+      slug: `contractor-${orgId.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase()}`,
       legal_name: null,
       business_structure: null,
       tax_id_ein: null,
@@ -185,7 +187,15 @@ export async function saveOnboardingStep(
 
   // Merge step-specific fields
   if (stepNumber === 1) {
-    if (typeof data.businessName === 'string') ws.organisation.name = data.businessName;
+    if (typeof data.businessName === 'string') {
+      ws.organisation.name = data.businessName;
+      if (ws.organisation.slug.startsWith('contractor-')) {
+        const cleanSlug = data.businessName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+        if (cleanSlug) {
+          ws.organisation.slug = `${cleanSlug}-${orgId.slice(-6)}`;
+        }
+      }
+    }
     if (typeof data.legalName === 'string') ws.organisation.legal_name = data.legalName;
     if (typeof data.dbaName === 'string') ws.profile.dba_name = data.dbaName;
     if (typeof data.businessStructure === 'string') ws.organisation.business_structure = data.businessStructure;
@@ -810,4 +820,50 @@ export async function setPassportVisibility(
     message: `Passport visibility updated to ${newVisibility}.`,
     visibility: newVisibility,
   };
+}
+
+/**
+ * Retrieves all contractors eligible for public directory discovery.
+ * Strictly enforces:
+ * 1. profile.visibility === 'published'
+ * 2. Organization exists and is valid
+ */
+export async function getAllPublishedContractors(): Promise<ContractorWorkspaceData[]> {
+  const store = loadTenantsStore();
+  const published: ContractorWorkspaceData[] = [];
+
+  for (const ws of Object.values(store)) {
+    if (ws.profile && ws.profile.visibility === 'published') {
+      published.push(ws);
+    }
+  }
+
+  return published;
+}
+
+/**
+ * Saves an inbound public project enquiry for a contractor.
+ */
+export async function saveContractorEnquiry(
+  orgId: string,
+  enquiry: ContractorEnquiry
+): Promise<ContractorEnquiry> {
+  const store = loadTenantsStore();
+  const ws = store[orgId] || (await getContractorWorkspace(orgId));
+
+  if (!ws.enquiries) {
+    ws.enquiries = [];
+  }
+
+  ws.enquiries.unshift(enquiry);
+  ws.auditLogs.unshift({
+    id: `log-${Date.now()}`,
+    action: 'Inbound Project Enquiry Received',
+    timestamp: new Date().toISOString(),
+    details: `Received enquiry from ${enquiry.senderName} (${enquiry.senderEmail}) regarding ${enquiry.projectType || 'General Project Scope'}.`,
+  });
+
+  store[orgId] = ws;
+  saveTenantsStore(store);
+  return enquiry;
 }

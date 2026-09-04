@@ -39,6 +39,7 @@ export function Header() {
     { title: 'Create', href: '/create', hasDropdown: true },
     { title: 'Comply', href: '/comply', hasDropdown: true },
     { title: 'Prove', href: '/prove', hasDropdown: true },
+    { title: 'Directory', href: '/contractors', hasDropdown: false },
     { title: 'Win Work', href: '/win-work', hasDropdown: true },
     { title: 'Passport', href: '/contractor-passport', hasDropdown: false },
     { title: 'Tools', href: '/tools', hasDropdown: true },
@@ -66,23 +67,18 @@ export function Header() {
           <div className="flex items-center gap-7 lg:gap-8">
             <Link
               href="/"
-              className="group flex shrink-0 items-center gap-3"
-              aria-label="EntireFM — home"
+              className="group flex shrink-0 items-center gap-2.5"
+              aria-label="Avorria — home"
             >
               <span
                 ref={markRef}
                 data-brand-mark
-                className="brand-mark relative block w-10 sm:w-11 transition-all duration-500 ease-brand group-hover:scale-105 text-slate-400"
+                className="brand-mark relative block w-8 sm:w-9 transition-all duration-500 ease-brand group-hover:scale-105 text-sky-400"
               >
                 <BrandMark state={assembled ? 'solid' : 'wire'} className="block w-full" />
               </span>
-              <span className="flex flex-col leading-none">
-                <span className="text-[19px] font-extralight tracking-[0.08em] transition-colors duration-300 text-white">
-                  Entire<span className="font-bold text-hero-pink">FM</span>
-                </span>
-                <span className="mt-1 hidden text-[9px] font-medium tracking-[0.18em] transition-colors duration-300 2xl:block text-slate-400">
-                  Facilities Management. Evolved.
-                </span>
+              <span className="text-[20px] font-extralight tracking-tight transition-colors duration-300 text-white">
+                Avorria
               </span>
             </Link>
 

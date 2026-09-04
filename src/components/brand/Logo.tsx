@@ -43,11 +43,11 @@ export function Logo({
       {showWordmark && (
         <span className="flex flex-col leading-none">
           <span
-            className={`${fontSize} font-extralight tracking-[0.08em] transition-colors duration-300 ${
+            className={`${fontSize} font-extralight tracking-tight transition-colors duration-300 ${
               variant === 'dark' ? 'text-slate-950' : 'text-white'
             }`}
           >
-            Entire<span className="font-bold text-hero-pink">FM</span>
+            Avorria
           </span>
           {subtitle && (
             <span
@@ -55,7 +55,7 @@ export function Logo({
                 variant === 'dark' ? 'text-slate-600' : 'text-slate-400'
               }`}
             >
-              Facilities Management. Evolved.
+              Contractor Operating Platform
             </span>
           )}
         </span>
@@ -67,7 +67,7 @@ export function Logo({
     return (
       <Link
         href="/"
-        aria-label="EntireFM — home"
+        aria-label="Avorria — home"
         className="focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-brand-500 rounded-sm"
       >
         {content}

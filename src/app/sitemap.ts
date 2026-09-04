@@ -50,6 +50,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.8,
     },
     {
+      url: `${baseUrl}/contractors`,
+      lastModified: new Date('2026-09-04'),
+      changeFrequency: 'daily',
+      priority: 0.9,
+    },
+    {
       url: `${baseUrl}/win-work`,
       lastModified: new Date('2026-09-01'),
       changeFrequency: 'weekly',

@@ -17,7 +17,15 @@ export type AnalyticsEventType =
   | 'verification_approved'
   | 'verification_rejected'
   | 'passport_shared'
-  | 'passport_qr_used';
+  | 'passport_qr_used'
+  | 'directory_searched'
+  | 'directory_filter_applied'
+  | 'contractor_passport_viewed'
+  | 'verified_contractor_viewed'
+  | 'shortlist_contractor_added'
+  | 'shortlist_contractor_removed'
+  | 'enquiry_initiated'
+  | 'enquiry_submitted';
 
 export interface AnalyticsEvent {
   event: AnalyticsEventType;

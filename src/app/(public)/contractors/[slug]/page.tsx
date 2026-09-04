@@ -10,6 +10,8 @@ import { VerifiedByAvorriaBadge } from '@/components/passport/VerifiedByAvorriaB
 import { ReadinessGauge } from '@/components/ui/ReadinessGauge';
 import { Button } from '@/components/ui/Button';
 import { PassportQRCode } from '@/components/passport/PassportQRCode';
+import { ShortlistProvider } from '@/components/shortlist/ShortlistContext';
+import { PassportActionButtons } from '@/components/passport/PassportActionButtons';
 
 interface Props {
   params: Promise<{
@@ -112,36 +114,35 @@ export default async function ContractorProfilePage({ params, searchParams }: Pr
   };
 
   return (
-    <div className="min-h-screen bg-surface-page py-10 px-4 sm:px-6 lg:px-8 text-slate-800 print:bg-white print:p-0 print:m-0">
-      {/* JSON-LD Structured Data */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaOrgJsonLd) }}
-      />
+    <ShortlistProvider>
+      <div className="min-h-screen bg-surface-page py-10 px-4 sm:px-6 lg:px-8 text-slate-800 print:bg-white print:p-0 print:m-0">
+        {/* JSON-LD Structured Data */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaOrgJsonLd) }}
+        />
 
-      <div className="max-w-4xl mx-auto space-y-8 text-left print:max-w-none print:space-y-4">
-        {/* Top Print/Action Bar (hidden in print) */}
-        <div className="flex items-center justify-between no-print">
-          <Link
-            href="/contractor-verification"
-            className="text-xs font-mono text-slate-500 hover:text-slate-800 transition-colors flex items-center gap-1.5"
-          >
-            ← How Avorria Verification Works
-          </Link>
+        <div className="max-w-4xl mx-auto space-y-8 text-left print:max-w-none print:space-y-4">
+          {/* Top Breadcrumb / Action Bar (hidden in print) */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 no-print">
+            <div className="flex items-center gap-3 text-xs font-mono">
+              <Link
+                href="/contractors"
+                className="text-brand-600 hover:text-brand-700 font-bold transition-colors flex items-center gap-1"
+              >
+                ← Back to Directory
+              </Link>
+              <span className="text-slate-300">|</span>
+              <Link
+                href="/contractor-verification"
+                className="text-slate-500 hover:text-slate-800 transition-colors"
+              >
+                How Verification Works
+              </Link>
+            </div>
 
-          <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={() => {
-                if (typeof window !== 'undefined') window.print();
-              }}
-              className="px-3 py-1.5 rounded-lg border border-slate-300 bg-white text-xs font-semibold text-slate-700 hover:bg-slate-50 transition-colors flex items-center gap-1.5 shadow-sm"
-            >
-              <span>🖨️</span>
-              <span>Print / Save PDF</span>
-            </button>
+            <PassportActionButtons contractor={contractor} />
           </div>
-        </div>
 
         {/* Main Executive Credential Document */}
         <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 sm:p-10 space-y-8 print:border-none print:shadow-none print:p-0">
@@ -328,6 +329,7 @@ export default async function ContractorProfilePage({ params, searchParams }: Pr
             <p className="font-semibold text-slate-600">Avorria Verification Disclaimer</p>
             <p>{contractor.disclaimer}</p>
           </div>
+        </div> {/* closes Main Executive Credential Document card */}
         </div>
 
         {/* Print Footer */}
@@ -335,6 +337,6 @@ export default async function ContractorProfilePage({ params, searchParams }: Pr
           Official Avorria Contractor Passport Summary • Verified at: {canonicalUrl} • Criteria Version {contractor.verification.criteriaVersion || '2026.1'}
         </div>
       </div>
-    </div>
+    </ShortlistProvider>
   );
 }
