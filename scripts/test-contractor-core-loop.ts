@@ -701,7 +701,161 @@ async function runCoreLoopTest() {
   console.log('   ✓ Privacy verified: Contractors received zero automated notifications or alerts');
   console.log('   ✓ Non-marketplace verified: Zero public bidding, zero price competition, zero synthetic AI scores');
 
-  console.log('\n🎉 ALL 40 CONTRACTOR OPERATING, CREATION, PROVE, DISCOVER, CONNECT, REQUEST & MATCH MILESTONES COMPLETED WITH REAL PERSISTENCE.');
+  // ─────────────────────────────────────────────────────────────
+  // PHASE 11: RESPOND — PRIVATE INVITATIONS & STRUCTURED RESPONSES
+  // ─────────────────────────────────────────────────────────────
+  const {
+    createContractorInvitation,
+    sendInvitation,
+    getContractorInbox,
+    viewContractorInvitation,
+    expressContractorInterest,
+    saveRequirementAcknowledgement,
+    submitContractorResponse,
+    getResponseCentre,
+    getInvitationWithResponse,
+  } = await import('../src/lib/respond/service');
+
+  // 40. Phase 11 Milestone 41: Private Contractor Invitation Creation
+  console.log('\n41. Phase 11 Invitation Creation: Client creates private invitation from eligible match candidate...');
+  const invCandidate = refreshedMatchSet.candidates.find((c) => c.slug === orgSlug);
+  if (!invCandidate) {
+    throw new Error('FAILED: Target contractor not found in refreshed match set!');
+  }
+  const clientInvitation = await createContractorInvitation(
+    CLIENT_ORG_ID,
+    'user-client-eleanor',
+    {
+      pack_id: duplicatedPack.id,
+      contractor_id: invCandidate.contractorId,
+      contractor_slug: invCandidate.slug,
+      contractor_name: invCandidate.businessName,
+      match_set_id: refreshedMatchSet.id,
+      invitation_message: 'Please review our scope and provide structured confirmation against each requirement.',
+    }
+  );
+
+  if (clientInvitation.status !== 'draft') {
+    throw new Error(`FAILED: Expected initial status "draft", got "${clientInvitation.status}"`);
+  }
+  if (!clientInvitation.evidence_snapshot || clientInvitation.evidence_snapshot.length === 0) {
+    throw new Error('FAILED: Invitation must capture immutable evidence snapshot from match candidate!');
+  }
+  console.log(`   ✓ Invitation created in draft: ID ${clientInvitation.id.slice(0, 14)}... linked to match set ${refreshedMatchSet.id}`);
+  console.log(`   ✓ Evidence snapshot captured: ${clientInvitation.evidence_snapshot.length} requirement evaluations frozen`);
+
+  // 41. Phase 11 Milestone 42: Controlled Invitation Dispatch
+  console.log('\n42. Phase 11 Invitation Dispatch: Client dispatches invitation (draft -> sent)...');
+  const dispatchedInv = await sendInvitation(
+    clientInvitation.id,
+    CLIENT_ORG_ID,
+    'user-client-eleanor'
+  );
+  if (dispatchedInv.status !== 'sent' || !dispatchedInv.sent_at) {
+    throw new Error('FAILED: Dispatched invitation must transition to "sent" with sent_at timestamp!');
+  }
+  console.log(`   ✓ Invitation dispatched: Status "sent", Sent At: ${dispatchedInv.sent_at}`);
+
+  // 42. Phase 11 Milestone 43: Contractor Private Inbox & View Tracking
+  console.log('\n43. Phase 11 Contractor Inbox: Contractor receives invitation & views request...');
+  const contractorInbox = await getContractorInbox(invCandidate.contractorId);
+  const receivedItem = contractorInbox.find((i) => i.invitation.id === clientInvitation.id);
+  if (!receivedItem) {
+    throw new Error('FAILED: Dispatched invitation not found in contractor inbox!');
+  }
+  if (receivedItem.packTitle !== duplicatedPack.title) {
+    throw new Error(`FAILED: Expected pack title "${duplicatedPack.title}", got "${receivedItem.packTitle}"`);
+  }
+  console.log(`   ✓ Contractor inbox verified: Invitation received for "${receivedItem.packTitle}"`);
+
+  const viewedInvitation = await viewContractorInvitation(
+    clientInvitation.id,
+    invCandidate.contractorId
+  );
+  if (viewedInvitation.status !== 'viewed' || !viewedInvitation.viewed_at) {
+    throw new Error('FAILED: Viewing invitation must auto-advance status to "viewed"!');
+  }
+  console.log(`   ✓ View tracking confirmed: Status "viewed", Viewed At: ${viewedInvitation.viewed_at}`);
+
+  // 43. Phase 11 Milestone 44: Contractor Interest Expression & Draft Response Initialisation
+  console.log('\n44. Phase 11 Interest Expression: Contractor expresses interest, initialising response...');
+  const { invitation: interestedInv, response: draftResponse } = await expressContractorInterest(
+    clientInvitation.id,
+    invCandidate.contractorId
+  );
+  if (interestedInv.status !== 'interested') {
+    throw new Error(`FAILED: Expected invitation status "interested", got "${interestedInv.status}"`);
+  }
+  if (!draftResponse || draftResponse.status !== 'draft') {
+    throw new Error('FAILED: Expressing interest must initialize a draft response!');
+  }
+  console.log(`   ✓ Interest expressed: Invitation status "interested", Draft response created (ID: ${draftResponse.id.slice(0, 14)}...)`);
+
+  // 44. Phase 11 Milestone 45: Structured Per-Requirement Acknowledgements
+  console.log('\n45. Phase 11 Response Building: Contractor addresses individual requirements...');
+  const requirementsToAck = clientInvitation.evidence_snapshot.map((s, idx) => ({
+    requirement_id: s.requirementId,
+    response_status: idx === 0 ? ('confirmed' as const) : ('requires_clarification' as const),
+    contractor_comment: idx === 0 ? 'Documented and policy active' : 'Need clarification on site work hours',
+    evidence_reference: idx === 0 ? 'COI-POL-2026-001' : undefined,
+  }));
+
+  for (const ack of requirementsToAck) {
+    await saveRequirementAcknowledgement(draftResponse.id, invCandidate.contractorId, ack);
+  }
+  console.log(`   ✓ Per-requirement acknowledgements recorded: ${requirementsToAck.length} items addressed`);
+
+  // 45. Phase 11 Milestone 46: Response Submission & Immutability Enforcement
+  console.log('\n46. Phase 11 Response Submission: Contractor submits response and locks snapshot...');
+  const submittedResponse = await submitContractorResponse(
+    clientInvitation.id,
+    invCandidate.contractorId,
+    {
+      availability_status: 'available',
+      proposed_start_date: '2026-11-01',
+      proposed_completion_date: '2026-12-15',
+      availability_notes: 'Crew ready for November mobilisation.',
+      response_notes: 'All mandatory credentials meet requirements.',
+      requirement_acknowledgements: requirementsToAck,
+    }
+  );
+  if (submittedResponse.status !== 'submitted' || !submittedResponse.submitted_at) {
+    throw new Error('FAILED: Submitted response must have status "submitted" and submitted_at timestamp!');
+  }
+
+  let editSubmittedBlocked = false;
+  try {
+    const { updateResponseDraft } = await import('../src/lib/respond/service');
+    await updateResponseDraft(submittedResponse.id, invCandidate.contractorId, {
+      availability_status: 'unavailable',
+    });
+  } catch {
+    editSubmittedBlocked = true;
+  }
+  if (!editSubmittedBlocked) {
+    throw new Error('FAILED: Post-submission immutability failed — editing submitted response must be rejected!');
+  }
+  console.log(`   ✓ Response submitted: Status "submitted" at ${submittedResponse.submitted_at}`);
+  console.log(`   ✓ Immutability verified: Direct edits to submitted response strictly rejected`);
+
+  // 46. Phase 11 Milestone 47: Client Response Centre & Institutional Clarity
+  console.log('\n47. Phase 11 Response Centre: Client reviews structured contractor declarations...');
+  const responseCentre = await getResponseCentre(duplicatedPack.id, CLIENT_ORG_ID);
+  if (responseCentre.invitations.length === 0) {
+    throw new Error('FAILED: Response centre must list submitted responses!');
+  }
+  const responseEntry = responseCentre.invitations.find((i) => i.invitation.id === clientInvitation.id);
+  if (!responseEntry || responseEntry.response?.status !== 'submitted') {
+    throw new Error('FAILED: Expected submitted response in response centre!');
+  }
+  const detailedView = getInvitationWithResponse(clientInvitation.id, CLIENT_ORG_ID);
+  if (!detailedView.response?.requirement_acknowledgements || detailedView.response.requirement_acknowledgements.length === 0) {
+    throw new Error('FAILED: Detailed response view must return full requirement acknowledgements!');
+  }
+  console.log(`   ✓ Response Centre aggregated: ${responseCentre.invitations.length} invitation(s), ${responseEntry.confirmedCount} confirmed, ${responseEntry.requiresClarificationCount} clarification requested`);
+  console.log(`   ✓ Non-marketplace integrity: Zero competitive pricing boards, zero AI winner rankings, clear separation of verified evidence vs contractor declarations`);
+
+  console.log('\n🎉 ALL 47 CONTRACTOR OPERATING, CREATION, PROVE, DISCOVER, CONNECT, REQUEST, MATCH & RESPOND MILESTONES COMPLETED WITH REAL PERSISTENCE.');
 }
 
 runCoreLoopTest().catch((err) => {

@@ -109,6 +109,16 @@ function evaluateRlsPolicy(
     return false;
   }
 
+  // Phase 11: request_invitation_events is append-only (no UPDATE or DELETE)
+  if (table === 'request_invitation_events' && (operation === 'UPDATE' || operation === 'DELETE')) {
+    return false;
+  }
+
+  // Phase 11: request_response_requirements immutable after submission (no UPDATE or DELETE)
+  if (table === 'request_response_requirements' && (operation === 'UPDATE' || operation === 'DELETE')) {
+    return false;
+  }
+
   // Tenant-owned tables require strict membership match
   const isMember = user.activeOrgId === recordOrgId && user.role !== 'anonymous';
   const isAdmin = isMember && ['contractor_owner', 'contractor_admin', 'client_admin'].includes(user.role);
@@ -171,6 +181,11 @@ const TENANT_TABLES = [
   // Phase 10 Match Intelligence Tables
   'match_sets',
   'match_contractor_snapshots',
+  // Phase 11 Respond & Invitation Tables
+  'request_invitations',
+  'request_invitation_events',
+  'request_responses',
+  'request_response_requirements',
 ];
 
 export function runSecurityVerification(): SecurityAssertionResult[] {
@@ -760,6 +775,115 @@ export function runSecurityVerification(): SecurityAssertionResult[] {
     operation: 'UPDATE',
     testDescription: 'Match contractor snapshots are strictly immutable (UPDATE rejected)',
     passed: canClientAUpdateSnapshot === false,
+  });
+
+  // ─── PHASE 11 RESPOND & INVITATION ASSERTIONS ────────────────
+  // Test 53: Client B cannot SELECT Client A's invitations
+  const canClientBSelectInvitations = evaluateRlsPolicy('request_invitations', 'SELECT', CLIENT_B_USER, ORG_A_ID);
+  results.push({
+    table: 'request_invitations',
+    operation: 'SELECT',
+    testDescription: 'Client B CANNOT view invitations created by Client A',
+    passed: canClientBSelectInvitations === false,
+  });
+
+  // Test 54: Client B cannot UPDATE Client A's invitations
+  const canClientBUpdateInvitations = evaluateRlsPolicy('request_invitations', 'UPDATE', CLIENT_B_USER, ORG_A_ID);
+  results.push({
+    table: 'request_invitations',
+    operation: 'UPDATE',
+    testDescription: 'Client B CANNOT modify invitations created by Client A',
+    passed: canClientBUpdateInvitations === false,
+  });
+
+  // Test 55: Contractor C cannot view invitations for Org A
+  const canContractorCSelectInvitations = evaluateRlsPolicy('request_invitations', 'SELECT', CONTRACTOR_C_USER, ORG_A_ID);
+  results.push({
+    table: 'request_invitations',
+    operation: 'SELECT',
+    testDescription: 'Contractors CANNOT view other organizations invitations',
+    passed: canContractorCSelectInvitations === false,
+  });
+
+  // Test 56: Anonymous visitor cannot view invitations
+  const canAnonSelectInvitations = evaluateRlsPolicy('request_invitations', 'SELECT', ANONYMOUS_USER, ORG_A_ID);
+  results.push({
+    table: 'request_invitations',
+    operation: 'SELECT',
+    testDescription: 'Anonymous visitors CANNOT view private invitations',
+    passed: canAnonSelectInvitations === false,
+  });
+
+  // Test 57: Anonymous visitor cannot insert invitations
+  const canAnonInsertInvitations = evaluateRlsPolicy('request_invitations', 'INSERT', ANONYMOUS_USER, ORG_A_ID);
+  results.push({
+    table: 'request_invitations',
+    operation: 'INSERT',
+    testDescription: 'Anonymous visitors CANNOT create private invitations',
+    passed: canAnonInsertInvitations === false,
+  });
+
+  // Test 58: Invitation events are append-only (UPDATE rejected)
+  const canClientAUpdateInvEvent = evaluateRlsPolicy('request_invitation_events', 'UPDATE', CLIENT_A_USER, ORG_A_ID);
+  results.push({
+    table: 'request_invitation_events',
+    operation: 'UPDATE',
+    testDescription: 'Invitation events are append-only (UPDATE rejected)',
+    passed: canClientAUpdateInvEvent === false,
+  });
+
+  // Test 59: Invitation events are append-only (DELETE rejected)
+  const canClientADeleteInvEvent = evaluateRlsPolicy('request_invitation_events', 'DELETE', CLIENT_A_USER, ORG_A_ID);
+  results.push({
+    table: 'request_invitation_events',
+    operation: 'DELETE',
+    testDescription: 'Invitation events are append-only (DELETE rejected)',
+    passed: canClientADeleteInvEvent === false,
+  });
+
+  // Test 60: Contractor C cannot view responses submitted by others
+  const canContractorCSelectResponse = evaluateRlsPolicy('request_responses', 'SELECT', CONTRACTOR_C_USER, ORG_A_ID);
+  results.push({
+    table: 'request_responses',
+    operation: 'SELECT',
+    testDescription: 'Contractors CANNOT view responses submitted by competitor contractors',
+    passed: canContractorCSelectResponse === false,
+  });
+
+  // Test 61: Anonymous visitor cannot view responses
+  const canAnonSelectResponses = evaluateRlsPolicy('request_responses', 'SELECT', ANONYMOUS_USER, ORG_A_ID);
+  results.push({
+    table: 'request_responses',
+    operation: 'SELECT',
+    testDescription: 'Anonymous visitors CANNOT view contractor responses',
+    passed: canAnonSelectResponses === false,
+  });
+
+  // Test 62: Anonymous visitor cannot insert responses
+  const canAnonInsertResponses = evaluateRlsPolicy('request_responses', 'INSERT', ANONYMOUS_USER, ORG_A_ID);
+  results.push({
+    table: 'request_responses',
+    operation: 'INSERT',
+    testDescription: 'Anonymous visitors CANNOT submit contractor responses',
+    passed: canAnonInsertResponses === false,
+  });
+
+  // Test 63: Response requirements are immutable (UPDATE rejected)
+  const canUpdateRespReq = evaluateRlsPolicy('request_response_requirements', 'UPDATE', CONTRACTOR_C_USER, ORG_A_ID);
+  results.push({
+    table: 'request_response_requirements',
+    operation: 'UPDATE',
+    testDescription: 'Submitted response requirements are immutable (UPDATE rejected)',
+    passed: canUpdateRespReq === false,
+  });
+
+  // Test 64: Anonymous visitor cannot view response requirements
+  const canAnonSelectRespReq = evaluateRlsPolicy('request_response_requirements', 'SELECT', ANONYMOUS_USER, ORG_A_ID);
+  results.push({
+    table: 'request_response_requirements',
+    operation: 'SELECT',
+    testDescription: 'Anonymous visitors CANNOT view requirement acknowledgements',
+    passed: canAnonSelectRespReq === false,
   });
 
   return results;

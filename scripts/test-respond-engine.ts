@@ -83,41 +83,37 @@ async function runRespondEngineTests() {
 
   const CLIENT_A_ORG = 'test-client-apex-org';
   const CLIENT_A_USER = 'test-client-eleanor-usr';
-  const CONTRACTOR_A_SLUG = 'apex-commercial-electric';
-  const CONTRACTOR_B_SLUG = 'lone-star-plumbing';
+  const CONTRACTOR_A_ORG_ID = `ws-contractor-apex-${Date.now()}`;
 
   // 1. Setup Contractor Workspaces
   console.log('--- 1. Setting up published contractor workspaces ---');
-  const wsA = await getContractorWorkspace(CONTRACTOR_A_SLUG);
-  await saveOnboardingStep(CONTRACTOR_A_SLUG, 'profile', {
+  const wsA = await getContractorWorkspace(CONTRACTOR_A_ORG_ID);
+  await saveOnboardingStep(CONTRACTOR_A_ORG_ID, 1, {
     businessName: 'Apex Commercial Electric LLC',
     phone: '(512) 555-0101',
-    address: '100 Industrial Pkwy',
-    city: 'Austin',
-    state: 'TX',
-    zipCode: '78701',
+    email: 'apex@test.com',
   });
-  await saveOnboardingStep(CONTRACTOR_A_SLUG, 'trades', {
-    primaryTrade: 'electrical-contracting',
-    secondaryTrades: ['low-voltage-telecom'],
+  await saveOnboardingStep(CONTRACTOR_A_ORG_ID, 2, {
+    trades: ['electrical-contracting'],
   });
-  await saveOnboardingStep(CONTRACTOR_A_SLUG, 'service_areas', {
+  await saveOnboardingStep(CONTRACTOR_A_ORG_ID, 3, {
     primaryState: 'TX',
     cities: ['Austin', 'Round Rock', 'San Marcos'],
-    nationwide: false,
   });
-  await saveOnboardingStep(CONTRACTOR_A_SLUG, 'baseline_credentials', {
-    hasInsurance: true,
-    generalLiabilityLimit: '$2,000,000',
-    hasLicense: true,
-    licenseNumber: 'TX-EL-88992',
-    hasWorkersComp: true,
-    hasSafetyProgram: true,
+  await saveOnboardingStep(CONTRACTOR_A_ORG_ID, 4, {
+    credentials: {
+      hasGeneralLiability: true,
+      hasTradeLicense: true,
+      hasWorkersComp: true,
+      hasSafetyPlan: true,
+    },
   });
-  await completeOnboarding(CONTRACTOR_A_SLUG);
-  await setPassportVisibility(CONTRACTOR_A_SLUG, 'published');
+  await completeOnboarding(CONTRACTOR_A_ORG_ID);
+  await setPassportVisibility(CONTRACTOR_A_ORG_ID, 'published');
 
-  const contractorAOrgId = wsA.organisation.id;
+  const contractorAOrgId = CONTRACTOR_A_ORG_ID;
+  const contractorASlug = wsA.organisation.slug;
+  assert(Boolean(contractorAOrgId), 'Contractor A workspace published with valid organisation ID');
   assert(Boolean(contractorAOrgId), 'Contractor A workspace published with valid organisation ID');
 
   // 2. Setup Requirement Pack & Match Set
@@ -126,18 +122,13 @@ async function runRespondEngineTests() {
     title: 'Austin Tech Center Switchgear Modernisation',
     description: 'Modernisation of 480V 3-phase switchgear and distribution boards.',
     project_type: 'commercial_renovation',
-    country: 'USA',
     state: 'TX',
     city: 'Austin',
     urgency: 'within_30_days',
     flexibility: 'fixed',
     value_tier: 'tier_3_100k_250k',
   });
-  await addPackTrade(pack.id, CLIENT_A_ORG, CLIENT_A_USER, {
-    trade_slug: 'electrical-contracting',
-    trade_name: 'Electrical Contracting',
-    is_primary: true,
-  });
+  await addPackTrade(pack.id, CLIENT_A_ORG, CLIENT_A_USER, 'electrical-contracting');
   const req1 = await addRequirement(pack.id, CLIENT_A_ORG, CLIENT_A_USER, {
     category: 'insurance',
     title: 'Commercial General Liability $2M',
@@ -170,7 +161,7 @@ async function runRespondEngineTests() {
   const inv1 = await createContractorInvitation(CLIENT_A_ORG, CLIENT_A_USER, {
     pack_id: pack.id,
     contractor_id: contractorAOrgId,
-    contractor_slug: CONTRACTOR_A_SLUG,
+    contractor_slug: contractorASlug,
     contractor_name: 'Apex Commercial Electric LLC',
     match_set_id: matchSet.id,
     invitation_message: 'Please review our technical requirements and confirm availability.',
@@ -282,18 +273,13 @@ async function runRespondEngineTests() {
   const pack2 = await createRequirementPack(CLIENT_A_ORG, CLIENT_A_USER, {
     title: 'Round Rock Substation Backup Generator',
     description: 'Installation of 500kW diesel backup generator and automatic transfer switch.',
-    country: 'USA',
     state: 'TX',
     city: 'Austin',
     urgency: 'flexible',
     flexibility: 'negotiable',
     value_tier: 'tier_2_25k_100k',
   });
-  await addPackTrade(pack2.id, CLIENT_A_ORG, CLIENT_A_USER, {
-    trade_slug: 'electrical-contracting',
-    trade_name: 'Electrical Contracting',
-    is_primary: true,
-  });
+  await addPackTrade(pack2.id, CLIENT_A_ORG, CLIENT_A_USER, 'electrical-contracting');
   await addRequirement(pack2.id, CLIENT_A_ORG, CLIENT_A_USER, {
     category: 'licence',
     title: 'Texas Master Electrician Licence',
@@ -437,17 +423,19 @@ async function runRespondEngineTests() {
   console.log('\n--- 16. Client Invitation Withdrawal Workflow ---');
   const pack3 = await createRequirementPack(CLIENT_A_ORG, CLIENT_A_USER, {
     title: 'Austin Hospital Emergency Power System',
-    country: 'USA',
+    description: 'Emergency power system installation and automatic switchgear for regional hospital.',
     state: 'TX',
     city: 'Austin',
     urgency: 'immediate',
     flexibility: 'fixed',
     value_tier: 'tier_4_250k_1m',
   });
-  await addPackTrade(pack3.id, CLIENT_A_ORG, CLIENT_A_USER, {
-    trade_slug: 'electrical-contracting',
-    trade_name: 'Electrical Contracting',
-    is_primary: true,
+  await addPackTrade(pack3.id, CLIENT_A_ORG, CLIENT_A_USER, 'electrical-contracting');
+  await addRequirement(pack3.id, CLIENT_A_ORG, CLIENT_A_USER, {
+    category: 'insurance',
+    title: 'Commercial General Liability $2M',
+    strength: 'required',
+    provenance: 'client',
   });
   await transitionPackStatus(pack3.id, CLIENT_A_ORG, CLIENT_A_USER, 'ready');
   const matchSet3 = await getOrComputeMatchSet(pack3.id, CLIENT_A_ORG, CLIENT_A_USER);
