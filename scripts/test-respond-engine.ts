@@ -124,6 +124,7 @@ async function runRespondEngineTests() {
   console.log('\n--- 2. Setting up Requirement Pack & Fresh Match Set ---');
   const pack = await createRequirementPack(CLIENT_A_ORG, CLIENT_A_USER, {
     title: 'Austin Tech Center Switchgear Modernisation',
+    description: 'Modernisation of 480V 3-phase switchgear and distribution boards.',
     project_type: 'commercial_renovation',
     country: 'USA',
     state: 'TX',
@@ -280,6 +281,7 @@ async function runRespondEngineTests() {
   // Create second pack to test decline cleanly
   const pack2 = await createRequirementPack(CLIENT_A_ORG, CLIENT_A_USER, {
     title: 'Round Rock Substation Backup Generator',
+    description: 'Installation of 500kW diesel backup generator and automatic transfer switch.',
     country: 'USA',
     state: 'TX',
     city: 'Austin',
@@ -291,6 +293,12 @@ async function runRespondEngineTests() {
     trade_slug: 'electrical-contracting',
     trade_name: 'Electrical Contracting',
     is_primary: true,
+  });
+  await addRequirement(pack2.id, CLIENT_A_ORG, CLIENT_A_USER, {
+    category: 'licence',
+    title: 'Texas Master Electrician Licence',
+    strength: 'required',
+    provenance: 'client',
   });
   await transitionPackStatus(pack2.id, CLIENT_A_ORG, CLIENT_A_USER, 'ready');
   const matchSet2 = await getOrComputeMatchSet(pack2.id, CLIENT_A_ORG, CLIENT_A_USER);
