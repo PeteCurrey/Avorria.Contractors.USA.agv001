@@ -15,7 +15,7 @@
   color: transparent;
 }
 
-body, button, input, select, textarea {
+body {
   color: var(--foreground);
   background: var(--background);
   font-family: var(--font-work-sans), 'Work Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -24,6 +24,12 @@ body, button, input, select, textarea {
   min-height: 100vh;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
+}
+
+button, input, select, textarea {
+  font-family: var(--font-work-sans), 'Work Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-weight: 200;
+  letter-spacing: -0.01em;
 }
 
 h1, h2, h3, h4, h5, h6 {

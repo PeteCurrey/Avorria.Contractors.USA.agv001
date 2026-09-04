@@ -35,8 +35,10 @@ export default function PricingPage() {
             </span>
             <button
               type="button"
+              role="switch"
+              aria-checked={billingCycle === 'annual'}
               onClick={() => setBillingCycle(billingCycle === 'monthly' ? 'annual' : 'monthly')}
-              className="w-14 h-7 rounded-full bg-slate-200 border border-slate-300 p-1 transition-colors relative flex items-center focus:outline-none focus:ring-2 focus:ring-brand-500/50"
+              className="w-14 h-7 min-h-[28px] max-h-[28px] shrink-0 rounded-full bg-slate-200 border border-slate-300 p-1 transition-colors relative inline-flex items-center focus:outline-none focus:ring-2 focus:ring-brand-500/50 cursor-pointer"
               aria-label="Toggle Billing Interval"
             >
               <div
