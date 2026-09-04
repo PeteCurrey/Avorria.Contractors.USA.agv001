@@ -27,9 +27,10 @@
     "test:passport": "tsx scripts/test-passport-assembly.ts",
     "test:prove": "tsx scripts/test-prove-engine.ts",
     "test:verification-workflow": "tsx scripts/test-phase9-verification.ts",
+    "test:discover": "tsx scripts/test-discover-engine.ts",
     "test:create": "tsx scripts/test-document-generation.ts",
     "test:assets": "tsx scripts/test-assets-engine.ts",
-    "test": "npm run test:security && npm run test:core-loop && npm run test:engine && npm run test:verification && npm run test:directory && npm run test:connect && npm run test:request && npm run test:match && npm run test:respond && npm run test:compare && npm run test:workspace && npm run test:comply-engine && npm run test:passport-prove && npm run test:passport && npm run test:prove && npm run test:verification-workflow && npm run test:create && npm run test:assets"
+    "test": "npm run test:security && npm run test:core-loop && npm run test:engine && npm run test:verification && npm run test:directory && npm run test:connect && npm run test:request && npm run test:match && npm run test:respond && npm run test:compare && npm run test:workspace && npm run test:comply-engine && npm run test:passport-prove && npm run test:passport && npm run test:prove && npm run test:verification-workflow && npm run test:discover && npm run test:create && npm run test:assets"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.123.0",

@@ -5,14 +5,27 @@ import { DEMO_ORG_ID } from '@/lib/workspace/context';
 
 export async function POST(request: NextRequest) {
   try {
-    const { email, password } = await request.json();
+    let body: any;
+    try {
+      body = await request.json();
+    } catch {
+      return NextResponse.json(
+        { error: 'Invalid request payload.' },
+        { status: 400 }
+      );
+    }
 
-    if (!email || !password) {
+    const rawEmail = body?.email;
+    const password = body?.password;
+
+    if (!rawEmail || !password) {
       return NextResponse.json(
         { error: 'Email and password are required.' },
         { status: 400 }
       );
     }
+
+    const email = String(rawEmail).trim().toLowerCase();
 
     const supabaseUrl =
       process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://feczarnbiptpxrrovkir.supabase.co';
@@ -22,20 +35,19 @@ export async function POST(request: NextRequest) {
 
     const response = NextResponse.json({ success: true, redirectTo: '/workspace' });
 
-    // Create Supabase SSR client tied to request/response cookies
+    // Create Supabase SSR client tied to request/response cookies using modern getAll/setAll
     const supabase = createServerClient(
       supabaseUrl,
       supabaseAnonKey,
       {
         cookies: {
-          get(name: string) {
-            return request.cookies.get(name)?.value;
+          getAll() {
+            return request.cookies.getAll();
           },
-          set(name: string, value: string, options: any) {
-            response.cookies.set({ name, value, ...options });
-          },
-          remove(name: string, options: any) {
-            response.cookies.set({ name, value: '', ...options });
+          setAll(cookiesToSet: any[]) {
+            cookiesToSet.forEach(({ name, value, options }) => {
+              response.cookies.set(name, value, options);
+            });
           },
         },
       }
@@ -54,29 +66,39 @@ export async function POST(request: NextRequest) {
     }
 
     const supaUser = authData.user;
-    let workspaceUser = await getUser(supaUser.id);
+    let userId = supaUser.id;
+    let orgId = DEMO_ORG_ID;
 
-    if (!workspaceUser) {
-      workspaceUser = await saveUser({
-        id: supaUser.id,
-        org_id: DEMO_ORG_ID,
-        role: 'owner',
-        full_name: supaUser.user_metadata?.full_name || email.split('@')[0],
-        email: email,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      });
+    try {
+      let workspaceUser = await getUser(supaUser.id);
+      if (!workspaceUser) {
+        workspaceUser = await saveUser({
+          id: supaUser.id,
+          org_id: DEMO_ORG_ID,
+          role: 'owner',
+          full_name: supaUser.user_metadata?.full_name || email.split('@')[0],
+          email: email,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        });
+      }
+      if (workspaceUser) {
+        userId = workspaceUser.id;
+        orgId = workspaceUser.org_id;
+      }
+    } catch (storeErr) {
+      console.warn('Workspace store sync skipped:', storeErr);
     }
 
     // Set workspace tenant cookies on the response
-    response.cookies.set('avorria_workspace_user', workspaceUser.id, {
+    response.cookies.set('avorria_workspace_user', userId, {
       path: '/',
       httpOnly: false,
       sameSite: 'lax',
       maxAge: 60 * 60 * 24 * 30, // 30 days
     });
 
-    response.cookies.set('avorria_workspace_org', workspaceUser.org_id, {
+    response.cookies.set('avorria_workspace_org', orgId, {
       path: '/',
       httpOnly: false,
       sameSite: 'lax',
@@ -96,7 +118,7 @@ export async function POST(request: NextRequest) {
   } catch (err: any) {
     console.error('Sign-in API error:', err);
     return NextResponse.json(
-      { error: 'An unexpected authentication error occurred.' },
+      { error: err?.message || 'An unexpected authentication error occurred.' },
       { status: 500 }
     );
   }

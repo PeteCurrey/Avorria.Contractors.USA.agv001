@@ -30,12 +30,18 @@ interface WorkspaceStore {
   notifications: Record<string, WorkspaceNotification>;
 }
 
+let memoryStore: WorkspaceStore | null = null;
+
 const DATA_DIR = path.join(process.cwd(), '.data');
 const STORE_PATH = path.join(DATA_DIR, 'workspace-store.json');
 
 function ensureDataDir(): void {
-  if (!fs.existsSync(DATA_DIR)) {
-    fs.mkdirSync(DATA_DIR, { recursive: true });
+  try {
+    if (!fs.existsSync(DATA_DIR)) {
+      fs.mkdirSync(DATA_DIR, { recursive: true });
+    }
+  } catch (err) {
+    // Graceful fallback for read-only serverless filesystems
   }
 }
 
@@ -77,6 +83,21 @@ export function ensureDefaultVanceData(store: WorkspaceStore): boolean {
       full_name: 'Marcus Vance',
       email: 'marcus@vanceelectric.com',
       phone: '(512) 555-4022',
+      created_at: now,
+      updated_at: now,
+    };
+  }
+
+  const PETE_USER_ID = 'd03c09d4-02a6-4c53-a37e-f13f1fe29dd9';
+  if (!store.users[PETE_USER_ID]) {
+    mutated = true;
+    const now = new Date().toISOString();
+    store.users[PETE_USER_ID] = {
+      id: PETE_USER_ID,
+      org_id: DEMO_ORG,
+      role: 'owner',
+      full_name: 'Pete Currey',
+      email: 'petecurrey@gmail.com',
       created_at: now,
       updated_at: now,
     };
@@ -193,33 +214,33 @@ export function ensureDefaultVanceData(store: WorkspaceStore): boolean {
 }
 
 export function loadWorkspaceStore(): WorkspaceStore {
-  ensureDataDir();
-  if (!fs.existsSync(STORE_PATH)) {
-    const initial: WorkspaceStore = {
-      organizations: {},
-      users: {},
-      credentials: {},
-      documents: {},
-      readiness_scores: {},
-      passports: {},
-      passport_logs: [],
-      toolbox_talks: {},
-      notifications: {},
-    };
-    ensureDefaultVanceData(initial);
-    fs.writeFileSync(STORE_PATH, JSON.stringify(initial, null, 2), 'utf-8');
-    return initial;
+  if (memoryStore) {
+    return memoryStore;
   }
 
+  ensureDataDir();
+
+  let store: WorkspaceStore;
+
   try {
-    const raw = fs.readFileSync(STORE_PATH, 'utf-8');
-    const store = JSON.parse(raw) as WorkspaceStore;
-    if (ensureDefaultVanceData(store)) {
-      fs.writeFileSync(STORE_PATH, JSON.stringify(store, null, 2), 'utf-8');
+    if (fs.existsSync(STORE_PATH)) {
+      const raw = fs.readFileSync(STORE_PATH, 'utf-8');
+      store = JSON.parse(raw) as WorkspaceStore;
+    } else {
+      store = {
+        organizations: {},
+        users: {},
+        credentials: {},
+        documents: {},
+        readiness_scores: {},
+        passports: {},
+        passport_logs: [],
+        toolbox_talks: {},
+        notifications: {},
+      };
     }
-    return store;
   } catch {
-    const fallback: WorkspaceStore = {
+    store = {
       organizations: {},
       users: {},
       credentials: {},
@@ -230,18 +251,33 @@ export function loadWorkspaceStore(): WorkspaceStore {
       toolbox_talks: {},
       notifications: {},
     };
-    ensureDefaultVanceData(fallback);
-    return fallback;
   }
+
+  const mutated = ensureDefaultVanceData(store);
+  memoryStore = store;
+
+  if (mutated || !fs.existsSync(STORE_PATH)) {
+    try {
+      fs.writeFileSync(STORE_PATH, JSON.stringify(store, null, 2), 'utf-8');
+    } catch {
+      // Graceful fallback for read-only environments
+    }
+  }
+
+  return store;
 }
 
 export function saveWorkspaceStore(store: WorkspaceStore): void {
-  ensureDataDir();
-  fs.writeFileSync(STORE_PATH, JSON.stringify(store, null, 2), 'utf-8');
+  memoryStore = store;
+  try {
+    ensureDataDir();
+    fs.writeFileSync(STORE_PATH, JSON.stringify(store, null, 2), 'utf-8');
+  } catch {
+    // In read-only serverless filesystems, memoryStore retains current state
+  }
 }
 
 export function resetWorkspaceStore(): void {
-  ensureDataDir();
   const empty: WorkspaceStore = {
     organizations: {},
     users: {},
@@ -254,7 +290,13 @@ export function resetWorkspaceStore(): void {
     notifications: {},
   };
   ensureDefaultVanceData(empty);
-  fs.writeFileSync(STORE_PATH, JSON.stringify(empty, null, 2), 'utf-8');
+  memoryStore = empty;
+  try {
+    ensureDataDir();
+    fs.writeFileSync(STORE_PATH, JSON.stringify(empty, null, 2), 'utf-8');
+  } catch {
+    // Graceful fallback
+  }
 }
 
 // ─────────────────────────────────────────────────────────────
