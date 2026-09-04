@@ -40,7 +40,7 @@ export function CinematicHero() {
       </div>
 
       {/* ── 2. HERO CONTENT (Vertically Centered) ── */}
-      <div className="relative z-10 w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 my-auto flex-1 flex items-center py-2 lg:py-0">
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 my-auto flex-1 flex items-center py-2 lg:py-0">
         <div className="max-w-3xl space-y-5 lg:space-y-6 text-left">
 
           {/* Eyebrow Label */}
@@ -114,7 +114,7 @@ export function CinematicHero() {
       </div>
 
       {/* ── 3. BOTTOM TRUST BAR ── */}
-      <div className="relative z-10 w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-3 lg:pb-4 shrink-0">
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-3 lg:pb-4 shrink-0">
         <div className="space-y-2">
           <p className="text-[11px] sm:text-xs font-extralight text-slate-400 tracking-wide">
             Trusted by contractors across the United States
