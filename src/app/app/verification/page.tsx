@@ -169,6 +169,29 @@ export default function VerificationCenterPage() {
         </div>
       )}
 
+      {/* Attention Required Banner */}
+      {(data?.requiresAttention || data?.aggregateStatus === 'attention_required') && (
+        <div className="p-4 rounded-xl bg-amber-950/80 border border-amber-700 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="space-y-1">
+            <div className="text-xs font-bold text-amber-200 flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-amber-400 animate-ping" />
+              <span>Verification Requires Attention</span>
+            </div>
+            <p className="text-xs text-amber-300/90 leading-relaxed">
+              {data.attentionReason || 'One or more required evidence items has expired or was modified since review. Please upload current documentation.'}
+            </p>
+          </div>
+          <Button
+            size="sm"
+            variant="primary"
+            onClick={handleRequestVerification}
+            isLoading={isRequesting}
+          >
+            Re-Submit for Review →
+          </Button>
+        </div>
+      )}
+
       {/* Aggregate Verification Status Banner */}
       <Card variant="elevated" className="border-brand-500/50 p-6 space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -208,7 +231,12 @@ export default function VerificationCenterPage() {
       {/* Dynamic Criteria Checklist */}
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-sm font-bold text-white">Applicable Verification Criteria</h2>
+          <div className="flex items-center gap-2">
+            <h2 className="text-sm font-bold text-white">Applicable Verification Criteria</h2>
+            <Link href="/verification/criteria" target="_blank" className="text-[11px] text-brand-400 hover:underline font-mono">
+              View Standards Registry ↗
+            </Link>
+          </div>
           <span className="text-[11px] text-slate-500 font-mono">
             {data?.applicableCriteria.length} criteria evaluated for your trade & state
           </span>

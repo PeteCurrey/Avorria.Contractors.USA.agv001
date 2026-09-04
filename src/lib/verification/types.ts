@@ -2,6 +2,7 @@
  * AVORRIA VERIFICATION ENGINE DOMAIN TYPES
  * 
  * Strict evidence-based verification domain model.
+ * Phase 6: Expanded taxonomy, submissions, lifecycle, and review governance.
  */
 
 export type VerificationCriterionCategory =
@@ -9,7 +10,8 @@ export type VerificationCriterionCategory =
   | 'insurance'
   | 'licensing'
   | 'safety_program'
-  | 'workforce_training';
+  | 'workforce_training'
+  | 'business_profile';
 
 export type VerificationCriterionEvidenceType =
   | 'insurance_coi'
@@ -18,7 +20,23 @@ export type VerificationCriterionEvidenceType =
   | 'jha_jsa'
   | 'osha_card'
   | 'business_formation'
+  | 'profile_attestation'
   | 'other';
+
+export type VerificationRequirementType =
+  | 'legal_regulatory'
+  | 'industry_standard'
+  | 'client_prequal'
+  | 'avorria_readiness';
+
+export type EvidenceItemStatus =
+  | 'submitted'
+  | 'accepted'
+  | 'rejected'
+  | 'needs_review'
+  | 'expired'
+  | 'superseded'
+  | 'not_applicable';
 
 export type VerificationRecordStatus =
   | 'not_submitted'
@@ -30,12 +48,27 @@ export type VerificationRecordStatus =
   | 'expired'
   | 'revoked';
 
+export type VerificationSubmissionStatus =
+  | 'not_started'
+  | 'preparing'
+  | 'ready_to_submit'
+  | 'submitted'
+  | 'under_review'
+  | 'additional_evidence_required'
+  | 'approved'
+  | 'verified'
+  | 'rejected'
+  | 'withdrawn'
+  | 'expired'
+  | 'suspended';
+
 export type AggregateVerificationStatus =
   | 'not_verified'
   | 'verification_in_progress'
   | 'verified'
   | 'verification_expired'
-  | 'verification_suspended';
+  | 'verification_suspended'
+  | 'attention_required';
 
 export interface VerificationCriterion {
   id: string;
@@ -45,7 +78,7 @@ export interface VerificationCriterion {
   description: string;
   trade?: string; // specific trade slug or undefined if universal
   jurisdiction?: string; // state code or undefined if nationwide
-  requirementType: 'legal_regulatory' | 'industry_standard' | 'client_prequal' | 'avorria_readiness';
+  requirementType: VerificationRequirementType;
   evidenceType: VerificationCriterionEvidenceType;
   mandatory: boolean;
   sourceName: string;
@@ -63,6 +96,7 @@ export interface VerificationRecord {
   criterionSlug: string;
   category: VerificationCriterionCategory;
   status: VerificationRecordStatus;
+  evidenceStatus?: EvidenceItemStatus;
   evidenceDocumentId?: string;
   evidenceReference?: string;
   evidenceHash?: string;
@@ -75,6 +109,23 @@ export interface VerificationRecord {
   clarificationRequestedAt?: string;
   clarificationResponse?: string;
   verificationReference?: string; // e.g. AV-VER-XXXXXX
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface VerificationSubmission {
+  id: string;
+  organisationId: string;
+  status: VerificationSubmissionStatus;
+  submittedAt: string;
+  reviewedAt?: string;
+  reviewerId?: string;
+  reviewerName?: string;
+  verificationType: string;
+  criteriaVersion: string;
+  decision?: 'approve' | 'reject' | 'request_evidence' | 'suspend' | 'withdraw';
+  decisionReason?: string;
+  nextReviewAt?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -92,7 +143,10 @@ export interface VerificationEvent {
     | 'rejected'
     | 'expired'
     | 'revoked'
-    | 'evidence_changed';
+    | 'suspended'
+    | 'evidence_changed'
+    | 'evidence_accepted'
+    | 'evidence_rejected';
   previousStatus?: VerificationRecordStatus;
   newStatus: VerificationRecordStatus;
   actorId: string;
@@ -108,19 +162,32 @@ export interface ContractorVerificationState {
   verificationReference?: string; // e.g. AV-VER-984210
   verifiedAt?: string;
   expiresAt?: string;
+  nextReviewDate?: string;
+  criteriaVersion?: string;
   totalCriteriaCount: number;
   satisfiedCriteriaCount: number;
   records: VerificationRecord[];
+  submissions?: VerificationSubmission[];
   applicableCriteria: VerificationCriterion[];
   recentEvents: VerificationEvent[];
+  requiresAttention?: boolean;
+  attentionReason?: string;
 }
 
 export interface ReviewDecisionInput {
   verificationRecordId: string;
-  decision: 'verify' | 'reject' | 'needs_clarification';
+  decision: 'verify' | 'reject' | 'needs_clarification' | 'suspend';
   notes?: string;
   rejectionReason?: string;
   expiresAt?: string;
+}
+
+export interface OverallReviewDecisionInput {
+  decision: 'approve' | 'reject' | 'request_evidence' | 'suspend';
+  notes?: string;
+  reason?: string;
+  expiresAt?: string;
+  criteriaVersion?: string;
 }
 
 export interface ReviewerContext {

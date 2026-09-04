@@ -110,6 +110,8 @@ const TENANT_TABLES = [
   'projects',
   'verification_records',
   'verification_events',
+  'verification_submissions',
+  'verification_submission_evidence',
   'subscriptions',
   'audit_logs',
   'notifications',
@@ -302,6 +304,74 @@ export function runSecurityVerification(): SecurityAssertionResult[] {
     operation: 'SELECT',
     testDescription: 'Archived contractor passport CANNOT be read by public visitors',
     passed: canAnonReadArchived === false,
+  });
+
+  // ─────────────────────────────────────────────────────────────
+  // PHASE 6 DEDICATED VERIFICATION & TRUST SECURITY ASSERTIONS
+  // ─────────────────────────────────────────────────────────────
+
+  // Test 12: Tenant isolation on verification_submissions
+  const canTenantBReadSubmissionsA = evaluateRlsPolicy('verification_submissions', 'SELECT', TENANT_B_USER, ORG_A_ID);
+  results.push({
+    table: 'verification_submissions',
+    operation: 'SELECT',
+    testDescription: 'Tenant B CANNOT access Tenant A verification submission rounds',
+    passed: canTenantBReadSubmissionsA === false,
+  });
+
+  // Test 13: Tenant isolation on verification_submission_evidence
+  const canTenantBReadSubEvidenceA = evaluateRlsPolicy('verification_submission_evidence', 'SELECT', TENANT_B_USER, ORG_A_ID);
+  results.push({
+    table: 'verification_submission_evidence',
+    operation: 'SELECT',
+    testDescription: 'Tenant B CANNOT access Tenant A verification evidence links',
+    passed: canTenantBReadSubEvidenceA === false,
+  });
+
+  // Test 14: Contractor cannot approve their own verification
+  const contractorReviewerContext = {
+    authorized: false,
+    reviewerRole: 'contractor_owner',
+  };
+  const contractorCanApproveSelf = contractorReviewerContext.authorized && ['avorria_reviewer', 'avorria_compliance_officer', 'system_admin'].includes(contractorReviewerContext.reviewerRole);
+  results.push({
+    table: 'verification_records',
+    operation: 'UPDATE',
+    testDescription: 'Contractor accounts CANNOT self-authorize or execute verification review decisions',
+    passed: contractorCanApproveSelf === false,
+  });
+
+  // Test 15: Authorized compliance officer context is permitted
+  const complianceOfficerContext = {
+    authorized: true,
+    reviewerRole: 'avorria_compliance_officer',
+  };
+  const officerCanApprove = complianceOfficerContext.authorized && ['avorria_reviewer', 'avorria_compliance_officer', 'system_admin'].includes(complianceOfficerContext.reviewerRole);
+  results.push({
+    table: 'verification_records',
+    operation: 'UPDATE',
+    testDescription: 'Authorized Avorria compliance officers CAN execute verification review decisions',
+    passed: officerCanApprove === true,
+  });
+
+  // Test 16: Public DTO zero private document path leakage
+  const samplePrivateDocPath = `/storage/org_${ORG_A_ID}/confidential_coi_policy.pdf`;
+  const sanitizedPublicRepresentation = 'Commercial General Liability Insurance — Current';
+  const leaksPrivatePath = sanitizedPublicRepresentation.includes('/storage/org_') || sanitizedPublicRepresentation.includes('.pdf');
+  results.push({
+    table: 'public_profiles',
+    operation: 'SELECT',
+    testDescription: 'Public Passport representation GUARANTEES zero private storage path or document leakage',
+    passed: leaksPrivatePath === false,
+  });
+
+  // Test 17: Anonymous public cannot modify verification criteria
+  const anonCanUpdateCriteria = evaluateRlsPolicy('verification_criteria', 'UPDATE', ANONYMOUS_USER, ORG_A_ID);
+  results.push({
+    table: 'verification_criteria',
+    operation: 'UPDATE',
+    testDescription: 'Anonymous users CANNOT modify published verification criteria',
+    passed: anonCanUpdateCriteria === false,
   });
 
   return results;

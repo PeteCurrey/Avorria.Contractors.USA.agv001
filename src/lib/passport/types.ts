@@ -1,5 +1,6 @@
 /**
  * AVORRIA CONTRACTOR PASSPORT DOMAIN TYPES
+ * Phase 6: Granular section toggles, print and sharing support.
  */
 
 export type PassportVisibility =
@@ -15,6 +16,10 @@ export interface PassportPublicSettings {
   showSafetyProgram: boolean;
   showReadinessScore: boolean;
   showWorkforceSummary: boolean;
+  showTrades?: boolean;
+  showServiceAreas?: boolean;
+  showCredentials?: boolean;
+  showVerification?: boolean;
   customHeadline?: string;
 }
 
@@ -71,13 +76,17 @@ export interface PublicPassportDTO {
   employeeCount?: number;
   yearsInBusiness?: number;
   
+  // Public Section Visibility Controls
+  publicSettings?: PassportPublicSettings;
+
   // Verification State
   verification: {
     isVerified: boolean;
-    status: 'verified' | 'verification_in_progress' | 'not_verified' | 'verification_expired';
+    status: 'verified' | 'verification_in_progress' | 'not_verified' | 'verification_expired' | 'verification_suspended';
     referenceNumber?: string; // AV-VER-XXXXXX
     verifiedAt?: string;
     validUntil?: string;
+    criteriaVersion?: string;
     verifiedCategories: Array<{
       category: string;
       name: string;

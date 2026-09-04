@@ -44,6 +44,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.8,
     },
     {
+      url: `${baseUrl}/verification/criteria`,
+      lastModified: new Date('2026-09-01'),
+      changeFrequency: 'weekly',
+      priority: 0.8,
+    },
+    {
       url: `${baseUrl}/win-work`,
       lastModified: new Date('2026-09-01'),
       changeFrequency: 'weekly',

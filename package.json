@@ -11,6 +11,9 @@
     "test:security": "tsx scripts/test-multi-tenant-security.ts",
     "test:core-loop": "tsx scripts/test-contractor-core-loop.ts",
     "test:engine": "tsx scripts/test-document-engine.ts",
+    "test:ask-avorria": "tsx scripts/test-ask-avorria.ts",
+    "test:photo-compliance": "tsx scripts/test-photo-compliance.ts",
+    "test:compliance": "npm run test:ask-avorria && npm run test:photo-compliance",
     "test:verification": "tsx scripts/test-verification-engine.ts",
     "test": "npm run test:security && npm run test:core-loop && npm run test:engine && npm run test:verification"
   },

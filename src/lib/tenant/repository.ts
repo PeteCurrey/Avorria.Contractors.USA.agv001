@@ -10,8 +10,8 @@ import {
 } from '@/types/database';
 import { evaluateContractorRequirements, EvaluatedRequirement } from '@/lib/compliance/engine';
 import { computeDynamicReadinessScore, DynamicReadinessResult } from '@/lib/scoring/readiness-service';
-import { VerificationRecord, VerificationEvent } from '@/lib/verification/types';
 import { PassportPublicSettings } from '@/lib/passport/types';
+import { VerificationRecord, VerificationEvent, VerificationSubmission } from '@/lib/verification/types';
 
 export interface ContractorWorkspaceData {
   organisation: Organisation;
@@ -36,6 +36,7 @@ export interface ContractorWorkspaceData {
   generatedDocuments: GeneratedDocument[];
   verificationRecords?: VerificationRecord[];
   verificationEvents?: VerificationEvent[];
+  verificationSubmissions?: VerificationSubmission[];
   passportSettings?: PassportPublicSettings;
   auditLogs: { id: string; action: string; timestamp: string; details: string }[];
 }

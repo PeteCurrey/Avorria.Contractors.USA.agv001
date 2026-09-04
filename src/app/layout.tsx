@@ -1,7 +1,15 @@
 import type { Metadata, Viewport } from 'next';
+import { Work_Sans } from 'next/font/google';
 import './globals.css';
 import { siteConfig } from '@/config/site';
 import { OrganizationJsonLd, WebSiteJsonLd } from '@/components/seo/JsonLd';
+
+const workSans = Work_Sans({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-work-sans',
+  weight: ['200', '300', '400', '500', '600', '700'],
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
@@ -67,8 +75,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className="bg-surface-page text-navy-800 antialiased min-h-screen flex flex-col selection:bg-brand-600 selection:text-white">
+    <html lang="en" className={workSans.variable}>
+      <body className="bg-surface-page text-navy-800 antialiased min-h-screen flex flex-col selection:bg-brand-600 selection:text-white font-sans font-extralight">
         <OrganizationJsonLd />
         <WebSiteJsonLd />
         {children}

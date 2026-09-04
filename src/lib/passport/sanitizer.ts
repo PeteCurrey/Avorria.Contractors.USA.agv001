@@ -3,6 +3,7 @@
  * 
  * Guarantees zero sensitive data leakage from internal repository structures
  * into public-facing views (/contractors/[slug] and /contractors/[slug]/verification).
+ * Phase 6: Granular section toggles and publicSettings inclusion.
  */
 
 import { PublicPassportDTO, PassportPublicSettings } from './types';
@@ -23,6 +24,10 @@ export function sanitizeContractorForPublic(
     showSafetyProgram: true,
     showReadinessScore: true,
     showWorkforceSummary: true,
+    showTrades: true,
+    showServiceAreas: true,
+    showCredentials: true,
+    showVerification: true,
   };
 
   const primaryCity = ws.serviceAreas.cities[0] || 'Operating Territory';
@@ -108,6 +113,8 @@ export function sanitizeContractorForPublic(
       ? 'verification_in_progress'
       : verification.aggregateStatus === 'verification_expired'
       ? 'verification_expired'
+      : verification.aggregateStatus === 'verification_suspended'
+      ? 'verification_suspended'
       : 'not_verified';
 
   return {
@@ -133,6 +140,7 @@ export function sanitizeContractorForPublic(
     yearsInBusiness: ws.profile.year_established
       ? new Date().getFullYear() - ws.profile.year_established
       : undefined,
+    publicSettings: activeSettings,
 
     verification: {
       isVerified: verification.isVerified,
@@ -140,6 +148,7 @@ export function sanitizeContractorForPublic(
       referenceNumber: verification.verificationReference,
       verifiedAt: verification.verifiedAt,
       validUntil: verification.expiresAt,
+      criteriaVersion: verification.criteriaVersion || '2026.1',
       verifiedCategories,
     },
 
@@ -147,9 +156,9 @@ export function sanitizeContractorForPublic(
 
     readinessScore: activeSettings.showReadinessScore
       ? {
-          score: 85, // will be bound to real calculated score
+          score: ws.profile.readiness_score || 85,
           label: 'Avorria Operational Readiness',
-          disclaimer: 'Readiness measures completion against internal Avorria criteria.',
+          disclaimer: 'Readiness reflects completion of Avorria’s published operational criteria and does not constitute legal, regulatory or safety certification.',
         }
       : undefined,
 

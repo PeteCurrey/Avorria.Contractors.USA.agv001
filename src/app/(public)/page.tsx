@@ -39,7 +39,7 @@ export default function HomePage() {
           <div className="text-xs font-mono font-bold tracking-widest uppercase text-brand-600">
             SYSTEM ARCHITECTURE
           </div>
-          <h2 className="text-3xl sm:text-5xl font-black text-navy-900 tracking-tight leading-tight">
+          <h2 className="text-3xl sm:text-5xl font-extralight text-navy-900 tracking-tight leading-tight">
             Everything your contracting business needs to look ready, stay ready and win work.
           </h2>
           <p className="text-lg text-slate-600 leading-relaxed font-normal">

@@ -240,6 +240,15 @@ async function runVerificationTestSuite() {
     notes: 'Site safety plan conforms to OSHA 1926.20 requirements.',
   });
 
+  const profileRec = vState.records.find((r) => r.category === 'business_profile');
+  if (profileRec) {
+    await executeReviewDecision(reviewerAuth, TEST_ORG, {
+      verificationRecordId: profileRec.id,
+      decision: 'verify',
+      notes: 'Business profile and passport coherence verified.',
+    });
+  }
+
   // State 4: Verified Contractor
   const finalState = await getVerificationState(TEST_ORG);
   console.log(`   ✓ State 4 (Verified Contractor): Aggregate Status = "${finalState.aggregateStatus}", Verified = ${finalState.isVerified}`);

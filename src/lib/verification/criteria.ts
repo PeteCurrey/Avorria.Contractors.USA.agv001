@@ -2,6 +2,7 @@
  * AVORRIA VERIFICATION CRITERIA REGISTRY
  * 
  * Defines the official human-governed verification criteria.
+ * Phase 6: Expanded taxonomy including Business Profile, insurance, licensing, safety, and training.
  * Includes legal provenance, jurisdictions, evidence expectations, and review dates.
  */
 
@@ -27,7 +28,26 @@ export const VERIFICATION_CRITERIA_REGISTRY: VerificationCriterion[] = [
     verificationWeight: 20,
   },
 
-  // 2. General Liability Insurance
+  // 2. Business Profile Completeness & Accuracy
+  {
+    id: 'crit_bus_profile',
+    slug: 'business-profile-coherence',
+    name: 'Business Profile & Passport Coherence',
+    category: 'business_profile',
+    description: 'Verification that business contact information, operating locations, workforce count, and stated specialties are coherent and verified.',
+    requirementType: 'avorria_readiness',
+    evidenceType: 'profile_attestation',
+    mandatory: true,
+    sourceName: 'Avorria Contractor Profile Standards',
+    sourceUrl: 'https://avorria.com/contractor-verification/criteria',
+    effectiveDate: '2026-01-01',
+    nextReviewDate: '2027-01-01',
+    governedBy: 'Avorria Verification Committee',
+    active: true,
+    verificationWeight: 10,
+  },
+
+  // 3. General Liability Insurance
   {
     id: 'crit_ins_gl',
     slug: 'general-liability-insurance',
@@ -46,7 +66,7 @@ export const VERIFICATION_CRITERIA_REGISTRY: VerificationCriterion[] = [
     verificationWeight: 25,
   },
 
-  // 3. Workers' Compensation Insurance
+  // 4. Workers' Compensation Insurance
   {
     id: 'crit_ins_wc',
     slug: 'workers-compensation-policy',
@@ -65,7 +85,7 @@ export const VERIFICATION_CRITERIA_REGISTRY: VerificationCriterion[] = [
     verificationWeight: 15,
   },
 
-  // 4. Trade License (Contextual: Electrical, Plumbing, HVAC)
+  // 5. Trade License (Contextual: Electrical, Plumbing, HVAC)
   {
     id: 'crit_lic_trade',
     slug: 'state-trade-contractor-license',
@@ -85,7 +105,7 @@ export const VERIFICATION_CRITERIA_REGISTRY: VerificationCriterion[] = [
     verificationWeight: 25,
   },
 
-  // 5. Site Safety Program / HASP
+  // 6. Site Safety Program / HASP
   {
     id: 'crit_saf_program',
     slug: 'written-site-safety-program',
@@ -104,7 +124,7 @@ export const VERIFICATION_CRITERIA_REGISTRY: VerificationCriterion[] = [
     verificationWeight: 15,
   },
 
-  // 6. Workforce Training / OSHA Card
+  // 7. Workforce Training / OSHA Card
   {
     id: 'crit_trn_osha',
     slug: 'supervisory-osha-training',
@@ -151,4 +171,8 @@ export function getApplicableVerificationCriteria(
 
 export function getVerificationCriterionBySlug(slug: string): VerificationCriterion | undefined {
   return VERIFICATION_CRITERIA_REGISTRY.find((c) => c.slug === slug);
+}
+
+export function getAllVerificationCriteria(): VerificationCriterion[] {
+  return VERIFICATION_CRITERIA_REGISTRY;
 }

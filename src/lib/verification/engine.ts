@@ -2,7 +2,8 @@
  * AVORRIA VERIFICATION ENGINE
  * 
  * Manages criteria resolution, aggregate status derivation,
- * evidence integrity checking, and verification reference generation.
+ * evidence integrity checking, verification reference generation,
+ * and expiration/attention detection.
  */
 
 import crypto from 'crypto';
@@ -50,6 +51,9 @@ export function evaluateContractorVerification(
     recordsMap.set(r.criterionSlug, r);
   }
 
+  let requiresAttention = false;
+  let attentionReason: string | undefined;
+
   // Ensure every applicable criterion has a corresponding record representation
   const synchronizedRecords: VerificationRecord[] = applicableCriteria.map((crit) => {
     const existing = recordsMap.get(crit.slug);
@@ -58,9 +62,12 @@ export function evaluateContractorVerification(
       if (existing.status === 'verified' && existing.expiresAt) {
         const isExpired = new Date(existing.expiresAt).getTime() < Date.now();
         if (isExpired) {
+          requiresAttention = true;
+          attentionReason = `Criterion "${crit.name}" expired on ${new Date(existing.expiresAt).toLocaleDateString()}. Re-review required.`;
           return {
             ...existing,
             status: 'expired',
+            evidenceStatus: 'expired',
             updatedAt: new Date().toISOString(),
           };
         }
@@ -70,16 +77,22 @@ export function evaluateContractorVerification(
       if (existing.evidenceDocumentId) {
         const doc = ws.documents.find((d) => d.id === existing.evidenceDocumentId);
         if (!doc || doc.status === 'archived') {
+          requiresAttention = true;
+          attentionReason = `Underlying evidence for "${crit.name}" was archived or removed.`;
           return {
             ...existing,
             status: 'revoked',
+            evidenceStatus: 'superseded',
             rejectionReason: 'Underlying evidence document was archived or removed.',
             updatedAt: new Date().toISOString(),
           };
         } else if (existing.evidenceHash && computeEvidenceHash(doc) !== existing.evidenceHash) {
+          requiresAttention = true;
+          attentionReason = `Evidence for "${crit.name}" was modified since review. Re-review required.`;
           return {
             ...existing,
             status: 'needs_clarification',
+            evidenceStatus: 'needs_review',
             rejectionReason: 'Evidence document was modified or updated since review. Re-review required.',
             updatedAt: new Date().toISOString(),
           };
@@ -96,6 +109,7 @@ export function evaluateContractorVerification(
       criterionSlug: crit.slug,
       category: crit.category,
       status: 'not_submitted',
+      evidenceStatus: 'not_applicable',
       verificationMethod: 'document_inspection',
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
@@ -116,6 +130,9 @@ export function evaluateContractorVerification(
   const anyExpired = synchronizedRecords.some(
     (r) => mandatorySlugs.has(r.criterionSlug) && r.status === 'expired'
   );
+  const anyNeedsClarification = synchronizedRecords.some(
+    (r) => r.status === 'needs_clarification'
+  );
   const isSuspended = ws.profile.visibility === 'suspended';
 
   // Derive aggregate verification status
@@ -129,6 +146,8 @@ export function evaluateContractorVerification(
     isVerified = true;
   } else if (anyExpired) {
     aggregateStatus = 'verification_expired';
+  } else if (requiresAttention || anyNeedsClarification) {
+    aggregateStatus = 'attention_required';
   } else if (anyUnderReview) {
     aggregateStatus = 'verification_in_progress';
   }
@@ -149,16 +168,22 @@ export function evaluateContractorVerification(
     ? generateVerificationReference(ws.organisation.id)
     : undefined;
 
+  const nextReviewDate = earliestExpiry || (latestVerifiedAt ? new Date(new Date(latestVerifiedAt).getTime() + 365 * 86400000).toISOString() : undefined);
+
   return {
     aggregateStatus,
     isVerified,
     verificationReference,
     verifiedAt: latestVerifiedAt,
     expiresAt: earliestExpiry,
+    nextReviewDate,
+    criteriaVersion: '2026.1',
     totalCriteriaCount: applicableCriteria.length,
     satisfiedCriteriaCount: verifiedRecords.length,
     records: synchronizedRecords,
     applicableCriteria,
     recentEvents: [],
+    requiresAttention,
+    attentionReason,
   };
 }

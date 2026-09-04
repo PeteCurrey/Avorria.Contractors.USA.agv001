@@ -16,6 +16,16 @@ export default function DashboardPage() {
     workspace: ContractorWorkspaceData;
     requirements: EvaluatedRequirement[];
     readiness: DynamicReadinessResult;
+    passport?: {
+      isPublished: boolean;
+      completionPercentage: number;
+      verification: {
+        isVerified: boolean;
+        status: string;
+        referenceNumber?: string;
+        verifiedAt?: string;
+      };
+    };
   } | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -52,6 +62,39 @@ export default function DashboardPage() {
   const expiringReqs = requirements.filter((r) => r.state === 'expiring');
   const missingReqs = requirements.filter((r) => r.state === 'missing');
   const isOnboardingComplete = ws?.profile.onboarding_status === 'completed';
+
+  const passport = data?.passport;
+  const isPassportPublished = passport?.isPublished || ws?.profile.visibility === 'published';
+  const passportCompletion = passport?.completionPercentage ?? (isOnboardingComplete ? 100 : 60);
+  const isVerified = passport?.verification?.isVerified || false;
+  const verificationStatus = passport?.verification?.status || 'not_started';
+  const verificationRef = passport?.verification?.referenceNumber;
+
+  let nextActionLabel = 'Prepare verification';
+  let nextActionCta = 'Begin Review';
+  let nextActionHref = '/app/verification';
+
+  if (!isOnboardingComplete) {
+    nextActionLabel = 'Complete business profile';
+    nextActionCta = 'Resume Profile';
+    nextActionHref = '/app/onboarding';
+  } else if (!isPassportPublished) {
+    nextActionLabel = 'Publish Contractor Passport';
+    nextActionCta = 'Publish';
+    nextActionHref = '/app/passport';
+  } else if (verificationStatus === 'verification_in_progress' || verificationStatus === 'under_review') {
+    nextActionLabel = 'Review in progress by Avorria';
+    nextActionCta = 'View Status';
+    nextActionHref = '/app/verification';
+  } else if (verificationStatus === 'attention_required' || verificationStatus === 'needs_clarification') {
+    nextActionLabel = 'Provide requested evidence';
+    nextActionCta = 'Respond';
+    nextActionHref = '/app/verification';
+  } else if (isVerified) {
+    nextActionLabel = 'Verified credentials active';
+    nextActionCta = 'Share Passport';
+    nextActionHref = '/app/passport';
+  }
 
   return (
     <div className="max-w-6xl space-y-8 text-left">
@@ -192,6 +235,75 @@ export default function DashboardPage() {
           </Link>
         </Card>
       </div>
+
+      {/* PROVE STAGE: Your Avorria Passport */}
+      <Card variant="elevated" className="p-6 border-brand-500/40 bg-brand-950/20 space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-surface-border pb-4">
+          <div className="space-y-1">
+            <div className="flex items-center gap-2">
+              <span className="px-2 py-0.5 rounded bg-brand-950 border border-brand-700 text-brand-300 font-mono text-[10px] font-bold uppercase tracking-wider">
+                STAGE 4 · PROVE
+              </span>
+              <h2 className="text-lg font-bold text-white">Your Avorria Passport & Trust Standing</h2>
+            </div>
+            <p className="text-xs text-slate-400">
+              Transform your operational evidence into verified credentials for project owners and general contractors.
+            </p>
+          </div>
+          <div className="flex items-center gap-2">
+            <Button href="/app/passport" size="sm" variant="outline">
+              Manage Passport →
+            </Button>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
+          {/* 1. Passport Status */}
+          <div className="p-3.5 rounded-xl bg-surface-card border border-surface-border space-y-1">
+            <div className="text-[11px] font-mono text-slate-400 uppercase">Passport Completion</div>
+            <div className="text-sm font-bold text-white">
+              {passportCompletion >= 100 ? 'Complete' : `${passportCompletion}% Satisfied`}
+            </div>
+            <div className="text-[10px] text-slate-500">
+              {passportCompletion >= 100 ? 'All baseline items fulfilled' : 'Requires profile details'}
+            </div>
+          </div>
+
+          {/* 2. Public Profile */}
+          <div className="p-3.5 rounded-xl bg-surface-card border border-surface-border space-y-1">
+            <div className="text-[11px] font-mono text-slate-400 uppercase">Public Profile</div>
+            <div className="text-sm font-bold text-white flex items-center gap-1.5">
+              <span className={`w-2 h-2 rounded-full ${isPassportPublished ? 'bg-emerald-400' : 'bg-slate-500'}`} />
+              <span>{isPassportPublished ? 'Published' : 'Private'}</span>
+            </div>
+            <div className="text-[10px] text-slate-500">
+              {isPassportPublished ? 'Accessible to clients via link' : 'Hidden from public index'}
+            </div>
+          </div>
+
+          {/* 3. Verification */}
+          <div className="p-3.5 rounded-xl bg-surface-card border border-surface-border space-y-1">
+            <div className="text-[11px] font-mono text-slate-400 uppercase">Avorria Verification</div>
+            <div className="text-sm font-bold text-white">
+              {isVerified ? 'Verified by Avorria' : verificationStatus.replace(/_/g, ' ')}
+            </div>
+            <div className="text-[10px] text-brand-400 font-mono">
+              {isVerified ? verificationRef : 'Human evidence review'}
+            </div>
+          </div>
+
+          {/* 4. Next Step Action */}
+          <div className="p-3.5 rounded-xl bg-brand-950/50 border border-brand-800 space-y-2 flex flex-col justify-between">
+            <div className="space-y-0.5">
+              <div className="text-[10px] font-mono text-brand-300 uppercase font-bold">Next Action</div>
+              <div className="text-xs font-bold text-white">{nextActionLabel}</div>
+            </div>
+            <Button href={nextActionHref} size="sm" variant="primary" className="w-full text-xs">
+              {nextActionCta} →
+            </Button>
+          </div>
+        </div>
+      </Card>
 
       {/* Category Breakdown & Document Vault Preview */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">

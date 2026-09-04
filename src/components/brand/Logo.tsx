@@ -1,13 +1,15 @@
 import React from 'react';
 import Link from 'next/link';
-import { siteConfig } from '@/config/site';
+import { BrandMark } from '@/components/brand/BrandMark';
 
 export interface LogoProps {
   size?: 'sm' | 'md' | 'lg';
   showWordmark?: boolean;
   className?: string;
   asLink?: boolean;
-  variant?: 'light' | 'dark' | 'auto'; // 'light' has white text (on dark bg), 'dark' has navy-900 text (on light bg)
+  variant?: 'light' | 'dark' | 'auto';
+  state?: 'wire' | 'solid';
+  subtitle?: boolean;
 }
 
 export function Logo({
@@ -16,53 +18,46 @@ export function Logo({
   className = '',
   asLink = true,
   variant = 'light',
+  state = 'solid',
+  subtitle = false,
 }: LogoProps) {
-  const iconDimensions = {
-    sm: { w: 24, h: 24, fontSize: 'text-base' },
-    md: { w: 30, h: 30, fontSize: 'text-xl' },
-    lg: { w: 38, h: 38, fontSize: 'text-2xl' },
+  const markDimensions = {
+    sm: { markWidth: 'w-8', fontSize: 'text-[16px]', subSize: 'text-[8px]' },
+    md: { markWidth: 'w-10 sm:w-11', fontSize: 'text-[19px]', subSize: 'text-[9px]' },
+    lg: { markWidth: 'w-12 sm:w-14', fontSize: 'text-[22px]', subSize: 'text-[10px]' },
   };
 
-  const { w, h, fontSize } = iconDimensions[size];
+  const { markWidth, fontSize, subSize } = markDimensions[size];
 
   const content = (
-    <div className={`inline-flex items-center gap-2.5 select-none ${className}`}>
-      {/* Precision Geometric Brand Mark */}
-      <svg
-        width={w}
-        height={h}
-        viewBox="0 0 36 36"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        className="shrink-0"
-        aria-hidden="true"
+    <div className={`group inline-flex shrink-0 items-center gap-3 select-none ${className}`}>
+      <span
+        data-brand-mark
+        className={`brand-mark relative block ${markWidth} transition-all duration-500 ease-brand group-hover:scale-105 ${
+          variant === 'dark' ? 'text-slate-700' : 'text-slate-400'
+        }`}
       >
-        <rect width="36" height="36" rx="8" fill="#0c1322" stroke="#1e293b" strokeWidth="1.5" />
-        {/* Modern geometric chevron / shield 'A' */}
-        <path
-          d="M18 7L28 26H22.5L18 16.5L13.5 26H8L18 7Z"
-          fill="url(#avorria-grad-primary)"
-        />
-        <path
-          d="M14 21.5H22L20.5 24.5H15.5L14 21.5Z"
-          fill="#38bdf8"
-        />
-        <defs>
-          <linearGradient id="avorria-grad-primary" x1="8" y1="7" x2="28" y2="26" gradientUnits="userSpaceOnUse">
-            <stop stopColor="#38bdf8" />
-            <stop offset="0.5" stopColor="#0284c7" />
-            <stop offset="1" stopColor="#0369a1" />
-          </linearGradient>
-        </defs>
-      </svg>
+        <BrandMark state={state} className="block w-full" />
+      </span>
 
       {showWordmark && (
-        <span
-          className={`font-black tracking-tight font-sans ${
-            variant === 'dark' ? 'text-navy-900' : 'text-white'
-          } ${fontSize}`}
-        >
-          {siteConfig.name}
+        <span className="flex flex-col leading-none">
+          <span
+            className={`${fontSize} font-extralight tracking-[0.08em] transition-colors duration-300 ${
+              variant === 'dark' ? 'text-slate-950' : 'text-white'
+            }`}
+          >
+            Entire<span className="font-bold text-hero-pink">FM</span>
+          </span>
+          {subtitle && (
+            <span
+              className={`mt-1 hidden ${subSize} font-medium tracking-[0.18em] transition-colors duration-300 sm:block ${
+                variant === 'dark' ? 'text-slate-600' : 'text-slate-400'
+              }`}
+            >
+              Facilities Management. Evolved.
+            </span>
+          )}
         </span>
       )}
     </div>
@@ -70,7 +65,11 @@ export function Logo({
 
   if (asLink) {
     return (
-      <Link href="/" className="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 rounded-md">
+      <Link
+        href="/"
+        aria-label="EntireFM — home"
+        className="focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-brand-500 rounded-sm"
+      >
         {content}
       </Link>
     );
