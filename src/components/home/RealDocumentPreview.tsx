@@ -123,17 +123,12 @@ export function RealContractorDocumentPreview() {
               <div className="pb-4 border-b-2 border-slate-900 flex flex-col sm:flex-row sm:items-start justify-between gap-4">
                 {/* Contractor Identity */}
                 <div className="space-y-1">
-                  <div className="flex items-center gap-2.5">
-                    <div className="w-9 h-9 rounded-md bg-navy-900 flex items-center justify-center text-white text-sm shadow-sm border border-slate-700 font-extralight">
-                      <span className="tracking-tight text-white">VE</span>
+                  <div>
+                    <div className="text-base sm:text-lg text-slate-900 tracking-tight uppercase leading-tight font-extralight">
+                      Vance Commercial Electrical, LLC
                     </div>
-                    <div>
-                      <div className="text-base sm:text-lg text-slate-900 tracking-tight uppercase leading-tight font-extralight">
-                        Vance Commercial Electrical, LLC
-                      </div>
-                      <div className="text-[11px] text-slate-500 font-extralight">
-                        Austin Regional Office • 4801 Freidrich Ln, Suite 200, Austin, TX 78744
-                      </div>
+                    <div className="text-[11px] text-slate-500 font-extralight">
+                      Austin Regional Office • 4801 Freidrich Ln, Suite 200, Austin, TX 78744
                     </div>
                   </div>
 
