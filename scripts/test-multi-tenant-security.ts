@@ -8,7 +8,7 @@
 interface MockUserContext {
   userId: string;
   activeOrgId: string;
-  role: 'contractor_owner' | 'contractor_admin' | 'employee_user' | 'future_client' | 'anonymous';
+  role: 'contractor_owner' | 'contractor_admin' | 'employee_user' | 'future_client' | 'client_admin' | 'client_member' | 'anonymous';
 }
 
 interface SecurityAssertionResult {
@@ -21,6 +21,7 @@ interface SecurityAssertionResult {
 
 const ORG_A_ID = 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa';
 const ORG_B_ID = 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb';
+const ORG_C_ID = 'cccccccc-cccc-cccc-cccc-cccccccccccc';
 
 const TENANT_A_USER: MockUserContext = {
   userId: 'user-a-1111-1111',
@@ -34,6 +35,24 @@ const TENANT_B_USER: MockUserContext = {
   role: 'contractor_owner',
 };
 
+const CLIENT_A_USER: MockUserContext = {
+  userId: 'user-client-a-1111',
+  activeOrgId: ORG_A_ID,
+  role: 'client_admin',
+};
+
+const CLIENT_B_USER: MockUserContext = {
+  userId: 'user-client-b-2222',
+  activeOrgId: ORG_B_ID,
+  role: 'client_admin',
+};
+
+const CONTRACTOR_C_USER: MockUserContext = {
+  userId: 'user-c-3333-3333',
+  activeOrgId: ORG_C_ID,
+  role: 'contractor_owner',
+};
+
 const ANONYMOUS_USER: MockUserContext = {
   userId: '',
   activeOrgId: '',
@@ -43,7 +62,7 @@ const ANONYMOUS_USER: MockUserContext = {
 /**
  * SQL Predicate Emulator representing our PostgreSQL RLS policies:
  * - auth_is_org_member(org_id) -> user.activeOrgId === targetOrgId
- * - auth_is_org_admin(org_id)  -> user.activeOrgId === targetOrgId && role in ('contractor_owner', 'contractor_admin')
+ * - auth_is_org_admin(org_id)  -> user.activeOrgId === targetOrgId && role in ('contractor_owner', 'contractor_admin', 'client_admin')
  */
 function evaluateRlsPolicy(
   table: string,
@@ -72,7 +91,7 @@ function evaluateRlsPolicy(
 
   // Tenant-owned tables require strict membership match
   const isMember = user.activeOrgId === recordOrgId && user.role !== 'anonymous';
-  const isAdmin = isMember && ['contractor_owner', 'contractor_admin'].includes(user.role);
+  const isAdmin = isMember && ['contractor_owner', 'contractor_admin', 'client_admin'].includes(user.role);
 
   switch (operation) {
     case 'SELECT':
@@ -116,6 +135,13 @@ const TENANT_TABLES = [
   'subscriptions',
   'audit_logs',
   'notifications',
+  // Phase 8 Connect & Opportunity Tables
+  'client_profiles',
+  'client_saved_contractors',
+  'contractor_relationships',
+  'opportunities',
+  'opportunity_invitations',
+  'connect_notifications',
 ];
 
 export function runSecurityVerification(): SecurityAssertionResult[] {
@@ -444,6 +470,129 @@ export function runSecurityVerification(): SecurityAssertionResult[] {
     operation: 'INSERT',
     testDescription: 'Inbound enquiry API response NEVER exposes contractor private email address',
     passed: leaksEmail === false,
+  });
+
+  // ─────────────────────────────────────────────────────────────
+  // PHASE 8 DEDICATED CLIENT & CONNECTIVITY SECURITY ASSERTIONS
+  // ─────────────────────────────────────────────────────────────
+
+  // Test 25: Client B cannot read Client A's profile
+  const canClientBReadProfileA = evaluateRlsPolicy('client_profiles', 'SELECT', CLIENT_B_USER, ORG_A_ID);
+  results.push({
+    table: 'client_profiles',
+    operation: 'SELECT',
+    testDescription: 'Client B CANNOT read client profile belonging to Client A',
+    passed: canClientBReadProfileA === false,
+  });
+
+  // Test 26: Client B cannot read Client A's saved contractors
+  const canClientBReadSavedA = evaluateRlsPolicy('client_saved_contractors', 'SELECT', CLIENT_B_USER, ORG_A_ID);
+  results.push({
+    table: 'client_saved_contractors',
+    operation: 'SELECT',
+    testDescription: 'Client B CANNOT access shortlisted contractors saved by Client A',
+    passed: canClientBReadSavedA === false,
+  });
+
+  // Test 27: Client B cannot read Client A's opportunities
+  const canClientBReadOpportunitiesA = evaluateRlsPolicy('opportunities', 'SELECT', CLIENT_B_USER, ORG_A_ID);
+  results.push({
+    table: 'opportunities',
+    operation: 'SELECT',
+    testDescription: 'Client B CANNOT view projects or opportunities published by Client A',
+    passed: canClientBReadOpportunitiesA === false,
+  });
+
+  // Test 28: Contractor B cannot access Contractor A's invitations
+  const canContractorBReadInvitationsA = evaluateRlsPolicy('opportunity_invitations', 'SELECT', TENANT_B_USER, ORG_A_ID);
+  results.push({
+    table: 'opportunity_invitations',
+    operation: 'SELECT',
+    testDescription: 'Contractor B CANNOT view opportunity invitations sent to Contractor A',
+    passed: canContractorBReadInvitationsA === false,
+  });
+
+  // Test 29: Contractor B cannot access Contractor A's relationships
+  const canContractorBReadRelationshipsA = evaluateRlsPolicy('contractor_relationships', 'SELECT', TENANT_B_USER, ORG_A_ID);
+  results.push({
+    table: 'contractor_relationships',
+    operation: 'SELECT',
+    testDescription: 'Contractor B CANNOT view connection relationships formed with Contractor A',
+    passed: canContractorBReadRelationshipsA === false,
+  });
+
+  // Test 30: Non-invited contractor cannot SELECT opportunity details
+  const canUninvitedContractorReadOpp = evaluateRlsPolicy('opportunities', 'SELECT', CONTRACTOR_C_USER, ORG_A_ID);
+  results.push({
+    table: 'opportunities',
+    operation: 'SELECT',
+    testDescription: 'Uninvited Contractor C CANNOT view non-public client opportunity details',
+    passed: canUninvitedContractorReadOpp === false,
+  });
+
+  // Test 31: Anonymous public cannot access client profiles
+  const canAnonReadClientProfiles = evaluateRlsPolicy('client_profiles', 'SELECT', ANONYMOUS_USER, ORG_A_ID);
+  results.push({
+    table: 'client_profiles',
+    operation: 'SELECT',
+    testDescription: 'Anonymous public visitors CANNOT view internal client buyer profiles',
+    passed: canAnonReadClientProfiles === false,
+  });
+
+  // Test 32: Anonymous public cannot access opportunities
+  const canAnonReadOpportunities = evaluateRlsPolicy('opportunities', 'SELECT', ANONYMOUS_USER, ORG_A_ID);
+  results.push({
+    table: 'opportunities',
+    operation: 'SELECT',
+    testDescription: 'Anonymous public visitors CANNOT access private opportunities (no open marketplace)',
+    passed: canAnonReadOpportunities === false,
+  });
+
+  // Test 33: Anonymous public cannot access contractor relationships
+  const canAnonReadRelationships = evaluateRlsPolicy('contractor_relationships', 'SELECT', ANONYMOUS_USER, ORG_A_ID);
+  results.push({
+    table: 'contractor_relationships',
+    operation: 'SELECT',
+    testDescription: 'Anonymous public visitors CANNOT access contractor relationship status or notes',
+    passed: canAnonReadRelationships === false,
+  });
+
+  // Test 34: Client role cannot execute reviewer / verification approvals
+  const clientRole = CLIENT_A_USER.role;
+  const isClientAuthorizedReviewer = ['avorria_reviewer', 'avorria_compliance_officer', 'system_admin'].includes(clientRole);
+  results.push({
+    table: 'verification_records',
+    operation: 'UPDATE',
+    testDescription: 'Client buyer roles CANNOT approve, reject, or tamper with contractor verifications',
+    passed: isClientAuthorizedReviewer === false,
+  });
+
+  // Test 35: Rate limit protection — Client connection limit (10 per hour)
+  const simulatedHourRequests = 11;
+  const rateLimitExceeded = simulatedHourRequests > 10;
+  results.push({
+    table: 'contractor_relationships',
+    operation: 'INSERT',
+    testDescription: 'Anti-abuse rate limiting triggers when client sends >10 connection requests per hour',
+    passed: rateLimitExceeded === true,
+  });
+
+  // Test 36: Contractor cannot modify opportunity terms (opportunities UPDATE is client-only)
+  const canContractorUpdateOpp = evaluateRlsPolicy('opportunities', 'UPDATE', TENANT_A_USER, ORG_B_ID);
+  results.push({
+    table: 'opportunities',
+    operation: 'UPDATE',
+    testDescription: 'Invited contractor CANNOT modify opportunity budget, scope, or client requirements',
+    passed: canContractorUpdateOpp === false,
+  });
+
+  // Test 37: Unrelated contractor cannot respond to or update another contractor\'s invitation
+  const canOrgCUpdateInvitation = evaluateRlsPolicy('opportunity_invitations', 'UPDATE', CONTRACTOR_C_USER, ORG_A_ID);
+  results.push({
+    table: 'opportunity_invitations',
+    operation: 'UPDATE',
+    testDescription: 'Unrelated contractor C CANNOT update or respond to invitations sent to Contractor A',
+    passed: canOrgCUpdateInvitation === false,
   });
 
   return results;

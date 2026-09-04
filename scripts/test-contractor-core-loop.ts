@@ -347,7 +347,163 @@ async function runCoreLoopTest() {
   }
   console.log(`   ✓ Fresh IP allowed: ${rateLimitCheck.remaining} submissions remaining in window`);
 
-  console.log('\n🎉 ALL 22 CONTRACTOR OPERATING, CREATION, PROVE & DISCOVER MILESTONES COMPLETED WITH REAL PERSISTENCE.');
+  // ─────────────────────────────────────────────────────────────
+  // PHASE 8: CONNECT — Client Accounts, Contractor Relationships & Controlled Opportunities
+  // ─────────────────────────────────────────────────────────────
+
+  const {
+    saveContractor,
+    getSavedContractors,
+    updateOpportunityStatus,
+  } = await import('../src/lib/connect/repository');
+
+  const {
+    completeClientOnboarding,
+    initiateContractorConnection,
+    respondToContractorConnection,
+    createClientOpportunity,
+    sendOpportunityInvitation,
+    replyToOpportunityInvitation,
+  } = await import('../src/lib/connect/service');
+
+  const { findMatchingContractorsForOpportunity } = await import('../src/lib/connect/matching');
+
+  const CLIENT_ORG_ID = `test-client-org-${Date.now()}`;
+
+  // 22. Phase 8 Milestone 23: Client Onboarding
+  console.log('\n23. Phase 8 Client Onboarding: Setting up client buyer organisation...');
+  const clientProfile = await completeClientOnboarding(CLIENT_ORG_ID, {
+    organisationName: 'Apex Capital Facilities Group',
+    organisationType: 'facilities_management',
+    contactName: 'Eleanor Vance',
+    businessEmail: 'eleanor.vance@apexfm.com',
+    primaryState: 'TX',
+    cities: ['Austin'],
+    preferredTrades: ['electrical-contracting'],
+  });
+  if (!clientProfile || clientProfile.organisation_id !== CLIENT_ORG_ID) {
+    throw new Error('FAILED: Client onboarding did not persist valid client profile!');
+  }
+  console.log(`   ✓ Client Profile Created: "${clientProfile.organisation_name}" (${clientProfile.organisation_type})`);
+
+  // 23. Phase 8 Milestone 24: Client Saves Published Contractor
+  console.log('\n24. Phase 8 Shortlist/Save: Client bookmarks published contractor...');
+  const savedItem = await saveContractor(
+    CLIENT_ORG_ID,
+    TEST_ORG_ID,
+    orgSlug,
+    latestWs.organisation.name,
+    'electrical-contracting',
+    'Austin, TX',
+    'Top candidate for Austin commercial electrical retrofit projects'
+  );
+  const savedContractors = await getSavedContractors(CLIENT_ORG_ID);
+  if (!savedContractors.some((s) => s.contractor_organisation_id === TEST_ORG_ID)) {
+    throw new Error('FAILED: Saved contractor not found in client shortlist!');
+  }
+  console.log(`   ✓ Contractor shortlisted with notes: "${savedItem.notes}" (Total saved: ${savedContractors.length})`);
+
+  // 24. Phase 8 Milestone 25: Client Requests Connection (status: 'pending')
+  console.log('\n25. Phase 8 Connect Request: Client requests connection with contractor...');
+  const connectRes = await initiateContractorConnection(
+    CLIENT_ORG_ID,
+    orgSlug,
+    'user-client-eleanor',
+    'We would like to add your firm to our pre-approved electrical contractor roster.'
+  );
+  if (!connectRes.success || !connectRes.relationship || connectRes.relationship.status !== 'pending') {
+    throw new Error(`FAILED: New connection request should be "pending", got "${connectRes.relationship?.status}"`);
+  }
+  const connectionRequest = connectRes.relationship;
+  console.log(`   ✓ Connection request sent: ID ${connectionRequest.id} (Status: "${connectionRequest.status}")`);
+
+  // 25. Phase 8 Milestone 26: Contractor Accepts Connection (status: 'connected')
+  console.log('\n26. Phase 8 Relationship Response: Contractor accepts connection request...');
+  const acceptedRelationship = await respondToContractorConnection(
+    connectionRequest.id,
+    TEST_ORG_ID,
+    'accept'
+  );
+  if (acceptedRelationship.status !== 'connected') {
+    throw new Error(`FAILED: Relationship status should be "connected", got "${acceptedRelationship.status}"`);
+  }
+  console.log(`   ✓ Relationship accepted: Status is now "${acceptedRelationship.status}"`);
+
+  // 26. Phase 8 Milestone 27: Opportunity Creation & Deterministic Matching
+  console.log('\n27. Phase 8 Opportunity Engine: Creating project opportunity and evaluating matches...');
+  const opportunity = await createClientOpportunity(
+    CLIENT_ORG_ID,
+    'user-client-eleanor',
+    {
+      title: 'Downtown Austin High-Rise Switchgear Upgrade',
+      trade: 'electrical-contracting',
+      location: {
+        city: 'Austin',
+        state: 'TX',
+      },
+      timeframe: 'within_30_days',
+      scope: '12 floors switchgear replacement, full compliance certification required.',
+      requirements: {
+        tradeLicenseRequired: true,
+        generalLiabilityRequired: true,
+        verificationRequired: true,
+      },
+      status: 'open',
+    }
+  );
+  if (!opportunity || opportunity.status !== 'open') {
+    throw new Error('FAILED: Opportunity creation failed or status not open!');
+  }
+
+  // Evaluate deterministic match
+  const matchRes = await findMatchingContractorsForOpportunity({
+    trade: opportunity.trade,
+    state: opportunity.location.state,
+    city: opportunity.location.city,
+    requirements: opportunity.requirements,
+  });
+  const matchedContractor = matchRes.matches.find((m) => m.slug === orgSlug);
+  if (!matchedContractor) {
+    throw new Error('FAILED: Deterministic matching did not match qualified contractor!');
+  }
+  console.log(`   ✓ Opportunity created: "${opportunity.title}" (ID: ${opportunity.id})`);
+  console.log(`   ✓ Deterministic match confirmed: Verified = ${matchedContractor.isVerified}, Reasons: ${matchedContractor.matchReasons.join(', ')}`);
+
+  // 27. Phase 8 Milestone 28: Client Invites Contractor to Opportunity
+  console.log('\n28. Phase 8 Opportunity Invitation: Inviting contractor to opportunity...');
+  const invitation = await sendOpportunityInvitation(
+    opportunity.id,
+    TEST_ORG_ID,
+    CLIENT_ORG_ID,
+    'user-client-eleanor'
+  );
+  if (invitation.status !== 'pending') {
+    throw new Error(`FAILED: Expected invitation status "pending", got "${invitation.status}"`);
+  }
+  console.log(`   ✓ Invitation delivered: ID ${invitation.id} (Status: "${invitation.status}")`);
+
+  // 28. Phase 8 Milestone 29: Contractor Responds to Opportunity Invitation
+  console.log('\n29. Phase 8 Contractor Response: Contractor accepts opportunity invitation with interest...');
+  const respondedInvitation = await replyToOpportunityInvitation(
+    invitation.id,
+    TEST_ORG_ID,
+    'accepted',
+    'We have reviewed the switchgear scope and have capacity for Q4 start.'
+  );
+  if (respondedInvitation.status !== 'accepted') {
+    throw new Error(`FAILED: Expected invitation status "accepted", got "${respondedInvitation.status}"`);
+  }
+  console.log(`   ✓ Contractor responded: "${respondedInvitation.status}" with notes: "${respondedInvitation.response_message}"`);
+
+  // 29. Phase 8 Milestone 30: Opportunity Closure & Access Protection
+  console.log('\n30. Phase 8 Opportunity Closure: Client closes opportunity after contractor selection...');
+  const closedOpp = await updateOpportunityStatus(opportunity.id, CLIENT_ORG_ID, 'closed');
+  if (closedOpp.status !== 'closed') {
+    throw new Error(`FAILED: Expected opportunity status "closed", got "${closedOpp.status}"`);
+  }
+  console.log(`   ✓ Opportunity closed: Status "${closedOpp.status}" (No public bidding or tender award leak)`);
+
+  console.log('\n🎉 ALL 30 CONTRACTOR OPERATING, CREATION, PROVE, DISCOVER & CONNECT MILESTONES COMPLETED WITH REAL PERSISTENCE.');
 }
 
 runCoreLoopTest().catch((err) => {

@@ -147,300 +147,294 @@ export function CinematicHero() {
           </div>
 
           {/* ── RIGHT COLUMN: SLEEK, PROPORTIONAL DASHBOARD MOCKUP (6 Cols) ── */}
-          <div className="lg:col-span-6 relative mt-4 lg:mt-0">
+          <div className="lg:col-span-6 relative mt-4 lg:mt-0 flex justify-center lg:justify-end">
             {/* Ambient cyan glow */}
-            <div className="absolute -inset-1 rounded-xl bg-gradient-to-tr from-[#0284c7]/20 via-sky-500/10 to-indigo-500/10 blur-lg pointer-events-none" />
+            <div className="absolute -inset-1 rounded-2xl bg-gradient-to-tr from-[#0284c7]/20 via-sky-500/10 to-indigo-500/10 blur-xl pointer-events-none" />
 
-            {/* Main Mockup Window Container (Horizontal Aspect Ratio, Non-Elongated) */}
-            <div className="relative rounded-xl border border-white/15 bg-[#070e1c]/95 backdrop-blur-xl shadow-2xl overflow-hidden text-white font-sans text-xs">
-              {/* Card Window Top Header Bar */}
-              <div className="px-3.5 py-2.5 border-b border-white/10 bg-white/[0.02] flex items-center justify-between gap-2">
-                <div className="flex items-center gap-2 min-w-0">
-                  <div className="w-5 h-5 shrink-0">
-                    <BrandMark state="solid" className="w-full h-full text-sky-400" />
-                  </div>
-                  <span className="text-[13px] font-extralight tracking-tight text-white mr-2 shrink-0">
-                    Avorria
-                  </span>
-                  <div className="min-w-0 hidden sm:block border-l border-white/10 pl-2">
-                    <div className="text-[11px] font-light text-white truncate">
-                      Welcome back, Apex Electrical Solutions LLC
+            {/* Main Mockup Window Container (Proportional, Compact, Non-Elongated) */}
+            <div className="relative w-full max-w-[560px] rounded-xl border border-white/15 bg-[#070e1c]/95 backdrop-blur-xl shadow-2xl overflow-hidden text-white font-sans text-xs flex">
+              
+              {/* ── LEFT SIDEBAR (Full height with Avorria logo at top) ── */}
+              <div className="w-28 sm:w-32 shrink-0 border-r border-white/10 p-2 sm:p-2.5 flex flex-col justify-between bg-black/35 text-[9.5px] font-extralight text-slate-400">
+                <div className="space-y-1">
+                  {/* Brand Logo & Wordmark at top of sidebar */}
+                  <div className="flex items-center gap-1.5 pb-2 mb-1.5 border-b border-white/10">
+                    <div className="w-4 h-4 shrink-0">
+                      <BrandMark state="solid" className="w-full h-full text-sky-400" />
                     </div>
-                    <div className="text-[9.5px] font-extralight text-slate-400 truncate">
-                      Here&apos;s what&apos;s happening with your business today.
-                    </div>
+                    <span className="text-xs font-light tracking-tight text-white">
+                      Avorria
+                    </span>
                   </div>
-                </div>
 
-                <div className="shrink-0">
-                  <button
-                    type="button"
-                    className="inline-flex items-center gap-1 px-2 py-0.5 rounded border border-white/15 bg-white/[0.04] text-[10px] font-light text-slate-300 hover:text-white hover:bg-white/[0.08] transition-colors"
-                  >
-                    <span>View Passport</span>
-                    <ChevronDown className="w-2.5 h-2.5 text-slate-400" />
-                  </button>
+                  {/* Sidebar Nav Links */}
+                  <div className="space-y-0.5">
+                    <div className="flex items-center gap-1.5 px-2 py-0.5 rounded bg-[#0284c7]/20 text-[#38bdf8] font-light">
+                      <LayoutDashboard className="w-2.5 h-2.5 shrink-0 text-[#38bdf8]" />
+                      <span>Dashboard</span>
+                    </div>
+                    <div className="flex items-center gap-1.5 px-2 py-0.5 rounded hover:bg-white/[0.04] hover:text-white transition-colors">
+                      <Building className="w-2.5 h-2.5 shrink-0" />
+                      <span>Business</span>
+                    </div>
+                    <div className="flex items-center gap-1.5 px-2 py-0.5 rounded hover:bg-white/[0.04] hover:text-white transition-colors">
+                      <Files className="w-2.5 h-2.5 shrink-0" />
+                      <span>Documents</span>
+                    </div>
+                    <div className="flex items-center gap-1.5 px-2 py-0.5 rounded hover:bg-white/[0.04] hover:text-white transition-colors">
+                      <Award className="w-2.5 h-2.5 shrink-0" />
+                      <span>Compliance</span>
+                    </div>
+                    <div className="flex items-center gap-1.5 px-2 py-0.5 rounded hover:bg-white/[0.04] hover:text-white transition-colors">
+                      <Users2 className="w-2.5 h-2.5 shrink-0" />
+                      <span>People</span>
+                    </div>
+                    <div className="flex items-center gap-1.5 px-2 py-0.5 rounded hover:bg-white/[0.04] hover:text-white transition-colors">
+                      <Truck className="w-2.5 h-2.5 shrink-0" />
+                      <span>Equipment</span>
+                    </div>
+                    <div className="flex items-center gap-1.5 px-2 py-0.5 rounded hover:bg-white/[0.04] hover:text-white transition-colors">
+                      <DollarSign className="w-2.5 h-2.5 shrink-0" />
+                      <span>Quotes</span>
+                    </div>
+                    <div className="flex items-center gap-1.5 px-2 py-0.5 rounded hover:bg-white/[0.04] hover:text-white transition-colors">
+                      <Briefcase className="w-2.5 h-2.5 shrink-0" />
+                      <span>Proposals</span>
+                    </div>
+                    <div className="flex items-center gap-1.5 px-2 py-0.5 rounded hover:bg-white/[0.04] hover:text-white transition-colors">
+                      <ShieldCheck className="w-2.5 h-2.5 shrink-0" />
+                      <span>Passport</span>
+                    </div>
+                    <div className="flex items-center gap-1.5 px-2 py-0.5 rounded hover:bg-white/[0.04] hover:text-white transition-colors">
+                      <BadgeCheck className="w-2.5 h-2.5 shrink-0" />
+                      <span>Verification</span>
+                    </div>
+                    <div className="flex items-center gap-1.5 px-2 py-0.5 rounded hover:bg-white/[0.04] hover:text-white transition-colors">
+                      <Sliders className="w-2.5 h-2.5 shrink-0" />
+                      <span>Settings</span>
+                    </div>
+                  </div>
                 </div>
               </div>
 
-              {/* Card Body: Compact Mini Sidebar + Multi-Panel Content Grid */}
-              <div className="flex min-h-[290px] max-h-[315px]">
-                {/* Mini Left Sidebar */}
-                <div className="w-24 sm:w-28 shrink-0 border-r border-white/10 p-1.5 space-y-0.5 bg-black/25 text-[9.5px] font-extralight text-slate-400">
-                  <div className="flex items-center gap-1.5 px-2 py-1 rounded bg-[#0284c7]/20 text-[#38bdf8] font-light">
-                    <LayoutDashboard className="w-3 h-3 shrink-0 text-[#38bdf8]" />
-                    <span>Dashboard</span>
+              {/* ── RIGHT MAIN PANEL ── */}
+              <div className="flex-1 p-2 sm:p-2.5 space-y-1.5 min-w-0 bg-[#060b17]/60 flex flex-col justify-between">
+                {/* Top Greeting Header */}
+                <div className="flex items-center justify-between gap-2 pb-1 border-b border-white/5">
+                  <div className="min-w-0">
+                    <div className="text-[11px] sm:text-xs font-light text-white truncate">
+                      Welcome back, Apex Electrical Solutions LLC
+                    </div>
+                    <div className="text-[8.5px] font-extralight text-slate-400 truncate">
+                      Here&apos;s what&apos;s happening with your business today.
+                    </div>
                   </div>
-                  <div className="flex items-center gap-1.5 px-2 py-1 rounded hover:bg-white/[0.04] hover:text-white transition-colors">
-                    <Building className="w-3 h-3 shrink-0" />
-                    <span>Business</span>
+                  <button
+                    type="button"
+                    className="shrink-0 inline-flex items-center gap-1 px-2 py-0.5 rounded border border-white/15 bg-white/[0.04] text-[9px] font-light text-slate-300 hover:text-white hover:bg-white/[0.08] transition-colors"
+                  >
+                    <span>View Passport</span>
+                    <ChevronDown className="w-2 h-2 text-slate-400" />
+                  </button>
+                </div>
+
+                {/* Top Row: 3 KPI Panels (Compact, Non-Elongated) */}
+                <div className="grid grid-cols-3 gap-1.5 text-[8.5px]">
+                  {/* Widget 1: Readiness Score */}
+                  <div className="p-1.5 rounded-md border border-white/10 bg-white/[0.02] flex flex-col justify-between items-center text-center">
+                    <span className="text-[7px] font-mono uppercase tracking-wider text-slate-400">
+                      READINESS SCORE
+                    </span>
+                    <div className="relative w-9 h-9 my-0.5 flex items-center justify-center">
+                      <svg className="w-full h-full -rotate-90" viewBox="0 0 36 36">
+                        <circle
+                          cx="18"
+                          cy="18"
+                          r="15"
+                          fill="none"
+                          stroke="#1e293b"
+                          strokeWidth="2.8"
+                        />
+                        <circle
+                          cx="18"
+                          cy="18"
+                          r="15"
+                          fill="none"
+                          stroke="#0284c7"
+                          strokeWidth="2.8"
+                          strokeDasharray="94.2"
+                          strokeDashoffset="12.2"
+                          strokeLinecap="round"
+                        />
+                      </svg>
+                      <div className="absolute inset-0 flex flex-col items-center justify-center">
+                        <span className="text-[10.5px] font-light text-white leading-none">
+                          87%
+                        </span>
+                        <span className="text-[6.5px] font-mono text-sky-400 mt-0.5 leading-none">
+                          Ready
+                        </span>
+                      </div>
+                    </div>
+                    <span className="text-[6.5px] font-extralight text-slate-400 leading-tight">
+                      Keep building. On track.
+                    </span>
                   </div>
-                  <div className="flex items-center gap-1.5 px-2 py-1 rounded hover:bg-white/[0.04] hover:text-white transition-colors">
-                    <Files className="w-3 h-3 shrink-0" />
-                    <span>Documents</span>
+
+                  {/* Widget 2: Active Requirements */}
+                  <div className="p-1.5 rounded-md border border-white/10 bg-white/[0.02] flex flex-col justify-between space-y-0.5">
+                    <span className="text-[7px] font-mono uppercase tracking-wider text-slate-400">
+                      ACTIVE REQUIREMENTS
+                    </span>
+                    <div className="space-y-0.5 text-[8px] font-extralight">
+                      <div className="flex items-center justify-between">
+                        <span className="flex items-center gap-1 text-slate-300">
+                          <span className="w-1 h-1 rounded-full bg-emerald-400" />
+                          Current
+                        </span>
+                        <span className="font-light text-white">28</span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="flex items-center gap-1 text-slate-300">
+                          <span className="w-1 h-1 rounded-full bg-amber-400" />
+                          Expiring Soon
+                        </span>
+                        <span className="font-light text-amber-300">3</span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="flex items-center gap-1 text-slate-300">
+                          <span className="w-1 h-1 rounded-full bg-slate-500" />
+                          Expired
+                        </span>
+                        <span className="font-light text-slate-400">0</span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="flex items-center gap-1 text-slate-300">
+                          <span className="w-1 h-1 rounded-full bg-rose-400" />
+                          Missing
+                        </span>
+                        <span className="font-light text-rose-300">2</span>
+                      </div>
+                    </div>
+                    <Link
+                      href="/contractor-compliance"
+                      className="text-[7px] text-[#38bdf8] hover:underline flex items-center gap-0.5 pt-0.5"
+                    >
+                      <span>View All Requirements</span>
+                      <ArrowRight className="w-1.5 h-1.5" />
+                    </Link>
                   </div>
-                  <div className="flex items-center gap-1.5 px-2 py-1 rounded hover:bg-white/[0.04] hover:text-white transition-colors">
-                    <Award className="w-3 h-3 shrink-0" />
-                    <span>Compliance</span>
-                  </div>
-                  <div className="flex items-center gap-1.5 px-2 py-1 rounded hover:bg-white/[0.04] hover:text-white transition-colors">
-                    <Users2 className="w-3 h-3 shrink-0" />
-                    <span>People</span>
-                  </div>
-                  <div className="flex items-center gap-1.5 px-2 py-1 rounded hover:bg-white/[0.04] hover:text-white transition-colors">
-                    <Truck className="w-3 h-3 shrink-0" />
-                    <span>Equipment</span>
-                  </div>
-                  <div className="flex items-center gap-1.5 px-2 py-1 rounded hover:bg-white/[0.04] hover:text-white transition-colors">
-                    <DollarSign className="w-3 h-3 shrink-0" />
-                    <span>Quotes</span>
-                  </div>
-                  <div className="flex items-center gap-1.5 px-2 py-1 rounded hover:bg-white/[0.04] hover:text-white transition-colors">
-                    <Briefcase className="w-3 h-3 shrink-0" />
-                    <span>Proposals</span>
-                  </div>
-                  <div className="flex items-center gap-1.5 px-2 py-1 rounded hover:bg-white/[0.04] hover:text-white transition-colors">
-                    <ShieldCheck className="w-3 h-3 shrink-0" />
-                    <span>Passport</span>
-                  </div>
-                  <div className="flex items-center gap-1.5 px-2 py-1 rounded hover:bg-white/[0.04] hover:text-white transition-colors">
-                    <BadgeCheck className="w-3 h-3 shrink-0" />
-                    <span>Verification</span>
-                  </div>
-                  <div className="flex items-center gap-1.5 px-2 py-1 rounded hover:bg-white/[0.04] hover:text-white transition-colors">
-                    <Sliders className="w-3 h-3 shrink-0" />
-                    <span>Settings</span>
+
+                  {/* Widget 3: Documents */}
+                  <div className="p-1.5 rounded-md border border-white/10 bg-white/[0.02] flex flex-col justify-between space-y-0.5">
+                    <span className="text-[7px] font-mono uppercase tracking-wider text-slate-400">
+                      DOCUMENTS
+                    </span>
+                    <div className="space-y-0.5 text-[8px] font-extralight">
+                      <div className="flex items-center justify-between">
+                        <span className="text-slate-300">Active Documents</span>
+                        <span className="font-light text-white">48</span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-slate-300">Expiring Soon</span>
+                        <span className="font-light text-amber-300">3</span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-slate-300">Expired</span>
+                        <span className="font-light text-slate-400">0</span>
+                      </div>
+                    </div>
+                    <Link
+                      href="/create"
+                      className="text-[7px] text-[#38bdf8] hover:underline pt-0.5 block"
+                    >
+                      View Document Vault
+                    </Link>
                   </div>
                 </div>
 
-                {/* Right Interior Dashboard Content Area */}
-                <div className="flex-1 p-2.5 space-y-2 min-w-0 bg-[#060b17]/60 overflow-hidden">
-                  {/* Top Row: 3 KPI Panels Side-by-Side */}
-                  <div className="grid grid-cols-3 gap-2 text-[9.5px]">
-                    
-                    {/* Widget 1: Contractor Readiness Score */}
-                    <div className="p-2 rounded-md border border-white/10 bg-white/[0.02] flex flex-col justify-between items-center text-center">
-                      <span className="text-[8px] font-mono uppercase tracking-wider text-slate-400">
-                        READINESS SCORE
-                      </span>
-                      {/* Circular Gauge */}
-                      <div className="relative w-12 h-12 my-1 flex items-center justify-center">
-                        <svg className="w-full h-full -rotate-90" viewBox="0 0 36 36">
-                          <circle
-                            cx="18"
-                            cy="18"
-                            r="15"
-                            fill="none"
-                            stroke="#1e293b"
-                            strokeWidth="2.8"
-                          />
-                          <circle
-                            cx="18"
-                            cy="18"
-                            r="15"
-                            fill="none"
-                            stroke="#0284c7"
-                            strokeWidth="2.8"
-                            strokeDasharray="94.2"
-                            strokeDashoffset="12.2"
-                            strokeLinecap="round"
-                          />
-                        </svg>
-                        <div className="absolute inset-0 flex flex-col items-center justify-center">
-                          <span className="text-xs font-light text-white leading-none">
-                            87%
-                          </span>
-                          <span className="text-[7.5px] font-mono text-sky-400 mt-0.5">
-                            Ready
-                          </span>
-                        </div>
+                {/* Bottom Row: Priority Actions & Recent Documents */}
+                <div className="grid grid-cols-2 gap-1.5 text-[8.5px]">
+                  {/* Priority Actions */}
+                  <div className="p-1.5 rounded-md border border-white/10 bg-white/[0.02] space-y-1">
+                    <span className="text-[7px] font-mono uppercase tracking-wider text-slate-400 block">
+                      PRIORITY ACTIONS
+                    </span>
+                    <div className="space-y-0.5 text-[7.5px]">
+                      <div className="p-0.5 px-1 rounded bg-white/[0.03] border border-white/5 flex items-center justify-between gap-1">
+                        <span className="text-slate-300 font-extralight truncate">
+                          2 certs expire in 30 days
+                        </span>
+                        <span className="px-1 py-0.2 rounded bg-amber-500/20 text-amber-300 text-[6.5px] shrink-0 font-light">
+                          High &gt;
+                        </span>
                       </div>
-                      <span className="text-[7.5px] font-extralight text-slate-500 leading-tight">
-                        Keep building. On track.
-                      </span>
-                    </div>
-
-                    {/* Widget 2: Active Requirements */}
-                    <div className="p-2 rounded-md border border-white/10 bg-white/[0.02] flex flex-col justify-between space-y-1">
-                      <span className="text-[8px] font-mono uppercase tracking-wider text-slate-400">
-                        ACTIVE REQUIREMENTS
-                      </span>
-                      <div className="space-y-0.5 text-[9px] font-extralight">
-                        <div className="flex items-center justify-between">
-                          <span className="flex items-center gap-1 text-slate-300">
-                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-                            Current
-                          </span>
-                          <span className="font-light text-white">28</span>
-                        </div>
-                        <div className="flex items-center justify-between">
-                          <span className="flex items-center gap-1 text-slate-300">
-                            <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
-                            Expiring Soon
-                          </span>
-                          <span className="font-light text-amber-300">3</span>
-                        </div>
-                        <div className="flex items-center justify-between">
-                          <span className="flex items-center gap-1 text-slate-300">
-                            <span className="w-1.5 h-1.5 rounded-full bg-slate-500" />
-                            Expired
-                          </span>
-                          <span className="font-light text-slate-400">0</span>
-                        </div>
-                        <div className="flex items-center justify-between">
-                          <span className="flex items-center gap-1 text-slate-300">
-                            <span className="w-1.5 h-1.5 rounded-full bg-rose-400" />
-                            Missing
-                          </span>
-                          <span className="font-light text-rose-300">2</span>
-                        </div>
+                      <div className="p-0.5 px-1 rounded bg-white/[0.03] border border-white/5 flex items-center justify-between gap-1">
+                        <span className="text-slate-300 font-extralight truncate">
+                          Update Certificate of Insurance
+                        </span>
+                        <span className="px-1 py-0.2 rounded bg-sky-500/20 text-sky-300 text-[6.5px] shrink-0 font-light">
+                          Medium &gt;
+                        </span>
                       </div>
-                      <Link
-                        href="/contractor-compliance"
-                        className="text-[8px] text-[#38bdf8] hover:underline flex items-center gap-0.5 pt-0.5"
-                      >
-                        <span>View All Requirements</span>
-                        <ArrowRight className="w-2 h-2" />
-                      </Link>
-                    </div>
-
-                    {/* Widget 3: Documents */}
-                    <div className="p-2 rounded-md border border-white/10 bg-white/[0.02] flex flex-col justify-between space-y-1">
-                      <span className="text-[8px] font-mono uppercase tracking-wider text-slate-400">
-                        DOCUMENTS
-                      </span>
-                      <div className="space-y-0.5 text-[9px] font-extralight">
-                        <div className="flex items-center justify-between">
-                          <span className="text-slate-300">Active Documents</span>
-                          <span className="font-light text-white">48</span>
-                        </div>
-                        <div className="flex items-center justify-between">
-                          <span className="text-slate-300">Expiring Soon</span>
-                          <span className="font-light text-amber-300">3</span>
-                        </div>
-                        <div className="flex items-center justify-between">
-                          <span className="text-slate-300">Expired</span>
-                          <span className="font-light text-slate-400">0</span>
-                        </div>
+                      <div className="p-0.5 px-1 rounded bg-white/[0.03] border border-white/5 flex items-center justify-between gap-1">
+                        <span className="text-slate-300 font-extralight truncate">
+                          Complete your safety plan
+                        </span>
+                        <span className="text-slate-400 text-[6.5px] shrink-0 font-light">
+                          &gt;
+                        </span>
                       </div>
-                      <Link
-                        href="/create"
-                        className="text-[8px] text-[#38bdf8] hover:underline pt-0.5 block"
-                      >
-                        View Document Vault
-                      </Link>
                     </div>
-
                   </div>
 
-                  {/* Bottom Row: Priority Actions & Recent Documents */}
-                  <div className="grid grid-cols-2 gap-2 text-[9.5px]">
-                    
-                    {/* Priority Actions */}
-                    <div className="p-2 rounded-md border border-white/10 bg-white/[0.02] space-y-1">
-                      <div className="flex items-center justify-between">
-                        <span className="text-[8px] font-mono uppercase tracking-wider text-slate-400">
-                          PRIORITY ACTIONS
-                        </span>
+                  {/* Recent Documents */}
+                  <div className="p-1.5 rounded-md border border-white/10 bg-white/[0.02] space-y-1">
+                    <span className="text-[7px] font-mono uppercase tracking-wider text-slate-400 block">
+                      RECENT DOCUMENTS
+                    </span>
+                    <div className="space-y-0.5 text-[7.5px]">
+                      <div className="p-0.5 px-1 rounded bg-white/[0.03] border border-white/5">
+                        <div className="text-slate-200 font-light truncate">
+                          JHA - 480V Switchgear
+                        </div>
+                        <div className="text-[6.5px] font-extralight text-slate-400 flex items-center gap-1">
+                          <span>Final</span>
+                          <span>•</span>
+                          <span>Updated 2h ago</span>
+                        </div>
                       </div>
-                      <div className="space-y-1 text-[8.5px]">
-                        <div className="p-1 rounded bg-white/[0.03] border border-white/5 flex items-center justify-between gap-1">
-                          <span className="text-slate-300 font-extralight truncate">
-                            2 certs expire in 30 days
-                          </span>
-                          <span className="px-1 py-0.2 rounded bg-amber-500/20 text-amber-300 text-[7.5px] shrink-0 font-light">
-                            High &gt;
-                          </span>
+                      <div className="p-0.5 px-1 rounded bg-white/[0.03] border border-white/5">
+                        <div className="text-slate-200 font-light truncate">
+                          COI - Travelers Insurance
                         </div>
-                        <div className="p-1 rounded bg-white/[0.03] border border-white/5 flex items-center justify-between gap-1">
-                          <span className="text-slate-300 font-extralight truncate">
-                            Update Certificate of Insurance
-                          </span>
-                          <span className="px-1 py-0.2 rounded bg-sky-500/20 text-sky-300 text-[7.5px] shrink-0 font-light">
-                            Medium &gt;
-                          </span>
+                        <div className="text-[6.5px] font-extralight text-slate-400 flex items-center gap-1">
+                          <span className="text-emerald-400">Current</span>
+                          <span>•</span>
+                          <span>Valid Dec 2026</span>
                         </div>
-                        <div className="p-1 rounded bg-white/[0.03] border border-white/5 flex items-center justify-between gap-1">
-                          <span className="text-slate-300 font-extralight truncate">
-                            Complete your safety plan
-                          </span>
-                          <span className="text-slate-400 text-[7.5px] shrink-0 font-light">
-                            &gt;
-                          </span>
+                      </div>
+                      <div className="p-0.5 px-1 rounded bg-white/[0.03] border border-white/5">
+                        <div className="text-slate-200 font-light truncate">
+                          Master License - TDLR
+                        </div>
+                        <div className="text-[6.5px] font-extralight text-slate-400 flex items-center gap-1">
+                          <span className="text-emerald-400">Current</span>
+                          <span>•</span>
+                          <span>Valid Mar 2026</span>
                         </div>
                       </div>
                     </div>
-
-                    {/* Recent Documents */}
-                    <div className="p-2 rounded-md border border-white/10 bg-white/[0.02] space-y-1">
-                      <div className="flex items-center justify-between">
-                        <span className="text-[8px] font-mono uppercase tracking-wider text-slate-400">
-                          RECENT DOCUMENTS
-                        </span>
-                      </div>
-                      <div className="space-y-1 text-[8.5px]">
-                        <div className="p-1 rounded bg-white/[0.03] border border-white/5">
-                          <div className="text-slate-200 font-light truncate">
-                            JHA - 480V Switchgear
-                          </div>
-                          <div className="text-[7.5px] font-extralight text-slate-400 flex items-center gap-1">
-                            <span>Final</span>
-                            <span>•</span>
-                            <span>Updated 2h ago</span>
-                          </div>
-                        </div>
-                        <div className="p-1 rounded bg-white/[0.03] border border-white/5">
-                          <div className="text-slate-200 font-light truncate">
-                            COI - Travelers Insurance
-                          </div>
-                          <div className="text-[7.5px] font-extralight text-slate-400 flex items-center gap-1">
-                            <span className="text-emerald-400">Current</span>
-                            <span>•</span>
-                            <span>Valid to Dec 2026</span>
-                          </div>
-                        </div>
-                        <div className="p-1 rounded bg-white/[0.03] border border-white/5">
-                          <div className="text-slate-200 font-light truncate">
-                            Master License - TDLR
-                          </div>
-                          <div className="text-[7.5px] font-extralight text-slate-400 flex items-center gap-1">
-                            <span className="text-emerald-400">Current</span>
-                            <span>•</span>
-                            <span>Valid to Mar 2026</span>
-                          </div>
-                        </div>
-                      </div>
-                      <Link
-                        href="/app/documents"
-                        className="text-[8px] text-[#38bdf8] hover:underline flex items-center gap-0.5 pt-0.5"
-                      >
-                        <Check className="w-2 h-2" />
-                        <span>View All Documents</span>
-                      </Link>
-                    </div>
-
+                    <Link
+                      href="/app/documents"
+                      className="text-[7px] text-[#38bdf8] hover:underline flex items-center gap-0.5 pt-0.5"
+                    >
+                      <Check className="w-1.5 h-1.5" />
+                      <span>View All Documents</span>
+                    </Link>
                   </div>
                 </div>
+
               </div>
             </div>
           </div>
