@@ -146,17 +146,17 @@ export function CinematicHero() {
             </div>
           </div>
 
-          {/* ── RIGHT COLUMN: SLEEK, PROPORTIONAL DASHBOARD MOCKUP (6 Cols) ── */}
-          <div className="lg:col-span-6 relative mt-4 lg:mt-0 flex justify-center lg:justify-end">
+          {/* ── RIGHT COLUMN: COMPACT SQUARE-LIKE DASHBOARD MOCKUP (6 Cols) ── */}
+          <div className="lg:col-span-6 relative mt-4 lg:mt-0 flex items-center justify-center lg:justify-end">
             {/* Ambient cyan glow */}
             <div className="absolute -inset-1 rounded-2xl bg-gradient-to-tr from-[#0284c7]/20 via-sky-500/10 to-indigo-500/10 blur-xl pointer-events-none" />
 
-            {/* Main Mockup Window Container (Proportional, Compact, Non-Elongated) */}
-            <div className="relative w-full max-w-[560px] rounded-xl border border-white/15 bg-[#070e1c]/95 backdrop-blur-xl shadow-2xl overflow-hidden text-white font-sans text-xs flex">
+            {/* Main Mockup Window Container (Explicitly Sized & Clamped: No Elongation) */}
+            <div className="relative w-full max-w-[480px] sm:max-w-[510px] h-[320px] sm:h-[330px] rounded-xl border border-white/15 bg-[#070e1c]/95 backdrop-blur-xl shadow-2xl overflow-hidden text-white font-sans text-xs flex">
               
               {/* ── LEFT SIDEBAR (Full height with Avorria logo at top) ── */}
-              <div className="w-28 sm:w-32 shrink-0 border-r border-white/10 p-2 sm:p-2.5 flex flex-col justify-between bg-black/35 text-[9.5px] font-extralight text-slate-400">
-                <div className="space-y-1">
+              <div className="w-28 sm:w-32 shrink-0 border-r border-white/10 p-2 sm:p-2.5 bg-black/40 text-[9px] sm:text-[9.5px] font-extralight text-slate-400 flex flex-col justify-between">
+                <div>
                   {/* Brand Logo & Wordmark at top of sidebar */}
                   <div className="flex items-center gap-1.5 pb-2 mb-1.5 border-b border-white/10">
                     <div className="w-4 h-4 shrink-0">
@@ -218,9 +218,9 @@ export function CinematicHero() {
               </div>
 
               {/* ── RIGHT MAIN PANEL ── */}
-              <div className="flex-1 p-2 sm:p-2.5 space-y-1.5 min-w-0 bg-[#060b17]/60 flex flex-col justify-between">
+              <div className="flex-1 p-2 sm:p-2.5 space-y-1.5 min-w-0 bg-[#060b17]/70 flex flex-col justify-between overflow-hidden">
                 {/* Top Greeting Header */}
-                <div className="flex items-center justify-between gap-2 pb-1 border-b border-white/5">
+                <div className="flex items-center justify-between gap-2 pb-1 border-b border-white/10 shrink-0">
                   <div className="min-w-0">
                     <div className="text-[11px] sm:text-xs font-light text-white truncate">
                       Welcome back, Apex Electrical Solutions LLC
@@ -231,21 +231,21 @@ export function CinematicHero() {
                   </div>
                   <button
                     type="button"
-                    className="shrink-0 inline-flex items-center gap-1 px-2 py-0.5 rounded border border-white/15 bg-white/[0.04] text-[9px] font-light text-slate-300 hover:text-white hover:bg-white/[0.08] transition-colors"
+                    className="shrink-0 inline-flex items-center gap-1 px-2 py-0.5 rounded border border-white/15 bg-white/[0.04] text-[8.5px] font-light text-slate-300 hover:text-white hover:bg-white/[0.08] transition-colors"
                   >
                     <span>View Passport</span>
                     <ChevronDown className="w-2 h-2 text-slate-400" />
                   </button>
                 </div>
 
-                {/* Top Row: 3 KPI Panels (Compact, Non-Elongated) */}
-                <div className="grid grid-cols-3 gap-1.5 text-[8.5px]">
+                {/* Top Row: 3 KPI Panels */}
+                <div className="grid grid-cols-3 gap-1.5 text-[8px] sm:text-[8.5px] shrink-0">
                   {/* Widget 1: Readiness Score */}
-                  <div className="p-1.5 rounded-md border border-white/10 bg-white/[0.02] flex flex-col justify-between items-center text-center">
+                  <div className="p-1.5 rounded-md border border-white/10 bg-white/[0.02] flex flex-col justify-between items-center text-center min-h-[72px]">
                     <span className="text-[7px] font-mono uppercase tracking-wider text-slate-400">
                       READINESS SCORE
                     </span>
-                    <div className="relative w-9 h-9 my-0.5 flex items-center justify-center">
+                    <div className="relative w-8 h-8 my-0.5 flex items-center justify-center">
                       <svg className="w-full h-full -rotate-90" viewBox="0 0 36 36">
                         <circle
                           cx="18"
@@ -268,10 +268,10 @@ export function CinematicHero() {
                         />
                       </svg>
                       <div className="absolute inset-0 flex flex-col items-center justify-center">
-                        <span className="text-[10.5px] font-light text-white leading-none">
+                        <span className="text-[10px] font-light text-white leading-none">
                           87%
                         </span>
-                        <span className="text-[6.5px] font-mono text-sky-400 mt-0.5 leading-none">
+                        <span className="text-[6px] font-mono text-sky-400 mt-0.5 leading-none">
                           Ready
                         </span>
                       </div>
@@ -282,11 +282,11 @@ export function CinematicHero() {
                   </div>
 
                   {/* Widget 2: Active Requirements */}
-                  <div className="p-1.5 rounded-md border border-white/10 bg-white/[0.02] flex flex-col justify-between space-y-0.5">
+                  <div className="p-1.5 rounded-md border border-white/10 bg-white/[0.02] flex flex-col justify-between space-y-0.5 min-h-[72px]">
                     <span className="text-[7px] font-mono uppercase tracking-wider text-slate-400">
                       ACTIVE REQUIREMENTS
                     </span>
-                    <div className="space-y-0.5 text-[8px] font-extralight">
+                    <div className="space-y-0.5 text-[7.5px] font-extralight">
                       <div className="flex items-center justify-between">
                         <span className="flex items-center gap-1 text-slate-300">
                           <span className="w-1 h-1 rounded-full bg-emerald-400" />
@@ -303,13 +303,6 @@ export function CinematicHero() {
                       </div>
                       <div className="flex items-center justify-between">
                         <span className="flex items-center gap-1 text-slate-300">
-                          <span className="w-1 h-1 rounded-full bg-slate-500" />
-                          Expired
-                        </span>
-                        <span className="font-light text-slate-400">0</span>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <span className="flex items-center gap-1 text-slate-300">
                           <span className="w-1 h-1 rounded-full bg-rose-400" />
                           Missing
                         </span>
@@ -318,7 +311,7 @@ export function CinematicHero() {
                     </div>
                     <Link
                       href="/contractor-compliance"
-                      className="text-[7px] text-[#38bdf8] hover:underline flex items-center gap-0.5 pt-0.5"
+                      className="text-[6.5px] text-[#38bdf8] hover:underline flex items-center gap-0.5 pt-0.5"
                     >
                       <span>View All Requirements</span>
                       <ArrowRight className="w-1.5 h-1.5" />
@@ -326,11 +319,11 @@ export function CinematicHero() {
                   </div>
 
                   {/* Widget 3: Documents */}
-                  <div className="p-1.5 rounded-md border border-white/10 bg-white/[0.02] flex flex-col justify-between space-y-0.5">
+                  <div className="p-1.5 rounded-md border border-white/10 bg-white/[0.02] flex flex-col justify-between space-y-0.5 min-h-[72px]">
                     <span className="text-[7px] font-mono uppercase tracking-wider text-slate-400">
                       DOCUMENTS
                     </span>
-                    <div className="space-y-0.5 text-[8px] font-extralight">
+                    <div className="space-y-0.5 text-[7.5px] font-extralight">
                       <div className="flex items-center justify-between">
                         <span className="text-slate-300">Active Documents</span>
                         <span className="font-light text-white">48</span>
@@ -346,7 +339,7 @@ export function CinematicHero() {
                     </div>
                     <Link
                       href="/create"
-                      className="text-[7px] text-[#38bdf8] hover:underline pt-0.5 block"
+                      className="text-[6.5px] text-[#38bdf8] hover:underline pt-0.5 block"
                     >
                       View Document Vault
                     </Link>
@@ -354,13 +347,13 @@ export function CinematicHero() {
                 </div>
 
                 {/* Bottom Row: Priority Actions & Recent Documents */}
-                <div className="grid grid-cols-2 gap-1.5 text-[8.5px]">
+                <div className="grid grid-cols-2 gap-1.5 text-[8px] sm:text-[8.5px] shrink-0">
                   {/* Priority Actions */}
                   <div className="p-1.5 rounded-md border border-white/10 bg-white/[0.02] space-y-1">
                     <span className="text-[7px] font-mono uppercase tracking-wider text-slate-400 block">
                       PRIORITY ACTIONS
                     </span>
-                    <div className="space-y-0.5 text-[7.5px]">
+                    <div className="space-y-0.5 text-[7px] sm:text-[7.5px]">
                       <div className="p-0.5 px-1 rounded bg-white/[0.03] border border-white/5 flex items-center justify-between gap-1">
                         <span className="text-slate-300 font-extralight truncate">
                           2 certs expire in 30 days
@@ -393,7 +386,7 @@ export function CinematicHero() {
                     <span className="text-[7px] font-mono uppercase tracking-wider text-slate-400 block">
                       RECENT DOCUMENTS
                     </span>
-                    <div className="space-y-0.5 text-[7.5px]">
+                    <div className="space-y-0.5 text-[7px] sm:text-[7.5px]">
                       <div className="p-0.5 px-1 rounded bg-white/[0.03] border border-white/5">
                         <div className="text-slate-200 font-light truncate">
                           JHA - 480V Switchgear
@@ -401,7 +394,7 @@ export function CinematicHero() {
                         <div className="text-[6.5px] font-extralight text-slate-400 flex items-center gap-1">
                           <span>Final</span>
                           <span>•</span>
-                          <span>Updated 2h ago</span>
+                          <span>2h ago</span>
                         </div>
                       </div>
                       <div className="p-0.5 px-1 rounded bg-white/[0.03] border border-white/5">
@@ -411,7 +404,7 @@ export function CinematicHero() {
                         <div className="text-[6.5px] font-extralight text-slate-400 flex items-center gap-1">
                           <span className="text-emerald-400">Current</span>
                           <span>•</span>
-                          <span>Valid Dec 2026</span>
+                          <span>Dec 2026</span>
                         </div>
                       </div>
                       <div className="p-0.5 px-1 rounded bg-white/[0.03] border border-white/5">
@@ -421,13 +414,13 @@ export function CinematicHero() {
                         <div className="text-[6.5px] font-extralight text-slate-400 flex items-center gap-1">
                           <span className="text-emerald-400">Current</span>
                           <span>•</span>
-                          <span>Valid Mar 2026</span>
+                          <span>Mar 2026</span>
                         </div>
                       </div>
                     </div>
                     <Link
                       href="/app/documents"
-                      className="text-[7px] text-[#38bdf8] hover:underline flex items-center gap-0.5 pt-0.5"
+                      className="text-[6.5px] text-[#38bdf8] hover:underline flex items-center gap-0.5 pt-0.5"
                     >
                       <Check className="w-1.5 h-1.5" />
                       <span>View All Documents</span>
