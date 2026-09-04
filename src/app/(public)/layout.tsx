@@ -13,7 +13,6 @@ const FULLSCREEN_HERO_ROUTES = new Set([
   '/prove',
   '/win-work',
   '/contractor-passport',
-  '/tools',
   '/templates',
   '/pricing',
 ]);

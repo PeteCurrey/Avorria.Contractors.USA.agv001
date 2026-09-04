@@ -124,13 +124,11 @@ const DARK_HERO_ROUTES = new Set([
   '/prove',
   '/win-work',
   '/contractor-passport',
-  '/tools',
   '/templates',
   '/pricing',
   '/contractors',
   '/states',
   '/industries',
-  '/tools/job-hazard-analysis-jha-generator',
 ]);
 
 export function Header() {

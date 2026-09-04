@@ -104,23 +104,23 @@ export function ResourceWorkspaceClient({ resource }: ResourceWorkspaceClientPro
   return (
     <div className="space-y-8">
       {/* Top Breadcrumb & Action Bar */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-6 print:hidden">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-200 pb-6 print:hidden">
         <div className="space-y-1">
           <div className="flex items-center gap-2 text-xs">
-            <Link href="/resources" className="text-slate-400 hover:text-sky-400 uppercase tracking-wider font-bold">
+            <Link href="/resources" className="text-slate-500 hover:text-sky-600 uppercase tracking-wider font-bold">
               ← Resources Library
             </Link>
-            <span className="text-slate-600">/</span>
-            <span className="text-sky-400 uppercase font-bold tracking-wider">{resource.categoryName}</span>
-            <span className="text-slate-600">/</span>
-            <span className="px-1.5 py-0.5 bg-slate-900 border border-slate-800 text-slate-400 font-bold uppercase text-[10px]">
+            <span className="text-slate-300">/</span>
+            <span className="text-sky-600 uppercase font-bold tracking-wider">{resource.categoryName}</span>
+            <span className="text-slate-300">/</span>
+            <span className="px-1.5 py-0.5 bg-sky-50 border border-sky-200 text-sky-700 font-bold uppercase text-[10px] rounded-sm">
               {resource.code}
             </span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
+          <h1 className="text-2xl sm:text-3xl font-black text-navy-800 tracking-tight">
             {resource.title}
           </h1>
-          <p className="text-xs text-slate-400 max-w-2xl leading-relaxed">
+          <p className="text-xs text-slate-500 max-w-2xl leading-relaxed">
             {resource.shortDescription}
           </p>
         </div>
@@ -130,20 +130,20 @@ export function ResourceWorkspaceClient({ resource }: ResourceWorkspaceClientPro
           <button
             onClick={handleDownloadPdf}
             disabled={isExportingPdf}
-            className="px-4 py-2.5 bg-sky-500 hover:bg-sky-400 disabled:opacity-50 text-slate-950 font-bold text-xs uppercase tracking-wider transition-colors shadow-sm"
+            className="px-4 py-2.5 bg-[#0284c7] hover:bg-[#0369a1] disabled:opacity-50 text-white font-bold text-xs uppercase tracking-wider transition-colors shadow-sm rounded-[4px]"
           >
             {isExportingPdf ? 'Exporting...' : 'Download PDF'}
           </button>
           <button
             onClick={handleDownloadDocx}
             disabled={isExportingDocx}
-            className="px-3.5 py-2.5 bg-[#090d16] hover:bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-200 text-xs font-bold uppercase tracking-wider transition-colors"
+            className="px-3.5 py-2.5 bg-white hover:bg-slate-50 border border-slate-300 hover:border-slate-400 text-slate-700 text-xs font-bold uppercase tracking-wider transition-colors rounded-[4px]"
           >
             {isExportingDocx ? 'Exporting...' : 'Download Word (DOCX)'}
           </button>
           <button
             onClick={handlePrint}
-            className="px-3.5 py-2.5 bg-[#090d16] hover:bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-300 text-xs font-bold uppercase tracking-wider transition-colors"
+            className="px-3.5 py-2.5 bg-white hover:bg-slate-50 border border-slate-300 hover:border-slate-400 text-slate-600 text-xs font-bold uppercase tracking-wider transition-colors rounded-[4px]"
           >
             Print
           </button>
@@ -151,11 +151,11 @@ export function ResourceWorkspaceClient({ resource }: ResourceWorkspaceClientPro
       </div>
 
       {/* Mobile Tab Switcher */}
-      <div className="flex sm:hidden border-b border-slate-800 gap-1 print:hidden">
+      <div className="flex sm:hidden border-b border-slate-200 gap-1 print:hidden">
         <button
           onClick={() => setActiveTab('workspace')}
           className={`flex-1 py-2 text-xs font-bold uppercase ${
-            activeTab === 'workspace' ? 'border-b-2 border-sky-500 text-white' : 'text-slate-500'
+            activeTab === 'workspace' ? 'border-b-2 border-sky-500 text-sky-600' : 'text-slate-400'
           }`}
         >
           Form Inputs
@@ -163,7 +163,7 @@ export function ResourceWorkspaceClient({ resource }: ResourceWorkspaceClientPro
         <button
           onClick={() => setActiveTab('preview')}
           className={`flex-1 py-2 text-xs font-bold uppercase ${
-            activeTab === 'preview' ? 'border-b-2 border-sky-500 text-white' : 'text-slate-500'
+            activeTab === 'preview' ? 'border-b-2 border-sky-500 text-sky-600' : 'text-slate-400'
           }`}
         >
           Document Preview
@@ -178,18 +178,18 @@ export function ResourceWorkspaceClient({ resource }: ResourceWorkspaceClientPro
             activeTab === 'preview' ? 'hidden sm:block' : 'block'
           }`}
         >
-          <div className="bg-[#090d16] border border-slate-800 p-6 space-y-6">
-            <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-              <h2 className="text-xs font-bold text-slate-300 uppercase tracking-wider">
+          <div className="bg-white border border-slate-200 shadow-sm p-6 space-y-6 rounded-lg">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+              <h2 className="text-xs font-bold text-slate-700 uppercase tracking-wider">
                 Document Configuration &amp; Details
               </h2>
-              <span className="text-[11px] text-slate-500">Live Updating Preview</span>
+              <span className="text-[11px] text-slate-400">Live Updating Preview</span>
             </div>
 
             {/* Sections */}
             {resource.sections.map((section) => (
               <div key={section.id} className="space-y-4 pt-2">
-                <h3 className="text-xs font-bold text-sky-400 uppercase tracking-wider border-b border-slate-800/80 pb-1.5">
+                <h3 className="text-xs font-bold text-sky-600 uppercase tracking-wider border-b border-slate-100 pb-1.5">
                   {section.title}
                 </h3>
                 {section.description && (
@@ -199,8 +199,8 @@ export function ResourceWorkspaceClient({ resource }: ResourceWorkspaceClientPro
                 <div className="space-y-3.5">
                   {section.fields.map((field) => (
                     <div key={field.id} className="space-y-1">
-                      <label className="block text-[11px] font-bold text-slate-400 uppercase tracking-wider">
-                        {field.label} {field.required && <span className="text-sky-400">*</span>}
+                      <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+                        {field.label} {field.required && <span className="text-sky-500">*</span>}
                       </label>
                       {field.type === 'textarea' ? (
                         <textarea
@@ -208,13 +208,13 @@ export function ResourceWorkspaceClient({ resource }: ResourceWorkspaceClientPro
                           value={formData[field.id] || ''}
                           onChange={(e) => handleFieldChange(field.id, e.target.value)}
                           placeholder={field.placeholder}
-                          className="w-full bg-[#030712] border border-slate-800 focus:border-sky-500 px-3 py-2 text-xs text-slate-100 placeholder-slate-600 outline-none leading-relaxed transition-colors"
+                          className="w-full bg-slate-50 border border-slate-300 focus:border-sky-500 px-3 py-2 text-xs text-slate-800 placeholder-slate-400 outline-none leading-relaxed transition-colors rounded-[4px]"
                         />
                       ) : field.type === 'select' && field.options ? (
                         <select
                           value={formData[field.id] || ''}
                           onChange={(e) => handleFieldChange(field.id, e.target.value)}
-                          className="w-full bg-[#030712] border border-slate-800 focus:border-sky-500 px-3 py-2 text-xs text-slate-100 outline-none transition-colors"
+                          className="w-full bg-slate-50 border border-slate-300 focus:border-sky-500 px-3 py-2 text-xs text-slate-800 outline-none transition-colors rounded-[4px]"
                         >
                           {field.options.map((opt) => (
                             <option key={opt} value={opt}>
@@ -228,11 +228,11 @@ export function ResourceWorkspaceClient({ resource }: ResourceWorkspaceClientPro
                           value={formData[field.id] || ''}
                           onChange={(e) => handleFieldChange(field.id, e.target.value)}
                           placeholder={field.placeholder}
-                          className="w-full bg-[#030712] border border-slate-800 focus:border-sky-500 px-3 py-2 text-xs text-slate-100 placeholder-slate-600 outline-none transition-colors"
+                          className="w-full bg-slate-50 border border-slate-300 focus:border-sky-500 px-3 py-2 text-xs text-slate-800 placeholder-slate-400 outline-none transition-colors rounded-[4px]"
                         />
                       )}
                       {field.helperText && (
-                        <span className="text-[10px] text-slate-500 block">{field.helperText}</span>
+                        <span className="text-[10px] text-slate-400 block">{field.helperText}</span>
                       )}
                     </div>
                   ))}
@@ -242,12 +242,12 @@ export function ResourceWorkspaceClient({ resource }: ResourceWorkspaceClientPro
 
             {/* Checklist Inputs (if applicable) */}
             {checklistItems && checklistItems.length > 0 && (
-              <div className="space-y-3 pt-4 border-t border-slate-800">
-                <div className="flex items-center justify-between border-b border-slate-800/80 pb-1.5">
-                  <h3 className="text-xs font-bold text-sky-400 uppercase tracking-wider">
+              <div className="space-y-3 pt-4 border-t border-slate-100">
+                <div className="flex items-center justify-between border-b border-slate-100 pb-1.5">
+                  <h3 className="text-xs font-bold text-sky-600 uppercase tracking-wider">
                     Interactive Verification Audit
                   </h3>
-                  <span className="text-[10px] text-slate-500">Click to toggle Pass / Pending</span>
+                  <span className="text-[10px] text-slate-400">Click to toggle Pass / Pending</span>
                 </div>
                 <div className="space-y-2">
                   {checklistItems.map((item) => {
@@ -256,19 +256,19 @@ export function ResourceWorkspaceClient({ resource }: ResourceWorkspaceClientPro
                       <div
                         key={item.id}
                         onClick={() => toggleChecklistStatus(item.id)}
-                        className="p-2.5 bg-[#030712] border border-slate-800 hover:border-slate-700 cursor-pointer flex items-start gap-3 transition-colors text-xs"
+                        className="p-2.5 bg-slate-50 border border-slate-200 hover:border-sky-300 cursor-pointer flex items-start gap-3 transition-colors text-xs rounded-[4px]"
                       >
                         <span
-                          className={`px-1.5 py-0.5 text-[9px] font-bold uppercase shrink-0 border ${
+                          className={`px-1.5 py-0.5 text-[9px] font-bold uppercase shrink-0 border rounded-sm ${
                             isPassed
-                              ? 'bg-emerald-950 border-emerald-800 text-emerald-400'
-                              : 'bg-amber-950 border-amber-800 text-amber-400'
+                              ? 'bg-emerald-50 border-emerald-300 text-emerald-700'
+                              : 'bg-amber-50 border-amber-300 text-amber-700'
                           }`}
                         >
                           {item.status.toUpperCase()}
                         </span>
                         <div className="min-w-0 flex-1">
-                          <div className="text-slate-200 leading-snug">{item.requirement}</div>
+                          <div className="text-slate-800 leading-snug">{item.requirement}</div>
                           <div className="text-[10px] text-slate-500 mt-0.5 font-medium">
                             {item.category} • Responsible: {item.responsibleParty}
                           </div>
@@ -288,9 +288,9 @@ export function ResourceWorkspaceClient({ resource }: ResourceWorkspaceClientPro
             activeTab === 'workspace' ? 'hidden sm:block' : 'block'
           }`}
         >
-          <div className="flex items-center justify-between text-xs font-bold text-slate-400 uppercase tracking-wider px-1 print:hidden">
+          <div className="flex items-center justify-between text-xs font-bold text-slate-500 uppercase tracking-wider px-1 print:hidden">
             <span>LIVE COMMERCIAL DOCUMENT PREVIEW</span>
-            <span className="text-slate-500 font-normal">US Letter 8.5 x 11 Format</span>
+            <span className="text-slate-400 font-normal">US Letter 8.5 x 11 Format</span>
           </div>
 
           {/* Document Sheet Card */}
@@ -401,18 +401,18 @@ export function ResourceWorkspaceClient({ resource }: ResourceWorkspaceClientPro
           </div>
 
           {/* Connect to Workspace Box */}
-          <div className="bg-[#090d16] border border-slate-800 p-5 space-y-3 print:hidden">
+          <div className="bg-sky-50 border border-sky-200 p-5 space-y-3 print:hidden rounded-lg">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold text-white uppercase">Connect to Avorria Workspace</span>
-              <span className="text-[10px] text-sky-400 font-bold uppercase">Cloud Archive</span>
+              <span className="text-xs font-bold text-navy-800 uppercase">Connect to Avorria Workspace</span>
+              <span className="text-[10px] text-sky-600 font-bold uppercase">Cloud Archive</span>
             </div>
-            <p className="text-xs text-slate-400 leading-relaxed">
+            <p className="text-xs text-slate-600 leading-relaxed">
               Save this {resource.title} directly into your organization&apos;s verified Document Vault. Attach it to commercial bid submissions or project startup dossiers.
             </p>
             <div className="pt-1">
               <Link
                 href="/workspace/documents"
-                className="inline-block px-4 py-2 bg-[#030712] hover:bg-slate-900 border border-slate-700 text-sky-400 text-xs font-bold uppercase tracking-wider transition-colors"
+                className="inline-block px-4 py-2 bg-[#0284c7] hover:bg-[#0369a1] text-white text-xs font-bold uppercase tracking-wider transition-colors rounded-[4px]"
               >
                 Save to Workspace Vault →
               </Link>

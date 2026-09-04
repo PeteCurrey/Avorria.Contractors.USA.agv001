@@ -71,45 +71,45 @@ const TOOLS = [
 
 export default function ToolsIndexPage() {
   return (
-    <div className="min-h-screen bg-[#030712] text-slate-100 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-surface-page text-navy-800 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto space-y-12">
         {/* Header */}
         <div className="text-center max-w-3xl mx-auto space-y-4">
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-slate-900 border border-slate-800 text-sky-400 text-xs font-bold uppercase tracking-wider">
+          <div className="inline-flex items-center gap-2 px-3 py-1 bg-sky-50 border border-sky-200 text-sky-700 text-xs font-bold uppercase tracking-wider rounded-sm">
             CONTRACTOR UTILITIES · PROFESSIONAL JOB TOOLS
           </div>
-          <h1 className="text-3xl sm:text-5xl font-black text-white tracking-tight leading-tight">
+          <h1 className="text-3xl sm:text-5xl font-black text-navy-800 tracking-tight leading-tight">
             Field Utilities &amp; Commercial Calculators
           </h1>
-          <p className="text-sm sm:text-base text-slate-400 leading-relaxed max-w-2xl mx-auto">
+          <p className="text-sm sm:text-base text-slate-600 leading-relaxed max-w-2xl mx-auto">
             Practical digital utilities engineered for American trade contractors to evaluate site hazards, model commercial margins, and document compliance.
           </p>
         </div>
 
         {/* Featured Flagship Card */}
-        <div className="bg-[#090d16] border border-slate-800 p-8 sm:p-10 space-y-4 max-w-4xl mx-auto">
+        <div className="bg-white border border-slate-200 shadow-sm p-8 sm:p-10 space-y-4 max-w-4xl mx-auto rounded-lg">
           <div className="flex items-center gap-2">
-            <span className="px-2 py-0.5 bg-sky-950 border border-sky-800 text-sky-400 text-[10px] font-bold uppercase">
+            <span className="px-2 py-0.5 bg-sky-50 border border-sky-200 text-sky-700 text-[10px] font-bold uppercase rounded-sm">
               Flagship Field Tool
             </span>
             <span className="text-xs text-slate-500">OSHA 29 CFR 1926 Aligned</span>
           </div>
-          <h2 className="text-2xl font-black text-white">
+          <h2 className="text-2xl font-black text-navy-800">
             Job Hazard Analysis (JHA) Field Generator
           </h2>
-          <p className="text-xs sm:text-sm text-slate-400 leading-relaxed max-w-3xl">
+          <p className="text-xs sm:text-sm text-slate-600 leading-relaxed max-w-3xl">
             Select your trade scope, break down sequenced job steps, enforce engineering and administrative safeguards, and export clean, project-ready JHA documentation for on-site safety briefings.
           </p>
           <div className="pt-2 flex flex-wrap gap-4">
             <Link
               href="/tools/job-hazard-analysis-jha-generator"
-              className="px-6 py-2.5 bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold text-xs uppercase tracking-wider transition-colors"
+              className="px-6 py-2.5 bg-[#0284c7] hover:bg-[#0369a1] text-white font-bold text-xs uppercase tracking-wider transition-colors rounded-[4px]"
             >
               Launch JHA Generator →
             </Link>
             <Link
               href="/resources/site-safety-inspection"
-              className="px-6 py-2.5 bg-[#030712] hover:bg-slate-900 border border-slate-700 text-slate-300 font-bold text-xs uppercase tracking-wider transition-colors"
+              className="px-6 py-2.5 bg-white hover:bg-slate-50 border border-slate-300 text-slate-700 font-bold text-xs uppercase tracking-wider transition-colors rounded-[4px]"
             >
               Site Safety Inspection Checklist
             </Link>
@@ -121,29 +121,29 @@ export default function ToolsIndexPage() {
           {TOOLS.map((tool) => (
             <div
               key={tool.slug}
-              className="bg-[#090d16] border border-slate-800 hover:border-slate-700 p-6 flex flex-col justify-between transition-colors group"
+              className="bg-white border border-slate-200 hover:border-sky-300 hover:shadow-md p-6 flex flex-col justify-between transition-all group rounded-lg"
             >
               <div className="space-y-3">
                 <div className="flex items-center justify-between text-xs">
-                  <span className="text-sky-400 font-bold uppercase text-[11px] tracking-wider">
+                  <span className="text-sky-600 font-bold uppercase text-[11px] tracking-wider">
                     {tool.category}
                   </span>
-                  <span className="text-slate-500 text-[11px]">{tool.standard}</span>
+                  <span className="text-slate-400 text-[11px]">{tool.standard}</span>
                 </div>
 
-                <h3 className="text-base font-bold text-white group-hover:text-sky-400 transition-colors leading-snug">
+                <h3 className="text-base font-bold text-navy-800 group-hover:text-sky-600 transition-colors leading-snug">
                   <Link href={`/${tool.slug}`}>{tool.title}</Link>
                 </h3>
 
-                <p className="text-xs text-slate-400 leading-relaxed line-clamp-3">
+                <p className="text-xs text-slate-500 leading-relaxed line-clamp-3">
                   {tool.description}
                 </p>
               </div>
 
-              <div className="pt-6 border-t border-slate-800 mt-6">
+              <div className="pt-6 border-t border-slate-100 mt-6">
                 <Link
                   href={`/${tool.slug}`}
-                  className="w-full block py-2 px-3 text-center bg-[#030712] hover:bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-200 font-bold text-xs uppercase tracking-wider transition-colors"
+                  className="w-full block py-2 px-3 text-center bg-slate-50 hover:bg-sky-50 border border-slate-200 hover:border-sky-300 text-slate-700 hover:text-sky-700 font-bold text-xs uppercase tracking-wider transition-colors rounded-[4px]"
                 >
                   {tool.actionText} →
                 </Link>
@@ -153,15 +153,15 @@ export default function ToolsIndexPage() {
         </div>
 
         {/* Bottom Banner */}
-        <div className="p-8 bg-[#090d16] border border-slate-800 text-center space-y-4 max-w-3xl mx-auto">
-          <h3 className="text-lg font-bold text-white">Full 25-Resource Commercial Library Available</h3>
-          <p className="text-xs text-slate-400 max-w-xl mx-auto leading-relaxed">
+        <div className="p-8 bg-sky-50 border border-sky-200 text-center space-y-4 max-w-3xl mx-auto rounded-lg">
+          <h3 className="text-lg font-bold text-navy-800">Full 25-Resource Commercial Library Available</h3>
+          <p className="text-xs text-slate-600 max-w-xl mx-auto leading-relaxed">
             Access our complete catalogue of contractor capability statements, AIA-aligned qualification forms, bid proposals, and project handover audits.
           </p>
           <div className="pt-1">
             <Link
               href="/resources"
-              className="inline-block px-6 py-2.5 bg-sky-500 hover:bg-sky-400 text-slate-950 text-xs font-bold uppercase tracking-wider transition-colors"
+              className="inline-block px-6 py-2.5 bg-[#0284c7] hover:bg-[#0369a1] text-white text-xs font-bold uppercase tracking-wider transition-colors rounded-[4px]"
             >
               Browse Full Resource Catalogue →
             </Link>

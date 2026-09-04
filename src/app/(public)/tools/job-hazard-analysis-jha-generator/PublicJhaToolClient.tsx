@@ -79,45 +79,45 @@ export function PublicJhaToolClient() {
   };
 
   return (
-    <div className="min-h-screen bg-[#030712] text-slate-100 py-10 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-surface-page text-navy-800 py-10 px-4 sm:px-6 lg:px-8">
       <div className="max-w-5xl mx-auto space-y-8">
         {/* Header */}
         <div className="space-y-3 print:hidden">
           <div className="flex items-center gap-2 text-xs">
-            <Link href="/resources" className="text-slate-400 hover:text-sky-400 uppercase font-bold tracking-wider">
+            <Link href="/resources" className="text-slate-500 hover:text-sky-600 uppercase font-bold tracking-wider">
               ← Resources Library
             </Link>
-            <span className="text-slate-600">/</span>
-            <span className="text-sky-400 font-bold uppercase tracking-wider">Safety &amp; Compliance</span>
-            <span className="text-slate-600">/</span>
-            <span className="px-1.5 py-0.5 bg-slate-900 border border-slate-800 text-slate-400 font-bold uppercase text-[10px]">
+            <span className="text-slate-300">/</span>
+            <span className="text-sky-600 font-bold uppercase tracking-wider">Safety &amp; Compliance</span>
+            <span className="text-slate-300">/</span>
+            <span className="px-1.5 py-0.5 bg-sky-50 border border-sky-200 text-sky-700 font-bold uppercase text-[10px] rounded-sm">
               OSHA 1926
             </span>
           </div>
-          <h1 className="text-3xl sm:text-4xl font-black text-white tracking-tight">
+          <h1 className="text-3xl sm:text-4xl font-black text-navy-800 tracking-tight">
             Job Hazard Analysis (JHA) Generator
           </h1>
-          <p className="text-sm text-slate-400 max-w-3xl leading-relaxed">
+          <p className="text-sm text-slate-500 max-w-3xl leading-relaxed">
             Generate an OSHA 1926-aligned Job Hazard Analysis for pre-task planning. Break down scheduled work activities, identify physical hazards, enforce the hierarchy of controls, and generate clean jobsite documentation.
           </p>
         </div>
 
         {/* Input Configuration Card */}
-        <div className="bg-[#090d16] border border-slate-800 p-6 space-y-4 print:hidden">
-          <div className="flex items-center justify-between border-b border-slate-800 pb-2">
-            <h2 className="text-xs font-bold text-slate-300 uppercase tracking-wider">
+        <div className="bg-white border border-slate-200 shadow-sm p-6 space-y-4 print:hidden rounded-lg">
+          <div className="flex items-center justify-between border-b border-slate-100 pb-2">
+            <h2 className="text-xs font-bold text-slate-700 uppercase tracking-wider">
               Task Configuration &amp; Project Context
             </h2>
-            <span className="text-[11px] text-slate-500">Field Pre-Task Briefing Standard</span>
+            <span className="text-[11px] text-slate-400">Field Pre-Task Briefing Standard</span>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
             <div>
-              <label className="block text-slate-400 mb-1 font-bold uppercase text-[11px]">Primary Trade Scope</label>
+              <label className="block text-slate-500 mb-1 font-bold uppercase text-[11px]">Primary Trade Scope</label>
               <select
                 value={trade}
                 onChange={(e) => setTrade(e.target.value)}
-                className="w-full bg-[#030712] border border-slate-800 focus:border-sky-500 px-3 py-2 text-slate-200 outline-none"
+                className="w-full bg-white border border-slate-300 focus:border-sky-500 px-3 py-2 text-slate-800 outline-none rounded-[4px]"
               >
                 <option value="Electrical Contracting">Electrical Contracting</option>
                 <option value="HVAC & Mechanical">HVAC &amp; Mechanical</option>
@@ -126,32 +126,32 @@ export function PublicJhaToolClient() {
             </div>
 
             <div>
-              <label className="block text-slate-400 mb-1 font-bold uppercase text-[11px]">Project / Jobsite Name</label>
+              <label className="block text-slate-500 mb-1 font-bold uppercase text-[11px]">Project / Jobsite Name</label>
               <input
                 type="text"
                 value={projectName}
                 onChange={(e) => setProjectName(e.target.value)}
-                className="w-full bg-[#030712] border border-slate-800 focus:border-sky-500 px-3 py-2 text-slate-200 outline-none"
+                className="w-full bg-white border border-slate-300 focus:border-sky-500 px-3 py-2 text-slate-800 outline-none rounded-[4px]"
               />
             </div>
 
             <div>
-              <label className="block text-slate-400 mb-1 font-bold uppercase text-[11px]">Competent Person / Lead Supervisor</label>
+              <label className="block text-slate-500 mb-1 font-bold uppercase text-[11px]">Competent Person / Lead Supervisor</label>
               <input
                 type="text"
                 value={competentPerson}
                 onChange={(e) => setCompetentPerson(e.target.value)}
-                className="w-full bg-[#030712] border border-slate-800 focus:border-sky-500 px-3 py-2 text-slate-200 outline-none"
+                className="w-full bg-white border border-slate-300 focus:border-sky-500 px-3 py-2 text-slate-800 outline-none rounded-[4px]"
               />
             </div>
 
             <div>
-              <label className="block text-slate-400 mb-1 font-bold uppercase text-[11px]">Specific Task Description</label>
+              <label className="block text-slate-500 mb-1 font-bold uppercase text-[11px]">Specific Task Description</label>
               <input
                 type="text"
                 value={taskDescription}
                 onChange={(e) => setTaskDescription(e.target.value)}
-                className="w-full bg-[#030712] border border-slate-800 focus:border-sky-500 px-3 py-2 text-slate-200 outline-none"
+                className="w-full bg-white border border-slate-300 focus:border-sky-500 px-3 py-2 text-slate-800 outline-none rounded-[4px]"
               />
             </div>
           </div>
@@ -160,7 +160,7 @@ export function PublicJhaToolClient() {
             <button
               type="button"
               onClick={handlePrint}
-              className="px-4 py-2 bg-[#030712] hover:bg-slate-900 border border-slate-700 text-slate-300 text-xs font-bold uppercase tracking-wider transition-colors"
+              className="px-4 py-2 bg-white hover:bg-slate-50 border border-slate-300 text-slate-700 text-xs font-bold uppercase tracking-wider transition-colors rounded-[4px]"
             >
               Print JHA Document
             </button>
@@ -305,23 +305,23 @@ export function PublicJhaToolClient() {
         </div>
 
         {/* Integration Callout */}
-        <div className="p-6 bg-[#090d16] border border-slate-800 space-y-3 print:hidden">
-          <h3 className="text-sm font-bold text-white uppercase tracking-wider">
+        <div className="p-6 bg-sky-50 border border-sky-200 space-y-3 print:hidden rounded-lg">
+          <h3 className="text-sm font-bold text-navy-800 uppercase tracking-wider">
             Looking for more safety and compliance resources?
           </h3>
-          <p className="text-xs text-slate-400 leading-relaxed max-w-2xl">
+          <p className="text-xs text-slate-600 leading-relaxed max-w-2xl">
             Explore our complete Safety &amp; Compliance library including the Site Safety Audit Checklist, Toolbox Talk Meeting Roster, and Contractor Incident Report.
           </p>
           <div className="pt-1 flex flex-wrap gap-3">
             <Link
               href="/resources/site-safety-inspection"
-              className="px-4 py-2 bg-slate-900 hover:bg-slate-800 border border-slate-700 text-sky-400 text-xs font-bold uppercase tracking-wider transition-colors"
+              className="px-4 py-2 bg-[#0284c7] hover:bg-[#0369a1] text-white text-xs font-bold uppercase tracking-wider transition-colors rounded-[4px]"
             >
               Site Safety Inspection Checklist →
             </Link>
             <Link
               href="/resources"
-              className="px-4 py-2 bg-[#030712] hover:bg-slate-900 border border-slate-800 text-slate-300 text-xs font-bold uppercase tracking-wider transition-colors"
+              className="px-4 py-2 bg-white hover:bg-slate-50 border border-slate-300 text-slate-700 text-xs font-bold uppercase tracking-wider transition-colors rounded-[4px]"
             >
               View All 25 Resources →
             </Link>

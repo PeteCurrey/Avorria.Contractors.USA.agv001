@@ -52,7 +52,7 @@ export default async function ResourceDetailPage({ params }: PageProps) {
   }
 
   return (
-    <div className="min-h-screen bg-[#030712] text-slate-100 py-10 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-surface-page text-navy-800 py-10 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         <ResourceWorkspaceClient resource={resource} />
       </div>
