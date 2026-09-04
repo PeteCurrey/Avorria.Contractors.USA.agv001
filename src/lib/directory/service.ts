@@ -143,7 +143,7 @@ export async function queryContractorDirectory(
   const verificationFilter: VerificationFilterOption = params.verificationStatus || 'all';
   const sortOption: DirectorySortOption = params.sort || 'relevance';
   const page = Math.max(1, params.page || 1);
-  const limit = Math.max(1, Math.min(50, params.limit || 12));
+  const limit = Math.max(1, Math.min(250, params.limit || 12));
 
   // 1. Filtering
   const filtered = allContractors.filter((c) => {

@@ -73,6 +73,13 @@ export interface WorkspaceUser {
   updated_at: string;
 }
 
+export interface SignatureData {
+  signer_name: string;
+  signature_image: string; // Base64 data URL
+  signer_ip_hash: string;  // SHA-256 hash
+  signed_at: string;
+}
+
 export interface WorkspaceDocument {
   id: string;
   org_id: string;
@@ -83,6 +90,12 @@ export interface WorkspaceDocument {
   generated_by: DocumentGeneratedBy;
   linked_project_id?: string;
   created_by_user_id?: string;
+  content?: Record<string, any>;
+  is_signed?: boolean;
+  signed_at?: string;
+  signature_data?: SignatureData;
+  parent_document_id?: string;
+  change_summary?: string;
   created_at: string;
   updated_at: string;
 }

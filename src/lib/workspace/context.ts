@@ -107,3 +107,5 @@ export async function getWorkspaceContext(): Promise<WorkspaceContext> {
     user: defaultContext.user,
   };
 }
+
+export const getSessionContext = getWorkspaceContext;

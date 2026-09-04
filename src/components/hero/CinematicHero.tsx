@@ -24,18 +24,33 @@ export function CinematicHero() {
 
   return (
     <section className="relative w-full min-h-screen lg:h-screen lg:max-h-screen flex flex-col justify-between bg-[#040813] overflow-hidden pt-[74px] lg:pt-[76px] pb-3 lg:pb-4">
-      {/* ── 1. CINEMATIC WIND-SWEPT AMERICAN FLAG & DUSK SKYLINE BACKGROUND ── */}
+      {/* ── 1. CINEMATIC COMPOSITE: SMALL CONTRACTOR CRAFTSMANSHIP + AMERICAN FLAG OVERLAY ── */}
       <div className="absolute inset-0 z-0 select-none pointer-events-none overflow-hidden">
+        {/* Clear HD Small Contractor Background Artwork */}
         <Image
-          src="/images/hero-american-flag-construction.jpg"
-          alt="American flag flowing over modern construction skyline at twilight"
+          src="/images/hero-small-contractor.jpg"
+          alt="American trade contractors reviewing plans at dusk with work truck and timber frame construction"
           fill
           priority
           sizes="100vw"
-          className="object-cover object-center opacity-85 scale-[1.01]"
+          className="object-cover object-center opacity-90 scale-[1.01]"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#040813]/95 via-[#040813]/70 to-[#040813]/30" />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#040813]/90 via-transparent to-[#040813]" />
+
+        {/* American Flag Overlay Layer (Isolated Flag Flowing Over Job Site) */}
+        <div className="absolute inset-0 mix-blend-screen opacity-70 overflow-hidden">
+          <Image
+            src="/images/hero-american-flag-overlay.jpg"
+            alt="American flag billowing over American contractor job sites"
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover object-left"
+          />
+        </div>
+
+        {/* Atmospheric Scrims for Text Contrast While Preserving HD Clarity */}
+        <div className="absolute inset-0 bg-gradient-to-r from-[#040813]/95 via-[#040813]/70 to-[#040813]/25" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#040813]/85 via-transparent to-[#040813]/95" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_35%,rgba(2,132,199,0.12)_0%,transparent_60%)]" />
       </div>
 

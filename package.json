@@ -24,7 +24,8 @@
     "test:workspace": "tsx scripts/test-workspace-schema.ts",
     "test:comply-engine": "tsx scripts/test-comply-engine.ts",
     "test:passport-prove": "tsx scripts/test-passport-prove.ts",
-    "test": "npm run test:security && npm run test:core-loop && npm run test:engine && npm run test:verification && npm run test:directory && npm run test:connect && npm run test:request && npm run test:match && npm run test:respond && npm run test:compare && npm run test:workspace && npm run test:comply-engine && npm run test:passport-prove"
+    "test:create": "tsx scripts/test-document-generation.ts",
+    "test": "npm run test:security && npm run test:core-loop && npm run test:engine && npm run test:verification && npm run test:directory && npm run test:connect && npm run test:request && npm run test:match && npm run test:respond && npm run test:compare && npm run test:workspace && npm run test:comply-engine && npm run test:passport-prove && npm run test:create"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.123.0",
@@ -35,6 +36,7 @@
     "firebase-admin": "^14.3.0",
     "lucide-react": "^0.475.0",
     "next": "15.5.25",
+    "pdf-lib": "^1.17.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "resend": "^6.26.0",

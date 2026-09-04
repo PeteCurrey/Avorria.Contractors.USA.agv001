@@ -281,6 +281,8 @@ export async function listToolboxTalks(orgId: string): Promise<ToolboxTalkAttend
   return Object.values(store.toolbox_talks).filter((t) => t.org_id === orgId);
 }
 
+export const listToolboxTalkAttendance = listToolboxTalks;
+
 export async function saveToolboxTalk(talk: ToolboxTalkAttendance): Promise<ToolboxTalkAttendance> {
   const store = loadWorkspaceStore();
   store.toolbox_talks[talk.id] = {
@@ -290,6 +292,8 @@ export async function saveToolboxTalk(talk: ToolboxTalkAttendance): Promise<Tool
   saveWorkspaceStore(store);
   return store.toolbox_talks[talk.id];
 }
+
+export const saveToolboxTalkAttendance = saveToolboxTalk;
 
 // ─────────────────────────────────────────────────────────────
 // NOTIFICATIONS

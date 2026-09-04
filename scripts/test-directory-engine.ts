@@ -275,7 +275,7 @@ async function runDirectoryTests() {
     // TEST 1: DIRECTORY ELIGIBILITY
     // ─────────────────────────────────────────────────────────────
     console.log('\n--- 1. Directory Eligibility Checks ---');
-    const allResults = await queryContractorDirectory({ limit: 100 });
+    const allResults = await queryContractorDirectory({ limit: 200 });
     const allSlugs = allResults.contractors.map((c) => c.slug);
 
     assert(
@@ -313,7 +313,7 @@ async function runDirectoryTests() {
     // TEST 3: SEARCH BY TRADE
     // ─────────────────────────────────────────────────────────────
     console.log('\n--- 3. Trade Category Filtering ---');
-    const tradeSearch = await queryContractorDirectory({ trade: 'commercial-roofing' });
+    const tradeSearch = await queryContractorDirectory({ trade: 'commercial-roofing', limit: 100 });
     assert(
       tradeSearch.contractors.some((c) => c.slug === mockPubUnver.organisation.slug),
       'Trade filter matches commercial roofing contractor'
@@ -327,7 +327,7 @@ async function runDirectoryTests() {
     // TEST 4: SEARCH BY LOCATION / TERRITORY
     // ─────────────────────────────────────────────────────────────
     console.log('\n--- 4. Location Search ---');
-    const locationSearch = await queryContractorDirectory({ location: 'San Antonio' });
+    const locationSearch = await queryContractorDirectory({ location: 'San Antonio', limit: 100 });
     assert(
       locationSearch.contractors.some((c) => c.slug === mockPubUnver.organisation.slug),
       'Location search matches San Antonio territory'
@@ -341,7 +341,7 @@ async function runDirectoryTests() {
     // TEST 5: DETERMINISTIC RANKING (VERIFIED FIRST)
     // ─────────────────────────────────────────────────────────────
     console.log('\n--- 5. Deterministic Ranking ---');
-    const rankingResults = await queryContractorDirectory({ location: 'TX', sort: 'relevance', limit: 50 });
+    const rankingResults = await queryContractorDirectory({ location: 'TX', sort: 'relevance', limit: 200 });
     const titanIndex = rankingResults.contractors.findIndex((c) => c.slug === mockPubVer.organisation.slug);
     const summitIndex = rankingResults.contractors.findIndex((c) => c.slug === mockPubUnver.organisation.slug);
 
