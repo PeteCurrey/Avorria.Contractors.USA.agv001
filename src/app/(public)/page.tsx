@@ -200,7 +200,7 @@ export default function HomePage() {
               <div className="text-xs font-mono font-bold tracking-widest uppercase text-brand-600">
                 PILLAR 02 / DOCUMENT ENGINE
               </div>
-              <h2 className="text-3xl sm:text-5xl font-black text-navy-900 tracking-tight leading-tight">
+              <h2 className="text-3xl sm:text-5xl font-extralight text-navy-900 tracking-tight leading-tight">
                 Create the documents your business actually needs.
               </h2>
               <p className="text-base text-slate-600 leading-relaxed font-normal">
@@ -272,7 +272,7 @@ export default function HomePage() {
                   {/* Title & Organization Meta */}
                   <div className="border-b border-slate-200 pb-4">
                     <div className="text-[10px] font-mono uppercase text-slate-500">Safety & Hazard Prevention Plan</div>
-                    <h4 className="text-xl font-black text-navy-900 mt-1">
+                    <h4 className="text-xl font-extralight text-navy-900 mt-1">
                       Job Hazard Analysis: 480V Substation Feeder Cable Pulling & Terminations
                     </h4>
                     <div className="flex flex-wrap gap-4 text-[11px] text-slate-600 mt-2">
@@ -340,7 +340,7 @@ export default function HomePage() {
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded bg-brand-950/80 border border-brand-800/60 text-xs font-mono text-brand-300">
                 <span>PILLAR 03 / OPERATIONAL READINESS</span>
               </div>
-              <h2 className="text-3xl sm:text-5xl font-black text-white tracking-tight leading-tight">
+              <h2 className="text-3xl sm:text-5xl font-extralight text-white tracking-tight leading-tight">
                 Know what needs attention before someone else asks.
               </h2>
               <p className="text-base text-slate-300 leading-relaxed font-normal">
@@ -352,10 +352,10 @@ export default function HomePage() {
                 <div className="flex items-center justify-between">
                   <div>
                     <span className="text-xs font-mono uppercase text-slate-400">Readiness Assessment</span>
-                    <div className="text-sm font-bold text-white mt-0.5">Commercial Readiness Status</div>
+                    <div className="text-sm font-light text-white mt-0.5">Commercial Readiness Status</div>
                   </div>
                   <div className="text-right">
-                    <span className="text-3xl font-black text-emerald-400 font-mono">88%</span>
+                    <span className="text-3xl font-light text-emerald-400 font-mono">88%</span>
                     <span className="text-xs text-slate-400 block">Work-Ready</span>
                   </div>
                 </div>
@@ -466,7 +466,7 @@ export default function HomePage() {
             <div className="text-xs font-mono font-bold tracking-widest uppercase text-brand-600">
               PILLAR 04 / CREDENTIAL ARCHITECTURE
             </div>
-            <h2 className="text-3xl sm:text-5xl font-black text-navy-900 tracking-tight leading-tight">
+            <h2 className="text-3xl sm:text-5xl font-extralight text-navy-900 tracking-tight leading-tight">
               Build a professional profile around the evidence behind your business.
             </h2>
             <p className="text-base text-slate-600 leading-relaxed font-normal">
@@ -478,22 +478,22 @@ export default function HomePage() {
               <div className="p-3 rounded bg-slate-50 border border-slate-200 flex items-start gap-2.5">
                 <span className="text-brand-600 font-bold text-sm">✓</span>
                 <div>
-                  <strong className="block text-navy-900">Verified Corporate Identity</strong>
-                  <span className="text-slate-600">State registered entity status, physical headquarters, and leadership credentials.</span>
+                  <strong className="block text-navy-900 font-medium">Verified Corporate Identity</strong>
+                  <span className="text-slate-600 font-extralight">State registered entity status, physical headquarters, and leadership credentials.</span>
                 </div>
               </div>
               <div className="p-3 rounded bg-slate-50 border border-slate-200 flex items-start gap-2.5">
                 <span className="text-brand-600 font-bold text-sm">✓</span>
                 <div>
-                  <strong className="block text-navy-900">Active Insurance Verification</strong>
-                  <span className="text-slate-600">Confirmed General Liability, Workers’ Comp, Auto, and Umbrella limits directly on record.</span>
+                  <strong className="block text-navy-900 font-medium">Active Insurance Verification</strong>
+                  <span className="text-slate-600 font-extralight">Confirmed General Liability, Workers’ Comp, Auto, and Umbrella limits directly on record.</span>
                 </div>
               </div>
               <div className="p-3 rounded bg-slate-50 border border-slate-200 flex items-start gap-2.5">
                 <span className="text-brand-600 font-bold text-sm">✓</span>
                 <div>
-                  <strong className="block text-navy-900">Safety & Site Track Record</strong>
-                  <span className="text-slate-600">Demonstrated OSHA compliance through job-specific JHAs, hazard controls, and signed safety plans.</span>
+                  <strong className="block text-navy-900 font-medium">Safety & Site Track Record</strong>
+                  <span className="text-slate-600 font-extralight">Demonstrated OSHA compliance through job-specific JHAs, hazard controls, and signed safety plans.</span>
                 </div>
               </div>
             </div>
@@ -501,7 +501,7 @@ export default function HomePage() {
             <div className="pt-2">
               <Link
                 href="/contractor-passport"
-                className="inline-flex items-center justify-center font-bold px-6 py-3 rounded bg-brand-600 hover:bg-brand-500 text-white text-sm shadow-sm transition-colors"
+                className="inline-flex items-center justify-center font-light px-6 py-3 rounded bg-brand-600 hover:bg-brand-500 text-white text-sm shadow-sm transition-colors"
               >
                 Explore Contractor Passport
               </Link>
@@ -515,22 +515,22 @@ export default function HomePage() {
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-200">
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-brand-50 text-brand-700 border border-brand-200 font-bold">
+                    <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-brand-50 text-brand-700 border border-brand-200 font-medium">
                       VERIFIED CONTRACTOR PASSPORT
                     </span>
                     <span className="text-[10px] font-mono text-slate-500">ID: PASSPORT-TX-8849</span>
                   </div>
-                  <h3 className="text-2xl font-black text-navy-900 mt-2">
+                  <h3 className="text-2xl font-extralight text-navy-900 mt-2">
                     Apex Industrial Mechanical LLC
                   </h3>
-                  <p className="text-xs text-slate-500 mt-0.5">
+                  <p className="text-xs text-slate-500 mt-0.5 font-extralight">
                     Commercial HVAC & Electrical Contracting • Austin, TX Metropolitian Area
                   </p>
                 </div>
                 <div className="shrink-0">
                   <div className="p-2.5 rounded-lg bg-emerald-50 border border-emerald-200 text-center">
-                    <span className="text-[10px] uppercase font-mono text-emerald-800 font-bold block">Status</span>
-                    <span className="text-sm font-black text-emerald-700">VERIFIED</span>
+                    <span className="text-[10px] uppercase font-mono text-emerald-800 font-medium block">Status</span>
+                    <span className="text-sm font-light text-emerald-700">VERIFIED</span>
                   </div>
                 </div>
               </div>
@@ -592,10 +592,10 @@ export default function HomePage() {
             <div className="text-xs font-mono font-bold tracking-widest uppercase text-brand-600">
               AUDITABLE TRUST
             </div>
-            <h2 className="text-3xl sm:text-5xl font-black text-navy-900 tracking-tight">
+            <h2 className="text-3xl sm:text-5xl font-extralight text-navy-900 tracking-tight">
               Don&apos;t just say you&apos;re ready. Show the evidence.
             </h2>
-            <p className="text-base sm:text-lg text-slate-600 leading-relaxed">
+            <p className="text-base sm:text-lg text-slate-600 leading-relaxed font-extralight">
               General contractors, project owners, and enterprise facilities managers require verified documentation before issuing contracts or granting site access.
             </p>
           </div>
@@ -603,31 +603,31 @@ export default function HomePage() {
           {/* 3-Stage Verification Timeline */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-left">
             <div className="p-8 rounded-2xl bg-white border border-slate-200 space-y-4">
-              <div className="w-10 h-10 rounded-full bg-brand-50 text-brand-700 font-bold font-mono flex items-center justify-center border border-brand-200 text-sm">
+              <div className="w-10 h-10 rounded-full bg-brand-50 text-brand-700 font-medium font-mono flex items-center justify-center border border-brand-200 text-sm">
                 01
               </div>
-              <h3 className="text-xl font-bold text-navy-900">Upload Evidence</h3>
-              <p className="text-xs text-slate-600 leading-relaxed">
+              <h3 className="text-xl font-light text-navy-900">Upload Evidence</h3>
+              <p className="text-xs text-slate-600 leading-relaxed font-extralight">
                 Submit current COIs, state license numbers, master certifications, and written safety plans into your encrypted organizational vault.
               </p>
             </div>
 
             <div className="p-8 rounded-2xl bg-white border border-slate-200 space-y-4">
-              <div className="w-10 h-10 rounded-full bg-brand-50 text-brand-700 font-bold font-mono flex items-center justify-center border border-brand-200 text-sm">
+              <div className="w-10 h-10 rounded-full bg-brand-50 text-brand-700 font-medium font-mono flex items-center justify-center border border-brand-200 text-sm">
                 02
               </div>
-              <h3 className="text-xl font-bold text-navy-900">Structured Review</h3>
-              <p className="text-xs text-slate-600 leading-relaxed">
+              <h3 className="text-xl font-light text-navy-900">Structured Review</h3>
+              <p className="text-xs text-slate-600 leading-relaxed font-extralight">
                 Documents are audited against jurisdiction-specific coverage minimums, effective policy dates, and required statutory endorsements.
               </p>
             </div>
 
             <div className="p-8 rounded-2xl bg-white border border-slate-200 space-y-4">
-              <div className="w-10 h-10 rounded-full bg-brand-50 text-brand-700 font-bold font-mono flex items-center justify-center border border-brand-200 text-sm">
+              <div className="w-10 h-10 rounded-full bg-brand-50 text-brand-700 font-medium font-mono flex items-center justify-center border border-brand-200 text-sm">
                 03
               </div>
-              <h3 className="text-xl font-bold text-navy-900">Published Verification</h3>
-              <p className="text-xs text-slate-600 leading-relaxed">
+              <h3 className="text-xl font-light text-navy-900">Published Verification</h3>
+              <p className="text-xs text-slate-600 leading-relaxed font-extralight">
                 Earn the official verified credential badge on your Contractor Passport: &ldquo;Verified by Avorria against Avorria&apos;s published verification criteria.&rdquo;
               </p>
             </div>
@@ -641,13 +641,13 @@ export default function HomePage() {
       <section className="py-24 lg:py-36 bg-[#070c18] text-white border-b border-navy-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl space-y-4 mb-16">
-            <div className="text-xs font-mono font-bold tracking-widest uppercase text-brand-400">
+            <div className="text-xs font-mono font-medium tracking-widest uppercase text-brand-400">
               PILLAR 05 / COMMERCIAL REVENUE
             </div>
-            <h2 className="text-3xl sm:text-5xl font-black text-white tracking-tight leading-tight">
+            <h2 className="text-3xl sm:text-5xl font-extralight text-white tracking-tight leading-tight">
               Present your business like a contractor clients can trust.
             </h2>
-            <p className="text-base sm:text-lg text-slate-300 leading-relaxed font-normal">
+            <p className="text-base sm:text-lg text-slate-300 leading-relaxed font-extralight">
               Combine professional commercial quotes, itemized change orders, and verified compliance documentation into winning bid packages that give commercial clients absolute confidence.
             </p>
           </div>
@@ -655,24 +655,24 @@ export default function HomePage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="p-8 rounded-2xl bg-navy-900/80 border border-navy-700/80 space-y-4">
               <span className="text-2xl">📋</span>
-              <h3 className="text-xl font-bold text-white">Itemized Quotes & Proposals</h3>
-              <p className="text-xs text-slate-300 leading-relaxed">
+              <h3 className="text-xl font-light text-white">Itemized Quotes & Proposals</h3>
+              <p className="text-xs text-slate-300 leading-relaxed font-extralight">
                 Generate clean, branded commercial quotations with transparent labor, material schedules of values, and professional acceptance sign-offs.
               </p>
             </div>
 
             <div className="p-8 rounded-2xl bg-navy-900/80 border border-navy-700/80 space-y-4">
               <span className="text-2xl">🛡️</span>
-              <h3 className="text-xl font-bold text-white">Attached Passport Credentials</h3>
-              <p className="text-xs text-slate-300 leading-relaxed">
+              <h3 className="text-xl font-light text-white">Attached Passport Credentials</h3>
+              <p className="text-xs text-slate-300 leading-relaxed font-extralight">
                 Every quote includes a live link to your verified Contractor Passport, proving insurance coverage and safety track record upfront.
               </p>
             </div>
 
             <div className="p-8 rounded-2xl bg-navy-900/80 border border-navy-700/80 space-y-4">
               <span className="text-2xl">📝</span>
-              <h3 className="text-xl font-bold text-white">Formal Change Orders</h3>
-              <p className="text-xs text-slate-300 leading-relaxed">
+              <h3 className="text-xl font-light text-white">Formal Change Orders</h3>
+              <p className="text-xs text-slate-300 leading-relaxed font-extralight">
                 Protect your project profit margins with binding, audit-ready change orders that document scope modifications before additional work begins.
               </p>
             </div>
@@ -685,13 +685,13 @@ export default function HomePage() {
       {/* ========================================================================= */}
       <section className="py-24 lg:py-36 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
         <div className="max-w-3xl space-y-4 mb-16">
-          <div className="text-xs font-mono font-bold tracking-widest uppercase text-brand-600">
+          <div className="text-xs font-mono font-medium tracking-widest uppercase text-brand-600">
             INDUSTRY SPECIFICITY
           </div>
-          <h2 className="text-3xl sm:text-5xl font-black text-navy-900 tracking-tight leading-tight">
+          <h2 className="text-3xl sm:text-5xl font-extralight text-navy-900 tracking-tight leading-tight">
             Built for the demands of American trade contractors.
           </h2>
-          <p className="text-base sm:text-lg text-slate-600 leading-relaxed font-normal">
+          <p className="text-base sm:text-lg text-slate-600 leading-relaxed font-extralight">
             Avorria is not generic project management software. It is purpose-engineered around the codes, regulatory standards, and commercial realities of specialty trade operations in the United States.
           </p>
         </div>
@@ -703,13 +703,13 @@ export default function HomePage() {
               className="p-6 rounded-xl bg-slate-50 border border-slate-200 space-y-3"
             >
               <div className="flex items-center justify-between">
-                <span className="font-bold text-navy-900 text-base">{trade.name}</span>
+                <span className="font-light text-navy-900 text-base">{trade.name}</span>
                 <span className="text-[10px] font-mono text-slate-500">{trade.code}</span>
               </div>
-              <div className="text-[11px] font-mono text-brand-700 font-semibold">
+              <div className="text-[11px] font-mono text-brand-700 font-medium">
                 {trade.standard}
               </div>
-              <p className="text-xs text-slate-600 leading-relaxed">
+              <p className="text-xs text-slate-600 leading-relaxed font-extralight">
                 {trade.focus}
               </p>
             </div>
@@ -726,18 +726,18 @@ export default function HomePage() {
             <span>GET STARTED TODAY</span>
           </div>
 
-          <h2 className="text-4xl sm:text-6xl font-black text-white tracking-tight">
+          <h2 className="text-4xl sm:text-6xl font-extralight text-white tracking-tight">
             Run a better contracting business.
           </h2>
 
-          <p className="text-base sm:text-xl text-slate-300 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-base sm:text-xl text-slate-300 max-w-2xl mx-auto leading-relaxed font-extralight">
             Build your business profile. Create better documents. Stay work-ready. Prove your credentials.
           </p>
 
           <div className="flex flex-wrap items-center justify-center gap-4 pt-2">
             <Link
               href="/sign-up"
-              className="font-bold px-8 py-4 rounded bg-brand-600 hover:bg-brand-500 text-white text-base shadow-sm transition-colors"
+              className="font-light px-8 py-4 rounded bg-brand-600 hover:bg-brand-500 text-white text-base shadow-sm transition-colors"
             >
               Get Started Free
             </Link>
