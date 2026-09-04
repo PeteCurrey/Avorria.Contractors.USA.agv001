@@ -1,7 +1,18 @@
 import { MetadataRoute } from 'next';
 import { siteConfig } from '@/config/site';
 
+/**
+ * AVORRIA CONTRACTOR USA — ROBOTS.TXT
+ *
+ * Ensures full crawlability of all public marketing, directory, tool,
+ * and programmatic SEO pages while cleanly protecting private authenticated
+ * workspaces and API endpoints.
+ *
+ * Live Domain: https://avorria.com
+ */
 export default function robots(): MetadataRoute.Robots {
+  const baseUrl = siteConfig.url;
+
   return {
     rules: [
       {
@@ -9,11 +20,16 @@ export default function robots(): MetadataRoute.Robots {
         allow: [
           '/',
           '/platform',
+          '/comply',
+          '/prove',
           '/create',
-          '/contractor-compliance',
-          '/contractor-verification',
-          '/contractor-passport',
           '/win-work',
+          '/contractors',
+          '/contractors/*',
+          '/contractor-passport',
+          '/contractor-verification',
+          '/contractor-compliance',
+          '/verification/criteria',
           '/pricing',
           '/tools',
           '/tools/*',
@@ -22,21 +38,34 @@ export default function robots(): MetadataRoute.Robots {
           '/guides/*',
           '/industries/*',
           '/states/*',
-          '/contractors/*',
+          '/resources',
+          '/about',
+          '/contact',
+          '/security',
+          '/privacy',
+          '/terms',
+          '/disclaimer',
         ],
         disallow: [
           '/app/',
           '/app/*',
+          '/workspace/',
+          '/workspace/*',
+          '/client/',
+          '/client/*',
+          '/contractor/',
+          '/contractor/*',
+          '/admin/',
+          '/admin/*',
           '/api/',
           '/api/*',
           '/auth/',
           '/auth/*',
           '/sign-in',
           '/sign-up',
-          '/*?*', // Prevent crawl waste on tracking parameter permutations
         ],
       },
     ],
-    sitemap: `${siteConfig.url}/sitemap.xml`,
+    sitemap: `${baseUrl}/sitemap.xml`,
   };
 }

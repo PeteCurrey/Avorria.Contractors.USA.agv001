@@ -2,89 +2,169 @@ import { MetadataRoute } from 'next';
 import { siteConfig } from '@/config/site';
 import { getAllIndexableSeoPages } from '@/lib/seo/registry';
 
+/**
+ * AVORRIA CONTRACTOR USA — SITEMAP GENERATOR
+ *
+ * Produces valid sitemap XML with canonical URLs rooted at https://avorria.com.
+ * Automatically deduplicates URLs and includes all static core pages,
+ * pillar hubs, legal disclosures, and programmatic SEO guides/tools/templates.
+ */
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = siteConfig.url;
+  const baseUrl = siteConfig.url.replace(/\/+$/, '');
+  const now = new Date();
 
-  // 1. Static Core Landing Pages
-  const coreRoutes: MetadataRoute.Sitemap = [
+  // 1. Static Core Landing Pages & Hubs
+  const staticRoutes: MetadataRoute.Sitemap = [
     {
-      url: baseUrl,
-      lastModified: new Date('2026-09-01'),
-      changeFrequency: 'weekly',
+      url: `${baseUrl}`,
+      lastModified: now,
+      changeFrequency: 'daily',
       priority: 1.0,
     },
     {
       url: `${baseUrl}/platform`,
-      lastModified: new Date('2026-09-01'),
+      lastModified: now,
       changeFrequency: 'weekly',
       priority: 0.9,
     },
     {
       url: `${baseUrl}/create`,
-      lastModified: new Date('2026-09-01'),
+      lastModified: now,
       changeFrequency: 'weekly',
       priority: 0.9,
     },
     {
-      url: `${baseUrl}/contractor-compliance`,
-      lastModified: new Date('2026-09-01'),
+      url: `${baseUrl}/comply`,
+      lastModified: now,
       changeFrequency: 'weekly',
+      priority: 0.9,
+    },
+    {
+      url: `${baseUrl}/prove`,
+      lastModified: now,
+      changeFrequency: 'weekly',
+      priority: 0.9,
+    },
+    {
+      url: `${baseUrl}/win-work`,
+      lastModified: now,
+      changeFrequency: 'weekly',
+      priority: 0.9,
+    },
+    {
+      url: `${baseUrl}/contractors`,
+      lastModified: now,
+      changeFrequency: 'daily',
       priority: 0.9,
     },
     {
       url: `${baseUrl}/contractor-passport`,
-      lastModified: new Date('2026-09-01'),
+      lastModified: now,
       changeFrequency: 'weekly',
       priority: 0.9,
     },
     {
       url: `${baseUrl}/contractor-verification`,
-      lastModified: new Date('2026-09-01'),
+      lastModified: now,
       changeFrequency: 'weekly',
-      priority: 0.8,
+      priority: 0.85,
+    },
+    {
+      url: `${baseUrl}/contractor-compliance`,
+      lastModified: now,
+      changeFrequency: 'weekly',
+      priority: 0.85,
     },
     {
       url: `${baseUrl}/verification/criteria`,
-      lastModified: new Date('2026-09-01'),
-      changeFrequency: 'weekly',
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/contractors`,
-      lastModified: new Date('2026-09-04'),
-      changeFrequency: 'daily',
-      priority: 0.9,
-    },
-    {
-      url: `${baseUrl}/win-work`,
-      lastModified: new Date('2026-09-01'),
+      lastModified: now,
       changeFrequency: 'weekly',
       priority: 0.8,
     },
     {
       url: `${baseUrl}/pricing`,
-      lastModified: new Date('2026-09-01'),
-      changeFrequency: 'monthly',
-      priority: 0.8,
+      lastModified: now,
+      changeFrequency: 'weekly',
+      priority: 0.85,
     },
     {
       url: `${baseUrl}/tools`,
-      lastModified: new Date('2026-09-01'),
+      lastModified: now,
       changeFrequency: 'weekly',
       priority: 0.85,
     },
     {
+      url: `${baseUrl}/tools/job-hazard-analysis-jha-generator`,
+      lastModified: now,
+      changeFrequency: 'weekly',
+      priority: 0.9,
+    },
+    {
       url: `${baseUrl}/templates`,
-      lastModified: new Date('2026-09-01'),
+      lastModified: now,
       changeFrequency: 'weekly',
       priority: 0.85,
     },
+    {
+      url: `${baseUrl}/resources`,
+      lastModified: now,
+      changeFrequency: 'weekly',
+      priority: 0.8,
+    },
+    {
+      url: `${baseUrl}/industries`,
+      lastModified: now,
+      changeFrequency: 'weekly',
+      priority: 0.8,
+    },
+    {
+      url: `${baseUrl}/states`,
+      lastModified: now,
+      changeFrequency: 'weekly',
+      priority: 0.8,
+    },
+    {
+      url: `${baseUrl}/about`,
+      lastModified: now,
+      changeFrequency: 'monthly',
+      priority: 0.6,
+    },
+    {
+      url: `${baseUrl}/contact`,
+      lastModified: now,
+      changeFrequency: 'monthly',
+      priority: 0.6,
+    },
+    {
+      url: `${baseUrl}/security`,
+      lastModified: now,
+      changeFrequency: 'monthly',
+      priority: 0.5,
+    },
+    {
+      url: `${baseUrl}/privacy`,
+      lastModified: now,
+      changeFrequency: 'monthly',
+      priority: 0.4,
+    },
+    {
+      url: `${baseUrl}/terms`,
+      lastModified: now,
+      changeFrequency: 'monthly',
+      priority: 0.4,
+    },
+    {
+      url: `${baseUrl}/disclaimer`,
+      lastModified: now,
+      changeFrequency: 'monthly',
+      priority: 0.4,
+    },
   ];
 
-  // 2. Programmatic Registered SEO Pages
-  const dynamicPages = getAllIndexableSeoPages().map((page) => {
-    let priority = 0.7;
-    let changeFrequency: 'always' | 'hourly' | 'daily' | 'weekly' | 'monthly' | 'yearly' | 'never' = 'monthly';
+  // 2. Programmatic Registered SEO Pages (Templates, Guides, Trade Pages, Tools)
+  const dynamicPages: MetadataRoute.Sitemap = getAllIndexableSeoPages().map((page) => {
+    let priority = 0.75;
+    let changeFrequency: 'always' | 'hourly' | 'daily' | 'weekly' | 'monthly' | 'yearly' | 'never' = 'weekly';
 
     if (page.pageType === 'interactive_tool' || page.pageType === 'document_template') {
       priority = 0.85;
@@ -94,13 +174,28 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency = 'monthly';
     }
 
+    const cleanSlug = page.slug.replace(/^\/+|\/+$/g, '');
+
     return {
-      url: `${baseUrl}/${page.slug}`,
-      lastModified: new Date(page.updatedAt || page.publishedAt),
+      url: `${baseUrl}/${cleanSlug}`,
+      lastModified: page.updatedAt ? new Date(page.updatedAt) : now,
       changeFrequency,
       priority,
     };
   });
 
-  return [...coreRoutes, ...dynamicPages];
+  // 3. Deduplication: Map by normalized URL to guarantee zero duplicate URLs
+  const urlMap = new Map<string, MetadataRoute.Sitemap[number]>();
+
+  // Insert dynamic pages first
+  for (const item of dynamicPages) {
+    urlMap.set(item.url.toLowerCase(), item);
+  }
+
+  // Insert static routes (overriding with higher priority if already present)
+  for (const item of staticRoutes) {
+    urlMap.set(item.url.toLowerCase(), item);
+  }
+
+  return Array.from(urlMap.values());
 }

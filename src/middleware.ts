@@ -43,11 +43,18 @@ export async function middleware(request: NextRequest) {
     return response;
   }
 
-  // 4. Client, Contractor & Admin Portal — also must not be indexed
+  // 4. Authenticated Private Portals (/client, /contractor, /workspace, /admin) — must not be indexed
+  // Note: Uses exact match or trailing slash so public pages like /contractors,
+  // /contractor-passport, /contractor-verification, and /contractor-compliance are NOT noindexed.
   if (
-    pathname.startsWith('/client') ||
-    pathname.startsWith('/contractor') ||
-    pathname.startsWith('/admin')
+    pathname === '/client' ||
+    pathname.startsWith('/client/') ||
+    pathname === '/contractor' ||
+    pathname.startsWith('/contractor/') ||
+    pathname === '/workspace' ||
+    pathname.startsWith('/workspace/') ||
+    pathname === '/admin' ||
+    pathname.startsWith('/admin/')
   ) {
     const response = NextResponse.next();
     response.headers.set('X-Robots-Tag', 'noindex, nofollow, noarchive');
