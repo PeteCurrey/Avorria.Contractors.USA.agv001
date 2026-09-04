@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { RequirementPack } from '@/lib/request/types';
@@ -8,7 +8,9 @@ import {
   MatchSet,
   MatchFilterOptions,
   MatchSortOption,
+  EvaluatedContractorMatch,
 } from '@/lib/match/types';
+import { RequestInvitation } from '@/lib/respond/types';
 import { MatchTransparencyPanel } from '@/components/match/MatchTransparencyPanel';
 import { MatchFiltersToolbar } from '@/components/match/MatchFiltersToolbar';
 import { ContractorMatchCard } from '@/components/match/ContractorMatchCard';
@@ -28,6 +30,68 @@ export function MatchIntelligenceClient({
   const [sort, setSort] = useState<MatchSortOption>('verified_first');
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [refreshError, setRefreshError] = useState<string | null>(null);
+
+  // Invitation state
+  const [invitations, setInvitations] = useState<RequestInvitation[]>([]);
+  const [invitingCandidate, setInvitingCandidate] = useState<EvaluatedContractorMatch | null>(null);
+  const [inviteMessage, setInviteMessage] = useState('');
+  const [isSendingInvite, setIsSendingInvite] = useState(false);
+  const [inviteError, setInviteError] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetch(`/api/client/requests/${pack.id}/invitations`)
+      .then((res) => res.json())
+      .then((d) => {
+        if (d.invitations) setInvitations(d.invitations);
+      })
+      .catch(() => {});
+  }, [pack.id]);
+
+  async function handleSendInvite() {
+    if (!invitingCandidate) return;
+    setIsSendingInvite(true);
+    setInviteError(null);
+    try {
+      // 1. Create draft invitation
+      const createRes = await fetch(`/api/client/requests/${pack.id}/invitations`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contractor_id: invitingCandidate.contractorId,
+          contractor_slug: invitingCandidate.slug,
+          contractor_name: invitingCandidate.businessName,
+          match_set_id: matchSet.id,
+          invitation_message: inviteMessage || undefined,
+        }),
+      });
+      const createData = await createRes.json();
+      if (!createRes.ok) {
+        throw new Error(createData.error || 'Failed to create invitation');
+      }
+
+      const inv = createData.invitation as RequestInvitation;
+
+      // 2. Dispatch invitation (status: sent)
+      const sendRes = await fetch(`/api/client/requests/${pack.id}/invitations/${inv.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'send',
+          invitation_message: inviteMessage || undefined,
+        }),
+      });
+      const sendData = await sendRes.json();
+      const finalInv = sendRes.ok ? sendData.invitation : inv;
+
+      setInvitations((prev) => [...prev, finalInv]);
+      setInvitingCandidate(null);
+      setInviteMessage('');
+    } catch (err: unknown) {
+      setInviteError(err instanceof Error ? err.message : 'Error sending invitation');
+    } finally {
+      setIsSendingInvite(false);
+    }
+  }
 
   async function handleRefresh() {
     setIsRefreshing(true);
@@ -121,6 +185,14 @@ export function MatchIntelligenceClient({
             <span>{isRefreshing ? '⏳' : '🔄'}</span>
             <span>{isRefreshing ? 'Re-evaluating...' : 'Refresh Matches'}</span>
           </button>
+
+          <Link
+            href={`/client/requests/${pack.id}/responses`}
+            className="px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 text-slate-800 text-xs font-bold transition-all shadow-2xs flex items-center gap-1.5"
+          >
+            <span>✉️</span>
+            <span>Responses & Invitations</span>
+          </Link>
 
           <Link
             href={`/client/requests/${pack.id}`}
@@ -271,12 +343,94 @@ export function MatchIntelligenceClient({
           </div>
         ) : (
           <div className="space-y-6">
-            {filteredCandidates.map((candidate) => (
-              <ContractorMatchCard key={candidate.contractorId} candidate={candidate} />
-            ))}
+            {filteredCandidates.map((candidate) => {
+              const inv = invitations.find((i) => i.contractor_id === candidate.contractorId);
+              return (
+                <ContractorMatchCard
+                  key={candidate.contractorId}
+                  candidate={candidate}
+                  onInvite={(c) => {
+                    setInvitingCandidate(c);
+                    setInviteError(null);
+                  }}
+                  isInvited={!!inv}
+                  invitationStatus={inv?.status}
+                  isInviting={isSendingInvite && invitingCandidate?.contractorId === candidate.contractorId}
+                />
+              );
+            })}
           </div>
         )}
       </div>
+
+      {/* Invite Contractor Modal */}
+      {invitingCandidate && (
+        <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-xs flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl space-y-4">
+            <div className="flex items-center justify-between border-b border-slate-200 pb-3">
+              <div>
+                <span className="text-[10px] font-mono uppercase tracking-wider text-brand-600 font-bold">
+                  Controlled Invitation
+                </span>
+                <h3 className="text-base font-bold text-slate-900">
+                  Invite {invitingCandidate.businessName}
+                </h3>
+              </div>
+              <button
+                type="button"
+                onClick={() => setInvitingCandidate(null)}
+                className="text-slate-400 hover:text-slate-600 text-sm"
+              >
+                ✕
+              </button>
+            </div>
+
+            <p className="text-xs text-slate-600 leading-relaxed">
+              This will issue a private invitation linked to Requirement Pack{' '}
+              <span className="font-mono font-bold text-slate-800">{pack.reference}</span>.
+              The contractor will be invited to confirm their availability and provide structured acknowledgements against each requirement.
+            </p>
+
+            {inviteError && (
+              <div className="p-3 rounded-xl bg-rose-50 border border-rose-200 text-xs text-rose-800">
+                {inviteError}
+              </div>
+            )}
+
+            <div>
+              <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-600 mb-1">
+                Custom Invitation Note (Optional)
+              </label>
+              <textarea
+                value={inviteMessage}
+                onChange={(e) => setInviteMessage(e.target.value)}
+                placeholder="e.g., We reviewed your Avorria Passport and invite you to respond to our requirements for this upcoming commercial project."
+                className="w-full text-xs rounded-xl border border-slate-300 p-3 h-24 resize-none focus:outline-brand-600"
+              />
+            </div>
+
+            <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-200">
+              <button
+                type="button"
+                onClick={() => setInvitingCandidate(null)}
+                disabled={isSendingInvite}
+                className="px-4 py-2 rounded-xl border border-slate-200 text-xs font-bold text-slate-600 hover:bg-slate-50"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleSendInvite}
+                disabled={isSendingInvite}
+                className="px-5 py-2 rounded-xl bg-brand-600 hover:bg-brand-500 text-white text-xs font-bold transition-all shadow-sm flex items-center gap-1.5"
+              >
+                <span>✉️</span>
+                <span>{isSendingInvite ? 'Sending Invitation...' : 'Send Private Invitation'}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -10,9 +10,19 @@ import {
 
 interface ContractorMatchCardProps {
   candidate: EvaluatedContractorMatch;
+  onInvite?: (candidate: EvaluatedContractorMatch) => void;
+  isInvited?: boolean;
+  invitationStatus?: string;
+  isInviting?: boolean;
 }
 
-export function ContractorMatchCard({ candidate }: ContractorMatchCardProps) {
+export function ContractorMatchCard({
+  candidate,
+  onInvite,
+  isInvited,
+  invitationStatus,
+  isInviting,
+}: ContractorMatchCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
@@ -37,6 +47,13 @@ export function ContractorMatchCard({ candidate }: ContractorMatchCardProps) {
               )}
 
               <OverallStatusBadge status={candidate.overallStatus} />
+
+              {isInvited && (
+                <span className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-brand-50 text-brand-700 border border-brand-200">
+                  <span>✉️</span>
+                  <span>{invitationStatus ? `Invited (${invitationStatus})` : 'Invited'}</span>
+                </span>
+              )}
             </div>
 
             {/* Alignment Badges */}
@@ -93,7 +110,20 @@ export function ContractorMatchCard({ candidate }: ContractorMatchCardProps) {
               </div>
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-wrap">
+              {onInvite && !isInvited && (
+                <button
+                  type="button"
+                  onClick={() => onInvite(candidate)}
+                  disabled={isInviting || !candidate.isEligible}
+                  className="px-3 py-1.5 rounded-xl bg-brand-600 hover:bg-brand-500 disabled:opacity-50 text-white text-xs font-bold transition-all shadow-2xs flex items-center gap-1"
+                  title={!candidate.isEligible ? 'Contractor not eligible for invitation' : undefined}
+                >
+                  <span>✉️</span>
+                  <span>{isInviting ? 'Inviting...' : 'Invite to Respond'}</span>
+                </button>
+              )}
+
               <Link
                 href={`/contractors/${candidate.slug}`}
                 target="_blank"

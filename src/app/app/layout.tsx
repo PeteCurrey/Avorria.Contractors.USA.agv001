@@ -35,6 +35,7 @@ const APP_NAV_SECTIONS = [
   {
     category: 'NETWORK & OPPORTUNITIES',
     items: [
+      { title: 'Project Requests', href: '/contractor/requests', icon: '📬' },
       { title: 'Project Opportunities', href: '/contractor/opportunities', icon: '🎯' },
       { title: 'Client Relationships', href: '/contractor/relationships', icon: '🤝' },
     ],

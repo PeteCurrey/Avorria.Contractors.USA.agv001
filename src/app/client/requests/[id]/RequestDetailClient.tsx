@@ -91,7 +91,15 @@ export function RequestDetailClient({ initialPack, initialReadiness }: RequestDe
             className="px-4 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-500 text-white text-xs font-bold transition-all shadow-sm flex items-center gap-1.5"
           >
             <span>🔍</span>
-            <span>Preview Candidate Matches</span>
+            <span>Candidate Matches</span>
+          </Link>
+
+          <Link
+            href={`/client/requests/${pack.id}/responses`}
+            className="px-4 py-2.5 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 text-slate-800 text-xs font-bold transition-all shadow-2xs flex items-center gap-1.5"
+          >
+            <span>✉️</span>
+            <span>Responses & Invitations</span>
           </Link>
 
           <button
