@@ -38,31 +38,43 @@ interface AssetsStore {
   notifications: Record<string, WorkspaceNotification>;
 }
 
+let memoryAssetsStore: AssetsStore | null = null;
+
 const DATA_DIR = path.join(process.cwd(), '.data');
 const ASSETS_STORE_PATH = path.join(DATA_DIR, 'assets-store.json');
 
 function ensureDataDir(): void {
-  if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
+  try {
+    if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
+  } catch {
+    // Graceful fallback for read-only serverless filesystems
+  }
 }
 
 export function loadAssetsStore(): AssetsStore {
+  if (memoryAssetsStore) {
+    return memoryAssetsStore;
+  }
+
   ensureDataDir();
-  if (!fs.existsSync(ASSETS_STORE_PATH)) {
-    const initial: AssetsStore = {
-      assets: {},
-      asset_documents: {},
-      document_chunks: {},
-      service_logs: {},
-      spare_parts: {},
-      notifications: {},
-    };
-    fs.writeFileSync(ASSETS_STORE_PATH, JSON.stringify(initial, null, 2), 'utf-8');
-    return initial;
-  }
+
+  let store: AssetsStore;
+
   try {
-    return JSON.parse(fs.readFileSync(ASSETS_STORE_PATH, 'utf-8')) as AssetsStore;
+    if (fs.existsSync(ASSETS_STORE_PATH)) {
+      store = JSON.parse(fs.readFileSync(ASSETS_STORE_PATH, 'utf-8')) as AssetsStore;
+    } else {
+      store = {
+        assets: {},
+        asset_documents: {},
+        document_chunks: {},
+        service_logs: {},
+        spare_parts: {},
+        notifications: {},
+      };
+    }
   } catch {
-    return {
+    store = {
       assets: {},
       asset_documents: {},
       document_chunks: {},
@@ -71,15 +83,31 @@ export function loadAssetsStore(): AssetsStore {
       notifications: {},
     };
   }
+
+  memoryAssetsStore = store;
+
+  try {
+    if (!fs.existsSync(ASSETS_STORE_PATH)) {
+      fs.writeFileSync(ASSETS_STORE_PATH, JSON.stringify(store, null, 2), 'utf-8');
+    }
+  } catch {
+    // Graceful fallback
+  }
+
+  return store;
 }
 
 export function saveAssetsStore(store: AssetsStore): void {
-  ensureDataDir();
-  fs.writeFileSync(ASSETS_STORE_PATH, JSON.stringify(store, null, 2), 'utf-8');
+  memoryAssetsStore = store;
+  try {
+    ensureDataDir();
+    fs.writeFileSync(ASSETS_STORE_PATH, JSON.stringify(store, null, 2), 'utf-8');
+  } catch {
+    // Graceful fallback
+  }
 }
 
 export function resetAssetsStore(): void {
-  ensureDataDir();
   const empty: AssetsStore = {
     assets: {},
     asset_documents: {},
@@ -88,7 +116,13 @@ export function resetAssetsStore(): void {
     spare_parts: {},
     notifications: {},
   };
-  fs.writeFileSync(ASSETS_STORE_PATH, JSON.stringify(empty, null, 2), 'utf-8');
+  memoryAssetsStore = empty;
+  try {
+    ensureDataDir();
+    fs.writeFileSync(ASSETS_STORE_PATH, JSON.stringify(empty, null, 2), 'utf-8');
+  } catch {
+    // Graceful fallback
+  }
 }
 
 // ─────────────────────────────────────────────────────────────

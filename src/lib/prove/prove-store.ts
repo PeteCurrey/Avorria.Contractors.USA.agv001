@@ -27,12 +27,18 @@ interface ProveStoreData {
   evidence: Record<string, EvidenceItem>;
 }
 
+let memoryProveStore: ProveStoreData | null = null;
+
 const DATA_DIR = path.join(process.cwd(), '.data');
 const STORE_PATH = path.join(DATA_DIR, 'prove-store.json');
 
 function ensureDataDir(): void {
-  if (!fs.existsSync(DATA_DIR)) {
-    fs.mkdirSync(DATA_DIR, { recursive: true });
+  try {
+    if (!fs.existsSync(DATA_DIR)) {
+      fs.mkdirSync(DATA_DIR, { recursive: true });
+    }
+  } catch {
+    // Graceful fallback for read-only serverless filesystems
   }
 }
 
@@ -455,25 +461,46 @@ function getInitialStore(): ProveStoreData {
 }
 
 function loadStore(): ProveStoreData {
-  ensureDataDir();
-  if (!fs.existsSync(STORE_PATH)) {
-    const initial = getInitialStore();
-    fs.writeFileSync(STORE_PATH, JSON.stringify(initial, null, 2), 'utf-8');
-    return initial;
+  if (memoryProveStore) {
+    return memoryProveStore;
   }
 
+  ensureDataDir();
+
+  let store: ProveStoreData;
+
   try {
-    const raw = fs.readFileSync(STORE_PATH, 'utf-8');
-    return JSON.parse(raw) as ProveStoreData;
+    if (fs.existsSync(STORE_PATH)) {
+      const raw = fs.readFileSync(STORE_PATH, 'utf-8');
+      store = JSON.parse(raw) as ProveStoreData;
+    } else {
+      store = getInitialStore();
+    }
   } catch {
-    const fallback = getInitialStore();
-    return fallback;
+    store = getInitialStore();
   }
+
+  memoryProveStore = store;
+
+  try {
+    if (!fs.existsSync(STORE_PATH)) {
+      fs.writeFileSync(STORE_PATH, JSON.stringify(store, null, 2), 'utf-8');
+    }
+  } catch {
+    // Graceful fallback for read-only environments
+  }
+
+  return store;
 }
 
 function saveStore(store: ProveStoreData): void {
-  ensureDataDir();
-  fs.writeFileSync(STORE_PATH, JSON.stringify(store, null, 2), 'utf-8');
+  memoryProveStore = store;
+  try {
+    ensureDataDir();
+    fs.writeFileSync(STORE_PATH, JSON.stringify(store, null, 2), 'utf-8');
+  } catch {
+    // Graceful fallback for read-only environments
+  }
 }
 
 // ─── CRUD Operations ─────────────────────────────────────────────────────────

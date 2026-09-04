@@ -25,36 +25,65 @@ export interface DiscoverStoreData {
   savedOpportunities: SavedOpportunityRecord[];
 }
 
+let memoryDiscoverStore: DiscoverStoreData | null = null;
+
 const DATA_DIR = path.join(process.cwd(), '.data');
 const DISCOVER_FILE = path.join(DATA_DIR, 'discover-store.json');
 
 function ensureDataDir(): void {
-  if (!fs.existsSync(DATA_DIR)) {
-    fs.mkdirSync(DATA_DIR, { recursive: true });
+  try {
+    if (!fs.existsSync(DATA_DIR)) {
+      fs.mkdirSync(DATA_DIR, { recursive: true });
+    }
+  } catch {
+    // Graceful fallback for read-only serverless filesystems
   }
 }
 
 export function loadDiscoverStore(): DiscoverStoreData {
+  if (memoryDiscoverStore) {
+    return memoryDiscoverStore;
+  }
+
   ensureDataDir();
-  if (!fs.existsSync(DISCOVER_FILE)) {
-    const initial: DiscoverStoreData = { savedOpportunities: [] };
-    fs.writeFileSync(DISCOVER_FILE, JSON.stringify(initial, null, 2), 'utf-8');
-    return initial;
-  }
+
+  let store: DiscoverStoreData;
+
   try {
-    const raw = fs.readFileSync(DISCOVER_FILE, 'utf-8');
-    const parsed = JSON.parse(raw);
-    return {
-      savedOpportunities: parsed.savedOpportunities || [],
-    };
+    if (fs.existsSync(DISCOVER_FILE)) {
+      const raw = fs.readFileSync(DISCOVER_FILE, 'utf-8');
+      const parsed = JSON.parse(raw);
+      store = {
+        savedOpportunities: parsed.savedOpportunities || [],
+      };
+    } else {
+      store = { savedOpportunities: [] };
+    }
   } catch {
-    return { savedOpportunities: [] };
+    store = { savedOpportunities: [] };
   }
+
+  memoryDiscoverStore = store;
+
+  try {
+    if (!fs.existsSync(DISCOVER_FILE)) {
+      fs.writeFileSync(DISCOVER_FILE, JSON.stringify(store, null, 2), 'utf-8');
+    }
+  } catch {
+    // Graceful fallback
+  }
+
+  return store;
 }
 
 export function saveDiscoverStore(store: DiscoverStoreData): void {
-  ensureDataDir();
-  fs.writeFileSync(DISCOVER_FILE, JSON.stringify(store, null, 2), 'utf-8');
+  memoryDiscoverStore = store;
+  try {
+    ensureDataDir();
+    fs.writeFileSync(DISCOVER_FILE, JSON.stringify(store, null, 2), 'utf-8');
+  } catch {
+    // Graceful fallback
+  }
 }
 
 /**

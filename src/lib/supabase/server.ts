@@ -1,30 +1,29 @@
 import { createServerClient, type CookieOptions } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 
+const SUPABASE_FALLBACK_URL = 'https://feczarnbiptpxrrovkir.supabase.co';
+const SUPABASE_FALLBACK_ANON_KEY =
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZlY3phcm5iaXB0cHhycm92a2lyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg1MDk0NTQsImV4cCI6MjEwNDA4NTQ1NH0.XuVbQPCIJphqpZ_fOcrrubHcvOHp0MxkYrDzp9SeyUg';
+
 export async function createClient() {
   const cookieStore = await cookies();
 
   return createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder-project.supabase.co',
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder-anon-key',
+    process.env.NEXT_PUBLIC_SUPABASE_URL || SUPABASE_FALLBACK_URL,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || SUPABASE_FALLBACK_ANON_KEY,
     {
       cookies: {
-        get(name: string) {
-          return cookieStore.get(name)?.value;
+        getAll() {
+          return cookieStore.getAll();
         },
-        set(name: string, value: string, options: CookieOptions) {
+        setAll(cookiesToSet: any[]) {
           try {
-            cookieStore.set({ name, value, ...options });
+            cookiesToSet.forEach(({ name, value, options }) => {
+              cookieStore.set(name, value, options);
+            });
           } catch {
-            // The `set` method was called from a Server Component.
+            // The `setAll` method was called from a Server Component.
             // This can be ignored if middleware is refreshing user sessions.
-          }
-        },
-        remove(name: string, options: CookieOptions) {
-          try {
-            cookieStore.set({ name, value: '', ...options });
-          } catch {
-            // Can be ignored if middleware is refreshing user sessions.
           }
         },
       },

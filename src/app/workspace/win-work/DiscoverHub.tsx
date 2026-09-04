@@ -675,6 +675,24 @@ export function DiscoverHub({
                         </button>
 
                         <Link
+                          href={`/workspace/win-work/match?opportunityId=${opp.id}`}
+                          title="Evaluate Explainable Fit"
+                          style={{
+                            background: '#172554',
+                            border: '1px solid #1e40af',
+                            color: '#93c5fd',
+                            fontSize: '0.65rem',
+                            fontWeight: 500,
+                            letterSpacing: '0.06em',
+                            textTransform: 'uppercase',
+                            padding: '4px 8px',
+                            textDecoration: 'none',
+                          }}
+                        >
+                          Fit
+                        </Link>
+
+                        <Link
                           href={`/workspace/win-work/${opp.id}`}
                           style={{
                             background: '#111827',

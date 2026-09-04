@@ -24,12 +24,18 @@ interface CreateStoreData {
   profiles: Record<string, CommercialProfile>;
 }
 
+let memoryCreateStore: CreateStoreData | null = null;
+
 const DATA_DIR = path.join(process.cwd(), '.data');
 const STORE_PATH = path.join(DATA_DIR, 'create-store.json');
 
 function ensureDataDir(): void {
-  if (!fs.existsSync(DATA_DIR)) {
-    fs.mkdirSync(DATA_DIR, { recursive: true });
+  try {
+    if (!fs.existsSync(DATA_DIR)) {
+      fs.mkdirSync(DATA_DIR, { recursive: true });
+    }
+  } catch {
+    // Graceful fallback for read-only serverless filesystems
   }
 }
 
@@ -497,24 +503,46 @@ function getInitialStore(): CreateStoreData {
 }
 
 export function loadCreateStore(): CreateStoreData {
+  if (memoryCreateStore) {
+    return memoryCreateStore;
+  }
+
   ensureDataDir();
-  if (!fs.existsSync(STORE_PATH)) {
-    const initial = getInitialStore();
-    fs.writeFileSync(STORE_PATH, JSON.stringify(initial, null, 2), 'utf-8');
-    return initial;
-  }
+
+  let store: CreateStoreData;
+
   try {
-    const raw = fs.readFileSync(STORE_PATH, 'utf-8');
-    return JSON.parse(raw) as CreateStoreData;
+    if (fs.existsSync(STORE_PATH)) {
+      const raw = fs.readFileSync(STORE_PATH, 'utf-8');
+      store = JSON.parse(raw) as CreateStoreData;
+    } else {
+      store = getInitialStore();
+    }
   } catch {
-    const fallback = getInitialStore();
-    return fallback;
+    store = getInitialStore();
   }
+
+  memoryCreateStore = store;
+
+  try {
+    if (!fs.existsSync(STORE_PATH)) {
+      fs.writeFileSync(STORE_PATH, JSON.stringify(store, null, 2), 'utf-8');
+    }
+  } catch {
+    // Graceful fallback for read-only environments
+  }
+
+  return store;
 }
 
 export function saveCreateStore(data: CreateStoreData): void {
-  ensureDataDir();
-  fs.writeFileSync(STORE_PATH, JSON.stringify(data, null, 2), 'utf-8');
+  memoryCreateStore = data;
+  try {
+    ensureDataDir();
+    fs.writeFileSync(STORE_PATH, JSON.stringify(data, null, 2), 'utf-8');
+  } catch {
+    // Graceful fallback for read-only environments
+  }
 }
 
 // ─────────────────────────────────────────────────────────────

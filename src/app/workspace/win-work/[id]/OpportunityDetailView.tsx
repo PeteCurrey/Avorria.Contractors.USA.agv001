@@ -199,6 +199,27 @@ export function OpportunityDetailView({
           >
             {isSaving ? 'Updating...' : opp.is_saved ? '✓ Saved to Watchlist' : 'Save Opportunity'}
           </button>
+
+          <Link
+            href={`/workspace/win-work/match?opportunityId=${opp.id}`}
+            style={{
+              background: '#1d4ed8',
+              border: '1px solid #3b82f6',
+              color: '#ffffff',
+              fontSize: '0.7rem',
+              fontWeight: 500,
+              letterSpacing: '0.08em',
+              textTransform: 'uppercase',
+              padding: '8px 16px',
+              textDecoration: 'none',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px',
+              borderRadius: 0,
+            }}
+          >
+            Evaluate Fit (MATCH) →
+          </Link>
         </div>
       </div>
 
@@ -335,8 +356,53 @@ export function OpportunityDetailView({
           </div>
         </div>
 
-        {/* Right Column: Key Details, Dates, Provenance */}
+        {/* Right Column: Key Facts, Match CTA, Dates, Buyer */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+          {/* Commercial Fit Evaluation Card */}
+          <div style={{
+            background: '#070a12',
+            border: '1px solid #1e3a8a',
+            padding: '20px',
+          }}>
+            <div style={{
+              fontSize: '0.65rem',
+              fontWeight: 600,
+              letterSpacing: '0.12em',
+              textTransform: 'uppercase',
+              color: '#60a5fa',
+              margin: '0 0 8px 0',
+            }}>
+              Commercial Fit Engine
+            </div>
+            <p style={{
+              fontSize: '0.75rem',
+              color: '#9ca3af',
+              lineHeight: 1.4,
+              margin: '0 0 14px 0',
+            }}>
+              Perform an explainable, 10-dimension evaluation of your verified trade capabilities, credentials, and project history against this opportunity.
+            </p>
+            <Link
+              href={`/workspace/win-work/match?opportunityId=${opp.id}`}
+              style={{
+                display: 'block',
+                textAlign: 'center',
+                background: '#1e3a8a',
+                border: '1px solid #3b82f6',
+                color: '#ffffff',
+                fontSize: '0.7rem',
+                fontWeight: 500,
+                letterSpacing: '0.08em',
+                textTransform: 'uppercase',
+                padding: '8px 12px',
+                textDecoration: 'none',
+                borderRadius: 0,
+              }}
+            >
+              Run Fit Analysis (MATCH) →
+            </Link>
+          </div>
+
           {/* Important Dates */}
           <div style={{
             background: '#070a12',
