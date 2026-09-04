@@ -10,6 +10,7 @@ import crypto from 'crypto';
 import bcrypt from 'bcryptjs';
 import {
   Passport,
+  PassportSnapshot,
   Credential,
   WorkspaceDocument,
   ReadinessScoreBreakdown,
@@ -31,10 +32,29 @@ import { calculateReadinessScore } from './readiness';
 
 export interface SavePassportInput {
   slug: string;
+  version?: number;
+  status?: 'DRAFT' | 'CURRENT' | 'ARCHIVED';
+  headline?: string;
+  summary_override?: string;
   is_password_protected?: boolean;
   password?: string; // Cleartext from user input — hashed immediately
+  included_capability_ids?: string[];
+  included_project_ids?: string[];
+  included_case_study_ids?: string[];
+  included_reference_ids?: string[];
   included_credential_ids?: string[];
+  included_evidence_ids?: string[];
   included_document_ids?: string[];
+  show_identity?: boolean;
+  show_capabilities?: boolean;
+  show_experience?: boolean;
+  show_case_studies?: boolean;
+  show_references?: boolean;
+  show_compliance?: boolean;
+  show_evidence?: boolean;
+  published_version?: number;
+  published_at?: string;
+  snapshots?: PassportSnapshot[];
 }
 
 export interface PublicPassportView {
@@ -90,10 +110,35 @@ export async function savePassport(
     id: existing?.id || `psp_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
     org_id: orgId,
     slug: input.slug.toLowerCase().trim(),
+    version: input.version !== undefined ? input.version : (existing?.version || 1),
+    status: input.status !== undefined ? input.status : (existing?.status || 'CURRENT'),
+    headline: input.headline !== undefined ? input.headline : existing?.headline,
+    summary_override: input.summary_override !== undefined ? input.summary_override : existing?.summary_override,
     is_password_protected: Boolean(input.is_password_protected),
     password_hash: passwordHash,
-    included_credential_ids: input.included_credential_ids || existing?.included_credential_ids || [],
-    included_document_ids: input.included_document_ids || existing?.included_document_ids || [],
+
+    // Phase 8 Selections
+    included_capability_ids: input.included_capability_ids !== undefined ? input.included_capability_ids : existing?.included_capability_ids,
+    included_project_ids: input.included_project_ids !== undefined ? input.included_project_ids : existing?.included_project_ids,
+    included_case_study_ids: input.included_case_study_ids !== undefined ? input.included_case_study_ids : existing?.included_case_study_ids,
+    included_reference_ids: input.included_reference_ids !== undefined ? input.included_reference_ids : existing?.included_reference_ids,
+    included_credential_ids: input.included_credential_ids !== undefined ? input.included_credential_ids : (existing?.included_credential_ids || []),
+    included_document_ids: input.included_document_ids !== undefined ? input.included_document_ids : (existing?.included_document_ids || []),
+
+    // Phase 8 Toggles
+    show_identity: input.show_identity !== undefined ? input.show_identity : (existing?.show_identity ?? true),
+    show_capabilities: input.show_capabilities !== undefined ? input.show_capabilities : (existing?.show_capabilities ?? true),
+    show_experience: input.show_experience !== undefined ? input.show_experience : (existing?.show_experience ?? true),
+    show_case_studies: input.show_case_studies !== undefined ? input.show_case_studies : (existing?.show_case_studies ?? true),
+    show_references: input.show_references !== undefined ? input.show_references : (existing?.show_references ?? true),
+    show_compliance: input.show_compliance !== undefined ? input.show_compliance : (existing?.show_compliance ?? true),
+    show_evidence: input.show_evidence !== undefined ? input.show_evidence : (existing?.show_evidence ?? true),
+
+    // Phase 8 Snapshots & Publication
+    published_version: input.published_version !== undefined ? input.published_version : existing?.published_version,
+    published_at: input.published_at !== undefined ? input.published_at : existing?.published_at,
+    snapshots: input.snapshots !== undefined ? input.snapshots : (existing?.snapshots || []),
+
     view_count: existing?.view_count || 0,
     last_viewed_at: existing?.last_viewed_at,
     created_at: existing?.created_at || new Date().toISOString(),

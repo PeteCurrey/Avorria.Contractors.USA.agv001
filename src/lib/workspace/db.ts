@@ -39,6 +39,159 @@ function ensureDataDir(): void {
   }
 }
 
+export function ensureDefaultVanceData(store: WorkspaceStore): boolean {
+  const DEMO_ORG = 'org_vance_electric_01';
+  let mutated = false;
+
+  if (!store.organizations[DEMO_ORG]) {
+    mutated = true;
+    const now = new Date().toISOString();
+    store.organizations[DEMO_ORG] = {
+      id: DEMO_ORG,
+      name: 'Vance Commercial Electric LLC',
+      legal_name: 'Vance Commercial Electric LLC',
+      entity_type: 'LLC',
+      ein: 'XX-XXX4022',
+      primary_trade: 'Electrical',
+      additional_trades: ['Low Voltage & Security'],
+      states_licensed: ['TX'],
+      hq_address: {
+        street: '1500 Red River St',
+        city: 'Austin',
+        state: 'TX',
+        zip: '78701',
+      },
+      subscription_tier: 'pro',
+      created_at: now,
+      updated_at: now,
+    };
+  }
+
+  if (!store.users['usr_marcus_vance_01']) {
+    mutated = true;
+    const now = new Date().toISOString();
+    store.users['usr_marcus_vance_01'] = {
+      id: 'usr_marcus_vance_01',
+      org_id: DEMO_ORG,
+      role: 'owner',
+      full_name: 'Marcus Vance',
+      email: 'marcus@vanceelectric.com',
+      phone: '(512) 555-4022',
+      created_at: now,
+      updated_at: now,
+    };
+  }
+
+  if (!store.credentials['crd_vance_lic_001']) {
+    mutated = true;
+    const now = new Date().toISOString();
+    store.credentials['crd_vance_lic_001'] = {
+      id: 'crd_vance_lic_001',
+      org_id: DEMO_ORG,
+      type: 'trade_license',
+      title: 'Texas Master Electrical Contractor License',
+      carrier_or_authority: 'Texas Dept of Licensing and Regulation (TDLR)',
+      policy_or_license_number: 'TECL-35892',
+      effective_date: '2024-03-15',
+      expiration_date: '2027-03-15',
+      status: 'current',
+      state: 'TX',
+      verification_state: 'verified',
+      created_at: now,
+      updated_at: now,
+    };
+  }
+
+  if (!store.credentials['crd_vance_gl_001']) {
+    mutated = true;
+    const now = new Date().toISOString();
+    store.credentials['crd_vance_gl_001'] = {
+      id: 'crd_vance_gl_001',
+      org_id: DEMO_ORG,
+      type: 'general_liability_coi',
+      title: 'Travelers Commercial General Liability ($2,000,000)',
+      carrier_or_authority: 'Travelers Property Casualty of America',
+      policy_or_license_number: 'TC-GL-8842109',
+      coverage_amount: 2000000,
+      effective_date: '2025-09-01',
+      expiration_date: '2027-09-01',
+      status: 'current',
+      state: 'TX',
+      verification_state: 'document_supported',
+      created_at: now,
+      updated_at: now,
+    };
+  }
+
+  if (!store.credentials['crd_vance_wc_001']) {
+    mutated = true;
+    const now = new Date();
+    const expDate = new Date(now);
+    expDate.setDate(expDate.getDate() + 22); // Expiring in 22 days (dynamic high priority)
+    const expStr = expDate.toISOString().split('T')[0];
+
+    store.credentials['crd_vance_wc_001'] = {
+      id: 'crd_vance_wc_001',
+      org_id: DEMO_ORG,
+      type: 'workers_comp',
+      title: 'Texas Mutual Statutory Workers Compensation',
+      carrier_or_authority: 'Texas Mutual Insurance Company',
+      policy_or_license_number: 'TXM-WC-449102',
+      coverage_amount: 1000000,
+      effective_date: '2025-09-01',
+      expiration_date: expStr,
+      status: 'expiring_30',
+      state: 'TX',
+      verification_state: 'document_supported',
+      created_at: now.toISOString(),
+      updated_at: now.toISOString(),
+    };
+  }
+
+  if (!store.credentials['crd_vance_umbrella_001']) {
+    mutated = true;
+    const now = new Date().toISOString();
+    store.credentials['crd_vance_umbrella_001'] = {
+      id: 'crd_vance_umbrella_001',
+      org_id: DEMO_ORG,
+      type: 'umbrella',
+      title: 'Zurich Commercial Umbrella Excess ($5,000,000)',
+      carrier_or_authority: 'Zurich American Insurance',
+      policy_or_license_number: 'UMB-2024-TX-9932',
+      coverage_amount: 5000000,
+      effective_date: '2025-01-01',
+      expiration_date: '2027-01-01',
+      status: 'current',
+      state: 'TX',
+      verification_state: 'document_supported',
+      created_at: now,
+      updated_at: now,
+    };
+  }
+
+  if (!store.credentials['crd_vance_osha_001']) {
+    mutated = true;
+    const now = new Date().toISOString();
+    store.credentials['crd_vance_osha_001'] = {
+      id: 'crd_vance_osha_001',
+      org_id: DEMO_ORG,
+      type: 'osha_card',
+      title: 'OSHA 30-Hour Construction Safety Card',
+      carrier_or_authority: 'OSHA Training Institute',
+      policy_or_license_number: '36-0048291',
+      effective_date: '2023-05-10',
+      expiration_date: '2028-05-10',
+      status: 'current',
+      state: 'TX',
+      verification_state: 'verified',
+      created_at: now,
+      updated_at: now,
+    };
+  }
+
+  return mutated;
+}
+
 export function loadWorkspaceStore(): WorkspaceStore {
   ensureDataDir();
   if (!fs.existsSync(STORE_PATH)) {
@@ -53,13 +206,18 @@ export function loadWorkspaceStore(): WorkspaceStore {
       toolbox_talks: {},
       notifications: {},
     };
+    ensureDefaultVanceData(initial);
     fs.writeFileSync(STORE_PATH, JSON.stringify(initial, null, 2), 'utf-8');
     return initial;
   }
 
   try {
     const raw = fs.readFileSync(STORE_PATH, 'utf-8');
-    return JSON.parse(raw) as WorkspaceStore;
+    const store = JSON.parse(raw) as WorkspaceStore;
+    if (ensureDefaultVanceData(store)) {
+      fs.writeFileSync(STORE_PATH, JSON.stringify(store, null, 2), 'utf-8');
+    }
+    return store;
   } catch {
     const fallback: WorkspaceStore = {
       organizations: {},
@@ -72,6 +230,7 @@ export function loadWorkspaceStore(): WorkspaceStore {
       toolbox_talks: {},
       notifications: {},
     };
+    ensureDefaultVanceData(fallback);
     return fallback;
   }
 }
@@ -94,6 +253,7 @@ export function resetWorkspaceStore(): void {
     toolbox_talks: {},
     notifications: {},
   };
+  ensureDefaultVanceData(empty);
   fs.writeFileSync(STORE_PATH, JSON.stringify(empty, null, 2), 'utf-8');
 }
 

@@ -1,0 +1,217 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-2.1 -2.1 4.2 4.2" width="100%" height="100%" shape-rendering="geometricPrecision">
+  <defs>
+    
+    <linearGradient id="efm-facet-grad-0" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#c7d2fe" />
+      <stop offset="100%" stop-color="#6366f1" />
+    </linearGradient>
+    <linearGradient id="efm-facet-grad-1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3b82f6" />
+      <stop offset="100%" stop-color="#1d4ed8" />
+    </linearGradient>
+    <linearGradient id="efm-facet-grad-2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1d4ed8" />
+      <stop offset="100%" stop-color="#1e40af" />
+    </linearGradient>
+    <linearGradient id="efm-facet-grad-3" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0d4db8" />
+      <stop offset="100%" stop-color="#092d6e" />
+    </linearGradient>
+    <linearGradient id="efm-facet-grad-4" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="100%" stop-color="#0284c7" />
+    </linearGradient>
+    <linearGradient id="efm-facet-grad-5" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0369a1" />
+      <stop offset="100%" stop-color="#0c2340" />
+    </linearGradient>
+    <linearGradient id="efm-facet-grad-6" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0066ff" />
+      <stop offset="100%" stop-color="#0047b3" />
+    </linearGradient>
+    <linearGradient id="efm-facet-grad-7" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0137aa" />
+      <stop offset="100%" stop-color="#012066" />
+    </linearGradient>
+    <linearGradient id="efm-facet-grad-8" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0122ba" />
+      <stop offset="100%" stop-color="#001366" />
+    </linearGradient>
+    <linearGradient id="efm-facet-grad-9" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0024b8" />
+      <stop offset="100%" stop-color="#00104d" />
+    </linearGradient>
+    <linearGradient id="efm-facet-grad-10" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0284c7" />
+      <stop offset="100%" stop-color="#0369a1" />
+    </linearGradient>
+    <linearGradient id="efm-facet-grad-11" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3b82f6" />
+      <stop offset="100%" stop-color="#2563eb" />
+    </linearGradient>
+    <linearGradient id="efm-facet-grad-12" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e1145" />
+      <stop offset="100%" stop-color="#100826" />
+    </linearGradient>
+    <linearGradient id="efm-facet-grad-13" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6366f1" />
+      <stop offset="100%" stop-color="#4338ca" />
+    </linearGradient>
+    <linearGradient id="efm-facet-grad-14" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ab58f1" />
+      <stop offset="100%" stop-color="#7c3aed" />
+    </linearGradient>
+    <linearGradient id="efm-facet-grad-15" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#c084fc" />
+      <stop offset="100%" stop-color="#9333ea" />
+    </linearGradient>
+    <linearGradient id="efm-facet-grad-16" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#403a4f" />
+      <stop offset="100%" stop-color="#231f2b" />
+    </linearGradient>
+    <linearGradient id="efm-facet-grad-17" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#252030" />
+      <stop offset="100%" stop-color="#14111a" />
+    </linearGradient>
+    <linearGradient id="efm-facet-grad-18" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e1929" />
+      <stop offset="100%" stop-color="#0f0c14" />
+    </linearGradient>
+    <linearGradient id="efm-facet-grad-19" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#281c3b" />
+      <stop offset="100%" stop-color="#150d21" />
+    </linearGradient>
+    <linearGradient id="efm-facet-grad-20" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#e879f9" />
+      <stop offset="100%" stop-color="#c026d3" />
+    </linearGradient>
+    <linearGradient id="efm-facet-grad-21" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#7c3aed" />
+      <stop offset="100%" stop-color="#4c1d95" />
+    </linearGradient>
+    <linearGradient id="efm-facet-grad-22" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#002191" />
+      <stop offset="100%" stop-color="#00114d" />
+    </linearGradient>
+    <linearGradient id="efm-facet-grad-23" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4f46e5" />
+      <stop offset="100%" stop-color="#3730a3" />
+    </linearGradient>
+
+    <filter id="efmGlowCyan" x="-40%" y="-40%" width="180%" height="180%">
+      <feDropShadow dx="0" dy="0" stdDeviation="0.04" flood-color="#00d2ff" flood-opacity="0.9" />
+      <feDropShadow dx="0" dy="0" stdDeviation="0.09" flood-color="#2563eb" flood-opacity="0.65" />
+    </filter>
+
+    <filter id="efmGlowMagenta" x="-40%" y="-40%" width="180%" height="180%">
+      <feDropShadow dx="0" dy="0" stdDeviation="0.04" flood-color="#e879f9" flood-opacity="0.9" />
+      <feDropShadow dx="0" dy="0" stdDeviation="0.09" flood-color="#a855f7" flood-opacity="0.65" />
+    </filter>
+  </defs>
+
+  <g id="avorria-infinity-mark">
+    <!-- Faceted crystalline plates -->
+    <g id="facets">
+      <polygon points="-0.2381,-0.5000 -0.9396,-1.0000 -0.5117,-0.3050" fill="url(#efm-facet-grad-0)" stroke="#c7d2fe" stroke-width="0.005" />
+      <polygon points="-0.9396,-1.0000 -0.9396,-0.6100 -0.5117,-0.3050" fill="url(#efm-facet-grad-1)" stroke="#3b82f6" stroke-width="0.005" />
+      <polygon points="-0.9396,-1.0000 -1.6411,-0.5000 -0.9396,-0.6100" fill="url(#efm-facet-grad-2)" stroke="#1d4ed8" stroke-width="0.005" />
+      <polygon points="-1.6411,-0.5000 -1.3675,-0.3050 -0.9396,-0.6100" fill="url(#efm-facet-grad-3)" stroke="#0d4db8" stroke-width="0.005" />
+      <polygon points="-1.6411,-0.5000 -1.6411,0.5000 -1.3675,-0.3050" fill="url(#efm-facet-grad-4)" stroke="#38bdf8" stroke-width="0.005" />
+      <polygon points="-1.6411,0.5000 -1.3675,0.3050 -1.3675,-0.3050" fill="url(#efm-facet-grad-5)" stroke="#0369a1" stroke-width="0.005" />
+      <polygon points="-1.6411,0.5000 -0.9396,1.0000 -1.3675,0.3050" fill="url(#efm-facet-grad-6)" stroke="#0066ff" stroke-width="0.005" />
+      <polygon points="-0.9396,1.0000 -0.9396,0.6100 -1.3675,0.3050" fill="url(#efm-facet-grad-7)" stroke="#0137aa" stroke-width="0.005" />
+      <polygon points="-0.9396,1.0000 -0.2381,0.5000 -0.9396,0.6100" fill="url(#efm-facet-grad-8)" stroke="#0122ba" stroke-width="0.005" />
+      <polygon points="-0.2381,0.5000 -0.5117,0.3050 -0.9396,0.6100" fill="url(#efm-facet-grad-9)" stroke="#0024b8" stroke-width="0.005" />
+      <polygon points="-0.2381,0.5000 0.2381,-0.5000 -0.5117,0.3050" fill="url(#efm-facet-grad-10)" stroke="#0284c7" stroke-width="0.005" />
+      <polygon points="0.2381,-0.5000 0.5117,-0.3050 -0.5117,0.3050" fill="url(#efm-facet-grad-11)" stroke="#3b82f6" stroke-width="0.005" />
+      <polygon points="0.2381,-0.5000 0.9396,-1.0000 0.5117,-0.3050" fill="url(#efm-facet-grad-12)" stroke="#1e1145" stroke-width="0.005" />
+      <polygon points="0.9396,-1.0000 0.9396,-0.6100 0.5117,-0.3050" fill="url(#efm-facet-grad-13)" stroke="#6366f1" stroke-width="0.005" />
+      <polygon points="0.9396,-1.0000 1.6411,-0.5000 0.9396,-0.6100" fill="url(#efm-facet-grad-14)" stroke="#ab58f1" stroke-width="0.005" />
+      <polygon points="1.6411,-0.5000 1.3675,-0.3050 0.9396,-0.6100" fill="url(#efm-facet-grad-15)" stroke="#c084fc" stroke-width="0.005" />
+      <polygon points="1.6411,-0.5000 1.6411,0.5000 1.3675,-0.3050" fill="url(#efm-facet-grad-16)" stroke="#403a4f" stroke-width="0.005" />
+      <polygon points="1.6411,0.5000 1.3675,0.3050 1.3675,-0.3050" fill="url(#efm-facet-grad-17)" stroke="#252030" stroke-width="0.005" />
+      <polygon points="1.6411,0.5000 0.9396,1.0000 1.3675,0.3050" fill="url(#efm-facet-grad-18)" stroke="#1e1929" stroke-width="0.005" />
+      <polygon points="0.9396,1.0000 0.9396,0.6100 1.3675,0.3050" fill="url(#efm-facet-grad-19)" stroke="#281c3b" stroke-width="0.005" />
+      <polygon points="0.9396,1.0000 0.2381,0.5000 0.9396,0.6100" fill="url(#efm-facet-grad-20)" stroke="#e879f9" stroke-width="0.005" />
+      <polygon points="0.2381,0.5000 0.5117,0.3050 0.9396,0.6100" fill="url(#efm-facet-grad-21)" stroke="#7c3aed" stroke-width="0.005" />
+      <polygon points="0.2381,0.5000 -0.2381,-0.5000 0.5117,0.3050" fill="url(#efm-facet-grad-22)" stroke="#002191" stroke-width="0.005" />
+      <polygon points="-0.2381,-0.5000 -0.5117,-0.3050 0.5117,0.3050" fill="url(#efm-facet-grad-23)" stroke="#4f46e5" stroke-width="0.005" />
+    </g>
+
+    <!-- Lit internal seams and ridges -->
+    <g id="seams" stroke="rgba(255,255,255,0.75)" stroke-width="0.02" stroke-linecap="round">
+      <line x1="-0.2381" y1="-0.5000" x2="-0.9396" y2="-1.0000" />
+      <line x1="-0.5117" y1="-0.3050" x2="-0.9396" y2="-0.6100" />
+      <line x1="-0.2381" y1="-0.5000" x2="-0.5117" y2="-0.3050" />
+      <line x1="-0.9396" y1="-1.0000" x2="-0.5117" y2="-0.3050" />
+      <line x1="-0.9396" y1="-1.0000" x2="-1.6411" y2="-0.5000" />
+      <line x1="-0.9396" y1="-0.6100" x2="-1.3675" y2="-0.3050" />
+      <line x1="-0.9396" y1="-1.0000" x2="-0.9396" y2="-0.6100" />
+      <line x1="-1.6411" y1="-0.5000" x2="-0.9396" y2="-0.6100" />
+      <line x1="-1.6411" y1="-0.5000" x2="-1.6411" y2="0.5000" />
+      <line x1="-1.3675" y1="-0.3050" x2="-1.3675" y2="0.3050" />
+      <line x1="-1.6411" y1="-0.5000" x2="-1.3675" y2="-0.3050" />
+      <line x1="-1.6411" y1="0.5000" x2="-1.3675" y2="-0.3050" />
+      <line x1="-1.6411" y1="0.5000" x2="-0.9396" y2="1.0000" />
+      <line x1="-1.3675" y1="0.3050" x2="-0.9396" y2="0.6100" />
+      <line x1="-1.6411" y1="0.5000" x2="-1.3675" y2="0.3050" />
+      <line x1="-0.9396" y1="1.0000" x2="-1.3675" y2="0.3050" />
+      <line x1="-0.9396" y1="1.0000" x2="-0.2381" y2="0.5000" />
+      <line x1="-0.9396" y1="0.6100" x2="-0.5117" y2="0.3050" />
+      <line x1="-0.9396" y1="1.0000" x2="-0.9396" y2="0.6100" />
+      <line x1="-0.2381" y1="0.5000" x2="-0.9396" y2="0.6100" />
+      <line x1="-0.2381" y1="0.5000" x2="0.2381" y2="-0.5000" />
+      <line x1="-0.5117" y1="0.3050" x2="0.5117" y2="-0.3050" />
+      <line x1="-0.2381" y1="0.5000" x2="-0.5117" y2="0.3050" />
+      <line x1="0.2381" y1="-0.5000" x2="-0.5117" y2="0.3050" />
+      <line x1="0.2381" y1="-0.5000" x2="0.9396" y2="-1.0000" />
+      <line x1="0.5117" y1="-0.3050" x2="0.9396" y2="-0.6100" />
+      <line x1="0.2381" y1="-0.5000" x2="0.5117" y2="-0.3050" />
+      <line x1="0.9396" y1="-1.0000" x2="0.5117" y2="-0.3050" />
+      <line x1="0.9396" y1="-1.0000" x2="1.6411" y2="-0.5000" />
+      <line x1="0.9396" y1="-0.6100" x2="1.3675" y2="-0.3050" />
+      <line x1="0.9396" y1="-1.0000" x2="0.9396" y2="-0.6100" />
+      <line x1="1.6411" y1="-0.5000" x2="0.9396" y2="-0.6100" />
+      <line x1="1.6411" y1="-0.5000" x2="1.6411" y2="0.5000" />
+      <line x1="1.3675" y1="-0.3050" x2="1.3675" y2="0.3050" />
+      <line x1="1.6411" y1="-0.5000" x2="1.3675" y2="-0.3050" />
+      <line x1="1.6411" y1="0.5000" x2="1.3675" y2="-0.3050" />
+      <line x1="1.6411" y1="0.5000" x2="0.9396" y2="1.0000" />
+      <line x1="1.3675" y1="0.3050" x2="0.9396" y2="0.6100" />
+      <line x1="1.6411" y1="0.5000" x2="1.3675" y2="0.3050" />
+      <line x1="0.9396" y1="1.0000" x2="1.3675" y2="0.3050" />
+      <line x1="0.9396" y1="1.0000" x2="0.2381" y2="0.5000" />
+      <line x1="0.9396" y1="0.6100" x2="0.5117" y2="0.3050" />
+      <line x1="0.9396" y1="1.0000" x2="0.9396" y2="0.6100" />
+      <line x1="0.2381" y1="0.5000" x2="0.9396" y2="0.6100" />
+      <line x1="0.2381" y1="0.5000" x2="-0.2381" y2="-0.5000" />
+      <line x1="0.5117" y1="0.3050" x2="-0.5117" y2="-0.3050" />
+      <line x1="0.2381" y1="0.5000" x2="0.5117" y2="0.3050" />
+      <line x1="-0.2381" y1="-0.5000" x2="0.5117" y2="0.3050" />
+    </g>
+
+    <!-- Specular highlights -->
+    <g id="highlights" stroke="rgba(255,255,255,0.98)" stroke-width="0.025" stroke-linecap="round">
+      <line x1="-0.2381" y1="-0.5000" x2="-0.9396" y2="-1.0000" />
+      <line x1="-1.6411" y1="-0.5000" x2="-1.6411" y2="0.5000" />
+      <line x1="0.9396" y1="-1.0000" x2="1.6411" y2="-0.5000" />
+      <line x1="1.6411" y1="-0.5000" x2="1.3675" y2="-0.3050" />
+      <line x1="0.9396" y1="1.0000" x2="0.2381" y2="0.5000" />
+    </g>
+
+    <!-- Left Cyan glow -->
+    <g stroke="#00d2ff" stroke-width="0.03" stroke-linecap="round" opacity="0.95" filter="url(#efmGlowCyan)">
+      <line x1="-0.9396" y1="-1.0000" x2="-1.6411" y2="-0.5000" />
+      <line x1="-1.6411" y1="-0.5000" x2="-1.6411" y2="0.5000" />
+      <line x1="-1.6411" y1="0.5000" x2="-0.9396" y2="1.0000" />
+    </g>
+
+    <!-- Right Magenta glow -->
+    <g stroke="#e879f9" stroke-width="0.03" stroke-linecap="round" opacity="0.95" filter="url(#efmGlowMagenta)">
+      <line x1="0.9396" y1="-1.0000" x2="1.6411" y2="-0.5000" />
+      <line x1="1.6411" y1="-0.5000" x2="1.6411" y2="0.5000" />
+      <line x1="1.6411" y1="0.5000" x2="0.9396" y2="1.0000" />
+      <line x1="0.9396" y1="1.0000" x2="0.2381" y2="0.5000" />
+    </g>
+  </g>
+</svg>

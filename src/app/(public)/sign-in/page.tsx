@@ -27,11 +27,23 @@ export default function SignInPage() {
         return;
       }
 
-      // Simulate authentication check and proceed to workspace
-      await new Promise((resolve) => setTimeout(resolve, 600));
-      router.push('/app/dashboard');
+      const res = await fetch('/api/auth/sign-in', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok || data.error) {
+        setError(data.error || 'Invalid credentials. Please verify your email and password.');
+        return;
+      }
+
+      router.push(data.redirectTo || '/workspace');
+      router.refresh();
     } catch {
-      setError('Invalid credentials. Please verify your email and password.');
+      setError('An unexpected connection error occurred. Please try again.');
     } finally {
       setIsLoading(false);
     }

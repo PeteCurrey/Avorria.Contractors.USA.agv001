@@ -61,6 +61,16 @@ export const metadata: Metadata = {
       'max-snippet': -1,
     },
   },
+  icons: {
+    icon: [
+      { url: '/icon.svg', type: 'image/svg+xml' },
+      { url: '/favicon.ico', sizes: 'any' },
+    ],
+    shortcut: '/icon.svg',
+    apple: [
+      { url: '/icon.svg', type: 'image/svg+xml' },
+    ],
+  },
 };
 
 export const viewport: Viewport = {

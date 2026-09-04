@@ -158,14 +158,56 @@ export interface ReadinessScoreLog {
   breakdown: ReadinessScoreBreakdown;
 }
 
+export type PassportStatus = 'DRAFT' | 'CURRENT' | 'ARCHIVED';
+
+export interface PassportSnapshot {
+  id: string;
+  version: number;
+  generated_at: string;
+  generated_by: string;
+  note?: string;
+  status: 'CURRENT' | 'ARCHIVED';
+  included_capability_ids: string[];
+  included_project_ids: string[];
+  included_case_study_ids: string[];
+  included_reference_ids: string[];
+  included_credential_ids: string[];
+  included_document_ids: string[];
+}
+
 export interface Passport {
   id: string;
   org_id: string;
   slug: string;
+  version?: number;
+  status?: PassportStatus;
+  headline?: string;
+  summary_override?: string;
   is_password_protected: boolean;
   password_hash?: string;
+  
+  // Phase 8: Assembled record selections
+  included_capability_ids?: string[];
+  included_project_ids?: string[];
+  included_case_study_ids?: string[];
+  included_reference_ids?: string[];
   included_credential_ids: string[];
   included_document_ids: string[];
+
+  // Phase 8: Section visibility toggles
+  show_identity?: boolean;
+  show_capabilities?: boolean;
+  show_experience?: boolean;
+  show_case_studies?: boolean;
+  show_references?: boolean;
+  show_compliance?: boolean;
+  show_evidence?: boolean;
+
+  // Phase 8: Snapshots & Provenance
+  published_version?: number;
+  published_at?: string;
+  snapshots?: PassportSnapshot[];
+
   view_count: number;
   last_viewed_at?: string;
   created_at: string;
