@@ -210,7 +210,44 @@ async function runCoreLoopTest() {
   const v2Quote = await createGeneratedDocumentVersion(TEST_ORG_ID, savedQuote.id);
   console.log(`   ✓ New Version Created: v${v2Quote.version_number}.0 (Status: ${v2Quote.document_status}, Parent: ${v2Quote.parent_document_id})`);
 
-  console.log('\n🎉 ALL 12 CORE ENGINE & CREATION ENGINE JOURNEY MILESTONES COMPLETED WITH REAL PERSISTENCE.');
+  // 12. Phase 5: Verification Request & Review
+  console.log('\n13. Verification Engine: Submitting verification request...');
+  const { requestVerification, getVerificationState, executeReviewDecision } = await import('../src/lib/verification/service');
+  const verReq = await requestVerification(TEST_ORG_ID, 'usr_m_vance');
+  console.log(`   ✓ Verification Request Submitted (Standing: ${verReq.state.aggregateStatus})`);
+
+  // 13. Phase 5: Authorized Reviewer Approval
+  console.log('\n14. Reviewer Service: Authorized compliance review...');
+  const reviewerContext = {
+    reviewerId: 'usr_compliance_lead',
+    reviewerName: 'Compliance Officer (Reviewer)',
+    reviewerRole: 'avorria_compliance_officer' as const,
+    authorized: true,
+  };
+
+  const currentState = await getVerificationState(TEST_ORG_ID);
+  for (const crit of currentState.applicableCriteria.filter((c) => c.mandatory)) {
+    const rec = currentState.records.find((r) => r.criterionSlug === crit.slug);
+    if (rec) {
+      await executeReviewDecision(reviewerContext, TEST_ORG_ID, {
+        verificationRecordId: rec.id,
+        decision: 'verify',
+        notes: `Satisfied ${crit.sourceName}.`,
+      });
+    }
+  }
+
+  const verifiedState = await getVerificationState(TEST_ORG_ID);
+  console.log(`   ✓ Verification Review Complete: Status = "${verifiedState.aggregateStatus}", Reference = ${verifiedState.verificationReference}`);
+
+  // 14. Phase 5: Public Sanitization & Verification Page Resolution
+  console.log('\n15. Public Destination: Resolving public passport & verification certificate...');
+  const { sanitizeContractorForPublic } = await import('../src/lib/passport/sanitizer');
+  const latestWs = await getContractorWorkspace(TEST_ORG_ID);
+  const publicDto = sanitizeContractorForPublic(latestWs, verifiedState);
+  console.log(`   ✓ Public DTO Generated: "${publicDto.businessName}", Verification = ${publicDto.verification.status} (${publicDto.verification.referenceNumber})`);
+
+  console.log('\n🎉 ALL 15 CONTRACTOR OPERATING, CREATION & VERIFICATION MILESTONES COMPLETED WITH REAL PERSISTENCE.');
 }
 
 runCoreLoopTest().catch((err) => {

@@ -2,9 +2,10 @@ import React from 'react';
 import Link from 'next/link';
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger';
+  variant?: 'primary' | 'secondary' | 'secondary-dark' | 'outline' | 'outline-white' | 'ghost' | 'danger';
   size?: 'sm' | 'md' | 'lg';
   href?: string;
+  target?: string;
   icon?: React.ReactNode;
   iconPosition?: 'left' | 'right';
   isLoading?: boolean;
@@ -18,6 +19,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       variant = 'primary',
       size = 'md',
       href,
+      target,
       icon,
       iconPosition = 'left',
       isLoading = false,
@@ -27,17 +29,21 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     ref
   ) => {
     const baseStyles =
-      'inline-flex items-center justify-center font-semibold rounded-md transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2 focus-visible:ring-offset-surface-base disabled:opacity-50 disabled:cursor-not-allowed select-none active:scale-[0.98]';
+      'inline-flex items-center justify-center font-semibold rounded transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed select-none active:scale-[0.99]';
 
     const variants = {
       primary:
-        'bg-brand-600 hover:bg-brand-500 text-white shadow-sm hover:shadow-glow border border-brand-500/30',
+        'bg-brand-600 hover:bg-brand-500 text-white shadow-sm border border-brand-500/40',
       secondary:
-        'bg-surface-elevated hover:bg-slate-800 text-slate-100 border border-surface-border hover:border-surface-borderLight',
+        'bg-white hover:bg-slate-50 text-navy-800 border border-slate-300 shadow-sm',
+      'secondary-dark':
+        'bg-white/[0.08] hover:bg-white/[0.14] text-white border border-white/20',
       outline:
-        'bg-transparent hover:bg-surface-elevated text-slate-200 border border-surface-border hover:border-slate-600',
+        'bg-transparent hover:bg-slate-100 text-navy-800 border border-slate-300',
+      'outline-white':
+        'bg-transparent hover:bg-white/10 text-white border border-white/30',
       ghost:
-        'bg-transparent hover:bg-surface-subtle text-slate-300 hover:text-white',
+        'bg-transparent hover:bg-slate-100 text-slate-700 hover:text-navy-900',
       danger:
         'bg-rose-600 hover:bg-rose-500 text-white border border-rose-500/30',
     };
@@ -63,7 +69,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 
     if (href) {
       return (
-        <Link href={href} className={combinedClasses}>
+        <Link href={href} target={target} className={combinedClasses}>
           {content}
         </Link>
       );

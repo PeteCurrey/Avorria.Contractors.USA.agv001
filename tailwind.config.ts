@@ -31,6 +31,23 @@ const config: Config = {
           elevated: '#111c30',  // Elevated popover/modal
           border: '#1e293b',    // Subdued card border
           borderLight: '#334155',
+          anchorDark: '#070c18', // Rich midnight dark section anchor
+          // Light Theme Tokens
+          page: '#f8fafc',       // Warm/cool off-white background
+          cardLight: '#ffffff',  // Pure white card/section
+          subtleLight: '#f1f5f9', // Very light slate section ground
+          borderLightSubtle: '#e2e8f0', // Subtle light border
+          borderLightStrong: '#cbd5e1', // Strong light border
+        },
+        navy: {
+          950: '#060a14',
+          900: '#0a0f1d',
+          800: '#0f172a', // Primary dark navy typography
+          700: '#1e293b',
+          600: '#334155',
+          500: '#475569',
+          400: '#64748b',
+          300: '#94a3b8',
         },
       },
       fontFamily: {

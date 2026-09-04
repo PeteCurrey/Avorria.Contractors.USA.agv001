@@ -1,6 +1,6 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { getTenantContext } from '@/lib/tenant/context';
-import { getPassportDetails, setPassportVisibility } from '@/lib/tenant/repository';
+import { getPassportDetails, setPassportVisibility, updatePassportSettings } from '@/lib/tenant/repository';
 
 export async function GET() {
   try {
@@ -17,14 +17,30 @@ export async function POST(request: NextRequest) {
   try {
     const tenant = await getTenantContext();
     const body = await request.json();
-    const { visibility } = body;
+    const { visibility, settings } = body;
 
-    if (!visibility) return NextResponse.json({ error: 'Missing visibility' }, { status: 400 });
+    let visibilityResult;
+    if (visibility) {
+      visibilityResult = await setPassportVisibility(tenant.organisation.id, visibility);
+      if (!visibilityResult.success) {
+        return NextResponse.json(visibilityResult, { status: 400 });
+      }
+    }
 
-    const result = await setPassportVisibility(tenant.organisation.id, visibility);
-    return NextResponse.json(result);
+    let updatedSettings;
+    if (settings) {
+      updatedSettings = await updatePassportSettings(tenant.organisation.id, settings);
+    }
+
+    const updatedPassport = await getPassportDetails(tenant.organisation.id);
+
+    return NextResponse.json({
+      success: true,
+      message: visibilityResult?.message || 'Passport settings updated.',
+      passport: updatedPassport,
+    });
   } catch (err: unknown) {
-    const errorMessage = err instanceof Error ? err.message : 'Failed to update passport visibility';
+    const errorMessage = err instanceof Error ? err.message : 'Failed to update passport';
     return NextResponse.json({ error: errorMessage }, { status: 500 });
   }
 }

@@ -65,8 +65,8 @@ function evaluateRlsPolicy(
     }
   }
 
-  // Public CMS reference tables (trades, plans, document_templates)
-  if (['trades', 'plans', 'document_templates', 'compliance_requirements'].includes(table) && operation === 'SELECT') {
+  // Public CMS reference tables (trades, plans, document_templates, verification_criteria)
+  if (['trades', 'plans', 'document_templates', 'compliance_requirements', 'verification_criteria'].includes(table) && operation === 'SELECT') {
     return true;
   }
 
@@ -109,6 +109,7 @@ const TENANT_TABLES = [
   'proposals',
   'projects',
   'verification_records',
+  'verification_events',
   'subscriptions',
   'audit_logs',
   'notifications',
@@ -253,6 +254,54 @@ export function runSecurityVerification(): SecurityAssertionResult[] {
     operation: 'SELECT',
     testDescription: 'Org A user cannot SELECT project_context records belonging to Org B',
     passed: canAReadBProjectCtx === false,
+  });
+
+  // ──────────────────────────────────────────────────────────────
+  // Phase 5 Additions: Verification Security & Public Data Hygiene
+  // ──────────────────────────────────────────────────────────────
+
+  // Test 9: verification_events cross-org isolation
+  const canAReadBVerificationEvents = evaluateRlsPolicy('verification_events', 'SELECT', TENANT_A_USER, ORG_B_ID);
+  results.push({
+    table: 'verification_events',
+    operation: 'SELECT',
+    testDescription: 'Org A user cannot SELECT verification_events belonging to Org B',
+    passed: canAReadBVerificationEvents === false,
+  });
+
+  const canAnonReadVerificationEvents = evaluateRlsPolicy('verification_events', 'SELECT', ANONYMOUS_USER, ORG_A_ID);
+  results.push({
+    table: 'verification_events',
+    operation: 'SELECT',
+    testDescription: 'Anonymous user cannot read private verification_events audit trail',
+    passed: canAnonReadVerificationEvents === false,
+  });
+
+  // Test 10: Reviewer Authorization - Contractor role CANNOT approve verification
+  const contractorRole = TENANT_A_USER.role;
+  const isContractorAuthorizedReviewer = ['avorria_reviewer', 'avorria_compliance_officer', 'system_admin'].includes(contractorRole);
+  results.push({
+    table: 'verification_records',
+    operation: 'UPDATE',
+    testDescription: 'Contractor owner/admin role CANNOT approve or self-verify without reviewer credentials',
+    passed: isContractorAuthorizedReviewer === false,
+  });
+
+  // Test 11: Public Passport Privacy Gates (Suspended, Draft, Private return false)
+  const canAnonReadSuspended = evaluateRlsPolicy('public_profiles', 'SELECT', ANONYMOUS_USER, ORG_A_ID, 'suspended');
+  results.push({
+    table: 'public_profiles',
+    operation: 'SELECT',
+    testDescription: 'Suspended contractor passport CANNOT be read by public visitors',
+    passed: canAnonReadSuspended === false,
+  });
+
+  const canAnonReadArchived = evaluateRlsPolicy('public_profiles', 'SELECT', ANONYMOUS_USER, ORG_A_ID, 'archived');
+  results.push({
+    table: 'public_profiles',
+    operation: 'SELECT',
+    testDescription: 'Archived contractor passport CANNOT be read by public visitors',
+    passed: canAnonReadArchived === false,
   });
 
   return results;

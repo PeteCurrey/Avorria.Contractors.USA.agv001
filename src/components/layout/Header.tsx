@@ -29,24 +29,24 @@ export function Header() {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-surface-border bg-surface-base/90 backdrop-blur-md">
+    <header className="sticky top-0 z-50 w-full border-b border-navy-800/60 bg-[#070c18]/95 backdrop-blur-sm transition-colors">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         {/* Brand Logo */}
-        <div className="flex items-center gap-8">
-          <Logo size="md" />
+        <div className="flex items-center gap-7">
+          <Logo size="md" variant="light" />
 
           {/* Desktop Navigation */}
-          <nav className="hidden xl:flex items-center gap-1" aria-label="Main Navigation">
+          <nav className="hidden xl:flex items-center gap-0.5" aria-label="Main Navigation">
             {navLinks.map((item) => {
               const active = isActive(item.href);
               return (
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`px-3 py-1.5 rounded-md text-xs font-semibold transition-colors ${
+                  className={`px-3 py-1.5 rounded text-[13px] font-medium transition-colors ${
                     active
-                      ? 'bg-surface-elevated text-white border border-surface-borderLight'
-                      : 'text-slate-400 hover:text-white hover:bg-surface-subtle'
+                      ? 'text-white bg-navy-800/80 font-semibold'
+                      : 'text-slate-300 hover:text-white hover:bg-white/[0.04]'
                   }`}
                 >
                   {item.title}
@@ -57,30 +57,36 @@ export function Header() {
         </div>
 
         {/* Action CTAs */}
-        <div className="hidden sm:flex items-center gap-3">
+        <div className="hidden sm:flex items-center gap-4">
           <Link
             href="/sign-in"
-            className="text-xs font-semibold text-slate-300 hover:text-white px-3 py-2 rounded-md transition-colors"
+            className="text-[13px] font-medium text-slate-300 hover:text-white transition-colors"
           >
             Sign In
           </Link>
-          <Button href="/sign-up" size="sm" variant="primary">
+          <Link
+            href="/sign-up"
+            className="inline-flex items-center justify-center text-xs font-semibold px-4 py-2 rounded bg-brand-600 hover:bg-brand-500 text-white shadow-sm transition-colors"
+          >
             Get Started Free
-          </Button>
+          </Link>
         </div>
 
         {/* Mobile Hamburger Button */}
-        <div className="flex xl:hidden items-center gap-2">
-          <Button href="/sign-up" size="sm" variant="primary" className="sm:hidden text-xs">
+        <div className="flex xl:hidden items-center gap-3">
+          <Link
+            href="/sign-up"
+            className="sm:hidden text-xs font-semibold px-3 py-1.5 rounded bg-brand-600 text-white"
+          >
             Start Free
-          </Button>
+          </Link>
           <button
             type="button"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="p-2 rounded-md text-slate-400 hover:text-white hover:bg-surface-subtle focus:outline-none"
+            className="p-2 rounded text-slate-300 hover:text-white hover:bg-white/[0.05] focus:outline-none"
             aria-label="Toggle Navigation Menu"
           >
-            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               {mobileMenuOpen ? (
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               ) : (
@@ -93,17 +99,17 @@ export function Header() {
 
       {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
-        <div className="xl:hidden border-b border-surface-border bg-surface-subtle px-4 pt-3 pb-6 space-y-2">
+        <div className="xl:hidden border-b border-navy-800/80 bg-[#0a0f1d] px-4 pt-3 pb-6 space-y-3">
           <nav className="grid grid-cols-2 gap-1.5" aria-label="Mobile Navigation">
             {navLinks.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
                 onClick={() => setMobileMenuOpen(false)}
-                className={`px-3 py-2 rounded-md text-xs font-semibold ${
+                className={`px-3 py-2 rounded text-xs font-medium ${
                   isActive(item.href)
-                    ? 'bg-surface-elevated text-white'
-                    : 'text-slate-300 hover:bg-surface-card hover:text-white'
+                    ? 'bg-navy-800 text-white font-semibold'
+                    : 'text-slate-300 hover:bg-white/[0.04] hover:text-white'
                 }`}
               >
                 {item.title}
@@ -111,23 +117,21 @@ export function Header() {
             ))}
           </nav>
 
-          <div className="pt-4 border-t border-surface-border flex flex-col gap-2">
+          <div className="pt-4 border-t border-navy-800/80 flex flex-col gap-2.5">
             <Link
               href="/sign-in"
               onClick={() => setMobileMenuOpen(false)}
-              className="text-center py-2 rounded-md text-xs font-semibold text-slate-300 hover:bg-surface-card"
+              className="text-center py-2 text-xs font-medium text-slate-300 hover:text-white"
             >
               Sign In to Account
             </Link>
-            <Button
+            <Link
               href="/sign-up"
-              size="md"
-              variant="primary"
-              className="w-full text-center"
               onClick={() => setMobileMenuOpen(false)}
+              className="text-center py-2.5 rounded bg-brand-600 hover:bg-brand-500 text-white text-xs font-semibold"
             >
               Get Started Free
-            </Button>
+            </Link>
           </div>
         </div>
       )}

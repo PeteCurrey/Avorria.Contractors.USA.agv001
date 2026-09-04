@@ -11,7 +11,8 @@
     "test:security": "tsx scripts/test-multi-tenant-security.ts",
     "test:core-loop": "tsx scripts/test-contractor-core-loop.ts",
     "test:engine": "tsx scripts/test-document-engine.ts",
-    "test": "npm run test:security && npm run test:core-loop && npm run test:engine"
+    "test:verification": "tsx scripts/test-verification-engine.ts",
+    "test": "npm run test:security && npm run test:core-loop && npm run test:engine && npm run test:verification"
   },
   "dependencies": {
     "@supabase/ssr": "^0.5.2",

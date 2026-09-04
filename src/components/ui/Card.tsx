@@ -1,7 +1,7 @@
 import React from 'react';
 
 export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
-  variant?: 'default' | 'elevated' | 'subtle' | 'interactive';
+  variant?: 'default' | 'light' | 'light-bordered' | 'elevated' | 'subtle' | 'interactive' | 'interactive-light';
   glowing?: boolean;
 }
 
@@ -13,11 +13,15 @@ export function Card({
   ...props
 }: CardProps) {
   const variants = {
-    default: 'bg-surface-card border border-surface-border',
-    elevated: 'bg-surface-elevated border border-surface-border shadow-elevated',
-    subtle: 'bg-surface-subtle border border-surface-border',
+    default: 'bg-white border border-slate-200 text-navy-800 shadow-sm',
+    light: 'bg-white border border-slate-200 text-navy-800 shadow-sm',
+    'light-bordered': 'bg-slate-50/70 border border-slate-300 text-navy-800',
+    elevated: 'bg-white border border-slate-200 shadow-md text-navy-800',
+    subtle: 'bg-slate-50 border border-slate-200 text-navy-800',
     interactive:
-      'bg-surface-card border border-surface-border hover:border-brand-500/50 hover:shadow-glow transition-all duration-200 cursor-pointer',
+      'bg-white border border-slate-200 hover:border-brand-600 hover:shadow-md transition-all duration-150 cursor-pointer text-navy-800',
+    'interactive-light':
+      'bg-white border border-slate-200 hover:border-brand-500 hover:shadow-md transition-all duration-150 cursor-pointer text-navy-800',
   };
 
   const glowStyle = glowing ? 'border-brand-500/60 shadow-glow' : '';
@@ -51,7 +55,7 @@ export function CardTitle({
 }: React.HTMLAttributes<HTMLHeadingElement>) {
   return (
     <h3
-      className={`text-lg sm:text-xl font-bold text-white tracking-tight ${className}`}
+      className={`text-lg sm:text-xl font-bold text-navy-900 tracking-tight ${className}`}
       {...props}
     >
       {children}
@@ -66,7 +70,7 @@ export function CardDescription({
 }: React.HTMLAttributes<HTMLParagraphElement>) {
   return (
     <p
-      className={`text-xs sm:text-sm text-slate-400 leading-relaxed ${className}`}
+      className={`text-xs sm:text-sm text-slate-600 leading-relaxed ${className}`}
       {...props}
     >
       {children}

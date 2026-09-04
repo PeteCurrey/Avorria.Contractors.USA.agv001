@@ -7,6 +7,7 @@ export interface LogoProps {
   showWordmark?: boolean;
   className?: string;
   asLink?: boolean;
+  variant?: 'light' | 'dark' | 'auto'; // 'light' has white text (on dark bg), 'dark' has navy-900 text (on light bg)
 }
 
 export function Logo({
@@ -14,6 +15,7 @@ export function Logo({
   showWordmark = true,
   className = '',
   asLink = true,
+  variant = 'light',
 }: LogoProps) {
   const iconDimensions = {
     sm: { w: 24, h: 24, fontSize: 'text-base' },
@@ -55,7 +57,11 @@ export function Logo({
       </svg>
 
       {showWordmark && (
-        <span className={`font-black tracking-tight text-white font-sans ${fontSize}`}>
+        <span
+          className={`font-black tracking-tight font-sans ${
+            variant === 'dark' ? 'text-navy-900' : 'text-white'
+          } ${fontSize}`}
+        >
           {siteConfig.name}
         </span>
       )}
