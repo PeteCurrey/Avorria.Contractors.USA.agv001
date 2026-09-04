@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { Metadata } from 'next';
 import { siteConfig } from '@/config/site';
 import { CinematicHero } from '@/components/hero/CinematicHero';
+import { RealContractorDocumentPreview } from '@/components/home/RealDocumentPreview';
 
 export const metadata: Metadata = {
   title: 'Avorria | The Operating Platform for American Trade Contractors',
@@ -250,78 +251,9 @@ export default function HomePage() {
               </div>
             </div>
 
-            {/* Right: Realistic Document Preview Mockup */}
+            {/* Right: Realistic In-Dashboard Document Studio & Sheet Preview */}
             <div className="lg:col-span-7">
-              <div className="bg-white rounded-xl border border-slate-300 shadow-xl overflow-hidden">
-                {/* Header Sheet Bar */}
-                <div className="bg-slate-100 border-b border-slate-200 px-6 py-4 flex items-center justify-between text-xs">
-                  <div className="flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-emerald-500" />
-                    <span className="font-mono font-bold text-navy-900">DOC-SAF-JHA-2026-884</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <span className="font-mono text-[11px] text-slate-500">OSHA 1926.403 Subpart K</span>
-                    <span className="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-semibold text-[10px] font-mono">
-                      FINALIZED & SIGNED
-                    </span>
-                  </div>
-                </div>
-
-                {/* Document Body Preview */}
-                <div className="p-6 sm:p-8 space-y-6 text-xs text-navy-800 font-sans">
-                  {/* Title & Organization Meta */}
-                  <div className="border-b border-slate-200 pb-4">
-                    <div className="text-[10px] font-mono uppercase text-slate-500">Safety & Hazard Prevention Plan</div>
-                    <h4 className="text-xl font-extralight text-navy-900 mt-1">
-                      Job Hazard Analysis: 480V Substation Feeder Cable Pulling & Terminations
-                    </h4>
-                    <div className="flex flex-wrap gap-4 text-[11px] text-slate-600 mt-2">
-                      <span><strong>Project:</strong> Dell Children’s Hospital Expansion</span>
-                      <span><strong>Jurisdiction:</strong> Travis County, TX</span>
-                      <span><strong>Date:</strong> Valid for Active Phase</span>
-                    </div>
-                  </div>
-
-                  {/* Hazard Control Sequence Table */}
-                  <div className="space-y-2">
-                    <div className="font-bold text-xs uppercase tracking-wider text-slate-700 font-mono">
-                      Task Hazard Identification & Controls
-                    </div>
-                    <div className="border border-slate-200 rounded overflow-hidden">
-                      <table className="w-full text-left border-collapse text-[11px]">
-                        <thead className="bg-slate-50 border-b border-slate-200 text-slate-700 font-semibold">
-                          <tr>
-                            <th className="p-2.5">Sequence of Work</th>
-                            <th className="p-2.5">Potential Hazard</th>
-                            <th className="p-2.5">Required Engineering Control</th>
-                          </tr>
-                        </thead>
-                        <tbody className="divide-y divide-slate-200">
-                          <tr>
-                            <td className="p-2.5 font-medium">1. LOTO on main 480V feeder</td>
-                            <td className="p-2.5 text-rose-700 font-medium">Arc flash / electrocution</td>
-                            <td className="p-2.5 text-slate-600">NFPA 70E Cal/cm² PPE Category 4, verified zero energy state with calibrated multimeter.</td>
-                          </tr>
-                          <tr>
-                            <td className="p-2.5 font-medium">2. Tugger setup & cable pulling</td>
-                            <td className="p-2.5 text-rose-700 font-medium">Pinch points & high cable tension</td>
-                            <td className="p-2.5 text-slate-600">Stand clear of pulling line radius, rated cable grips, remote foot pedal control.</td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-
-                  {/* Mandatory Human Review Sign-Off Block */}
-                  <div className="p-3.5 rounded bg-slate-50 border border-slate-200 flex items-center justify-between text-[11px]">
-                    <div>
-                      <span className="font-semibold text-navy-900 block">Editorial Review & Safety Sign-Off</span>
-                      <span className="text-slate-500">Human verified by Marcus Vance, Master Electrician (#TX-98765)</span>
-                    </div>
-                    <span className="font-mono text-emerald-700 font-bold">✓ Signed 2026-09-04</span>
-                  </div>
-                </div>
-              </div>
+              <RealContractorDocumentPreview />
             </div>
 
           </div>
