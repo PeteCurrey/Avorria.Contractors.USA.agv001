@@ -13,6 +13,8 @@
  * - Lifecycle transitions are deterministic and append-only (events log every change).
  */
 
+import { CanonicalEvidenceState } from '@/lib/match/types';
+
 // ─────────────────────────────────────────────────────────────
 // INVITATION LIFECYCLE
 // ─────────────────────────────────────────────────────────────
@@ -93,7 +95,7 @@ export interface InvitationEvidenceSnapshot {
   requirementCategory: string;
   requirementStrength: 'required' | 'preferred' | 'optional';
   /** Evidence state as determined by MATCH_ENGINE_V1 at time of invitation */
-  evidenceStateAtInvitation: string; // CanonicalEvidenceState from match types
+  evidenceStateAtInvitation: CanonicalEvidenceState;
   evidenceExplanation?: string;
   verificationReference?: string; // AV-VER-XXXXXX if applicable at time
 }

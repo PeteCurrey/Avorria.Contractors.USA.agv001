@@ -89,7 +89,7 @@ export function Header() {
                   <Link
                     key={item.href}
                     href={item.href}
-                    className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-[4px] text-[13px] font-extralight tracking-tight transition-all ${
+                    className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-[4px] text-[15px] font-extralight tracking-tight transition-all ${
                       active
                         ? 'text-white bg-white/[0.08] font-normal'
                         : 'text-slate-300 hover:text-white hover:bg-white/[0.05]'
@@ -153,7 +153,7 @@ export function Header() {
                   key={item.href}
                   href={item.href}
                   onClick={() => setMobileMenuOpen(false)}
-                  className={`px-3 py-2 rounded text-xs font-extralight ${
+                  className={`px-3 py-2 rounded text-sm font-extralight ${
                     isActive(item.href)
                       ? 'bg-navy-800 text-white font-normal'
                       : 'text-slate-300 hover:bg-white/[0.04] hover:text-white'

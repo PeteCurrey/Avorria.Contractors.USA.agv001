@@ -79,15 +79,14 @@ export function CinematicHero() {
             </Link>
           </div>
 
-          {/* Three Key Pillar Callouts */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-3 border-t border-white/10">
             <div className="flex items-start gap-2.5">
               <div className="p-1.5 rounded bg-amber-500/10 border border-amber-500/25 shrink-0 mt-0.5">
                 <Zap className="w-3.5 h-3.5 text-amber-400 fill-amber-400/30" />
               </div>
               <div className="space-y-0.5">
-                <h4 className="text-xs font-light text-white tracking-tight">Free JHA Generator</h4>
-                <p className="text-[10.5px] font-extralight text-slate-400 leading-snug">Create professional safety documents in minutes</p>
+                <h4 className="text-sm font-light text-white tracking-tight">Free JHA Generator</h4>
+                <p className="text-xs font-extralight text-slate-400 leading-snug">Create professional safety documents in minutes</p>
               </div>
             </div>
             <div className="flex items-start gap-2.5">
@@ -95,8 +94,8 @@ export function CinematicHero() {
                 <ShieldCheck className="w-3.5 h-3.5 text-[#38bdf8]" />
               </div>
               <div className="space-y-0.5">
-                <h4 className="text-xs font-light text-white tracking-tight">Contractor Passport</h4>
-                <p className="text-[10.5px] font-extralight text-slate-400 leading-snug">Build a verified profile clients trust</p>
+                <h4 className="text-sm font-light text-white tracking-tight">Contractor Passport</h4>
+                <p className="text-xs font-extralight text-slate-400 leading-snug">Build a verified profile clients trust</p>
               </div>
             </div>
             <div className="flex items-start gap-2.5">
@@ -104,11 +103,12 @@ export function CinematicHero() {
                 <Flag className="w-3.5 h-3.5 text-blue-400" />
               </div>
               <div className="space-y-0.5">
-                <h4 className="text-xs font-light text-white tracking-tight">US-First Platform</h4>
-                <p className="text-[10.5px] font-extralight text-slate-400 leading-snug">Built for American contractors. No credit card required.</p>
+                <h4 className="text-sm font-light text-white tracking-tight">US-First Platform</h4>
+                <p className="text-xs font-extralight text-slate-400 leading-snug">Built for American contractors. No credit card required.</p>
               </div>
             </div>
           </div>
+
 
         </div>
       </div>
@@ -116,14 +116,14 @@ export function CinematicHero() {
       {/* ── 3. BOTTOM TRUST BAR ── */}
       <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-3 lg:pb-4 shrink-0">
         <div className="space-y-2">
-          <p className="text-[11px] sm:text-xs font-extralight text-slate-400 tracking-wide">
+          <p className="text-xs sm:text-sm font-extralight text-slate-400 tracking-wide">
             Trusted by contractors across the United States
           </p>
           <div className="flex flex-wrap items-center gap-2 sm:gap-3">
             {TRUSTED_TRADES.map((trade) => (
               <div
                 key={trade}
-                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-white/10 bg-white/[0.03] backdrop-blur-sm text-[11px] font-extralight text-slate-300"
+                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-white/10 bg-white/[0.03] backdrop-blur-sm text-xs font-extralight text-slate-300"
               >
                 <CheckCircle2 className="w-3 h-3 text-[#38bdf8] shrink-0" />
                 <span>{trade}</span>

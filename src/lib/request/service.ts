@@ -32,6 +32,7 @@ import { evaluateRequestReadiness } from './readiness';
 import { getTradeBySlug, STANDARD_TRADES } from '@/lib/trades/registry';
 import { trackEvent } from '@/lib/analytics/events';
 import { invalidateMatchSet } from '@/lib/match/repository';
+import { invalidateCompareSetsByRequest } from '@/lib/compare/repository';
 
 /**
  * Generates deterministic, unique, non-sequential reference code (e.g. REQ-783921).
@@ -163,8 +164,9 @@ export async function updateRequirementPack(
     updatedFields: Object.keys(updates),
   });
 
-  // Invalidate any existing match set
+  // Invalidate any existing match set and comparison sets
   await invalidateMatchSet(packId, tenantId, 'Requirement pack parameters updated');
+  await invalidateCompareSetsByRequest(packId, 'Requirement pack parameters updated');
 
   return saved;
 }
@@ -343,6 +345,7 @@ export async function addPackTrade(
 
   await logPackEvent(packId, tenantId, userId, 'trade_added', { tradeSlug, tradeName });
   await invalidateMatchSet(packId, tenantId, 'Trade classification added');
+  await invalidateCompareSetsByRequest(packId, 'Trade classification added');
   return trade;
 }
 
@@ -356,6 +359,7 @@ export async function removePackTrade(
   if (removed) {
     await logPackEvent(packId, tenantId, userId, 'trade_removed', { tradeSlug });
     await invalidateMatchSet(packId, tenantId, 'Trade classification removed');
+    await invalidateCompareSetsByRequest(packId, 'Trade classification removed');
   }
   return removed;
 }
@@ -398,6 +402,7 @@ export async function addRequirement(
   });
 
   await invalidateMatchSet(packId, tenantId, 'Requirement added');
+  await invalidateCompareSetsByRequest(packId, 'Requirement added');
 
   return req;
 }
@@ -416,6 +421,7 @@ export async function updateRequirement(
   });
 
   await invalidateMatchSet(packId, tenantId, 'Requirement updated');
+  await invalidateCompareSetsByRequest(packId, 'Requirement updated');
 
   return req;
 }
@@ -430,6 +436,7 @@ export async function removeRequirement(
   if (removed) {
     await logPackEvent(packId, tenantId, userId, 'requirement_removed', { requirementId });
     await invalidateMatchSet(packId, tenantId, 'Requirement removed');
+    await invalidateCompareSetsByRequest(packId, 'Requirement removed');
   }
   return removed;
 }
