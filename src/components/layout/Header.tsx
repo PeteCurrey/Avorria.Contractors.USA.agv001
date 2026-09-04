@@ -215,7 +215,7 @@ export function Header() {
       <header
         className={`fixed top-0 inset-x-0 z-50 w-full transition-all duration-300 ${
           scrolled || mobileMenuOpen || activeDropdown !== null
-            ? 'border-b border-navy-800/90 bg-[#060912]/98 backdrop-blur-md shadow-lg shadow-black/40'
+            ? 'border-b border-sky-500/20 bg-[#07132b]/80 backdrop-blur-lg shadow-lg shadow-[#020817]/50'
             : 'border-b border-white/[0.06] bg-gradient-to-b from-[#040813]/95 via-[#040813]/60 to-transparent'
         }`}
       >
@@ -267,7 +267,7 @@ export function Header() {
 
                 {/* Platform Mega Menu Panel */}
                 {activeDropdown === 'platform' && (
-                  <div className="absolute top-full left-0 mt-2 w-[680px] rounded-[8px] bg-[#060912]/98 border border-white/10 shadow-2xl shadow-black/90 p-5 backdrop-blur-xl ring-1 ring-white/5 animate-in fade-in slide-in-from-top-1 duration-150 z-50">
+                  <div className="absolute top-full left-0 mt-2 w-[680px] rounded-[8px] bg-[#07132b]/95 border border-sky-500/20 shadow-2xl shadow-[#020817]/90 p-5 backdrop-blur-xl ring-1 ring-sky-400/10 animate-in fade-in slide-in-from-top-1 duration-150 z-50">
                     <div className="flex items-center justify-between pb-3 mb-3 border-b border-white/[0.08]">
                       <div>
                         <span className="text-[10px] font-mono tracking-[0.2em] uppercase text-[#38bdf8] font-medium block">
@@ -341,7 +341,7 @@ export function Header() {
 
                 {/* Win Work Mega Menu Panel */}
                 {activeDropdown === 'win-work' && (
-                  <div className="absolute top-full left-0 mt-2 w-[520px] rounded-[8px] bg-[#060912]/98 border border-white/10 shadow-2xl shadow-black/90 p-5 backdrop-blur-xl ring-1 ring-white/5 animate-in fade-in slide-in-from-top-1 duration-150 z-50">
+                  <div className="absolute top-full left-0 mt-2 w-[520px] rounded-[8px] bg-[#07132b]/95 border border-sky-500/20 shadow-2xl shadow-[#020817]/90 p-5 backdrop-blur-xl ring-1 ring-sky-400/10 animate-in fade-in slide-in-from-top-1 duration-150 z-50">
                     <div className="flex items-center justify-between pb-3 mb-3 border-b border-white/[0.08]">
                       <div>
                         <span className="text-[10px] font-mono tracking-[0.2em] uppercase text-[#38bdf8] font-medium block">
@@ -407,7 +407,7 @@ export function Header() {
 
                 {/* Resources Mega Menu Panel */}
                 {activeDropdown === 'resources' && (
-                  <div className="absolute top-full left-0 mt-2 w-[680px] rounded-[8px] bg-[#060912]/98 border border-white/10 shadow-2xl shadow-black/90 p-5 backdrop-blur-xl ring-1 ring-white/5 animate-in fade-in slide-in-from-top-1 duration-150 z-50">
+                  <div className="absolute top-full left-0 mt-2 w-[680px] rounded-[8px] bg-[#07132b]/95 border border-sky-500/20 shadow-2xl shadow-[#020817]/90 p-5 backdrop-blur-xl ring-1 ring-sky-400/10 animate-in fade-in slide-in-from-top-1 duration-150 z-50">
                     <div className="flex items-center justify-between pb-3 mb-3 border-b border-white/[0.08]">
                       <div>
                         <span className="text-[10px] font-mono tracking-[0.2em] uppercase text-[#38bdf8] font-medium block">
@@ -498,7 +498,7 @@ export function Header() {
 
         {/* Mobile Navigation Drawer */}
         {mobileMenuOpen && (
-          <div className="xl:hidden border-b border-navy-800/80 bg-[#060912] px-4 pt-3 pb-6 space-y-4 max-h-[80vh] overflow-y-auto">
+          <div className="xl:hidden border-b border-sky-500/20 bg-[#07132b]/95 backdrop-blur-xl px-4 pt-3 pb-6 space-y-4 max-h-[80vh] overflow-y-auto">
             {/* Mobile Accordions */}
             <div className="space-y-1">
               {/* Platform Mobile Section */}
