@@ -108,14 +108,14 @@ export function AuthSplitLayout({
           </div>
 
           {/* Middle Value Proof Points */}
-          <div className="relative z-10 hidden lg:flex flex-col space-y-4 my-auto py-8">
+          <div className="relative z-10 hidden lg:flex flex-col space-y-5 my-auto py-8">
             <div className="flex items-start gap-3.5">
               <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-sky-500/20 text-[#38bdf8] text-xs mt-0.5 border border-sky-500/30">
                 <ShieldCheck className="w-3.5 h-3.5" />
               </span>
               <div>
-                <h4 className="text-xs font-light text-white">Stay work-ready and compliant</h4>
-                <p className="text-[11px] font-extralight text-slate-300/70 leading-relaxed">
+                <h4 className="text-xs sm:text-sm font-light text-white">Stay work-ready and compliant</h4>
+                <p className="text-xs font-extralight text-slate-300/75 leading-relaxed mt-0.5">
                   Continuous tracking of trade licenses, active insurance policies, and statutory mandates.
                 </p>
               </div>
@@ -126,8 +126,8 @@ export function AuthSplitLayout({
                 <Layers className="w-3.5 h-3.5" />
               </span>
               <div>
-                <h4 className="text-xs font-light text-white">Verified Contractor Passport</h4>
-                <p className="text-[11px] font-extralight text-slate-300/70 leading-relaxed">
+                <h4 className="text-xs sm:text-sm font-light text-white">Verified Contractor Passport</h4>
+                <p className="text-xs font-extralight text-slate-300/75 leading-relaxed mt-0.5">
                   Present your verified digital credential profile that commercial clients and general contractors trust.
                 </p>
               </div>
@@ -138,8 +138,8 @@ export function AuthSplitLayout({
                 <FileCheck className="w-3.5 h-3.5" />
               </span>
               <div>
-                <h4 className="text-xs font-light text-white">OSHA-compliant Document Engine</h4>
-                <p className="text-[11px] font-extralight text-slate-300/70 leading-relaxed">
+                <h4 className="text-xs sm:text-sm font-light text-white">OSHA-compliant Document Engine</h4>
+                <p className="text-xs font-extralight text-slate-300/75 leading-relaxed mt-0.5">
                   Generate professional Job Hazard Analyses, safety programs, and subcontracts in minutes.
                 </p>
               </div>
