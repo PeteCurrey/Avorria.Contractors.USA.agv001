@@ -24,6 +24,12 @@ export default function PublicLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
+  const isAuthRoute = pathname === '/sign-in' || pathname === '/sign-up';
+
+  if (isAuthRoute) {
+    return <>{children}</>;
+  }
+
   const hasFullscreenHero = FULLSCREEN_HERO_ROUTES.has(pathname);
 
   return (
