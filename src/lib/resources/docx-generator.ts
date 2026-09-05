@@ -21,7 +21,7 @@ export interface ResourceDocxPayload {
 export async function renderResourceToDocxBuffer(payload: ResourceDocxPayload): Promise<Buffer> {
   const { resource, formData, organization, checklists, tableRows, referenceNumber } = payload;
 
-  const orgName = organization?.name || formData.companyName || 'Vance Commercial Electric LLC';
+  const orgName = organization?.name || formData.companyName || formData.contractorName || formData.primeContractor || 'Your Company Name';
   const orgTrade = organization?.primaryTrade || formData.primaryTrade || 'Commercial Specialty Contractor';
   const refId = referenceNumber || `${resource.code}-${Date.now().toString().slice(-6)}`;
   const dateStr = formData.reportDate || formData.bidDate || formData.auditDate || new Date().toLocaleDateString('en-US', {

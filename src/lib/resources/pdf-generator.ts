@@ -76,9 +76,9 @@ export async function renderResourceToPdfBuffer(payload: ResourcePdfPayload): Pr
   const accentBlue = rgb(0.01, 0.52, 0.78);
   const lightGrey = rgb(0.96, 0.97, 0.98);
 
-  const orgName = organization?.name || formData.companyName || 'Vance Commercial Electric LLC';
+  const orgName = organization?.name || formData.companyName || formData.contractorName || formData.primeContractor || 'Your Company Name';
   const orgTrade = organization?.primaryTrade || formData.primaryTrade || 'Commercial Specialty Contractor';
-  const orgStates = organization?.statesLicensed?.join(', ') || formData.statesLicensed || 'TX, OK, AR, LA';
+  const orgStates = organization?.statesLicensed?.join(', ') || formData.statesLicensed || 'Licensed Operating Territory';
   const refId = referenceNumber || `${resource.code}-${Date.now().toString().slice(-6)}`;
   const dateStr = formData.reportDate || formData.bidDate || formData.auditDate || new Date().toLocaleDateString('en-US', {
     month: 'long',

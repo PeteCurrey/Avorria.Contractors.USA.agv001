@@ -1,6 +1,5 @@
 'use client';
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { ContractorResource, ChecklistItemDef } from '@/lib/resources/catalogue';
 
@@ -10,7 +9,11 @@ interface ResourceWorkspaceClientProps {
 
 export function ResourceWorkspaceClient({ resource }: ResourceWorkspaceClientProps) {
   // Initialize form data from resource defaults
-  const initialFormData: Record<string, any> = {};
+  const initialFormData: Record<string, any> = {
+    companyName: '',
+    primaryTrade: '',
+    statesLicensed: '',
+  };
   for (const sec of resource.sections) {
     for (const f of sec.fields) {
       initialFormData[f.id] = f.defaultValue ?? '';
@@ -23,6 +26,58 @@ export function ResourceWorkspaceClient({ resource }: ResourceWorkspaceClientPro
   const [isExportingPdf, setIsExportingPdf] = useState(false);
   const [isExportingDocx, setIsExportingDocx] = useState(false);
   const [exportError, setExportError] = useState<string | null>(null);
+
+  // Load saved company details from localStorage on mount
+  useEffect(() => {
+    try {
+      const savedCompany = localStorage.getItem('avorria_contractor_company_name');
+      const savedTrade = localStorage.getItem('avorria_contractor_trade');
+      const savedStates = localStorage.getItem('avorria_contractor_states');
+
+      setFormData((prev) => {
+        const next = { ...prev };
+        if (savedCompany && !next.companyName) next.companyName = savedCompany;
+        if (savedTrade && !next.primaryTrade) next.primaryTrade = savedTrade;
+        if (savedStates && !next.statesLicensed) next.statesLicensed = savedStates;
+        return next;
+      });
+    } catch {
+      // Ignored
+    }
+  }, []);
+
+  const handleCompanyNameChange = (value: string) => {
+    setFormData((prev) => {
+      const next: Record<string, any> = { ...prev, companyName: value };
+      if ('primeContractor' in next || resource.slug === 'commercial-subcontract-agreement-standard') {
+        next.primeContractor = value;
+      }
+      return next;
+    });
+    try {
+      localStorage.setItem('avorria_contractor_company_name', value);
+    } catch {
+      // Ignored
+    }
+  };
+
+  const handleTradeChange = (value: string) => {
+    setFormData((prev) => ({ ...prev, primaryTrade: value }));
+    try {
+      localStorage.setItem('avorria_contractor_trade', value);
+    } catch {
+      // Ignored
+    }
+  };
+
+  const handleStatesChange = (value: string) => {
+    setFormData((prev) => ({ ...prev, statesLicensed: value }));
+    try {
+      localStorage.setItem('avorria_contractor_states', value);
+    } catch {
+      // Ignored
+    }
+  };
 
   const handleFieldChange = (fieldId: string, value: any) => {
     setFormData((prev) => ({ ...prev, [fieldId]: value }));
@@ -206,6 +261,65 @@ export function ResourceWorkspaceClient({ resource }: ResourceWorkspaceClientPro
               <span className="text-[11px] text-slate-400">Live Updating Preview</span>
             </div>
 
+            {/* Global Contractor & Company Header Card */}
+            <div className="p-4 bg-sky-50/80 border border-sky-200/90 rounded-xl space-y-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span className="text-base">🏢</span>
+                  <span className="text-xs font-bold text-navy-900 uppercase tracking-wider font-mono">
+                    Contractor &amp; Company Header
+                  </span>
+                </div>
+                <span className="text-[10px] font-mono text-sky-700 bg-sky-100/90 border border-sky-200 px-2 py-0.5 rounded font-medium">
+                  Customizes All Downloads
+                </span>
+              </div>
+              <p className="text-[11px] text-slate-600 leading-relaxed">
+                Enter your company name to personalize this document, the live preview, and all downloaded PDF &amp; Word files.
+              </p>
+              <div className="space-y-3 pt-1">
+                <div className="space-y-1">
+                  <label className="block text-[11px] font-bold text-slate-700 uppercase tracking-wider">
+                    Contractor / Legal Company Name <span className="text-sky-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.companyName || ''}
+                    onChange={(e) => handleCompanyNameChange(e.target.value)}
+                    placeholder="e.g. Apex Electrical Solutions LLC, Summit Mechanical..."
+                    className="w-full bg-white border border-slate-300 focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 px-3 py-2 text-xs text-slate-900 font-semibold placeholder-slate-400 outline-none rounded-[6px] transition-all shadow-2xs"
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div className="space-y-1">
+                    <label className="block text-[10px] font-bold text-slate-600 uppercase tracking-wider">
+                      Primary Trade / Classification
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.primaryTrade || ''}
+                      onChange={(e) => handleTradeChange(e.target.value)}
+                      placeholder="e.g. Commercial &amp; Industrial Electrical"
+                      className="w-full bg-white border border-slate-300 focus:border-sky-500 px-3 py-1.5 text-xs text-slate-900 placeholder-slate-400 outline-none rounded-[6px] transition-colors"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="block text-[10px] font-bold text-slate-600 uppercase tracking-wider">
+                      Operating / Licensed State(s)
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.statesLicensed || ''}
+                      onChange={(e) => handleStatesChange(e.target.value)}
+                      placeholder="e.g. TX, OK, AR"
+                      className="w-full bg-white border border-slate-300 focus:border-sky-500 px-3 py-1.5 text-xs text-slate-900 placeholder-slate-400 outline-none rounded-[6px] transition-colors"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
             {/* Sections */}
             {resource.sections.map((section) => (
               <div key={section.id} className="space-y-4 pt-2">
@@ -217,7 +331,9 @@ export function ResourceWorkspaceClient({ resource }: ResourceWorkspaceClientPro
                 )}
 
                 <div className="space-y-3.5">
-                  {section.fields.map((field) => (
+                  {section.fields
+                    .filter((field) => field.id !== 'companyName')
+                    .map((field) => (
                     <div key={field.id} className="space-y-1">
                       <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider">
                         {field.label} {field.required && <span className="text-sky-500">*</span>}
@@ -320,10 +436,16 @@ export function ResourceWorkspaceClient({ resource }: ResourceWorkspaceClientPro
               <div className="flex items-start justify-between gap-4">
                 <div>
                   <h2 className="text-lg sm:text-xl font-black text-slate-900 uppercase tracking-tight">
-                    {formData.companyName || 'Vance Commercial Electric LLC'}
+                    {formData.companyName ? (
+                      formData.companyName
+                    ) : (
+                      <span className="text-slate-400 font-bold italic normal-case text-base">
+                        [Enter your company name in the form]
+                      </span>
+                    )}
                   </h2>
                   <div className="text-xs text-slate-600 font-medium mt-0.5">
-                    {formData.primaryTrade || 'Commercial Specialty Contractor'} • Licensed in {formData.statesLicensed || 'Texas'}
+                    {formData.primaryTrade || 'Commercial Specialty Contractor'} • Licensed in {formData.statesLicensed || 'Operating Territory'}
                   </div>
                 </div>
                 <div className="text-right shrink-0">

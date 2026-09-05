@@ -132,7 +132,7 @@ export const CONTRACTOR_RESOURCES: ContractorResource[] = [
         title: '01 / Corporate Overview',
         description: 'Company legal identification and business foundation.',
         fields: [
-          { id: 'companyName', label: 'Legal Company Name', type: 'text', defaultValue: 'Vance Commercial Electric LLC', required: true },
+          { id: 'companyName', label: 'Legal Company Name', type: 'text', defaultValue: '', placeholder: 'e.g. Apex Electrical Solutions LLC', required: true },
           { id: 'primaryTrade', label: 'Primary Trade Classification', type: 'text', defaultValue: 'Commercial & Industrial Electrical', required: true },
           { id: 'yearsInBusiness', label: 'Years in Operation', type: 'number', defaultValue: 14, required: true },
           { id: 'headquarters', label: 'Headquarters City & State', type: 'text', defaultValue: 'Dallas, TX', required: true },
@@ -510,7 +510,7 @@ export const CONTRACTOR_RESOURCES: ContractorResource[] = [
           { id: 'currentBilled', label: 'Gross Work Completed This Period ($)', type: 'number', defaultValue: 24000, required: true },
           { id: 'retainageRate', label: 'Retainage Withheld (%)', type: 'number', defaultValue: 5 },
           { id: 'netAmountDue', label: 'Net Amount Due This Invoice ($)', type: 'number', defaultValue: 22800, required: true },
-          { id: 'remitAddress', label: 'Remittance Instructions / Wire Details', type: 'text', defaultValue: 'Remit to: Vance Commercial Electric LLC, Dept 841, PO Box 9910, Dallas, TX 75201' },
+          { id: 'remitAddress', label: 'Remittance Instructions / Wire Details', type: 'text', defaultValue: 'Remit to contractor depository account / wire details upon request' },
         ],
       },
     ],
@@ -783,7 +783,7 @@ export const CONTRACTOR_RESOURCES: ContractorResource[] = [
         title: '01 / Subcontract Identification',
         fields: [
           { id: 'subcontractorName', label: 'Subcontractor Name', type: 'text', defaultValue: 'Precision Trenching & Utilities Inc.', required: true },
-          { id: 'primeContractor', label: 'Prime Contractor', type: 'text', defaultValue: 'Vance Commercial Electric LLC' },
+          { id: 'primeContractor', label: 'Prime Contractor', type: 'text', defaultValue: '', placeholder: 'e.g. Apex General Contractors LLC' },
           { id: 'contractValue', label: 'Agreed Subcontract Sum ($)', type: 'number', defaultValue: 28500, required: true },
         ],
       },
