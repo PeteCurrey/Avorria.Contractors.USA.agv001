@@ -42,13 +42,14 @@ export async function renderDocumentToPdfBuffer(
   const margin = 40;
   let cursorY = height - margin;
 
-  // Colors
-  const black = rgb(0.05, 0.07, 0.1);
+  // Colors (SBB Light Editorial Operator UI palette)
+  const black = rgb(0.067, 0.094, 0.153); // #111827
   const darkSlate = rgb(0.15, 0.2, 0.25);
-  const midSlate = rgb(0.4, 0.45, 0.5);
-  const lightGrey = rgb(0.92, 0.94, 0.96);
-  const borderGrey = rgb(0.75, 0.8, 0.85);
-  const primaryNavy = rgb(0.03, 0.12, 0.25);
+  const midSlate = rgb(0.392, 0.455, 0.545); // #64748B
+  const lightGrey = rgb(0.96, 0.965, 0.97); // #ECEEEF base light
+  const borderGrey = rgb(0.886, 0.894, 0.910); // #E2E4E8 hairline
+  const primaryNavy = rgb(0.067, 0.094, 0.153); // #111827 header background
+  const accentOrange = rgb(0.976, 0.451, 0.086); // #F97316 SBB orange accent
 
   // ── 1. HEADER (BRANDING & METADATA) ──
   page.drawRectangle({
@@ -57,6 +58,15 @@ export async function renderDocumentToPdfBuffer(
     width: width - margin * 2,
     height: 50,
     color: primaryNavy,
+  });
+
+  // 2px SBB orange accent stripe under the header block
+  page.drawRectangle({
+    x: margin,
+    y: cursorY - 52,
+    width: width - margin * 2,
+    height: 2,
+    color: accentOrange,
   });
 
   page.drawText(org.name.toUpperCase(), {
@@ -80,7 +90,7 @@ export async function renderDocumentToPdfBuffer(
     y: cursorY - 22,
     size: 10,
     font: courierBold,
-    color: rgb(0.4, 0.85, 1),
+    color: accentOrange,
   });
 
   page.drawText(doc.type.replace('_', ' ').toUpperCase(), {
@@ -91,7 +101,7 @@ export async function renderDocumentToPdfBuffer(
     color: rgb(0.8, 0.8, 0.8),
   });
 
-  cursorY -= 65;
+  cursorY -= 67;
 
   // ── 2. DOCUMENT TITLE & SUBHEADER ──
   page.drawText(doc.title, {

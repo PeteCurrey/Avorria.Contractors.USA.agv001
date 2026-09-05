@@ -49,9 +49,29 @@ const config: Config = {
           400: '#64748b',
           300: '#94a3b8',
         },
+        operator: {
+          base: '#ECEEEF',         // SBB rail-logistics warm light neutral grey
+          panel: '#FFFFFF',        // Layered panel surface
+          subtle: '#F8F9FA',       // Subdued nested container
+          hairline: '#E2E4E8',     // Thin 1px hairline border
+          accent: '#F97316',       // Deliberate SBB orange accent
+          accentHover: '#EA580C',
+          accentLight: '#FFF7ED',  // Subdued orange tint for badges
+          text: '#111827',         // Near-black primary text
+          muted: '#64748B',        // Mid-grey secondary/meta text
+        },
       },
       fontFamily: {
+        display: [
+          'Lufga',
+          'Plus Jakarta Sans',
+          'Inter',
+          '-apple-system',
+          'BlinkMacSystemFont',
+          'sans-serif',
+        ],
         sans: [
+          'Inter',
           'var(--font-work-sans)',
           'Work Sans',
           '-apple-system',
@@ -72,7 +92,10 @@ const config: Config = {
         'DEFAULT': '6px',
         'md': '8px',
         'lg': '12px',
-        'xl': '16px',
+        'xl': '14px',
+        '2xl': '16px',
+        '3xl': '20px',
+        'panel': '20px',
       },
       transitionTimingFunction: {
         brand: 'cubic-bezier(0.22, 0.61, 0.36, 1)',

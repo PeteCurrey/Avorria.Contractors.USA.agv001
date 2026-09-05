@@ -139,7 +139,7 @@ export function CreateWizardClient({ docType, organization, user }: CreateWizard
     const x = 'touches' in e ? e.touches[0].clientX - rect.left : e.clientX - rect.left;
     const y = 'touches' in e ? e.touches[0].clientY - rect.top : e.clientY - rect.top;
     ctx.lineTo(x, y);
-    ctx.strokeStyle = '#0ea5e9';
+    ctx.strokeStyle = '#0f172a';
     ctx.lineWidth = 2.5;
     ctx.lineCap = 'round';
     ctx.stroke();
@@ -294,40 +294,43 @@ export function CreateWizardClient({ docType, organization, user }: CreateWizard
   return (
     <div className="max-w-5xl mx-auto space-y-6">
       {/* Wizard Header & Step Indicator */}
-      <div className="bg-[#090d16] border border-slate-800 p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="bg-white border border-[#E2E4E8] rounded-[20px] p-6 shadow-[0_1px_3px_rgba(0,0,0,0.02)] flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <Link href="/workspace/create" className="text-xs font-mono text-slate-500 hover:text-sky-400 transition-colors uppercase">
+            <Link href="/workspace/create" className="text-xs font-mono text-neutral-500 hover:text-[#F97316] transition-colors uppercase">
               ← Create Studio
             </Link>
-            <span className="text-slate-700">/</span>
-            <span className="font-mono text-xs font-bold text-sky-400 uppercase">
+            <span className="text-neutral-300">/</span>
+            <span className="font-mono text-xs font-bold text-[#F97316] uppercase">
               {docTitleMap[docType]}
             </span>
           </div>
-          <h1 className="text-xl font-bold text-white tracking-tight">
+          <h1 className="font-display text-xl font-bold text-neutral-900 tracking-tight">
             {step === 1 ? `Configure ${docTitleMap[docType]}` : step === 2 ? 'Review & Execute Document' : 'Document Executed & Stored'}
           </h1>
         </div>
 
         {/* Step Numbers */}
         <div className="flex items-center gap-2 font-mono text-xs">
-          <div className={`px-3 py-1.5 border font-bold ${step === 1 ? 'bg-sky-950 border-sky-500 text-sky-400' : 'bg-slate-900 border-slate-800 text-slate-400'}`}>
-            1. SPECIFY
+          <div className={`px-3 py-1.5 rounded-xl border flex items-center gap-1.5 ${step === 1 ? 'bg-neutral-900 border-neutral-900 text-white font-bold' : 'bg-neutral-50 border-[#E2E4E8] text-neutral-500'}`}>
+            {step === 1 && <span className="w-1.5 h-1.5 rounded-full bg-[#F97316]" />}
+            <span>1. SPECIFY</span>
           </div>
-          <div className="text-slate-700">→</div>
-          <div className={`px-3 py-1.5 border font-bold ${step === 2 ? 'bg-sky-950 border-sky-500 text-sky-400' : 'bg-slate-900 border-slate-800 text-slate-400'}`}>
-            2. REVIEW
+          <div className="text-neutral-300">→</div>
+          <div className={`px-3 py-1.5 rounded-xl border flex items-center gap-1.5 ${step === 2 ? 'bg-neutral-900 border-neutral-900 text-white font-bold' : 'bg-neutral-50 border-[#E2E4E8] text-neutral-500'}`}>
+            {step === 2 && <span className="w-1.5 h-1.5 rounded-full bg-[#F97316]" />}
+            <span>2. REVIEW</span>
           </div>
-          <div className="text-slate-700">→</div>
-          <div className={`px-3 py-1.5 border font-bold ${step === 3 ? 'bg-emerald-950 border-emerald-600 text-emerald-400' : 'bg-slate-900 border-slate-800 text-slate-500'}`}>
-            3. SIGN & EXPORT
+          <div className="text-neutral-300">→</div>
+          <div className={`px-3 py-1.5 rounded-xl border flex items-center gap-1.5 ${step === 3 ? 'bg-emerald-50 border-emerald-300 text-emerald-800 font-bold' : 'bg-neutral-50 border-[#E2E4E8] text-neutral-500'}`}>
+            {step === 3 && <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />}
+            <span>3. SIGN &amp; EXPORT</span>
           </div>
         </div>
       </div>
 
       {generationError && (
-        <div className="bg-red-950/60 border border-red-800 p-4 font-mono text-xs text-red-300">
+        <div className="bg-rose-50 border border-rose-200 rounded-[20px] p-4 font-mono text-xs text-rose-800">
           <span className="font-bold">GENERATION FAILURE:</span> {generationError}
         </div>
       )}
@@ -336,90 +339,97 @@ export function CreateWizardClient({ docType, organization, user }: CreateWizard
       {step === 1 && (
         <div className="space-y-6">
           {/* General Project Metadata Box */}
-          <div className="bg-[#090d16] border border-slate-800 p-6 space-y-4">
-            <h2 className="font-mono text-xs font-bold text-slate-400 uppercase tracking-wider border-b border-slate-800 pb-2">
-              1. PROJECT & SITE IDENTIFIERS
-            </h2>
+          <div className="bg-white border border-[#E2E4E8] rounded-[20px] p-6 shadow-[0_1px_3px_rgba(0,0,0,0.02)] space-y-4">
+            <div>
+              <span className="micro-label">PROJECT SPECIFICATION</span>
+              <h2 className="font-display text-sm font-bold text-neutral-900 tracking-tight mt-0.5">
+                1. Project &amp; Site Identifiers
+              </h2>
+            </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs font-mono">
               <div>
-                <label className="block text-slate-400 mb-1">PROJECT NAME</label>
+                <label className="block text-neutral-600 font-medium mb-1">PROJECT NAME</label>
                 <input
                   type="text"
                   value={projectName}
                   onChange={(e) => setProjectName(e.target.value)}
                   placeholder="e.g. Westside Medical Center Overhaul"
-                  className="w-full bg-[#030712] border border-slate-800 px-3 py-2 text-slate-200 focus:border-sky-500 focus:outline-none"
+                  className="w-full bg-neutral-50 border border-[#E2E4E8] rounded-xl px-3 py-2 text-neutral-900 focus:bg-white focus:border-[#F97316] focus:outline-none transition-colors"
                 />
               </div>
 
               <div>
-                <label className="block text-slate-400 mb-1">SITE ADDRESS</label>
+                <label className="block text-neutral-600 font-medium mb-1">SITE ADDRESS</label>
                 <input
                   type="text"
                   value={siteAddress}
                   onChange={(e) => setSiteAddress(e.target.value)}
                   placeholder="e.g. 742 Healthcare Blvd, Suite 200"
-                  className="w-full bg-[#030712] border border-slate-800 px-3 py-2 text-slate-200 focus:border-sky-500 focus:outline-none"
+                  className="w-full bg-neutral-50 border border-[#E2E4E8] rounded-xl px-3 py-2 text-neutral-900 focus:bg-white focus:border-[#F97316] focus:outline-none transition-colors"
                 />
               </div>
 
               <div>
-                <label className="block text-slate-400 mb-1">TRADE / DISCIPLINE</label>
+                <label className="block text-neutral-600 font-medium mb-1">TRADE / DISCIPLINE</label>
                 <input
                   type="text"
                   value={trade}
                   onChange={(e) => setTrade(e.target.value)}
-                  className="w-full bg-[#030712] border border-slate-800 px-3 py-2 text-slate-200 focus:border-sky-500 focus:outline-none"
+                  className="w-full bg-neutral-50 border border-[#E2E4E8] rounded-xl px-3 py-2 text-neutral-900 focus:bg-white focus:border-[#F97316] focus:outline-none transition-colors"
                 />
               </div>
 
               <div>
-                <label className="block text-slate-400 mb-1">EFFECTIVE DATE</label>
+                <label className="block text-neutral-600 font-medium mb-1">EFFECTIVE DATE</label>
                 <input
                   type="date"
                   value={date}
                   onChange={(e) => setDate(e.target.value)}
-                  className="w-full bg-[#030712] border border-slate-800 px-3 py-2 text-slate-200 focus:border-sky-500 focus:outline-none"
+                  className="w-full bg-neutral-50 border border-[#E2E4E8] rounded-xl px-3 py-2 text-neutral-900 focus:bg-white focus:border-[#F97316] focus:outline-none transition-colors"
                 />
               </div>
             </div>
           </div>
 
           {/* DOCUMENT-SPECIFIC STRUCTURED SECTIONS */}
+          {/* A. JHA */}
           {docType === 'jha' && (
-            <div className="bg-[#090d16] border border-slate-800 p-6 space-y-4">
-              <div className="flex items-center justify-between border-b border-slate-800 pb-2">
-                <h2 className="font-mono text-xs font-bold text-slate-400 uppercase tracking-wider">
-                  2. TASK BREAKDOWN & HAZARDS (OSHA HIERARCHY OF CONTROLS)
-                </h2>
+            <div className="bg-white border border-[#E2E4E8] rounded-[20px] p-6 shadow-[0_1px_3px_rgba(0,0,0,0.02)] space-y-4">
+              <div className="flex items-center justify-between border-b border-[#E2E4E8] pb-3">
+                <div>
+                  <span className="micro-label">HAZARD ANALYSIS</span>
+                  <h2 className="font-display text-sm font-bold text-neutral-900 tracking-tight mt-0.5">
+                    2. Task Breakdown &amp; Controls (OSHA Hierarchy)
+                  </h2>
+                </div>
                 <button
                   type="button"
-                  onClick={() => setJhaTasks([...jhaTasks, { task_description: '', equipment_materials: '', hazard_type: 'Struck-by' }])}
-                  className="px-2.5 py-1 bg-slate-900 hover:bg-slate-800 border border-slate-700 text-sky-400 text-[11px] font-mono uppercase"
+                  onClick={() => setJhaTasks([...jhaTasks, { task_description: '', equipment_materials: '', hazard_type: 'Struck-by / Falling Equipment' }])}
+                  className="px-3 py-1.5 bg-neutral-50 hover:bg-white border border-[#E2E4E8] text-neutral-800 text-xs font-mono font-medium rounded-xl transition-colors"
                 >
                   + Add Task Step
                 </button>
               </div>
 
-              <div className="space-y-4">
+              <div className="space-y-3">
                 {jhaTasks.map((t, idx) => (
-                  <div key={idx} className="bg-[#030712] border border-slate-800 p-4 space-y-3">
-                    <div className="flex items-center justify-between font-mono text-xs text-sky-400">
-                      <span>STEP {idx + 1}</span>
+                  <div key={idx} className="bg-neutral-50/80 border border-[#E2E4E8] rounded-2xl p-4 space-y-3">
+                    <div className="flex items-center justify-between font-mono text-xs">
+                      <span className="font-bold text-neutral-900">TASK STEP {idx + 1}</span>
                       {jhaTasks.length > 1 && (
                         <button
                           type="button"
                           onClick={() => setJhaTasks(jhaTasks.filter((_, i) => i !== idx))}
-                          className="text-red-400 hover:text-red-300 text-[10px] uppercase"
+                          className="text-rose-600 hover:text-rose-700 text-[11px] font-mono"
                         >
-                          Remove
+                          Remove Step
                         </button>
                       )}
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs font-mono">
                       <div className="md:col-span-2">
-                        <label className="block text-slate-500 mb-1">TASK DESCRIPTION</label>
+                        <label className="block text-neutral-500 mb-1">TASK DESCRIPTION</label>
                         <input
                           type="text"
                           value={t.task_description}
@@ -429,11 +439,11 @@ export function CreateWizardClient({ docType, organization, user }: CreateWizard
                             setJhaTasks(updated);
                           }}
                           placeholder="e.g. Core drilling 4-inch penetrations in concrete slab"
-                          className="w-full bg-slate-950 border border-slate-800 px-3 py-2 text-slate-200 focus:outline-none"
+                          className="w-full bg-white border border-[#E2E4E8] rounded-xl px-3 py-2 text-neutral-900 focus:border-[#F97316] focus:outline-none transition-colors"
                         />
                       </div>
                       <div>
-                        <label className="block text-slate-500 mb-1">PRIMARY HAZARD</label>
+                        <label className="block text-neutral-500 mb-1">PRIMARY HAZARD</label>
                         <select
                           value={t.hazard_type}
                           onChange={(e) => {
@@ -441,7 +451,7 @@ export function CreateWizardClient({ docType, organization, user }: CreateWizard
                             updated[idx].hazard_type = e.target.value;
                             setJhaTasks(updated);
                           }}
-                          className="w-full bg-slate-950 border border-slate-800 px-3 py-2 text-slate-200 focus:outline-none"
+                          className="w-full bg-white border border-[#E2E4E8] rounded-xl px-3 py-2 text-neutral-900 focus:border-[#F97316] focus:outline-none transition-colors"
                         >
                           <option value="Electrical Arc Flash / Shock">Electrical Arc Flash / Shock</option>
                           <option value="Fall from Height / Leading Edge">Fall from Height / Leading Edge</option>
@@ -458,208 +468,371 @@ export function CreateWizardClient({ docType, organization, user }: CreateWizard
             </div>
           )}
 
-          {docType === 'quote' && (
-            <div className="bg-[#090d16] border border-slate-800 p-6 space-y-4">
-              <h2 className="font-mono text-xs font-bold text-slate-400 uppercase tracking-wider border-b border-slate-800 pb-2">
-                2. ESTIMATING INPUTS (DETERMINISTIC FINANCIAL ENGINE)
-              </h2>
-
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-mono text-slate-400">LINE ITEMS & DIRECT MATERIALS</span>
-                  <button
-                    type="button"
-                    onClick={() => setQuoteLineItems([...quoteLineItems, { description: 'New Material Item', quantity: 1, unit_cost: 100 }])}
-                    className="px-2 py-1 bg-slate-900 border border-slate-700 text-sky-400 text-[10px] font-mono uppercase"
-                  >
-                    + Add Item
-                  </button>
+          {/* B. JSA */}
+          {docType === 'jsa' && (
+            <div className="bg-white border border-[#E2E4E8] rounded-[20px] p-6 shadow-[0_1px_3px_rgba(0,0,0,0.02)] space-y-4">
+              <div className="flex items-center justify-between border-b border-[#E2E4E8] pb-3">
+                <div>
+                  <span className="micro-label">JOB SAFETY ANALYSIS</span>
+                  <h2 className="font-display text-sm font-bold text-neutral-900 tracking-tight mt-0.5">
+                    2. Specific Work Activity &amp; Crew Sequence
+                  </h2>
                 </div>
+                <button
+                  type="button"
+                  onClick={() => setJsaSteps([...jsaSteps, { step_description: '' }])}
+                  className="px-3 py-1.5 bg-neutral-50 hover:bg-white border border-[#E2E4E8] text-neutral-800 text-xs font-mono font-medium rounded-xl transition-colors"
+                >
+                  + Add Sequence Step
+                </button>
+              </div>
 
-                {quoteLineItems.map((item, idx) => (
-                  <div key={idx} className="grid grid-cols-12 gap-2 text-xs font-mono bg-[#030712] p-2 border border-slate-800">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs font-mono">
+                <div>
+                  <label className="block text-neutral-600 font-medium mb-1">TASK NAME</label>
+                  <input
+                    type="text"
+                    value={jsaTaskName}
+                    onChange={(e) => setJsaTaskName(e.target.value)}
+                    className="w-full bg-neutral-50 border border-[#E2E4E8] rounded-xl px-3 py-2 text-neutral-900 focus:bg-white focus:border-[#F97316] focus:outline-none transition-colors"
+                  />
+                </div>
+                <div>
+                  <label className="block text-neutral-600 font-medium mb-1">CREW / SQUAD</label>
+                  <input
+                    type="text"
+                    value={jsaCrew}
+                    onChange={(e) => setJsaCrew(e.target.value)}
+                    className="w-full bg-neutral-50 border border-[#E2E4E8] rounded-xl px-3 py-2 text-neutral-900 focus:bg-white focus:border-[#F97316] focus:outline-none transition-colors"
+                  />
+                </div>
+                <div>
+                  <label className="block text-neutral-600 font-medium mb-1">EXACT LOCATION</label>
+                  <input
+                    type="text"
+                    value={jsaLocation}
+                    onChange={(e) => setJsaLocation(e.target.value)}
+                    className="w-full bg-neutral-50 border border-[#E2E4E8] rounded-xl px-3 py-2 text-neutral-900 focus:bg-white focus:border-[#F97316] focus:outline-none transition-colors"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2 pt-2">
+                <span className="micro-label">STEP-BY-STEP OPERATION SEQUENCE</span>
+                {jsaSteps.map((s, idx) => (
+                  <div key={idx} className="flex items-center gap-2">
+                    <span className="text-xs font-mono text-neutral-400 w-8">#{idx + 1}</span>
                     <input
                       type="text"
-                      value={item.description}
+                      value={s.step_description}
                       onChange={(e) => {
-                        const next = [...quoteLineItems];
-                        next[idx].description = e.target.value;
-                        setQuoteLineItems(next);
+                        const updated = [...jsaSteps];
+                        updated[idx].step_description = e.target.value;
+                        setJsaSteps(updated);
                       }}
-                      className="col-span-7 bg-transparent border-0 text-slate-200 px-2 focus:outline-none"
+                      placeholder="e.g. Inspect rigging slings, secure load, clear landing perimeter"
+                      className="flex-1 bg-neutral-50 border border-[#E2E4E8] rounded-xl px-3 py-2 text-xs font-mono text-neutral-900 focus:bg-white focus:border-[#F97316] focus:outline-none transition-colors"
                     />
-                    <input
-                      type="number"
-                      value={item.quantity}
-                      onChange={(e) => {
-                        const next = [...quoteLineItems];
-                        next[idx].quantity = Number(e.target.value);
-                        setQuoteLineItems(next);
-                      }}
-                      className="col-span-2 bg-slate-950 border border-slate-800 text-center px-1"
-                    />
-                    <input
-                      type="number"
-                      value={item.unit_cost}
-                      onChange={(e) => {
-                        const next = [...quoteLineItems];
-                        next[idx].unit_cost = Number(e.target.value);
-                        setQuoteLineItems(next);
-                      }}
-                      className="col-span-2 bg-slate-950 border border-slate-800 text-right px-2"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setQuoteLineItems(quoteLineItems.filter((_, i) => i !== idx))}
-                      className="col-span-1 text-red-400 text-center"
-                    >
-                      ×
-                    </button>
+                    {jsaSteps.length > 1 && (
+                      <button
+                        type="button"
+                        onClick={() => setJsaSteps(jsaSteps.filter((_, i) => i !== idx))}
+                        className="text-rose-600 hover:text-rose-700 text-xs px-2"
+                      >
+                        ×
+                      </button>
+                    )}
                   </div>
                 ))}
+              </div>
+            </div>
+          )}
+
+          {/* C. SAFETY PLAN (HASP) */}
+          {docType === 'safety_plan' && (
+            <div className="bg-white border border-[#E2E4E8] rounded-[20px] p-6 shadow-[0_1px_3px_rgba(0,0,0,0.02)] space-y-4">
+              <div className="border-b border-[#E2E4E8] pb-3">
+                <span className="micro-label">HEALTH &amp; SAFETY PROGRAM</span>
+                <h2 className="font-display text-sm font-bold text-neutral-900 tracking-tight mt-0.5">
+                  2. Site Safety Plan (HASP) Parameters
+                </h2>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs font-mono">
+                <div className="md:col-span-2">
+                  <label className="block text-neutral-600 font-medium mb-1">PROJECT SCOPE DESCRIPTION</label>
+                  <textarea
+                    rows={2}
+                    value={projectScope}
+                    onChange={(e) => setProjectScope(e.target.value)}
+                    className="w-full bg-neutral-50 border border-[#E2E4E8] rounded-xl px-3 py-2 text-neutral-900 focus:bg-white focus:border-[#F97316] focus:outline-none transition-colors"
+                  />
+                </div>
+                <div>
+                  <label className="block text-neutral-600 font-medium mb-1">DESIGNATED SAFETY OFFICER</label>
+                  <input
+                    type="text"
+                    value={safetyOfficer}
+                    onChange={(e) => setSafetyOfficer(e.target.value)}
+                    className="w-full bg-neutral-50 border border-[#E2E4E8] rounded-xl px-3 py-2 text-neutral-900 focus:bg-white focus:border-[#F97316] focus:outline-none transition-colors"
+                  />
+                </div>
+                <div>
+                  <label className="block text-neutral-600 font-medium mb-1">PROJECT DURATION (WEEKS)</label>
+                  <input
+                    type="number"
+                    value={durationWeeks}
+                    onChange={(e) => setDurationWeeks(Number(e.target.value))}
+                    className="w-full bg-neutral-50 border border-[#E2E4E8] rounded-xl px-3 py-2 text-neutral-900 focus:bg-white focus:border-[#F97316] focus:outline-none transition-colors"
+                  />
+                </div>
+              </div>
+
+              <div className="pt-2">
+                <label className="block text-neutral-600 font-medium text-xs mb-2">APPLICABLE SITE HAZARD PROTOCOLS</label>
+                <div className="flex flex-wrap gap-2">
+                  {['Fall Protection', 'Electrical Safety', 'Excavation & Trenching', 'PPE Standards', 'Scaffolding Safety', 'Hazard Communication', 'Hot Work Permit'].map((hz) => {
+                    const active = selectedHazards.includes(hz);
+                    return (
+                      <button
+                        key={hz}
+                        type="button"
+                        onClick={() => {
+                          if (active) setSelectedHazards(selectedHazards.filter((h) => h !== hz));
+                          else setSelectedHazards([...selectedHazards, hz]);
+                        }}
+                        className={`px-3 py-1.5 rounded-xl border text-xs font-mono transition-colors ${
+                          active
+                            ? 'bg-orange-50 border-orange-200 text-[#F97316] font-semibold'
+                            : 'bg-neutral-50 border-[#E2E4E8] text-neutral-600 hover:bg-neutral-100'
+                        }`}
+                      >
+                        {active ? '✓ ' : '+ '} {hz}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* D. QUOTE */}
+          {docType === 'quote' && (
+            <div className="bg-white border border-[#E2E4E8] rounded-[20px] p-6 shadow-[0_1px_3px_rgba(0,0,0,0.02)] space-y-4">
+              <div className="flex items-center justify-between border-b border-[#E2E4E8] pb-3">
+                <div>
+                  <span className="micro-label">FINANCIAL ENGINE</span>
+                  <h2 className="font-display text-sm font-bold text-neutral-900 tracking-tight mt-0.5">
+                    2. Estimating Inputs (Deterministic Math Engine)
+                  </h2>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setQuoteLineItems([...quoteLineItems, { description: 'New Material Item', quantity: 1, unit_cost: 100 }])}
+                  className="px-3 py-1.5 bg-neutral-50 hover:bg-white border border-[#E2E4E8] text-neutral-800 text-xs font-mono font-medium rounded-xl transition-colors"
+                >
+                  + Add Item
+                </button>
+              </div>
+
+              <div className="space-y-3">
+                <div className="space-y-2">
+                  {quoteLineItems.map((item, idx) => (
+                    <div key={idx} className="grid grid-cols-12 gap-2 text-xs font-mono bg-neutral-50 p-2.5 rounded-xl border border-[#E2E4E8]">
+                      <input
+                        type="text"
+                        value={item.description}
+                        onChange={(e) => {
+                          const next = [...quoteLineItems];
+                          next[idx].description = e.target.value;
+                          setQuoteLineItems(next);
+                        }}
+                        placeholder="Material or Equipment Description"
+                        className="col-span-7 bg-white border border-[#E2E4E8] rounded-lg px-2.5 py-1.5 text-neutral-900 focus:outline-none"
+                      />
+                      <input
+                        type="number"
+                        value={item.quantity}
+                        onChange={(e) => {
+                          const next = [...quoteLineItems];
+                          next[idx].quantity = Number(e.target.value);
+                          setQuoteLineItems(next);
+                        }}
+                        placeholder="Qty"
+                        className="col-span-2 bg-white border border-[#E2E4E8] rounded-lg text-center px-1 py-1.5 text-neutral-900 focus:outline-none"
+                      />
+                      <input
+                        type="number"
+                        value={item.unit_cost}
+                        onChange={(e) => {
+                          const next = [...quoteLineItems];
+                          next[idx].unit_cost = Number(e.target.value);
+                          setQuoteLineItems(next);
+                        }}
+                        placeholder="Unit ($)"
+                        className="col-span-2 bg-white border border-[#E2E4E8] rounded-lg text-right px-2 py-1.5 text-neutral-900 focus:outline-none"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setQuoteLineItems(quoteLineItems.filter((_, i) => i !== idx))}
+                        className="col-span-1 text-rose-600 hover:text-rose-700 font-bold text-center self-center"
+                      >
+                        ×
+                      </button>
+                    </div>
+                  ))}
+                </div>
 
                 {/* Labor & Margin Controls */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-2 text-xs font-mono">
                   <div>
-                    <label className="block text-slate-500 mb-1">LABOR HOURS</label>
+                    <label className="block text-neutral-600 font-medium mb-1">LABOR HOURS</label>
                     <input
                       type="number"
                       value={laborHours}
                       onChange={(e) => setLaborHours(Number(e.target.value))}
-                      className="w-full bg-[#030712] border border-slate-800 px-3 py-2 text-slate-200"
+                      className="w-full bg-neutral-50 border border-[#E2E4E8] rounded-xl px-3 py-2 text-neutral-900 focus:bg-white focus:border-[#F97316] focus:outline-none transition-colors"
                     />
                   </div>
                   <div>
-                    <label className="block text-slate-500 mb-1">BURDEN RATE ($/HR)</label>
+                    <label className="block text-neutral-600 font-medium mb-1">BURDEN RATE ($/HR)</label>
                     <input
                       type="number"
                       value={laborRate}
                       onChange={(e) => setLaborRate(Number(e.target.value))}
-                      className="w-full bg-[#030712] border border-slate-800 px-3 py-2 text-slate-200"
+                      className="w-full bg-neutral-50 border border-[#E2E4E8] rounded-xl px-3 py-2 text-neutral-900 focus:bg-white focus:border-[#F97316] focus:outline-none transition-colors"
                     />
                   </div>
                   <div>
-                    <label className="block text-slate-500 mb-1">OVERHEAD (%)</label>
+                    <label className="block text-neutral-600 font-medium mb-1">OVERHEAD (%)</label>
                     <input
                       type="number"
                       value={overheadPct}
                       onChange={(e) => setOverheadPct(Number(e.target.value))}
-                      className="w-full bg-[#030712] border border-slate-800 px-3 py-2 text-slate-200"
+                      className="w-full bg-neutral-50 border border-[#E2E4E8] rounded-xl px-3 py-2 text-neutral-900 focus:bg-white focus:border-[#F97316] focus:outline-none transition-colors"
                     />
                   </div>
                   <div>
-                    <label className="block text-slate-500 mb-1">TARGET MARGIN (%)</label>
+                    <label className="block text-neutral-600 font-medium mb-1">TARGET MARGIN (%)</label>
                     <input
                       type="number"
                       value={targetMarginPct}
                       onChange={(e) => setTargetMarginPct(Number(e.target.value))}
-                      className="w-full bg-[#030712] border border-slate-800 px-3 py-2 text-slate-200"
+                      className="w-full bg-neutral-50 border border-[#E2E4E8] rounded-xl px-3 py-2 text-neutral-900 focus:bg-white focus:border-[#F97316] focus:outline-none transition-colors"
                     />
                   </div>
                 </div>
 
                 {/* Real-Time Live Math Preview */}
-                <div className="bg-[#030712] border border-sky-900/60 p-4 grid grid-cols-2 md:grid-cols-4 gap-4 font-mono">
+                <div className="bg-neutral-50 border border-[#E2E4E8] rounded-2xl p-4 grid grid-cols-2 md:grid-cols-4 gap-4 font-mono">
                   <div>
-                    <div className="text-[10px] text-slate-500 uppercase">DIRECT MATERIALS</div>
-                    <div className="text-sm font-bold text-slate-200">${quoteMath.subtotal_materials.toLocaleString()}</div>
+                    <div className="text-[10px] text-neutral-500 uppercase">DIRECT MATERIALS</div>
+                    <div className="text-sm font-bold text-neutral-900">${quoteMath.subtotal_materials.toLocaleString()}</div>
                   </div>
                   <div>
-                    <div className="text-[10px] text-slate-500 uppercase">DIRECT LABOR</div>
-                    <div className="text-sm font-bold text-slate-200">${quoteMath.subtotal_labor.toLocaleString()}</div>
+                    <div className="text-[10px] text-neutral-500 uppercase">DIRECT LABOR</div>
+                    <div className="text-sm font-bold text-neutral-900">${quoteMath.subtotal_labor.toLocaleString()}</div>
                   </div>
                   <div>
-                    <div className="text-[10px] text-slate-500 uppercase">TOTAL DIRECT COST</div>
-                    <div className="text-sm font-bold text-slate-200">${quoteMath.direct_cost.toLocaleString()}</div>
+                    <div className="text-[10px] text-neutral-500 uppercase">TOTAL DIRECT COST</div>
+                    <div className="text-sm font-bold text-neutral-900">${quoteMath.direct_cost.toLocaleString()}</div>
                   </div>
                   <div>
-                    <div className="text-[10px] text-sky-400 font-bold uppercase">PROPOSAL CONTRACT PRICE</div>
-                    <div className="text-lg font-black text-sky-400">${quoteMath.contract_price.toLocaleString()}</div>
+                    <div className="text-[10px] text-[#F97316] font-bold uppercase">PROPOSAL CONTRACT PRICE</div>
+                    <div className="text-lg font-black text-[#F97316]">${quoteMath.contract_price.toLocaleString()}</div>
                   </div>
                 </div>
               </div>
             </div>
           )}
 
+          {/* E. CHANGE ORDER */}
           {docType === 'change_order' && (
-            <div className="bg-[#090d16] border border-slate-800 p-6 space-y-4">
-              <h2 className="font-mono text-xs font-bold text-slate-400 uppercase tracking-wider border-b border-slate-800 pb-2">
-                2. CHANGE ORDER CONTRACT ACCOUNTING
-              </h2>
+            <div className="bg-white border border-[#E2E4E8] rounded-[20px] p-6 shadow-[0_1px_3px_rgba(0,0,0,0.02)] space-y-4">
+              <div className="border-b border-[#E2E4E8] pb-3">
+                <span className="micro-label">CONTRACT ACCOUNTING</span>
+                <h2 className="font-display text-sm font-bold text-neutral-900 tracking-tight mt-0.5">
+                  2. Change Order Parameters &amp; Schedule Delta
+                </h2>
+              </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs font-mono">
                 <div>
-                  <label className="block text-slate-500 mb-1">CHANGE ORDER #</label>
+                  <label className="block text-neutral-600 font-medium mb-1">CHANGE ORDER #</label>
                   <input
                     type="text"
                     value={coNumber}
                     onChange={(e) => setCoNumber(e.target.value)}
-                    className="w-full bg-[#030712] border border-slate-800 px-3 py-2 text-slate-200"
+                    className="w-full bg-neutral-50 border border-[#E2E4E8] rounded-xl px-3 py-2 text-neutral-900 focus:bg-white focus:border-[#F97316] focus:outline-none transition-colors"
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-500 mb-1">ORIGINAL CONTRACT SUM ($)</label>
+                  <label className="block text-neutral-600 font-medium mb-1">ORIGINAL CONTRACT SUM ($)</label>
                   <input
                     type="number"
                     value={origContractSum}
                     onChange={(e) => setOrigContractSum(Number(e.target.value))}
-                    className="w-full bg-[#030712] border border-slate-800 px-3 py-2 text-slate-200"
+                    className="w-full bg-neutral-50 border border-[#E2E4E8] rounded-xl px-3 py-2 text-neutral-900 focus:bg-white focus:border-[#F97316] focus:outline-none transition-colors"
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-500 mb-1">PRIOR APPROVED COs ($)</label>
+                  <label className="block text-neutral-600 font-medium mb-1">PRIOR APPROVED COs ($)</label>
                   <input
                     type="number"
                     value={priorCoSum}
                     onChange={(e) => setPriorCoSum(Number(e.target.value))}
-                    className="w-full bg-[#030712] border border-slate-800 px-3 py-2 text-slate-200"
+                    className="w-full bg-neutral-50 border border-[#E2E4E8] rounded-xl px-3 py-2 text-neutral-900 focus:bg-white focus:border-[#F97316] focus:outline-none transition-colors"
                   />
                 </div>
               </div>
 
               {/* Real-Time Live Change Order Delta Preview */}
-              <div className="bg-[#030712] border border-emerald-900/60 p-4 grid grid-cols-2 md:grid-cols-4 gap-4 font-mono">
+              <div className="bg-neutral-50 border border-[#E2E4E8] rounded-2xl p-4 grid grid-cols-2 md:grid-cols-4 gap-4 font-mono">
                 <div>
-                  <div className="text-[10px] text-slate-500 uppercase">PRIOR CONTRACT SUM</div>
-                  <div className="text-sm font-bold text-slate-200">${coMath.revised_contract_sum_before.toLocaleString()}</div>
+                  <div className="text-[10px] text-neutral-500 uppercase">PRIOR CONTRACT SUM</div>
+                  <div className="text-sm font-bold text-neutral-900">${coMath.revised_contract_sum_before.toLocaleString()}</div>
                 </div>
                 <div>
-                  <div className="text-[10px] text-emerald-400 uppercase">NET CO DELTA</div>
-                  <div className="text-sm font-bold text-emerald-400">+${coMath.net_change_amount.toLocaleString()}</div>
+                  <div className="text-[10px] text-emerald-600 font-bold uppercase">NET CO DELTA</div>
+                  <div className="text-sm font-bold text-emerald-600">+${coMath.net_change_amount.toLocaleString()}</div>
                 </div>
                 <div>
-                  <div className="text-[10px] text-slate-500 uppercase">SCHEDULE EXTENSION</div>
-                  <div className="text-sm font-bold text-slate-200">+{coMath.time_extension_calendar_days} Calendar Days</div>
+                  <div className="text-[10px] text-neutral-500 uppercase">SCHEDULE EXTENSION</div>
+                  <div className="text-sm font-bold text-neutral-900">+{coMath.time_extension_calendar_days} Days</div>
                 </div>
                 <div>
-                  <div className="text-[10px] text-sky-400 font-bold uppercase">REVISED CONTRACT TOTAL</div>
-                  <div className="text-lg font-black text-sky-400">${coMath.new_contract_sum.toLocaleString()}</div>
+                  <div className="text-[10px] text-[#F97316] font-bold uppercase">REVISED CONTRACT TOTAL</div>
+                  <div className="text-lg font-black text-[#F97316]">${coMath.new_contract_sum.toLocaleString()}</div>
                 </div>
               </div>
             </div>
           )}
 
+          {/* F. TOOLBOX TALK */}
           {docType === 'toolbox_talk' && (
-            <div className="bg-[#090d16] border border-slate-800 p-6 space-y-4">
-              <h2 className="font-mono text-xs font-bold text-slate-400 uppercase tracking-wider border-b border-slate-800 pb-2">
-                2. SAFETY TOPIC & FIELD PARAMETERS
-              </h2>
+            <div className="bg-white border border-[#E2E4E8] rounded-[20px] p-6 shadow-[0_1px_3px_rgba(0,0,0,0.02)] space-y-4">
+              <div className="border-b border-[#E2E4E8] pb-3">
+                <span className="micro-label">FIELD BRIEFING</span>
+                <h2 className="font-display text-sm font-bold text-neutral-900 tracking-tight mt-0.5">
+                  2. Safety Topic &amp; Field Parameters
+                </h2>
+              </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs font-mono">
                 <div>
-                  <label className="block text-slate-400 mb-1">SAFETY TOPIC</label>
+                  <label className="block text-neutral-600 font-medium mb-1">SAFETY TOPIC</label>
                   <input
                     type="text"
                     value={toolboxTopic}
                     onChange={(e) => setToolboxTopic(e.target.value)}
-                    className="w-full bg-[#030712] border border-slate-800 px-3 py-2 text-slate-200"
+                    className="w-full bg-neutral-50 border border-[#E2E4E8] rounded-xl px-3 py-2 text-neutral-900 focus:bg-white focus:border-[#F97316] focus:outline-none transition-colors"
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-400 mb-1">DURATION (MINUTES)</label>
+                  <label className="block text-neutral-600 font-medium mb-1">DURATION (MINUTES)</label>
                   <select
                     value={durationMinutes}
                     onChange={(e) => setDurationMinutes(Number(e.target.value))}
-                    className="w-full bg-[#030712] border border-slate-800 px-3 py-2 text-slate-200"
+                    className="w-full bg-neutral-50 border border-[#E2E4E8] rounded-xl px-3 py-2 text-neutral-900 focus:bg-white focus:border-[#F97316] focus:outline-none transition-colors"
                   >
                     <option value={5}>5 Minutes (Quick Tailgate)</option>
                     <option value={10}>10 Minutes (Standard Weekly Briefing)</option>
@@ -671,10 +844,10 @@ export function CreateWizardClient({ docType, organization, user }: CreateWizard
           )}
 
           {/* Action Trigger */}
-          <div className="flex items-center justify-end gap-3 pt-4">
+          <div className="flex items-center justify-end gap-3 pt-2">
             <Link
               href="/workspace/create"
-              className="px-4 py-2.5 bg-slate-900 border border-slate-700 text-xs font-mono text-slate-400 hover:text-white uppercase"
+              className="px-4 py-2.5 bg-white hover:bg-neutral-50 border border-[#E2E4E8] text-xs font-medium text-neutral-700 rounded-xl transition-colors"
             >
               Cancel
             </Link>
@@ -682,7 +855,7 @@ export function CreateWizardClient({ docType, organization, user }: CreateWizard
               type="button"
               disabled={isGenerating}
               onClick={handleGenerate}
-              className="px-6 py-2.5 bg-sky-500 hover:bg-sky-400 disabled:opacity-50 text-slate-950 text-xs font-mono font-bold tracking-wider uppercase transition-colors flex items-center gap-2"
+              className="px-6 py-2.5 bg-[#F97316] hover:bg-[#EA580C] disabled:opacity-50 text-white text-xs font-semibold rounded-xl shadow-xs transition-colors flex items-center gap-2"
             >
               {isGenerating ? (
                 <>
@@ -703,16 +876,16 @@ export function CreateWizardClient({ docType, organization, user }: CreateWizard
       {/* STEP 2: REVIEW GENERATED DOCUMENT & SIGN */}
       {step === 2 && generatedDoc && (
         <div className="space-y-6">
-          <div className="bg-[#090d16] border border-slate-800 p-6 space-y-4">
-            <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+          <div className="bg-white border border-[#E2E4E8] rounded-[20px] p-6 shadow-[0_1px_3px_rgba(0,0,0,0.02)] space-y-4">
+            <div className="flex items-center justify-between border-b border-[#E2E4E8] pb-3">
               <div>
-                <span className="text-[10px] font-mono px-2 py-0.5 bg-emerald-950 border border-emerald-800 text-emerald-300 font-bold uppercase">
+                <span className="text-[10px] font-mono px-2 py-0.5 bg-emerald-50 border border-emerald-200 text-emerald-800 font-bold rounded-md uppercase">
                   GENERATION SUCCESSFUL • SCHEMA VALIDATED
                 </span>
-                <h2 className="text-lg font-bold text-white mt-1">
+                <h2 className="font-display text-lg font-bold text-neutral-900 mt-1">
                   {generatedDoc.title}
                 </h2>
-                <div className="text-xs font-mono text-slate-400">
+                <div className="text-xs font-mono text-neutral-500">
                   Version: v{generatedDoc.version} | Generated By: {generatedDoc.generated_by.toUpperCase()}
                 </div>
               </div>
@@ -721,17 +894,17 @@ export function CreateWizardClient({ docType, organization, user }: CreateWizard
                 href={`/api/documents/${generatedDoc.id}/pdf`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="px-4 py-2 bg-sky-950 hover:bg-sky-900 border border-sky-800 text-sky-300 text-xs font-mono font-bold uppercase tracking-wider flex items-center gap-2"
+                className="px-4 py-2 bg-neutral-900 hover:bg-neutral-800 text-white text-xs font-medium rounded-xl flex items-center gap-2 transition-colors shadow-xs"
               >
                 <span>Download PDF</span>
                 <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="square" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                 </svg>
               </a>
             </div>
 
             {/* Document Content Preview Box */}
-            <div className="bg-[#030712] border border-slate-800 p-4 font-mono text-xs text-slate-300 max-h-96 overflow-y-auto space-y-3">
+            <div className="bg-neutral-50 border border-[#E2E4E8] rounded-2xl p-4 font-mono text-xs text-neutral-800 max-h-96 overflow-y-auto space-y-3">
               <pre className="whitespace-pre-wrap font-sans text-xs leading-relaxed">
                 {JSON.stringify(generatedDoc.content, null, 2)}
               </pre>
@@ -739,21 +912,21 @@ export function CreateWizardClient({ docType, organization, user }: CreateWizard
           </div>
 
           {/* Digital Signature Execution Section */}
-          <div className="bg-[#090d16] border border-slate-800 p-6 space-y-4">
-            <h3 className="font-mono text-xs font-bold text-slate-400 uppercase tracking-wider border-b border-slate-800 pb-2">
-              DIGITAL SIGNATURE EXECUTION (LOCKS DOCUMENT AS READ-ONLY)
-            </h3>
+          <div className="bg-white border border-[#E2E4E8] rounded-[20px] p-6 shadow-[0_1px_3px_rgba(0,0,0,0.02)] space-y-4">
+            <div className="border-b border-[#E2E4E8] pb-3">
+              <span className="micro-label">DIGITAL EXECUTION</span>
+              <h3 className="font-display text-sm font-bold text-neutral-900 tracking-tight mt-0.5">
+                Execute &amp; Cryptographically Lock Document
+              </h3>
+            </div>
 
             {signatureError && (
-              <div className="flex items-start gap-3 p-3.5 rounded-lg bg-red-950/40 border border-red-800/60 text-xs font-mono text-red-300">
-                <svg className="w-4 h-4 shrink-0 text-red-400 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="square" strokeWidth="2" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
-                </svg>
+              <div className="flex items-start gap-3 p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-xs font-mono text-rose-800">
                 <span className="flex-1">{signatureError}</span>
                 <button
                   type="button"
                   onClick={() => setSignatureError(null)}
-                  className="text-red-400 hover:text-red-200 uppercase font-bold text-[10px]"
+                  className="text-rose-600 hover:text-rose-800 uppercase font-bold text-[10px]"
                 >
                   Dismiss
                 </button>
@@ -762,26 +935,26 @@ export function CreateWizardClient({ docType, organization, user }: CreateWizard
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-3">
-                <label className="block text-xs font-mono text-slate-400">SIGNER LEGAL NAME</label>
+                <label className="block text-xs font-mono text-neutral-600 font-medium">SIGNER LEGAL NAME</label>
                 <input
                   type="text"
                   value={signerName}
                   onChange={(e) => setSignerName(e.target.value)}
                   placeholder="Full Legal Name"
-                  className="w-full bg-[#030712] border border-slate-800 px-3 py-2 text-xs font-mono text-slate-200 focus:outline-none"
+                  className="w-full bg-neutral-50 border border-[#E2E4E8] rounded-xl px-3 py-2 text-xs font-mono text-neutral-900 focus:bg-white focus:border-[#F97316] focus:outline-none transition-colors"
                 />
-                <p className="text-[11px] text-slate-500 font-mono leading-relaxed">
+                <p className="text-[11px] text-neutral-500 font-mono leading-relaxed">
                   By executing this document digitally, you confirm that safety controls and scope descriptions have been reviewed and approved. A cryptographically hashed audit entry (SHA-256) will be recorded.
                 </p>
               </div>
 
               <div className="space-y-2">
-                <div className="flex items-center justify-between text-[11px] font-mono text-slate-400">
+                <div className="flex items-center justify-between text-[11px] font-mono text-neutral-500">
                   <span>DRAW SIGNATURE BELOW:</span>
                   <button
                     type="button"
                     onClick={clearCanvas}
-                    className="text-slate-500 hover:text-slate-300 uppercase"
+                    className="text-neutral-500 hover:text-neutral-900 font-medium"
                   >
                     Clear Canvas
                   </button>
@@ -797,15 +970,15 @@ export function CreateWizardClient({ docType, organization, user }: CreateWizard
                   onTouchStart={startDrawing}
                   onTouchMove={draw}
                   onTouchEnd={stopDrawing}
-                  className="w-full bg-[#030712] border border-slate-700 cursor-crosshair h-28"
+                  className="w-full bg-neutral-50 border border-[#E2E4E8] rounded-xl cursor-crosshair h-28"
                 />
               </div>
             </div>
 
-            <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-800">
+            <div className="flex items-center justify-end gap-3 pt-3 border-t border-[#E2E4E8]">
               <Link
                 href="/workspace/documents"
-                className="px-4 py-2 bg-slate-900 border border-slate-700 text-xs font-mono text-slate-400 uppercase"
+                className="px-4 py-2 bg-white hover:bg-neutral-50 border border-[#E2E4E8] text-xs font-medium text-neutral-700 rounded-xl transition-colors"
               >
                 Save as Draft (Unsigned)
               </Link>
@@ -813,7 +986,7 @@ export function CreateWizardClient({ docType, organization, user }: CreateWizard
                 type="button"
                 disabled={isSigning || !signerName}
                 onClick={handleSign}
-                className="px-6 py-2 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white text-xs font-mono font-bold tracking-wider uppercase transition-colors"
+                className="px-6 py-2 bg-neutral-900 hover:bg-neutral-800 disabled:opacity-50 text-white text-xs font-semibold rounded-xl transition-colors shadow-xs"
               >
                 {isSigning ? 'Hashing & Locking...' : 'Sign & Lock Document'}
               </button>
@@ -824,15 +997,15 @@ export function CreateWizardClient({ docType, organization, user }: CreateWizard
 
       {/* STEP 3: DOCUMENT EXECUTED & LOCKED */}
       {step === 3 && generatedDoc && (
-        <div className="bg-[#090d16] border border-emerald-900/60 p-8 text-center space-y-4">
-          <div className="w-12 h-12 bg-emerald-950 border border-emerald-700 text-emerald-400 mx-auto flex items-center justify-center font-bold text-lg">
+        <div className="bg-white border border-emerald-200 rounded-[20px] p-8 text-center space-y-4 shadow-[0_1px_3px_rgba(0,0,0,0.02)]">
+          <div className="w-12 h-12 bg-emerald-50 border border-emerald-300 text-emerald-600 rounded-full mx-auto flex items-center justify-center font-bold text-xl">
             ✓
           </div>
           <div>
-            <h2 className="text-xl font-bold text-white">
-              Document Executed & Cryptographically Locked
+            <h2 className="font-display text-xl font-bold text-neutral-900">
+              Document Executed &amp; Cryptographically Locked
             </h2>
-            <p className="text-xs text-slate-400 font-mono mt-1">
+            <p className="text-xs text-neutral-500 font-mono mt-1">
               Signed by {signerName} • SHA-256 IP Hash Recorded • Immutable Ledger Entry
             </p>
           </div>
@@ -842,15 +1015,15 @@ export function CreateWizardClient({ docType, organization, user }: CreateWizard
               href={`/api/documents/${generatedDoc.id}/pdf`}
               target="_blank"
               rel="noopener noreferrer"
-              className="px-5 py-2.5 bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold uppercase tracking-wider"
+              className="px-5 py-2.5 bg-[#F97316] hover:bg-[#EA580C] text-white font-medium rounded-xl shadow-xs transition-colors"
             >
               Download Signed PDF
             </a>
             <Link
               href={`/workspace/documents/${generatedDoc.id}`}
-              className="px-5 py-2.5 bg-slate-900 border border-slate-700 text-slate-200 hover:text-white uppercase font-bold tracking-wider"
+              className="px-5 py-2.5 bg-neutral-900 hover:bg-neutral-800 text-white font-medium rounded-xl transition-colors"
             >
-              View Document Details & History
+              View Document Details &amp; History
             </Link>
           </div>
         </div>

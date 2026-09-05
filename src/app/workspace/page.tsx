@@ -1,19 +1,21 @@
 /**
- * AVORRIA CONTRACTOR WORKSPACE — OPERATIONS CONTROL CENTER
+ * AVORRIA CONTRACTOR WORKSPACE — SBB OPERATOR DASHBOARD
  *
- * Enterprise Operations Platform for US Commercial & Industrial Contractors.
- * Art-directed, high-density, restrained operational UI.
- *
- * Information Hierarchy:
- *   LEVEL 1 — Immediate Attention Queue (Urgent actions, expirations, gaps)
- *   LEVEL 2 — Operational State (Work-Ready Standing, Pipeline & Opportunities)
- *   LEVEL 3 — Compliance Posture & Expiration Watchlist
- *   LEVEL 4 — Operational Ledger (Recent Events) & Verified Identity Snapshot
+ * Light Editorial Operator UI (SBB rail-logistics reference):
+ *   - Light neutral base (#ECEEEF)
+ *   - Lufga display typeface for headings & numbers
+ *   - Small-caps micro-labels with letter-spacing (0.14em)
+ *   - Soft 16-20px rounded cards with 1px hairline borders
+ *   - Single deliberate orange accent (#F97316)
+ *   - Functional status colors: current (emerald), expiring (amber), expired (red)
+ *   - Interactive multi-metric Radar Chart for Readiness Score breakdown
+ *   - Horizontal filmstrip for rapid credential & asset browsing
  */
 
 import React from 'react';
 import Link from 'next/link';
 import { getWorkspaceContext } from '@/lib/workspace/context';
+import { ReadinessScoreBreakdown } from '@/lib/workspace/types';
 import {
   getDashboardData,
   DashboardAttentionItem,
@@ -81,35 +83,35 @@ function formatCurrency(min?: number, max?: number): string {
 }
 
 // ─────────────────────────────────────────────────────────────
-// COMPACT OPERATIONAL COMPONENTS
+// SBB OPERATOR STATUS TAGS (FUNCTIONAL STATUS SYSTEM)
 // ─────────────────────────────────────────────────────────────
 
-function OperationalStatusTag({
+function OperatorStatusTag({
   status,
   variant,
 }: {
   status: string;
-  variant: 'emerald' | 'amber' | 'red' | 'sky' | 'slate';
+  variant: 'emerald' | 'amber' | 'red' | 'neutral' | 'orange';
 }) {
   const variants = {
-    emerald: 'bg-emerald-50 text-emerald-800 border-emerald-200',
-    amber: 'bg-amber-50 text-amber-800 border-amber-200',
-    red: 'bg-red-50 text-red-800 border-red-200',
-    sky: 'bg-sky-50 text-sky-800 border-sky-200',
-    slate: 'bg-slate-100 text-slate-700 border-slate-200',
+    emerald: 'bg-emerald-50 text-emerald-800 border-emerald-200/80',
+    amber: 'bg-amber-50 text-amber-800 border-amber-200/80',
+    red: 'bg-rose-50 text-rose-800 border-rose-200/80',
+    neutral: 'bg-neutral-100 text-neutral-700 border-neutral-200/80',
+    orange: 'bg-orange-50 text-orange-800 border-orange-200/80',
   };
 
   const dots = {
     emerald: 'bg-emerald-500',
     amber: 'bg-amber-500',
-    red: 'bg-red-500',
-    sky: 'bg-sky-500',
-    slate: 'bg-slate-400',
+    red: 'bg-rose-500',
+    neutral: 'bg-neutral-400',
+    orange: 'bg-[#F97316]',
   };
 
   return (
     <span
-      className={`inline-flex items-center gap-1.5 px-2 py-0.5 text-[11px] font-mono font-medium border rounded-[2px] tracking-tight ${variants[variant]}`}
+      className={`inline-flex items-center gap-1.5 px-2 py-0.5 text-[10px] font-mono font-medium border rounded-md tracking-tight ${variants[variant]}`}
     >
       <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${dots[variant]}`} />
       <span>{status}</span>
@@ -118,10 +120,147 @@ function OperationalStatusTag({
 }
 
 // ─────────────────────────────────────────────────────────────
-// 01. OPERATIONAL HEADER & TICKER
+// SBB RADAR CHART — READINESS MULTI-METRIC BREAKDOWN
+// ─────────────────────────────────────────────────────────────
+// Renders an SVG radar graph for the 4 core dimensions:
+// 1. Insurance Coverage (COIs)
+// 2. State & Trade Licensing
+// 3. OSHA Safety Plans & JHAs
+// 4. Contractor Passport Completeness
+function ReadinessRadarChart({
+  scores,
+}: {
+  scores: {
+    insurance: number;
+    licensing: number;
+    safety: number;
+    passport: number;
+  };
+}) {
+  const cx = 110;
+  const cy = 110;
+  const r = 70;
+
+  // 4 Axes: Top (0°), Right (90°), Bottom (180°), Left (270°)
+  // Angle radians
+  const angles = [-Math.PI / 2, 0, Math.PI / 2, Math.PI];
+
+  // Normalized score points (clamped 15 to 100 for visual appeal)
+  const normScores = [
+    Math.max(15, scores.insurance),
+    Math.max(15, scores.licensing),
+    Math.max(15, scores.safety),
+    Math.max(15, scores.passport),
+  ];
+
+  const points = normScores.map((score, i) => {
+    const angle = angles[i];
+    const dist = (score / 100) * r;
+    return {
+      x: cx + dist * Math.cos(angle),
+      y: cy + dist * Math.sin(angle),
+    };
+  });
+
+  const polygonPath = points.map((p) => `${p.x},${p.y}`).join(' ');
+
+  // Concentric ring levels
+  const rings = [0.25, 0.5, 0.75, 1.0];
+
+  return (
+    <div className="flex flex-col items-center justify-center relative select-none">
+      <svg
+        width="220"
+        height="220"
+        viewBox="0 0 220 220"
+        className="overflow-visible"
+        aria-label="Readiness Breakdown Radar Chart"
+      >
+        {/* Concentric grid rings */}
+        {rings.map((fraction, idx) => (
+          <circle
+            key={idx}
+            cx={cx}
+            cy={cy}
+            r={r * fraction}
+            fill="none"
+            stroke="#E2E4E8"
+            strokeWidth="1"
+            strokeDasharray={idx < 3 ? '2 2' : 'none'}
+          />
+        ))}
+
+        {/* Axis Crosshairs */}
+        <line x1={cx - r} y1={cy} x2={cx + r} y2={cy} stroke="#E2E4E8" strokeWidth="1" />
+        <line x1={cx} y1={cy - r} x2={cx} y2={cy + r} stroke="#E2E4E8" strokeWidth="1" />
+
+        {/* Radar Filled Shape (Subtle Orange Accent Layer) */}
+        <polygon
+          points={polygonPath}
+          fill="rgba(249, 115, 22, 0.12)"
+          stroke="#F97316"
+          strokeWidth="2"
+          className="transition-all duration-700 ease-out"
+        />
+
+        {/* Vertex Data Marker Dots */}
+        {points.map((p, idx) => (
+          <g key={idx}>
+            <circle
+              cx={p.x}
+              cy={p.y}
+              r="3.5"
+              fill="#F97316"
+              stroke="#FFFFFF"
+              strokeWidth="1.5"
+              className="transition-all duration-700 ease-out"
+            />
+          </g>
+        ))}
+
+        {/* Axis Micro-Labels in Small Caps */}
+        <text
+          x={cx}
+          y={cy - r - 8}
+          textAnchor="middle"
+          className="font-mono text-[9px] font-bold fill-neutral-500 tracking-[0.14em]"
+        >
+          INSURANCE ({scores.insurance}%)
+        </text>
+        <text
+          x={cx + r + 8}
+          y={cy + 3}
+          textAnchor="start"
+          className="font-mono text-[9px] font-bold fill-neutral-500 tracking-[0.14em]"
+        >
+          LICENSING ({scores.licensing}%)
+        </text>
+        <text
+          x={cx}
+          y={cy + r + 14}
+          textAnchor="middle"
+          className="font-mono text-[9px] font-bold fill-neutral-500 tracking-[0.14em]"
+        >
+          SAFETY &amp; JHA ({scores.safety}%)
+        </text>
+        <text
+          x={cx - r - 8}
+          y={cy + 3}
+          textAnchor="end"
+          className="font-mono text-[9px] font-bold fill-neutral-500 tracking-[0.14em]"
+        >
+          PASSPORT ({scores.passport}%)
+        </text>
+      </svg>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────
+// 01. OPERATIONAL TELEMETRY BAR & TICKER
 // ─────────────────────────────────────────────────────────────
 
-function OperationalControlHeader({
+function OperatorTelemetryBar({
   organizationName,
   readinessScore,
   attentionCount,
@@ -139,115 +278,118 @@ function OperationalControlHeader({
 
   return (
     <div className="space-y-3">
-      {/* Top action bar */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 pb-3 border-b border-slate-200">
+      {/* Top Title & Primary Actions */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-2 border-b border-[#E2E4E8]">
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="text-base font-semibold text-slate-900 tracking-tight">
-              Operations Control Center
+            <span className="w-2 h-2 rounded-full bg-[#F97316]" />
+            <h1 className="font-display text-xl sm:text-2xl font-bold tracking-tight text-neutral-900">
+              Operations Control Desk
             </h1>
-            <span className="text-slate-300 font-light">|</span>
-            <span className="text-xs font-mono text-slate-500">
+            <span className="text-neutral-300">/</span>
+            <span className="micro-label text-neutral-500">
               {organizationName}
             </span>
           </div>
-          <p className="text-xs text-slate-500 mt-0.5">
-            Real-time compliance posture, verified credentials, and active contract pipeline.
+          <p className="text-xs text-neutral-500 mt-0.5">
+            US Commercial contractor readiness standing, active credential coverage, and owner bid opportunities.
           </p>
         </div>
 
-        <div className="flex items-center gap-2 shrink-0">
+        {/* Primary Action Button (Single Orange Accent Rule) */}
+        <div className="flex items-center gap-2.5 shrink-0">
           <Link
             href="/workspace/create"
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-slate-900 hover:bg-slate-800 text-white rounded-[4px] transition-colors shadow-xs"
+            className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold bg-[#F97316] hover:bg-[#EA580C] text-white rounded-xl transition-colors shadow-xs"
           >
             <span>+ Create Document</span>
           </Link>
           <Link
             href="/workspace/passport"
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 rounded-[4px] transition-colors"
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-medium bg-white hover:bg-neutral-50 text-neutral-800 border border-[#E2E4E8] rounded-xl transition-colors shadow-2xs"
           >
             <span>Contractor Passport ↗</span>
           </Link>
         </div>
       </div>
 
-      {/* Operational Ticker Metrics */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5">
+      {/* Layered SBB Operator Ticker Cards */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         {/* Metric 1: Readiness Standing */}
-        <div className="bg-white border border-slate-200 rounded-[4px] px-3.5 py-2.5 flex items-center justify-between">
-          <div>
-            <div className="text-[10px] font-mono text-slate-400 uppercase tracking-wider">
-              Work-Ready Standing
-            </div>
-            <div className="flex items-baseline gap-1.5 mt-0.5">
-              <span className="text-xl font-bold font-mono text-slate-900">
-                {readinessScore}%
-              </span>
-              <span className={`text-[11px] font-medium ${isWorkReady ? 'text-emerald-700' : 'text-amber-700'}`}>
-                {isWorkReady ? 'Pre-Qualified' : 'Pending Gaps'}
-              </span>
-            </div>
+        <div className="bg-white border border-[#E2E4E8] rounded-[20px] p-4 shadow-[0_1px_3px_rgba(0,0,0,0.02)] flex flex-col justify-between">
+          <div className="flex items-center justify-between">
+            <span className="micro-label">READINESS SCORE</span>
+            <span className={`w-2 h-2 rounded-full ${isWorkReady ? 'bg-emerald-500' : 'bg-[#F97316]'}`} />
           </div>
-          <div className={`w-2 h-2 rounded-full ${isWorkReady ? 'bg-emerald-500' : 'bg-amber-500'}`} />
+          <div className="mt-2 flex items-baseline gap-2">
+            <span className="font-display text-3xl font-bold tracking-tight text-neutral-900">
+              {readinessScore}
+            </span>
+            <span className="font-mono text-xs text-neutral-400">/ 100 PTS</span>
+          </div>
+          <div className="mt-1 flex items-center justify-between text-[11px]">
+            <span className={isWorkReady ? 'text-emerald-700 font-medium' : 'text-amber-700 font-medium'}>
+              {isWorkReady ? 'Pre-Qualified Standard' : 'Credential Gaps Pending'}
+            </span>
+          </div>
         </div>
 
         {/* Metric 2: Attention Items */}
-        <div className={`bg-white border rounded-[4px] px-3.5 py-2.5 flex items-center justify-between ${
-          isActionNeeded ? 'border-amber-300 bg-amber-50/20' : 'border-slate-200'
-        }`}>
-          <div>
-            <div className="text-[10px] font-mono text-slate-400 uppercase tracking-wider">
-              Immediate Attention
-            </div>
-            <div className="flex items-baseline gap-1.5 mt-0.5">
-              <span className={`text-xl font-bold font-mono ${isActionNeeded ? 'text-amber-900' : 'text-slate-900'}`}>
-                {attentionCount}
-              </span>
-              <span className={`text-[11px] font-medium ${isActionNeeded ? 'text-amber-700' : 'text-emerald-700'}`}>
-                {isActionNeeded ? (attentionCount === 1 ? 'Action Required' : 'Actions Required') : 'All Clear'}
-              </span>
-            </div>
+        <div
+          className={`bg-white border rounded-[20px] p-4 shadow-[0_1px_3px_rgba(0,0,0,0.02)] flex flex-col justify-between ${
+            isActionNeeded ? 'border-orange-300 ring-1 ring-orange-200/50' : 'border-[#E2E4E8]'
+          }`}
+        >
+          <div className="flex items-center justify-between">
+            <span className="micro-label">ACTION QUEUE</span>
+            <span className={`w-2 h-2 rounded-full ${isActionNeeded ? 'bg-[#F97316]' : 'bg-emerald-500'}`} />
           </div>
-          <div className={`w-2 h-2 rounded-full ${isActionNeeded ? 'bg-amber-500' : 'bg-emerald-500'}`} />
+          <div className="mt-2 flex items-baseline gap-2">
+            <span className={`font-display text-3xl font-bold tracking-tight ${isActionNeeded ? 'text-neutral-900' : 'text-neutral-900'}`}>
+              {attentionCount}
+            </span>
+            <span className="font-mono text-xs text-neutral-400">ITEMS</span>
+          </div>
+          <div className="mt-1 text-[11px] text-neutral-500">
+            {isActionNeeded ? (attentionCount === 1 ? '1 requirement needs renewal' : `${attentionCount} actions require review`) : 'All requirements satisfied'}
+          </div>
         </div>
 
         {/* Metric 3: Active Records */}
-        <div className="bg-white border border-slate-200 rounded-[4px] px-3.5 py-2.5 flex items-center justify-between">
-          <div>
-            <div className="text-[10px] font-mono text-slate-400 uppercase tracking-wider">
-              Compliance Vault
-            </div>
-            <div className="flex items-baseline gap-1.5 mt-0.5">
-              <span className="text-xl font-bold font-mono text-slate-900">
-                {recordCount}
-              </span>
-              <span className="text-[11px] text-slate-500">
-                Active Records
-              </span>
-            </div>
+        <div className="bg-white border border-[#E2E4E8] rounded-[20px] p-4 shadow-[0_1px_3px_rgba(0,0,0,0.02)] flex flex-col justify-between">
+          <div className="flex items-center justify-between">
+            <span className="micro-label">COMPLIANCE VAULT</span>
+            <span className="w-2 h-2 rounded-full bg-emerald-500" />
           </div>
-          <Link href="/workspace/comply" className="text-[10px] font-mono text-brand-600 hover:underline">
-            View →
-          </Link>
+          <div className="mt-2 flex items-baseline gap-2">
+            <span className="font-display text-3xl font-bold tracking-tight text-neutral-900">
+              {recordCount}
+            </span>
+            <span className="font-mono text-xs text-neutral-400">ACTIVE</span>
+          </div>
+          <div className="mt-1 flex items-center justify-between text-[11px]">
+            <span className="text-neutral-500">COIs, Policies &amp; Licenses</span>
+            <Link href="/workspace/comply" className="text-[#F97316] font-mono hover:underline text-[10px]">
+              Inspect →
+            </Link>
+          </div>
         </div>
 
         {/* Metric 4: Expiring Watchlist */}
-        <div className="bg-white border border-slate-200 rounded-[4px] px-3.5 py-2.5 flex items-center justify-between">
-          <div>
-            <div className="text-[10px] font-mono text-slate-400 uppercase tracking-wider">
-              Expiring (60d)
-            </div>
-            <div className="flex items-baseline gap-1.5 mt-0.5">
-              <span className={`text-xl font-bold font-mono ${expiringCount > 0 ? 'text-amber-700' : 'text-slate-900'}`}>
-                {expiringCount}
-              </span>
-              <span className="text-[11px] text-slate-500">
-                Credentials
-              </span>
-            </div>
+        <div className="bg-white border border-[#E2E4E8] rounded-[20px] p-4 shadow-[0_1px_3px_rgba(0,0,0,0.02)] flex flex-col justify-between">
+          <div className="flex items-center justify-between">
+            <span className="micro-label">EXPIRES SOON (60D)</span>
+            <span className={`w-2 h-2 rounded-full ${expiringCount > 0 ? 'bg-amber-500' : 'bg-neutral-300'}`} />
           </div>
-          <div className={`w-2 h-2 rounded-full ${expiringCount > 0 ? 'bg-amber-400' : 'bg-slate-300'}`} />
+          <div className="mt-2 flex items-baseline gap-2">
+            <span className={`font-display text-3xl font-bold tracking-tight ${expiringCount > 0 ? 'text-amber-800' : 'text-neutral-900'}`}>
+              {expiringCount}
+            </span>
+            <span className="font-mono text-xs text-neutral-400">POLICIES</span>
+          </div>
+          <div className="mt-1 text-[11px] text-neutral-500">
+            {expiringCount > 0 ? 'Renewal notices dispatched' : 'Zero policies expiring soon'}
+          </div>
         </div>
       </div>
     </div>
@@ -255,59 +397,59 @@ function OperationalControlHeader({
 }
 
 // ─────────────────────────────────────────────────────────────
-// 02. LEVEL 1 — ATTENTION DESK (URGENT OPERATIONAL ITEMS)
+// 02. LEVEL 1 — ATTENTION DESK (ACTION REQUIRED QUEUE)
 // ─────────────────────────────────────────────────────────────
 
 function AttentionDesk({ items }: { items: DashboardAttentionItem[] }) {
   if (items.length === 0) {
     return (
-      <div className="bg-white border border-slate-200 rounded-[4px] px-4 py-3 flex items-center justify-between gap-3">
-        <div className="flex items-center gap-2.5">
-          <div className="w-5 h-5 rounded-full bg-emerald-50 border border-emerald-200 flex items-center justify-center shrink-0">
-            <svg className="w-3 h-3 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeWidth="2.5" d="M5 13l4 4L19 7" />
+      <div className="bg-white border border-[#E2E4E8] rounded-[20px] px-5 py-3.5 flex items-center justify-between gap-3 shadow-[0_1px_3px_rgba(0,0,0,0.02)]">
+        <div className="flex items-center gap-3">
+          <div className="w-6 h-6 rounded-full bg-emerald-50 border border-emerald-200 flex items-center justify-center shrink-0">
+            <svg className="w-3.5 h-3.5 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7" />
             </svg>
           </div>
           <div>
-            <span className="text-xs font-semibold text-slate-800">
-              Operational Attention: All Requirements Satisfied
+            <span className="text-xs font-semibold text-neutral-900">
+              Operational Attention Desk: Zero Flagged Gaps
             </span>
-            <span className="text-xs text-slate-500 ml-2 hidden sm:inline">
-              No immediate credential expirations, documentation lapses, or passport gaps found.
+            <span className="text-xs text-neutral-500 ml-2 hidden sm:inline">
+              All general liability, workers comp, state trade credentials, and safety records are in current standing.
             </span>
           </div>
         </div>
         <Link
           href="/workspace/comply"
-          className="text-xs font-mono text-slate-500 hover:text-slate-800 shrink-0"
+          className="text-xs font-mono text-neutral-500 hover:text-neutral-900 shrink-0 font-medium"
         >
-          Audit Ledger →
+          Compliance Ledger →
         </Link>
       </div>
     );
   }
 
   return (
-    <div className="bg-white border border-slate-200 rounded-[4px] overflow-hidden">
-      <div className="px-4 py-2.5 bg-slate-50/80 border-b border-slate-200 flex items-center justify-between">
+    <div className="bg-white border border-[#E2E4E8] rounded-[20px] overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.02)]">
+      <div className="px-5 py-3 bg-neutral-50/80 border-b border-[#E2E4E8] flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-red-500 shrink-0" />
-          <h2 className="text-xs font-semibold text-slate-900 uppercase tracking-wider font-mono">
-            Action Required ({items.length})
+          <span className="w-2 h-2 rounded-full bg-rose-500 shrink-0" />
+          <h2 className="micro-label text-neutral-900 font-bold">
+            ACTION REQUIRED ({items.length} ITEMS)
           </h2>
-          <span className="text-slate-400 text-xs hidden sm:inline">
-            Resolve these items to maintain verified tier and owner RFP eligibility.
+          <span className="text-neutral-400 text-xs hidden sm:inline">
+            Resolve immediately to preserve institutional prequalification status.
           </span>
         </div>
         <Link
           href="/workspace/comply"
-          className="text-[11px] font-mono text-brand-600 hover:text-brand-700 font-medium"
+          className="text-xs font-mono text-[#F97316] hover:underline font-medium"
         >
-          View All Requirements →
+          Open Comply Desk →
         </Link>
       </div>
 
-      <div className="divide-y divide-slate-100">
+      <div className="divide-y divide-[#E2E4E8]">
         {items.map((item) => {
           const isHigh = item.priority === 'HIGH';
           const isExpired = item.state === 'EXPIRED';
@@ -315,13 +457,13 @@ function AttentionDesk({ items }: { items: DashboardAttentionItem[] }) {
           return (
             <div
               key={item.id}
-              className="px-4 py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-slate-50/60 transition-colors"
+              className="px-5 py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-neutral-50/60 transition-colors"
             >
               <div className="flex items-start gap-3 min-w-0">
                 <span
-                  className={`mt-0.5 text-[9px] font-mono font-bold tracking-wider px-1.5 py-0.5 rounded-[2px] shrink-0 uppercase ${
+                  className={`mt-0.5 text-[9px] font-mono font-bold tracking-wider px-2 py-0.5 rounded-md shrink-0 uppercase ${
                     isHigh
-                      ? 'bg-red-50 text-red-700 border border-red-200'
+                      ? 'bg-rose-50 text-rose-800 border border-rose-200'
                       : 'bg-amber-50 text-amber-800 border border-amber-200'
                   }`}
                 >
@@ -330,29 +472,29 @@ function AttentionDesk({ items }: { items: DashboardAttentionItem[] }) {
 
                 <div className="min-w-0">
                   <div className="flex items-center gap-2">
-                    <span className="text-xs font-semibold text-slate-900 truncate">
+                    <span className="text-xs font-semibold text-neutral-900 truncate">
                       {item.title}
                     </span>
-                    <span className="text-[11px] font-mono text-slate-400">
+                    <span className="text-[11px] font-mono text-neutral-400">
                       ({item.state.replace(/_/g, ' ')})
                     </span>
                   </div>
-                  <p className="text-[11px] text-slate-500 mt-0.5">
+                  <p className="text-xs text-neutral-500 mt-0.5">
                     {item.description || item.dueLabel}
                   </p>
                 </div>
               </div>
 
               <div className="flex items-center gap-3 shrink-0 self-end sm:self-center">
-                <span className={`text-[11px] font-mono ${isExpired ? 'text-red-600 font-semibold' : 'text-slate-500'}`}>
+                <span className={`text-xs font-mono ${isExpired ? 'text-rose-600 font-bold' : 'text-neutral-500'}`}>
                   {item.dueLabel}
                 </span>
                 <Link
                   href={item.href}
-                  className={`px-2.5 py-1 text-xs font-medium rounded-[3px] border transition-colors ${
+                  className={`px-3 py-1 text-xs font-semibold rounded-lg border transition-colors ${
                     isHigh
-                      ? 'bg-red-600 hover:bg-red-700 text-white border-transparent'
-                      : 'bg-white hover:bg-slate-50 text-slate-800 border-slate-300'
+                      ? 'bg-rose-600 hover:bg-rose-700 text-white border-transparent'
+                      : 'bg-white hover:bg-neutral-50 text-neutral-800 border-[#E2E4E8]'
                   }`}
                 >
                   {item.action} →
@@ -367,126 +509,81 @@ function AttentionDesk({ items }: { items: DashboardAttentionItem[] }) {
 }
 
 // ─────────────────────────────────────────────────────────────
-// 03. LEVEL 2 — WORK-READY ASSESSMENT PANEL
+// 03. LEVEL 2 — WORK-READY STANDING & RADAR CHART
 // ─────────────────────────────────────────────────────────────
 
-function WorkReadyPanel({
+function WorkReadyRadarPanel({
   score,
   calculatedAt,
+  breakdown,
   areas,
 }: {
   score: number;
   calculatedAt: string;
+  breakdown: ComplianceBreakdown;
   areas: WorkReadyArea[];
 }) {
   const isOptimal = score >= 80;
-  const isModerate = score >= 50 && score < 80;
 
-  const scoreColor = isOptimal
-    ? 'text-emerald-700'
-    : isModerate
-    ? 'text-amber-700'
-    : 'text-red-700';
+  // Radar axis scores: Insurance, Licensing, Safety, Passport (using overall/average or areas)
+  const passportScore = areas.find((a) => a.label.toLowerCase().includes('passport'))?.isGood ? 100 : 70;
 
-  const barColor = isOptimal
-    ? 'bg-emerald-500'
-    : isModerate
-    ? 'bg-amber-500'
-    : 'bg-red-500';
-
-  const statusDescription = isOptimal
-    ? 'Verified Contractor Standard — All core compliance thresholds satisfied for institutional procurement.'
-    : isModerate
-    ? 'In Progress — Essential trade licenses or insurance documents require submission.'
-    : 'Action Required — Critical credentials missing or expired.';
+  const radarScores = {
+    insurance: breakdown.insurance,
+    licensing: breakdown.licenses,
+    safety: breakdown.safety,
+    passport: passportScore,
+  };
 
   return (
-    <div className="bg-white border border-slate-200 rounded-[4px] overflow-hidden flex flex-col h-full">
-      <div className="px-4 py-3 border-b border-slate-200 flex items-center justify-between">
+    <div className="bg-white border border-[#E2E4E8] rounded-[20px] p-5 shadow-[0_1px_3px_rgba(0,0,0,0.02)] flex flex-col justify-between h-full space-y-4">
+      <div className="flex items-center justify-between border-b border-[#E2E4E8] pb-3">
         <div>
-          <h2 className="text-xs font-semibold text-slate-900 uppercase tracking-wider font-mono">
-            Work-Ready Standing & Verification
+          <span className="micro-label">TELEMETRY</span>
+          <h2 className="font-display text-sm font-bold text-neutral-900 tracking-tight mt-0.5">
+            Work-Ready Radar Assessment
           </h2>
-          <p className="text-[11px] text-slate-500 mt-0.5">
-            Algorithmically evaluated against federal, state, and general contractor criteria.
-          </p>
         </div>
-        <span className="text-[10px] font-mono text-slate-400">
-          Audited {formatCheckedAt(calculatedAt)}
+        <span className="text-[10px] font-mono text-neutral-400">
+          {formatCheckedAt(calculatedAt)}
         </span>
       </div>
 
-      <div className="p-4 space-y-4 flex-1 flex flex-col justify-between">
-        {/* Score & Progress Metric */}
-        <div className="space-y-2">
-          <div className="flex items-baseline justify-between">
-            <div className="flex items-baseline gap-2">
-              <span className={`text-3xl font-bold font-mono tracking-tight ${scoreColor}`}>
-                {score}
-              </span>
-              <span className="text-xs font-mono text-slate-400">/ 100 PTS</span>
+      {/* SVG Multi-Metric Radar Chart */}
+      <div className="py-2">
+        <ReadinessRadarChart scores={radarScores} />
+      </div>
+
+      {/* 4 Quadrant Summary Cards */}
+      <div className="grid grid-cols-2 gap-2 pt-2 border-t border-[#E2E4E8]">
+        {areas.map((area) => (
+          <Link
+            key={area.label}
+            href={area.href}
+            className="group p-2.5 rounded-xl bg-neutral-50/70 border border-[#E2E4E8] hover:border-neutral-300 hover:bg-white transition-colors flex items-center justify-between"
+          >
+            <div>
+              <div className="micro-label text-[9px] text-neutral-500">
+                {area.label}
+              </div>
+              <div className="text-xs font-bold text-neutral-900 mt-0.5 group-hover:text-[#F97316] transition-colors">
+                {area.status}
+              </div>
             </div>
             <span
-              className={`text-xs font-mono font-semibold tracking-wide uppercase px-2 py-0.5 rounded-[2px] ${
-                isOptimal
-                  ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
-                  : 'bg-amber-50 text-amber-800 border border-amber-200'
+              className={`w-1.5 h-1.5 rounded-full shrink-0 ${
+                area.isGood ? 'bg-emerald-500' : 'bg-amber-400'
               }`}
-            >
-              {isOptimal ? 'Work-Ready Tier' : 'Provisional Tier'}
-            </span>
-          </div>
-
-          {/* Progress Bar */}
-          <div className="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
-            <div
-              className={`h-full ${barColor} transition-all duration-500 rounded-full`}
-              style={{ width: `${score}%` }}
             />
-          </div>
-
-          <p className="text-xs text-slate-600 leading-relaxed pt-1">
-            {statusDescription}
-          </p>
-        </div>
-
-        {/* Contributing Operational Sub-Areas */}
-        <div className="pt-2 border-t border-slate-100">
-          <div className="text-[10px] font-mono text-slate-400 uppercase tracking-wider mb-2">
-            Prequalification Framework
-          </div>
-
-          <div className="grid grid-cols-2 gap-2">
-            {areas.map((area) => (
-              <Link
-                key={area.label}
-                href={area.href}
-                className="group p-2.5 rounded-[3px] border border-slate-200 hover:border-slate-300 hover:bg-slate-50 transition-colors flex items-center justify-between"
-              >
-                <div>
-                  <div className="text-[10px] font-mono text-slate-500 uppercase tracking-wider">
-                    {area.label}
-                  </div>
-                  <div className="text-xs font-semibold text-slate-900 mt-0.5 group-hover:text-brand-600 transition-colors">
-                    {area.status}
-                  </div>
-                </div>
-                <div
-                  className={`w-1.5 h-1.5 rounded-full shrink-0 ${
-                    area.isGood ? 'bg-emerald-500' : 'bg-amber-400'
-                  }`}
-                />
-              </Link>
-            ))}
-          </div>
-        </div>
+          </Link>
+        ))}
       </div>
     </div>
   );
 }
 
 // ─────────────────────────────────────────────────────────────
-// 04. LEVEL 2 — CONTRACT OPPORTUNITIES & BID PIPELINE
+// 04. LEVEL 2 — CONTRACT OPPORTUNITIES & BID PIPELINE TABLE
 // ─────────────────────────────────────────────────────────────
 
 function OpportunitiesTable({
@@ -495,19 +592,17 @@ function OpportunitiesTable({
   opportunities: DashboardOpportunity[];
 }) {
   return (
-    <div className="bg-white border border-slate-200 rounded-[4px] overflow-hidden flex flex-col h-full">
-      <div className="px-4 py-3 border-b border-slate-200 flex items-center justify-between">
+    <div className="bg-white border border-[#E2E4E8] rounded-[20px] overflow-hidden shadow-[0_1px_3px_rgba(0,0,0,0.02)] flex flex-col h-full">
+      <div className="px-5 py-3.5 border-b border-[#E2E4E8] flex items-center justify-between bg-neutral-50/60">
         <div>
-          <h2 className="text-xs font-semibold text-slate-900 uppercase tracking-wider font-mono">
-            Contract Opportunities & Bid Pipeline
+          <span className="micro-label">PIPELINE MATCHING</span>
+          <h2 className="font-display text-sm font-bold text-neutral-900 tracking-tight mt-0.5">
+            Owner Contract Opportunities &amp; RFPs
           </h2>
-          <p className="text-[11px] text-slate-500 mt-0.5">
-            Projects and RFPs matched against your trade scope, service area, and passport standing.
-          </p>
         </div>
         <Link
           href="/workspace/win-work"
-          className="text-xs font-mono text-brand-600 hover:text-brand-700 font-medium shrink-0"
+          className="text-xs font-mono text-[#F97316] hover:underline font-medium shrink-0"
         >
           View Pipeline ({opportunities.length}) →
         </Link>
@@ -517,48 +612,48 @@ function OpportunitiesTable({
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
             <thead>
-              <tr className="bg-slate-50/70 border-b border-slate-200 text-[10px] font-mono text-slate-500 uppercase tracking-wider">
-                <th className="py-2.5 px-4 font-medium">Project / Opportunity</th>
-                <th className="py-2.5 px-3 font-medium">Location</th>
-                <th className="py-2.5 px-3 font-medium">Trade Scope</th>
-                <th className="py-2.5 px-3 font-medium">Est. Value</th>
-                <th className="py-2.5 px-3 font-medium">Match</th>
-                <th className="py-2.5 px-3 font-medium">Status</th>
-                <th className="py-2.5 px-4 text-right font-medium">Action</th>
+              <tr className="bg-neutral-50/80 border-b border-[#E2E4E8] text-[9px] font-mono text-neutral-500 uppercase tracking-[0.14em]">
+                <th className="py-2.5 px-4 font-semibold">Project Title</th>
+                <th className="py-2.5 px-3 font-semibold">Location</th>
+                <th className="py-2.5 px-3 font-semibold">Trade</th>
+                <th className="py-2.5 px-3 font-semibold">Est. Value</th>
+                <th className="py-2.5 px-3 font-semibold">Match</th>
+                <th className="py-2.5 px-3 font-semibold">Status</th>
+                <th className="py-2.5 px-4 text-right font-semibold">Action</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-[#E2E4E8]">
               {opportunities.map((opp) => (
-                <tr key={opp.id} className="hover:bg-slate-50/60 transition-colors">
-                  <td className="py-2.5 px-4 font-medium text-slate-900">
+                <tr key={opp.id} className="hover:bg-neutral-50/70 transition-colors">
+                  <td className="py-2.5 px-4 font-semibold text-neutral-900">
                     {opp.title}
                   </td>
-                  <td className="py-2.5 px-3 text-slate-600 font-mono text-[11px]">
+                  <td className="py-2.5 px-3 text-neutral-600 font-mono text-[11px]">
                     {opp.location}
                   </td>
-                  <td className="py-2.5 px-3 text-slate-600 font-mono text-[11px]">
+                  <td className="py-2.5 px-3 text-neutral-600 font-mono text-[11px]">
                     {opp.trade}
                   </td>
-                  <td className="py-2.5 px-3 text-slate-900 font-mono font-medium">
+                  <td className="py-2.5 px-3 text-neutral-900 font-mono font-bold">
                     {formatCurrency(opp.estimatedValueMin, opp.estimatedValueMax)}
                   </td>
                   <td className="py-2.5 px-3">
-                    <span className="font-mono text-xs font-bold text-brand-700">
+                    <span className="font-mono text-xs font-bold text-[#F97316]">
                       {opp.matchScore}%
                     </span>
                   </td>
                   <td className="py-2.5 px-3">
-                    <OperationalStatusTag
+                    <OperatorStatusTag
                       status={opp.status}
-                      variant={opp.status === 'MATCHED' ? 'emerald' : 'sky'}
+                      variant={opp.status === 'MATCHED' ? 'emerald' : 'orange'}
                     />
                   </td>
                   <td className="py-2.5 px-4 text-right">
                     <Link
                       href={opp.href}
-                      className="text-xs font-medium text-brand-600 hover:text-brand-800 hover:underline"
+                      className="text-xs font-semibold text-[#F97316] hover:underline"
                     >
-                      Review →
+                      Inspect →
                     </Link>
                   </td>
                 </tr>
@@ -567,30 +662,30 @@ function OpportunitiesTable({
           </table>
         </div>
       ) : (
-        <div className="p-6 text-center space-y-3 my-auto">
-          <div className="w-8 h-8 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center mx-auto text-slate-400">
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeWidth="1.75" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        <div className="p-8 text-center space-y-3 my-auto">
+          <div className="w-10 h-10 rounded-2xl bg-neutral-100 border border-[#E2E4E8] flex items-center justify-center mx-auto text-neutral-400">
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.8" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
           </div>
           <div className="space-y-1 max-w-sm mx-auto">
-            <div className="text-xs font-semibold text-slate-800">
+            <div className="font-display text-sm font-bold text-neutral-900">
               No Active Project Matches
             </div>
-            <p className="text-[11px] text-slate-500 leading-relaxed">
-              Commercial projects and owner requests matching your trade scope will surface here automatically as clients post opportunities.
+            <p className="text-xs text-neutral-500 leading-relaxed">
+              Institutional projects and commercial RFPs matching your trade scope and jurisdiction surface here automatically.
             </p>
           </div>
-          <div className="pt-2 flex items-center justify-center gap-2 text-xs">
+          <div className="pt-2 flex items-center justify-center gap-2.5 text-xs">
             <Link
               href="/workspace/passport"
-              className="px-3 py-1 bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 rounded-[3px] transition-colors"
+              className="px-3.5 py-1.5 bg-white border border-[#E2E4E8] text-neutral-700 hover:bg-neutral-50 rounded-xl transition-colors font-medium shadow-2xs"
             >
-              Verify Passport Criteria
+              Verify Passport Credentials
             </Link>
             <Link
               href="/workspace/win-work"
-              className="px-3 py-1 bg-slate-900 text-white rounded-[3px] hover:bg-slate-800 transition-colors"
+              className="px-3.5 py-1.5 bg-neutral-900 text-white rounded-xl hover:bg-neutral-800 transition-colors font-semibold"
             >
               Open Win Work Desk
             </Link>
@@ -602,10 +697,10 @@ function OpportunitiesTable({
 }
 
 // ─────────────────────────────────────────────────────────────
-// 05. LEVEL 3 — COMPLIANCE POSTURE & EXPIRATION WATCHLIST
+// 05. LEVEL 3 — COMPLIANCE POSTURE & EXPIRATIONS
 // ─────────────────────────────────────────────────────────────
 
-function CompliancePosture({
+function CompliancePosturePanel({
   breakdown,
   timeline,
 }: {
@@ -620,170 +715,187 @@ function CompliancePosture({
   ];
 
   return (
-    <div className="bg-white border border-slate-200 rounded-[4px] overflow-hidden flex flex-col h-full">
-      <div className="px-4 py-3 border-b border-slate-200 flex items-center justify-between">
+    <div className="bg-white border border-[#E2E4E8] rounded-[20px] p-5 shadow-[0_1px_3px_rgba(0,0,0,0.02)] space-y-4 flex flex-col justify-between h-full">
+      <div className="flex items-center justify-between border-b border-[#E2E4E8] pb-3">
         <div>
-          <h2 className="text-xs font-semibold text-slate-900 uppercase tracking-wider font-mono">
-            Compliance Posture
+          <span className="micro-label">AUDIT POSTURE</span>
+          <h2 className="font-display text-sm font-bold text-neutral-900 tracking-tight mt-0.5">
+            Credentials &amp; Expiration Watchlist
           </h2>
-          <p className="text-[11px] text-slate-500 mt-0.5">
-            Audited across {breakdown.recordCount} active credentials & policies.
-          </p>
         </div>
-        <Link
-          href="/workspace/comply"
-          className="text-xs font-mono text-brand-600 hover:text-brand-700 font-medium"
-        >
+        <Link href="/workspace/comply" className="text-xs font-mono text-[#F97316] hover:underline font-medium">
           Manage COIs →
         </Link>
       </div>
 
-      <div className="p-4 space-y-4">
-        {/* Category Breakdown Bars */}
-        <div className="space-y-3">
-          {categories.map((cat) => (
-            <div key={cat.label} className="space-y-1">
-              <div className="flex items-center justify-between text-xs">
-                <span className="text-slate-700 font-medium">{cat.label}</span>
-                <span className="font-mono text-xs font-semibold text-slate-900">
-                  {cat.value}%
-                </span>
-              </div>
-              <div className="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
-                <div
-                  className={`h-full rounded-full transition-all duration-500 ${
-                    cat.value >= 80
-                      ? 'bg-emerald-500'
-                      : cat.value >= 50
-                      ? 'bg-amber-400'
-                      : 'bg-red-400'
-                  }`}
-                  style={{ width: `${cat.value}%` }}
-                />
-              </div>
+      {/* Breakdown progress meters */}
+      <div className="space-y-2.5">
+        {categories.map((cat) => (
+          <div key={cat.label} className="space-y-1">
+            <div className="flex items-center justify-between text-xs">
+              <span className="text-neutral-700 font-medium">{cat.label}</span>
+              <span className="font-mono text-xs font-bold text-neutral-900">
+                {cat.value}%
+              </span>
             </div>
-          ))}
-        </div>
-
-        {/* 90-Day Expiration Timeline */}
-        <div className="pt-3 border-t border-slate-100 space-y-2">
-          <div className="flex items-center justify-between">
-            <span className="text-[10px] font-mono text-slate-400 uppercase tracking-wider">
-              Upcoming Expirations (90d)
-            </span>
-            <span className="text-[10px] font-mono text-slate-400">
-              {timeline.length} Monitored
-            </span>
+            <div className="w-full bg-neutral-100 h-1.5 rounded-full overflow-hidden">
+              <div
+                className={`h-full rounded-full transition-all duration-500 ${
+                  cat.value >= 80
+                    ? 'bg-emerald-500'
+                    : cat.value >= 50
+                    ? 'bg-amber-400'
+                    : 'bg-rose-500'
+                }`}
+                style={{ width: `${cat.value}%` }}
+              />
+            </div>
           </div>
+        ))}
+      </div>
 
-          {timeline.length > 0 ? (
-            <div className="space-y-1.5 max-h-48 overflow-y-auto pr-1">
-              {timeline.slice(0, 5).map((item) => {
-                const isUrgent = item.daysRemaining <= 30;
-                return (
-                  <Link
-                    key={item.credentialId}
-                    href={item.href}
-                    className="flex items-center justify-between p-2 rounded-[3px] border border-slate-100 hover:border-slate-200 hover:bg-slate-50 transition-colors text-xs"
-                  >
-                    <div className="min-w-0 pr-2">
-                      <div className="font-medium text-slate-800 truncate">
-                        {item.credentialTitle}
-                      </div>
-                      <div className="text-[10px] font-mono text-slate-400">
-                        {item.credentialType}
-                      </div>
-                    </div>
-                    <span
-                      className={`text-[11px] font-mono font-semibold shrink-0 ${
-                        item.daysRemaining <= 0
-                          ? 'text-red-600'
-                          : isUrgent
-                          ? 'text-amber-600'
-                          : 'text-slate-600'
-                      }`}
-                    >
-                      {item.daysRemaining <= 0
-                        ? 'EXPIRED'
-                        : `${item.daysRemaining}d`}
-                    </span>
-                  </Link>
-                );
-              })}
-            </div>
-          ) : (
-            <div className="py-3 text-center text-xs text-slate-400 bg-slate-50/50 rounded-[3px] border border-dashed border-slate-200">
-              No credentials expiring within the next 90 days.
-            </div>
-          )}
+      {/* 90-Day Expiration Watchlist */}
+      <div className="pt-3 border-t border-[#E2E4E8] space-y-2">
+        <div className="flex items-center justify-between">
+          <span className="micro-label">EXPIRATION TIMELINE (90D)</span>
+          <span className="text-[10px] font-mono text-neutral-400">
+            {timeline.length} Monitored
+          </span>
         </div>
+
+        {timeline.length > 0 ? (
+          <div className="space-y-1.5 max-h-40 overflow-y-auto pr-1">
+            {timeline.slice(0, 4).map((item) => {
+              const isUrgent = item.daysRemaining <= 30;
+              return (
+                <Link
+                  key={item.credentialId}
+                  href={item.href}
+                  className="flex items-center justify-between p-2 rounded-xl border border-[#E2E4E8] hover:bg-neutral-50 transition-colors text-xs"
+                >
+                  <div className="min-w-0 pr-2">
+                    <div className="font-semibold text-neutral-900 truncate text-[11px]">
+                      {item.credentialTitle}
+                    </div>
+                    <div className="text-[10px] font-mono text-neutral-400">
+                      {item.credentialType}
+                    </div>
+                  </div>
+                  <span
+                    className={`text-[11px] font-mono font-bold shrink-0 ${
+                      item.daysRemaining <= 0
+                        ? 'text-rose-600'
+                        : isUrgent
+                        ? 'text-amber-600'
+                        : 'text-neutral-600'
+                    }`}
+                  >
+                    {item.daysRemaining <= 0
+                      ? 'EXPIRED'
+                      : `${item.daysRemaining}d`}
+                  </span>
+                </Link>
+              );
+            })}
+          </div>
+        ) : (
+          <div className="py-3 text-center text-xs text-neutral-400 bg-neutral-50 rounded-xl border border-dashed border-[#E2E4E8]">
+            Zero policies expiring within 90 days.
+          </div>
+        )}
       </div>
     </div>
   );
 }
 
 // ─────────────────────────────────────────────────────────────
-// 06. LEVEL 4 — OPERATIONAL TIMELINE & RECENT ACTIVITY
+// 06. STEP 6 — SBB FILMSTRIP / CAROUSEL BROWSER PATTERN
 // ─────────────────────────────────────────────────────────────
-
-function ActivityLedger({ activities }: { activities: DashboardActivity[] }) {
+// The reference's bottom filmstrip (browsing between flatcars)
+// maps directly onto browsing credentials, documents, or assets
+function OperatorFilmstrip({
+  credentials,
+}: {
+  credentials: ComplianceTimelineItem[];
+}) {
   return (
-    <div className="bg-white border border-slate-200 rounded-[4px] overflow-hidden flex flex-col h-full">
-      <div className="px-4 py-3 border-b border-slate-200 flex items-center justify-between">
+    <div className="bg-white border border-[#E2E4E8] rounded-[20px] p-5 shadow-[0_1px_3px_rgba(0,0,0,0.02)] space-y-3">
+      <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-xs font-semibold text-slate-900 uppercase tracking-wider font-mono">
-            Operational Activity Ledger
+          <span className="micro-label">FLEET &amp; CREDENTIAL FILMSTRIP</span>
+          <h2 className="font-display text-sm font-bold text-neutral-900 tracking-tight mt-0.5">
+            Browse Active Compliance Records
           </h2>
-          <p className="text-[11px] text-slate-500 mt-0.5">
-            Immutable audit record of documents, credentials, and verification checks.
-          </p>
         </div>
-        <span className="text-xs font-mono text-slate-400">Live</span>
+        <Link href="/workspace/comply" className="text-xs font-mono text-[#F97316] hover:underline font-medium">
+          View All Records →
+        </Link>
       </div>
 
-      {activities.length > 0 ? (
-        <div className="divide-y divide-slate-100 max-h-96 overflow-y-auto">
-          {activities.slice(0, 8).map((event) => {
-            const eventTags: Record<string, string> = {
-              VERIFICATION: 'bg-emerald-50 text-emerald-800 border-emerald-200',
-              DOCUMENT: 'bg-blue-50 text-blue-800 border-blue-200',
-              COMPLIANCE: 'bg-amber-50 text-amber-800 border-amber-200',
-              SUBMISSION: 'bg-slate-100 text-slate-700 border-slate-200',
-              PASSPORT: 'bg-sky-50 text-sky-800 border-sky-200',
-              SYSTEM: 'bg-slate-50 text-slate-600 border-slate-200',
-            };
-
+      {credentials.length > 0 ? (
+        <div className="flex gap-3 overflow-x-auto pb-1 pt-0.5 scrollbar-thin">
+          {credentials.map((item, idx) => {
+            const isUrgent = item.daysRemaining <= 30;
             return (
-              <div key={event.id} className="p-3 text-xs flex items-start gap-2.5 hover:bg-slate-50/60 transition-colors">
-                <span
-                  className={`text-[9px] font-mono font-semibold uppercase px-1.5 py-0.5 rounded-[2px] border shrink-0 mt-0.5 ${
-                    eventTags[event.eventType] || eventTags.SYSTEM
-                  }`}
-                >
-                  {event.eventType}
-                </span>
-
-                <div className="min-w-0 flex-1">
-                  <div className="text-slate-800 font-medium leading-snug">
-                    {event.description}
+              <Link
+                key={item.credentialId || idx}
+                href={item.href}
+                className="shrink-0 w-64 p-3.5 rounded-2xl bg-neutral-50/80 border border-[#E2E4E8] hover:border-neutral-400 hover:bg-white transition-all shadow-2xs group flex flex-col justify-between"
+              >
+                <div>
+                  <div className="flex items-center justify-between">
+                    <span className="micro-label text-[9px]">
+                      ID: {`CRD-${1000 + idx}`}
+                    </span>
+                    <span
+                      className={`w-2 h-2 rounded-full ${
+                        item.daysRemaining <= 0
+                          ? 'bg-rose-500'
+                          : isUrgent
+                          ? 'bg-amber-400'
+                          : 'bg-emerald-500'
+                      }`}
+                    />
                   </div>
-                  {event.reference && (
-                    <div className="text-[10px] font-mono text-slate-400 mt-0.5">
-                      REF: {event.reference}
-                    </div>
-                  )}
+                  <div className="font-semibold text-neutral-900 text-xs mt-1.5 line-clamp-1 group-hover:text-[#F97316] transition-colors">
+                    {item.credentialTitle}
+                  </div>
+                  <div className="text-[11px] font-mono text-neutral-400 mt-0.5">
+                    {item.credentialType}
+                  </div>
                 </div>
 
-                <span className="text-[10px] font-mono text-slate-400 shrink-0 mt-0.5">
-                  {formatTimestamp(event.timestamp)}
-                </span>
-              </div>
+                <div className="mt-3 pt-2 border-t border-[#E2E4E8] flex items-center justify-between text-[11px] font-mono">
+                  <span className="text-neutral-400">Expires:</span>
+                  <span className={`font-bold ${isUrgent ? 'text-amber-600' : 'text-neutral-800'}`}>
+                    {item.daysRemaining <= 0 ? 'Expired' : `${item.daysRemaining} days`}
+                  </span>
+                </div>
+              </Link>
             );
           })}
         </div>
       ) : (
-        <div className="p-6 text-center text-xs text-slate-400 my-auto">
-          No recent workspace activity recorded yet.
+        <div className="p-8 text-center rounded-2xl bg-neutral-50/60 border border-dashed border-[#E2E4E8] space-y-3">
+          <div className="w-9 h-9 mx-auto rounded-full bg-orange-50 border border-orange-200 flex items-center justify-center text-[#F97316]">
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+          </div>
+          <div>
+            <h3 className="text-xs font-semibold text-neutral-900">Zero Compliance Records Active</h3>
+            <p className="text-xs text-neutral-500 max-w-sm mx-auto mt-0.5">
+              Add your general liability insurance, trade licenses, or safety certifications to populate your compliance ledger.
+            </p>
+          </div>
+          <div>
+            <Link
+              href="/workspace/comply"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-white bg-[#F97316] hover:bg-[#EA580C] rounded-xl shadow-xs transition-colors"
+            >
+              <span>+ Add First Credential</span>
+            </Link>
+          </div>
         </div>
       )}
     </div>
@@ -791,100 +903,301 @@ function ActivityLedger({ activities }: { activities: DashboardActivity[] }) {
 }
 
 // ─────────────────────────────────────────────────────────────
-// 07. LEVEL 4 — VERIFIED BUSINESS IDENTITY RECORD
+// 06B. LEVEL 2 — DOCUMENTED READINESS CHECKLIST
+// ─────────────────────────────────────────────────────────────
+function DocumentedReadinessChecklist({
+  breakdown,
+  score,
+}: {
+  breakdown: ReadinessScoreBreakdown;
+  score: number;
+}) {
+  const items = [
+    {
+      id: 'gl_coi',
+      title: 'General Liability Insurance (COI)',
+      weight: '20 PTS',
+      met: breakdown.has_gl_coi,
+      desc: breakdown.has_gl_coi ? 'ACORD 25 verified on record' : 'Mandatory for institutional prequalification',
+      href: '/workspace/comply',
+      cta: '+ Upload COI',
+    },
+    {
+      id: 'workers_comp',
+      title: "Workers' Compensation Policy",
+      weight: '15 PTS',
+      met: breakdown.has_workers_comp,
+      desc: breakdown.has_workers_comp ? 'Statutory coverage verified active' : 'Required for onsite operational readiness',
+      href: '/workspace/comply',
+      cta: '+ Add Policy',
+    },
+    {
+      id: 'trade_license',
+      title: 'State Contractor Trade License',
+      weight: '25 PTS',
+      met: breakdown.has_trade_license,
+      desc: breakdown.has_trade_license ? 'Valid state authority license on record' : 'Primary jurisdictional qualification',
+      href: '/workspace/comply',
+      cta: '+ Add License',
+    },
+    {
+      id: 'safety_plan',
+      title: 'Active JHA / Safety Plan (HASP)',
+      weight: '15 PTS',
+      met: breakdown.has_safety_plan,
+      desc: breakdown.has_safety_plan ? 'Digitally executed safety document on file' : 'Generated via Claude AI Studio',
+      href: '/workspace/create/jha',
+      cta: '+ Generate JHA',
+    },
+    {
+      id: 'toolbox_talk',
+      title: 'Recent Toolbox Talk (Past 30 Days)',
+      weight: '10 PTS',
+      met: breakdown.has_recent_toolbox_talk,
+      desc: breakdown.has_recent_toolbox_talk ? 'Active crew attendance logged within 30 days' : 'Weekly safety briefing log',
+      href: '/workspace/create/toolbox_talk',
+      cta: '+ Log Safety Talk',
+    },
+    {
+      id: 'passport',
+      title: 'Published Contractor Verification Passport',
+      weight: '15 PTS',
+      met: breakdown.has_passport,
+      desc: breakdown.has_passport ? 'Public verification portal live for general contractors' : 'Shareable trust asset for bids',
+      href: '/workspace/passport',
+      cta: 'Publish Passport',
+    },
+  ];
+
+  const metCount = items.filter((i) => i.met).length;
+
+  return (
+    <div className="bg-white border border-[#E2E4E8] rounded-[20px] p-5 shadow-[0_1px_3px_rgba(0,0,0,0.02)] flex flex-col justify-between h-full">
+      <div className="flex items-center justify-between border-b border-[#E2E4E8] pb-3">
+        <div>
+          <span className="micro-label">READINESS SPECIFICATION</span>
+          <h2 className="font-display text-sm font-bold text-neutral-900 tracking-tight mt-0.5">
+            Documented Readiness Checklist
+          </h2>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="text-xs font-mono text-neutral-500">
+            {metCount} / {items.length} Fulfilled
+          </span>
+          <span className="px-2 py-0.5 text-[10px] font-mono font-bold rounded-md bg-neutral-100 text-neutral-800 border border-[#E2E4E8]">
+            {score}/100 PTS
+          </span>
+        </div>
+      </div>
+
+      <div className="divide-y divide-[#E2E4E8] my-2">
+        {items.map((item) => (
+          <div
+            key={item.id}
+            className="py-2.5 flex items-center justify-between gap-3 text-xs"
+          >
+            <div className="flex items-center gap-2.5 min-w-0">
+              <div
+                className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 ${
+                  item.met
+                    ? 'bg-emerald-50 border border-emerald-300 text-emerald-600'
+                    : 'bg-neutral-100 border border-neutral-300 text-neutral-400'
+                }`}
+              >
+                {item.met ? (
+                  <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" />
+                  </svg>
+                ) : (
+                  <span className="w-1.5 h-1.5 rounded-full bg-neutral-400" />
+                )}
+              </div>
+              <div className="min-w-0">
+                <div className="flex items-center gap-2">
+                  <span className={`font-semibold truncate ${item.met ? 'text-neutral-900' : 'text-neutral-700'}`}>
+                    {item.title}
+                  </span>
+                  <span className="text-[10px] font-mono text-neutral-400 shrink-0">
+                    [{item.weight}]
+                  </span>
+                </div>
+                <p className="text-[11px] text-neutral-500 truncate">
+                  {item.desc}
+                </p>
+              </div>
+            </div>
+
+            <div className="shrink-0 flex items-center gap-2">
+              {item.met ? (
+                <span className="px-2 py-0.5 text-[10px] font-mono font-bold rounded-md bg-emerald-50 text-emerald-800 border border-emerald-200">
+                  MET
+                </span>
+              ) : (
+                <Link
+                  href={item.href}
+                  className="px-2.5 py-1 text-[11px] font-medium font-mono text-[#F97316] bg-orange-50/80 hover:bg-orange-100 border border-orange-200 rounded-lg transition-colors whitespace-nowrap"
+                >
+                  {item.cta} →
+                </Link>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="pt-3 border-t border-[#E2E4E8] flex items-center justify-between text-xs text-neutral-500">
+        <span className="text-[11px]">
+          Score criteria automatically calculate against live database records.
+        </span>
+        <Link
+          href="/workspace/comply"
+          className="text-xs font-mono text-[#F97316] hover:underline font-medium shrink-0 ml-2"
+        >
+          Compliance Matrix →
+        </Link>
+      </div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────
+// 07. LEVEL 4 — OPERATIONAL ACTIVITY LEDGER
+// ─────────────────────────────────────────────────────────────
+
+function ActivityLedger({ activities }: { activities: DashboardActivity[] }) {
+  return (
+    <div className="bg-white border border-[#E2E4E8] rounded-[20px] p-5 shadow-[0_1px_3px_rgba(0,0,0,0.02)] space-y-3 flex flex-col justify-between h-full">
+      <div className="flex items-center justify-between border-b border-[#E2E4E8] pb-3">
+        <div>
+          <span className="micro-label">LEDGER</span>
+          <h2 className="font-display text-sm font-bold text-neutral-900 tracking-tight mt-0.5">
+            Operational Activity Stream
+          </h2>
+        </div>
+        <span className="text-xs font-mono text-neutral-400">Live</span>
+      </div>
+
+      {activities.length > 0 ? (
+        <div className="divide-y divide-[#E2E4E8] max-h-56 overflow-y-auto">
+          {activities.slice(0, 6).map((event) => (
+            <div key={event.id} className="py-2.5 text-xs flex items-start gap-2.5">
+              <span className="micro-label text-[8px] px-1.5 py-0.5 rounded bg-neutral-100 border border-neutral-200 shrink-0 mt-0.5">
+                {event.eventType}
+              </span>
+
+              <div className="min-w-0 flex-1">
+                <div className="text-neutral-900 font-medium leading-snug">
+                  {event.description}
+                </div>
+                {event.reference && (
+                  <div className="text-[10px] font-mono text-neutral-400 mt-0.5">
+                    REF: {event.reference}
+                  </div>
+                )}
+              </div>
+
+              <span className="text-[10px] font-mono text-neutral-400 shrink-0 mt-0.5">
+                {formatTimestamp(event.timestamp)}
+              </span>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="p-6 text-center text-xs text-neutral-400 my-auto">
+          Zero recent workspace events recorded.
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────
+// 08. LEVEL 4 — VERIFIED BUSINESS IDENTITY MATRIX
 // ─────────────────────────────────────────────────────────────
 
 function BusinessIdentityMatrix({ snapshot }: { snapshot: BusinessSnapshot }) {
   function getTag(status: string) {
     if (status === 'VERIFIED' || status === 'ACTIVE') {
-      return <OperationalStatusTag status={status} variant="emerald" />;
+      return <OperatorStatusTag status={status} variant="emerald" />;
     }
     if (status === 'EXPIRED') {
-      return <OperationalStatusTag status={status} variant="red" />;
+      return <OperatorStatusTag status={status} variant="red" />;
     }
-    return <OperationalStatusTag status={status} variant="amber" />;
+    return <OperatorStatusTag status={status} variant="amber" />;
   }
 
   return (
-    <div className="bg-white border border-slate-200 rounded-[4px] overflow-hidden">
-      <div className="px-4 py-3 border-b border-slate-200 flex items-center justify-between">
+    <div className="bg-white border border-[#E2E4E8] rounded-[20px] p-5 shadow-[0_1px_3px_rgba(0,0,0,0.02)] space-y-4">
+      <div className="flex items-center justify-between border-b border-[#E2E4E8] pb-3">
         <div>
-          <h2 className="text-xs font-semibold text-slate-900 uppercase tracking-wider font-mono">
-            Verified Contractor Identity Record
+          <span className="micro-label">CONTRACTOR PROFILE</span>
+          <h2 className="font-display text-sm font-bold text-neutral-900 tracking-tight mt-0.5">
+            Verified Contractor Identity Specification
           </h2>
-          <p className="text-[11px] text-slate-500 mt-0.5">
-            US State licensing, commercial insurance standing, and public verification profile.
-          </p>
         </div>
         <Link
           href="/workspace/settings"
-          className="text-xs font-mono text-brand-600 hover:text-brand-700 font-medium"
+          className="text-xs font-mono text-[#F97316] hover:underline font-medium"
         >
           Edit Business Entity →
         </Link>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 divide-y md:divide-y-0 md:divide-x divide-slate-100 text-xs">
-        {/* Cell 1: Entity Name & Legal Structure */}
-        <div className="p-4 space-y-1.5">
-          <div className="text-[10px] font-mono text-slate-400 uppercase tracking-wider">
-            Entity & Structure
-          </div>
-          <div className="font-semibold text-slate-900 text-sm">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
+        {/* Cell 1 */}
+        <div className="p-3.5 rounded-2xl bg-neutral-50/80 border border-[#E2E4E8] space-y-1">
+          <span className="micro-label">ENTITY &amp; STRUCTURE</span>
+          <div className="font-semibold text-neutral-900 text-sm">
             {snapshot.name}
           </div>
-          <div className="text-slate-500 text-[11px]">
-            {snapshot.entityType || 'Commercial Contractor'}
+          <div className="text-neutral-500 text-[11px]">
+            {snapshot.entityType || 'Commercial Trade Contractor'}
           </div>
           {snapshot.legalName && snapshot.legalName !== snapshot.name && (
-            <div className="text-[11px] font-mono text-slate-400">
+            <div className="text-[11px] font-mono text-neutral-400">
               Legal: {snapshot.legalName}
             </div>
           )}
         </div>
 
-        {/* Cell 2: Trade & Geographic Scope */}
-        <div className="p-4 space-y-1.5">
-          <div className="text-[10px] font-mono text-slate-400 uppercase tracking-wider">
-            Trade & Operating Scope
-          </div>
-          <div className="font-medium text-slate-800">
+        {/* Cell 2 */}
+        <div className="p-3.5 rounded-2xl bg-neutral-50/80 border border-[#E2E4E8] space-y-1">
+          <span className="micro-label">TRADE &amp; JURISDICTION</span>
+          <div className="font-semibold text-neutral-900">
             {snapshot.primaryTrade}
           </div>
-          <div className="text-slate-500 text-[11px]">
+          <div className="text-neutral-500 text-[11px]">
             HQ: {[snapshot.city, snapshot.state].filter(Boolean).join(', ') || 'United States'}
           </div>
-          <div className="text-[11px] font-mono text-slate-400">
+          <div className="text-[11px] font-mono text-neutral-400">
             States: {snapshot.statesServed.length > 0 ? snapshot.statesServed.join(', ') : 'Single State'}
           </div>
         </div>
 
-        {/* Cell 3: Verification Standing */}
-        <div className="p-4 space-y-1.5">
-          <div className="text-[10px] font-mono text-slate-400 uppercase tracking-wider">
-            Verification Standing
-          </div>
-          <div className="flex items-center justify-between py-0.5">
-            <span className="text-slate-600">License Verification</span>
+        {/* Cell 3 */}
+        <div className="p-3.5 rounded-2xl bg-neutral-50/80 border border-[#E2E4E8] space-y-2">
+          <span className="micro-label">VERIFICATION STANDING</span>
+          <div className="flex items-center justify-between">
+            <span className="text-neutral-600">License Verification</span>
             {getTag(snapshot.licenseStatus)}
           </div>
-          <div className="flex items-center justify-between py-0.5">
-            <span className="text-slate-600">Insurance (COI)</span>
+          <div className="flex items-center justify-between">
+            <span className="text-neutral-600">Insurance (COI)</span>
             {getTag(snapshot.insuranceStatus)}
           </div>
         </div>
 
-        {/* Cell 4: Passport Link & Sharing */}
-        <div className="p-4 space-y-2 flex flex-col justify-between">
+        {/* Cell 4 */}
+        <div className="p-3.5 rounded-2xl bg-neutral-50/80 border border-[#E2E4E8] space-y-2 flex flex-col justify-between">
           <div>
-            <div className="text-[10px] font-mono text-slate-400 uppercase tracking-wider">
-              Public Contractor Passport
-            </div>
+            <span className="micro-label">PUBLIC CONTRACTOR PASSPORT</span>
             <div className="flex items-center gap-2 mt-1">
-              <span className={`w-2 h-2 rounded-full ${
-                snapshot.passportStatus === 'ACTIVE' ? 'bg-emerald-500' : 'bg-amber-400'
-              }`} />
-              <span className="font-medium text-slate-900">
+              <span
+                className={`w-2 h-2 rounded-full ${
+                  snapshot.passportStatus === 'ACTIVE' ? 'bg-emerald-500' : 'bg-amber-400'
+                }`}
+              />
+              <span className="font-semibold text-neutral-900">
                 {snapshot.passportStatus === 'ACTIVE' ? 'Published' : 'Draft Mode'}
               </span>
             </div>
@@ -895,17 +1208,17 @@ function BusinessIdentityMatrix({ snapshot }: { snapshot: BusinessSnapshot }) {
               href={`/contractors/${snapshot.passportSlug}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 text-xs font-medium text-brand-700 bg-brand-50 hover:bg-brand-100 rounded-[3px] transition-colors"
+              className="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-[#F97316] bg-orange-50 border border-orange-200 hover:bg-orange-100 rounded-xl transition-colors"
             >
               <span>View Public Passport</span>
               <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
               </svg>
             </Link>
           ) : (
             <Link
               href="/workspace/passport"
-              className="inline-flex items-center justify-center px-3 py-1.5 text-xs font-medium text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-[3px] transition-colors"
+              className="inline-flex items-center justify-center px-3 py-1.5 text-xs font-medium text-neutral-700 bg-neutral-200 hover:bg-neutral-300 rounded-xl transition-colors"
             >
               Configure Passport
             </Link>
@@ -929,9 +1242,9 @@ export default async function WorkspaceDashboardPage() {
   ).length;
 
   return (
-    <div className="space-y-4">
-      {/* 01. Operational Header & Metrics Ticker */}
-      <OperationalControlHeader
+    <div className="space-y-6">
+      {/* 01. SBB Operational Header & Telemetry Ticker */}
+      <OperatorTelemetryBar
         organizationName={organization.name}
         readinessScore={data.readinessScore}
         attentionCount={data.attentionItems.length}
@@ -942,40 +1255,48 @@ export default async function WorkspaceDashboardPage() {
       {/* 02. LEVEL 1 — Immediate Attention Queue */}
       <AttentionDesk items={data.attentionItems} />
 
-      {/* 03. LEVEL 2 — Core Operational Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
-        {/* Left Col (5 of 12 cols on desktop): Work-Ready Assessment */}
+      {/* 03. LEVEL 2 — Core Operational Grid (Radar Chart + Documented Readiness Checklist) */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
+        {/* Left Col (5 cols): Work-Ready Radar Assessment */}
         <div className="lg:col-span-5">
-          <WorkReadyPanel
+          <WorkReadyRadarPanel
             score={data.readinessScore}
             calculatedAt={data.calculatedAt}
+            breakdown={data.complianceBreakdown}
             areas={data.workReadyAreas}
           />
         </div>
 
-        {/* Right Col (7 of 12 cols on desktop): Opportunities & Pipeline */}
+        {/* Right Col (7 cols): Documented Readiness Checklist */}
         <div className="lg:col-span-7">
-          <OpportunitiesTable opportunities={data.opportunities} />
+          <DocumentedReadinessChecklist
+            breakdown={data.breakdown}
+            score={data.readinessScore}
+          />
         </div>
       </div>
 
-      {/* 04. LEVEL 3 & 4 — Compliance Posture & Activity Ledger */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
-        {/* Left: Compliance Posture & Expiration Watchlist */}
+      {/* 04. Opportunities & Bid Pipeline Table */}
+      <OpportunitiesTable opportunities={data.opportunities} />
+
+      {/* 05. STEP 6 — SBB Filmstrip / Carousel Browser */}
+      <OperatorFilmstrip credentials={data.complianceTimeline} />
+
+      {/* 05. LEVEL 3 & 4 — Compliance Posture & Activity Ledger */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
         <div className="lg:col-span-6">
-          <CompliancePosture
+          <CompliancePosturePanel
             breakdown={data.complianceBreakdown}
             timeline={data.complianceTimeline}
           />
         </div>
 
-        {/* Right: Operational Activity Ledger */}
         <div className="lg:col-span-6">
           <ActivityLedger activities={data.recentActivity} />
         </div>
       </div>
 
-      {/* 05. LEVEL 4 — Verified Business Identity Matrix */}
+      {/* 06. LEVEL 4 — Verified Contractor Identity Specification */}
       <BusinessIdentityMatrix snapshot={data.businessSnapshot} />
     </div>
   );

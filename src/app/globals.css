@@ -24,10 +24,65 @@ button, input, select, textarea {
   letter-spacing: -0.01em;
 }
 
-h1, h2, h3, h4, h5, h6 {
+/* Public marketing site headings */
+body:not(.workspace-theme) h1,
+body:not(.workspace-theme) h2,
+body:not(.workspace-theme) h3,
+body:not(.workspace-theme) h4,
+body:not(.workspace-theme) h5,
+body:not(.workspace-theme) h6 {
   font-family: var(--font-work-sans), 'Work Sans', sans-serif !important;
   font-weight: 400 !important;
   letter-spacing: -0.025em;
+}
+
+/* SBB Operator Light Editorial UI — Scoped exclusively to /workspace */
+.workspace-theme {
+  --workspace-bg: #ECEEEF;
+  --workspace-panel: #FFFFFF;
+  --workspace-panel-subtle: #F8F9FA;
+  --workspace-hairline: #E2E4E8;
+  --workspace-text: #111827;
+  --workspace-secondary: #64748B;
+  --workspace-accent: #F97316;
+  background-color: #ECEEEF;
+  color: #111827;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.workspace-theme h1,
+.workspace-theme h2,
+.workspace-theme h3,
+.workspace-theme h4,
+.workspace-theme h5,
+.workspace-theme h6,
+.workspace-theme .font-display {
+  font-family: 'Lufga', 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  letter-spacing: -0.02em !important;
+  color: #111827;
+}
+
+.workspace-theme .micro-label {
+  font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
+  font-size: 0.625rem; /* 10px */
+  line-height: 1rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: #64748B;
+}
+
+.workspace-theme .operator-card {
+  background-color: #FFFFFF;
+  border: 1px solid #E2E4E8;
+  border-radius: 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+}
+
+.workspace-theme .operator-card-inner {
+  background-color: #F8F9FA;
+  border: 1px solid #EAEBED;
+  border-radius: 14px;
 }
 
 /* Accessibility Focus Ring Standards */

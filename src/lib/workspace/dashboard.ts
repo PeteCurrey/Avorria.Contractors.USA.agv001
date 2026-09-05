@@ -376,7 +376,6 @@ function buildComplianceTimeline(credentials: Credential[]): ComplianceTimelineI
     if (!c.expiration_date) continue;
     const days = daysUntilExpiry(c.expiration_date);
     if (days === null) continue;
-    if (days > 90) continue; // Only show within 90-day window
 
     items.push({
       credentialId: c.id,
