@@ -11,7 +11,13 @@ import { siteConfig } from '@/config/site';
  * Live Domain: https://avorria.com
  */
 export default function robots(): MetadataRoute.Robots {
-  const baseUrl = siteConfig.url;
+  let baseUrl = siteConfig.url.trim().replace(/\/+$/, '');
+  if (baseUrl.startsWith('http://')) {
+    baseUrl = baseUrl.replace('http://', 'https://');
+  }
+  if (!baseUrl.startsWith('https://')) {
+    baseUrl = 'https://avorria.com';
+  }
 
   return {
     rules: [
@@ -39,6 +45,7 @@ export default function robots(): MetadataRoute.Robots {
           '/industries/*',
           '/states/*',
           '/resources',
+          '/resources/*',
           '/about',
           '/contact',
           '/security',

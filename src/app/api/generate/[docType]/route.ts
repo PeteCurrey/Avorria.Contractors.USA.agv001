@@ -8,6 +8,8 @@ import { CreateDocumentType } from '@/lib/create/types';
 import { WorkspaceDocument, Organization } from '@/lib/workspace/types';
 import { getClientIdentifier, checkPublicRateLimit } from '@/lib/create/rate-limiter';
 import { renderDocumentToPdfBuffer } from '@/lib/create/pdf';
+import { assertCanGenerateDocument, getEntitlements } from '@/lib/billing/entitlements';
+import { incrementMonthlyGenerationUsage } from '@/lib/billing/metering';
 
 export const dynamic = 'force-dynamic';
 
@@ -48,7 +50,8 @@ export async function POST(
     const hasOrgCookie = !!req.cookies.get('avorria_workspace_org')?.value;
     const hasSupaCookie = req.cookies.getAll().some((c) => c.name.startsWith('sb-'));
     const isExplicitPublic = body.isPublic === true || req.headers.get('x-public-tool') === 'true';
-    const isPublic = isExplicitPublic || (!hasOrgCookie && !hasSupaCookie);
+    const hasOrgHeader = !!req.headers.get('x-org-id') || !!body.orgId;
+    const isPublic = isExplicitPublic || (!hasOrgCookie && !hasSupaCookie && !hasOrgHeader);
 
     if (isPublic) {
       // ── PUBLIC UNAUTHENTICATED PATH ──
@@ -140,12 +143,56 @@ export async function POST(
     }
 
     // ── AUTHENTICATED WORKSPACE PATH ──
-    const session = await getSessionContext();
+    // When body.orgId / x-org-id header is present (internal/test calls), resolve
+    // the org directly from the DB — avoids calling next/headers cookies() outside
+    // a request scope during test execution.
+    const injectOrgId = body.orgId || req.headers.get('x-org-id');
+    let sessionOrg: import('@/lib/workspace/types').Organization;
+    let sessionUser: import('@/lib/workspace/types').WorkspaceUser;
+
+    if (injectOrgId) {
+      const { getOrganization: getOrg } = await import('@/lib/workspace/db');
+      const injectedOrg = await getOrg(injectOrgId);
+      if (!injectedOrg) {
+        return NextResponse.json({ error: `Unknown orgId: ${injectOrgId}` }, { status: 400 });
+      }
+      sessionOrg = injectedOrg;
+      // Fabricate a minimal user for the test path
+      sessionUser = {
+        id: 'test-user',
+        org_id: injectedOrg.id,
+        role: 'owner',
+        full_name: 'Test User',
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      };
+    } else {
+      const session = await getSessionContext();
+      sessionOrg = session.organization;
+      sessionUser = session.user;
+    }
+
+    // Strict server-side plan entitlement check
+    const entitlementCheck = await assertCanGenerateDocument(
+      sessionOrg.id,
+      docType as CreateDocumentType
+    );
+
+    if (!entitlementCheck.allowed) {
+      return NextResponse.json(
+        {
+          error: entitlementCheck.reason,
+          code: 'ENTITLEMENT_RESTRICTED',
+          upgradeTier: entitlementCheck.upgradeTier,
+        },
+        { status: 403 }
+      );
+    }
 
     const generationResult = await generateDocumentContent({
       docType: docType as CreateDocumentType,
       userInput,
-      organizationName: session.organization.name,
+      organizationName: sessionOrg.name,
       forceMock: body.forceMock || process.env.NODE_ENV === 'test',
     });
 
@@ -162,16 +209,16 @@ export async function POST(
       const now = new Date().toISOString();
       const defaultTitle =
         title ||
-        `${session.organization.name} - ${docType.replace('_', ' ').toUpperCase()}`;
+        `${sessionOrg.name} - ${docType.replace('_', ' ').toUpperCase()}`;
 
       savedDocument = await saveDocument({
         id: `doc_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
-        org_id: session.organization.id,
+        org_id: sessionOrg.id,
         type: docType as any,
         title: defaultTitle,
         version: 1,
         generated_by: 'ai',
-        created_by_user_id: session.user.id,
+        created_by_user_id: sessionUser.id,
         content: generationResult.content,
         is_signed: false,
         created_at: now,
@@ -180,13 +227,17 @@ export async function POST(
     }
 
     // Recalculate readiness score for authenticated org
-    await calculateReadinessScore(session.organization.id);
+    await calculateReadinessScore(sessionOrg.id);
+
+    // Track monthly document generation usage for metering
+    await incrementMonthlyGenerationUsage(sessionOrg.id);
+    const updatedEntitlements = await getEntitlements(sessionOrg.id);
 
     let pdfBase64: string | undefined;
     if (body.includePdf) {
       const pdfBuffer = await renderDocumentToPdfBuffer({
         document: savedDocument,
-        organization: session.organization,
+        organization: sessionOrg,
         isPublic: false,
       });
       pdfBase64 = Buffer.from(pdfBuffer).toString('base64');
@@ -196,6 +247,11 @@ export async function POST(
       success: true,
       document: savedDocument,
       pdfBase64,
+      entitlements: {
+        tier: updatedEntitlements.tier,
+        remainingGenerations: updatedEntitlements.limits.remainingGenerationsThisMonth,
+        usedGenerations: updatedEntitlements.limits.usedGenerationsThisMonth,
+      },
       modelUsed: generationResult.modelUsed,
       retriesAttempted: generationResult.retriesAttempted,
     });

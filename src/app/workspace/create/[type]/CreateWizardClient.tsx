@@ -18,7 +18,18 @@ export function CreateWizardClient({ docType, organization, user }: CreateWizard
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [isGenerating, setIsGenerating] = useState(false);
   const [generationError, setGenerationError] = useState<string | null>(null);
+  const [upgradeTier, setUpgradeTier] = useState<string | null>(null);
+  const [entitlements, setEntitlements] = useState<any>(null);
   const [generatedDoc, setGeneratedDoc] = useState<WorkspaceDocument | null>(null);
+
+  useEffect(() => {
+    fetch('/api/billing/entitlements')
+      .then((r) => r.json())
+      .then((d) => {
+        if (d.success) setEntitlements(d.entitlements);
+      })
+      .catch(() => {});
+  }, []);
 
   // Signature state
   const [signerName, setSignerName] = useState(user.full_name || '');
@@ -236,7 +247,21 @@ export function CreateWizardClient({ docType, organization, user }: CreateWizard
 
       const data = await res.json();
       if (!res.ok) {
+        if (res.status === 403 && data.upgradeTier) {
+          setUpgradeTier(data.upgradeTier);
+        }
         throw new Error(data.error || 'Failed to generate document');
+      }
+
+      if (data.entitlements) {
+        setEntitlements((prev: any) => ({
+          ...prev,
+          limits: {
+            ...prev?.limits,
+            remainingGenerationsThisMonth: data.entitlements.remainingGenerations,
+            usedGenerationsThisMonth: data.entitlements.usedGenerations,
+          },
+        }));
       }
 
       setGeneratedDoc(data.document);
@@ -329,9 +354,68 @@ export function CreateWizardClient({ docType, organization, user }: CreateWizard
         </div>
       </div>
 
+      {/* Monthly Quota Indicator for Free Tier */}
+      {entitlements?.limits?.monthlyGenerations > 0 && (
+        <div className="bg-white border border-[#E2E4E8] rounded-xl px-4 py-3 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 shadow-xs">
+          <div className="flex items-center gap-2 text-xs font-mono text-neutral-600">
+            <span className="w-2 h-2 rounded-full bg-[#F97316]" />
+            <span>FREE STARTER USAGE:</span>
+            <span className="font-bold text-neutral-900">
+              {entitlements.limits.remainingGenerationsThisMonth} of {entitlements.limits.monthlyGenerations} REMAINING THIS MONTH
+            </span>
+          </div>
+          <Link
+            href="/workspace/settings#billing"
+            className="text-xs font-mono font-bold text-[#F97316] hover:text-orange-700 uppercase tracking-wider"
+          >
+            Upgrade for Unlimited →
+          </Link>
+        </div>
+      )}
+
+      {/* Feature Locked / Plan Upgrade Prompt */}
+      {entitlements && !entitlements.canGenerate[docType] && (
+        <div className="bg-amber-50 border border-amber-200 rounded-[20px] p-5 space-y-2 shadow-xs">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-mono font-bold uppercase tracking-wider text-amber-800">
+              PLAN UPGRADE REQUIRED
+            </span>
+            <span className="px-2 py-0.5 bg-amber-200/60 text-amber-900 font-mono text-[10px] font-bold rounded">
+              PROFESSIONAL TIER
+            </span>
+          </div>
+          <p className="text-sm text-amber-900 font-light">
+            {docType === 'safety_plan'
+              ? 'Site-Specific Construction Safety Plans are a Professional tier feature ($39/mo). Upgrade to unlock complete OSHA 1926 safety manuals.'
+              : docType === 'quote' || docType === 'change_order'
+              ? 'Commercial Quotes & Change Orders require the Professional plan ($39/mo). Upgrade to unlock deterministic pricing and export.'
+              : 'This document type requires an active Professional plan.'}
+          </p>
+          <div className="pt-2">
+            <Link
+              href="/workspace/settings#billing"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-[#F97316] hover:bg-orange-600 text-white font-medium text-xs rounded-xl transition-colors shadow-xs"
+            >
+              <span>Upgrade to Professional ($39/mo)</span>
+              <span>→</span>
+            </Link>
+          </div>
+        </div>
+      )}
+
       {generationError && (
-        <div className="bg-rose-50 border border-rose-200 rounded-[20px] p-4 font-mono text-xs text-rose-800">
-          <span className="font-bold">GENERATION FAILURE:</span> {generationError}
+        <div className="bg-rose-50 border border-rose-200 rounded-[20px] p-4 space-y-2 font-mono text-xs text-rose-800">
+          <div><span className="font-bold">GENERATION BLOCKED:</span> {generationError}</div>
+          {upgradeTier && (
+            <div className="pt-1">
+              <Link
+                href="/workspace/settings#billing"
+                className="inline-block px-3 py-1.5 bg-[#111827] hover:bg-slate-800 text-white text-xs font-sans font-medium rounded-lg"
+              >
+                Upgrade to {upgradeTier.toUpperCase()} →
+              </Link>
+            </div>
+          )}
         </div>
       )}
 

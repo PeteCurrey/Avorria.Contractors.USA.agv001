@@ -27,6 +27,8 @@ import {
   ContractorWorkspaceData,
 } from '@/lib/tenant/repository';
 import { BusinessDocument } from '@/types/database';
+import { assertCanSubmitVerification } from '@/lib/billing/entitlements';
+import { getOrganization, saveOrganization } from '@/lib/workspace/db';
 
 /**
  * Ensures the actor has legitimate Avorria reviewer permissions.
@@ -57,6 +59,12 @@ export async function requestVerification(
   orgId: string,
   contractorUserId: string
 ): Promise<{ success: boolean; message: string; state: ContractorVerificationState; submissionId: string }> {
+  // Enforce tier entitlement: Verified Contractor ($79/mo) or Business ($159/mo)
+  const entitlementCheck = await assertCanSubmitVerification(orgId);
+  if (!entitlementCheck.allowed) {
+    throw new Error(`403 Forbidden: ${entitlementCheck.reason}`);
+  }
+
   const store = loadTenantsStore();
   const ws = store[orgId] || (await getContractorWorkspace(orgId));
 
@@ -414,12 +422,24 @@ export async function executeOverallSubmissionDecision(
     if (input.decision === 'approve') {
       sub.status = 'verified';
       sub.nextReviewAt = input.expiresAt || new Date(Date.now() + 365 * 86400000).toISOString();
+      const org = await getOrganization(orgId);
+      if (org) {
+        await saveOrganization({ ...org, is_verified: true });
+      }
     } else if (input.decision === 'reject') {
       sub.status = 'rejected';
+      const org = await getOrganization(orgId);
+      if (org) {
+        await saveOrganization({ ...org, is_verified: false });
+      }
     } else if (input.decision === 'request_evidence') {
       sub.status = 'additional_evidence_required';
     } else if (input.decision === 'suspend') {
       sub.status = 'suspended';
+      const org = await getOrganization(orgId);
+      if (org) {
+        await saveOrganization({ ...org, is_verified: false });
+      }
     }
   }
 

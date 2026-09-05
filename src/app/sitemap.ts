@@ -1,16 +1,24 @@
 import { MetadataRoute } from 'next';
 import { siteConfig } from '@/config/site';
 import { getAllIndexableSeoPages } from '@/lib/seo/registry';
+import { CONTRACTOR_RESOURCES } from '@/lib/resources/catalogue';
 
 /**
  * AVORRIA CONTRACTOR USA — SITEMAP GENERATOR
  *
  * Produces valid sitemap XML with canonical URLs rooted at https://avorria.com.
  * Automatically deduplicates URLs and includes all static core pages,
- * pillar hubs, legal disclosures, and programmatic SEO guides/tools/templates.
+ * pillar hubs, legal disclosures, resources catalogue, and programmatic SEO guides/tools/templates.
  */
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = siteConfig.url.replace(/\/+$/, '');
+  // Enforce HTTPS production canonical domain
+  let baseUrl = siteConfig.url.trim().replace(/\/+$/, '');
+  if (baseUrl.startsWith('http://')) {
+    baseUrl = baseUrl.replace('http://', 'https://');
+  }
+  if (!baseUrl.startsWith('https://')) {
+    baseUrl = 'https://avorria.com';
+  }
   const now = new Date();
 
   // 1. Static Core Landing Pages & Hubs
@@ -161,15 +169,19 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
   ];
 
-  // 2. Programmatic Registered SEO Pages (Templates, Guides, Trade Pages, Tools)
-  const dynamicPages: MetadataRoute.Sitemap = getAllIndexableSeoPages().map((page) => {
+  // 2. Programmatic Registered SEO Pages (Templates, Guides, Trade Pages, Tools, States)
+  const dynamicSeoPages: MetadataRoute.Sitemap = getAllIndexableSeoPages().map((page) => {
     let priority = 0.75;
     let changeFrequency: 'always' | 'hourly' | 'daily' | 'weekly' | 'monthly' | 'yearly' | 'never' = 'weekly';
 
     if (page.pageType === 'interactive_tool' || page.pageType === 'document_template') {
       priority = 0.85;
       changeFrequency = 'weekly';
-    } else if (page.pageType === 'compliance_guide' || page.pageType === 'trade_pillar') {
+    } else if (
+      page.pageType === 'compliance_guide' ||
+      page.pageType === 'trade_pillar' ||
+      page.pageType === 'jurisdiction_pillar'
+    ) {
       priority = 0.8;
       changeFrequency = 'monthly';
     }
@@ -184,15 +196,28 @@ export default function sitemap(): MetadataRoute.Sitemap {
     };
   });
 
-  // 3. Deduplication: Map by normalized URL to guarantee zero duplicate URLs
+  // 3. Resources Catalogue Articles (All 26 commercial articles & templates)
+  const resourcePages: MetadataRoute.Sitemap = CONTRACTOR_RESOURCES.map((res) => ({
+    url: `${baseUrl}/resources/${res.slug}`,
+    lastModified: now,
+    changeFrequency: 'weekly',
+    priority: 0.75,
+  }));
+
+  // 4. Deduplication: Map by normalized URL to guarantee zero duplicate URLs
   const urlMap = new Map<string, MetadataRoute.Sitemap[number]>();
 
-  // Insert dynamic pages first
-  for (const item of dynamicPages) {
+  // Ingest resources first
+  for (const item of resourcePages) {
     urlMap.set(item.url.toLowerCase(), item);
   }
 
-  // Insert static routes (overriding with higher priority if already present)
+  // Ingest dynamic SEO pages
+  for (const item of dynamicSeoPages) {
+    urlMap.set(item.url.toLowerCase(), item);
+  }
+
+  // Ingest static routes (overriding with highest priority)
   for (const item of staticRoutes) {
     urlMap.set(item.url.toLowerCase(), item);
   }

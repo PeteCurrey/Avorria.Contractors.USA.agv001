@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { Metadata } from 'next';
 import { getWorkspaceContext } from '@/lib/workspace/context';
 import { SettingsClient } from './SettingsClient';
@@ -29,7 +29,9 @@ export default async function WorkspaceSettingsPage() {
         </div>
       </div>
 
-      <SettingsClient organization={organization} currentUser={user} />
+      <Suspense fallback={<div className="border border-slate-800 bg-[#090d16] p-8 text-xs font-mono text-slate-500">Loading settings…</div>}>
+        <SettingsClient organization={organization} currentUser={user} />
+      </Suspense>
     </div>
   );
 }

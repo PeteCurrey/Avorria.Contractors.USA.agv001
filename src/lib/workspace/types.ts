@@ -48,6 +48,22 @@ export type NotificationType =
   | 'passport_viewed'
   | 'reorder_alert';
 
+export type SubscriptionTier =
+  | 'free'
+  | 'professional'
+  | 'verified'
+  | 'business'
+  | 'pro'
+  | 'enterprise';
+
+export type SubscriptionStatus =
+  | 'active'
+  | 'trialing'
+  | 'past_due'
+  | 'canceled'
+  | 'incomplete'
+  | 'unpaid';
+
 export interface Organization {
   id: string;
   name: string;
@@ -64,7 +80,13 @@ export interface Organization {
     zip?: string;
   };
   logo_url?: string;
-  subscription_tier: 'free' | 'pro' | 'enterprise';
+  subscription_tier: SubscriptionTier;
+  subscription_status?: SubscriptionStatus;
+  stripe_customer_id?: string;
+  stripe_subscription_id?: string;
+  current_period_end?: string;
+  cancel_at_period_end?: boolean;
+  is_verified?: boolean;
   created_at: string;
   updated_at: string;
 }
