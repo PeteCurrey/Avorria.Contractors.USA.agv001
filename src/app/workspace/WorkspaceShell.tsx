@@ -256,7 +256,7 @@ export function WorkspaceShell({
 
             {/* Notification Dropdown */}
             {showNotifications && (
-              <div className="absolute right-0 mt-2 w-80 sm:w-96 bg-white border border-[#E2E4E8] rounded-2xl shadow-xl z-50 p-3 overflow-hidden">
+              <div className="absolute right-0 mt-2 w-80 sm:w-96 bg-white/95 backdrop-blur-2xl backdrop-filter border border-[#E2E4E8] rounded-2xl shadow-2xl z-50 p-3 overflow-hidden">
                 <div className="flex items-center justify-between pb-2 mb-2 border-b border-[#E2E4E8]">
                   <span className="micro-label">NOTIFICATIONS ({notifs.length})</span>
                   {unread > 0 && (
@@ -382,7 +382,7 @@ export function WorkspaceShell({
             </button>
 
             {showUserMenu && (
-              <div className="absolute right-0 mt-2 w-56 bg-white border border-[#E2E4E8] rounded-2xl shadow-xl z-50 p-2 text-xs">
+              <div className="absolute right-0 mt-2 w-56 bg-white/95 backdrop-blur-2xl backdrop-filter border border-[#E2E4E8] rounded-2xl shadow-2xl z-50 p-2 text-xs">
                 <div className="px-3 py-2 border-b border-[#E2E4E8] mb-1">
                   <div className="font-semibold text-neutral-900">{user.full_name}</div>
                   <div className="text-neutral-400 font-mono text-[11px] truncate">{user.email || ''}</div>
@@ -425,7 +425,7 @@ export function WorkspaceShell({
 
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
-        <div className="md:hidden bg-white border-b border-[#E2E4E8] px-4 py-4 space-y-3 z-30">
+        <div className="md:hidden bg-white/95 backdrop-blur-2xl backdrop-filter border-b border-[#E2E4E8] px-4 py-4 space-y-3 z-30 shadow-lg">
           <div className="micro-label">OPERATOR NAVIGATION</div>
           <div className="grid grid-cols-2 gap-2">
             {PRIMARY_ICON_NAV.map((item) => {

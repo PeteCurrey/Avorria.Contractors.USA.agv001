@@ -260,19 +260,19 @@ export function Header() {
       : 'text-slate-300 hover:text-white hover:bg-white/[0.05]';
   };
 
-  const dropdownPanelClass = `absolute top-full left-0 mt-2 rounded-[8px] p-5 backdrop-blur-xl animate-in fade-in slide-in-from-top-1 duration-150 z-50 font-sans ${
+  const dropdownPanelClass = `absolute top-full left-0 mt-2 rounded-[12px] p-5 backdrop-blur-2xl backdrop-filter animate-in fade-in slide-in-from-top-1 duration-150 z-50 font-sans ${
     isLight
-      ? 'bg-white/98 border border-sky-500/30 shadow-2xl shadow-slate-900/10 ring-1 ring-sky-500/10'
+      ? 'bg-white/95 border border-slate-200/90 shadow-2xl shadow-slate-900/15 ring-1 ring-slate-900/5'
       : 'bg-[#07132b]/95 border border-sky-500/20 shadow-2xl shadow-[#020817]/90 ring-1 ring-sky-400/10'
   }`;
-  const dropdownHeaderBorderClass = isLight ? 'border-b border-slate-100' : 'border-b border-white/[0.08]';
+  const dropdownHeaderBorderClass = isLight ? 'border-b border-slate-200/80' : 'border-b border-white/[0.08]';
   const dropdownEyebrowClass = `text-[11px] font-mono tracking-[0.2em] uppercase font-medium block ${
     isLight ? 'text-sky-600' : 'text-[#38bdf8]'
   }`;
   const dropdownSubtextClass = `text-[14px] font-light mt-0.5 ${isLight ? 'text-slate-600' : 'text-slate-400'}`;
-  const dropdownItemClass = `group p-2.5 rounded-[6px] border border-transparent transition-all text-left block ${
+  const dropdownItemClass = `group p-2.5 rounded-[8px] border border-transparent transition-all text-left block ${
     isLight
-      ? 'hover:bg-slate-50 hover:border-slate-200/70'
+      ? 'hover:bg-slate-100/80 hover:border-slate-200/80'
       : 'hover:bg-white/[0.05] hover:border-white/[0.06]'
   }`;
   const dropdownItemTitleClass = `text-[16px] font-light transition-colors ${
@@ -280,7 +280,7 @@ export function Header() {
   }`;
   const dropdownBadgeClass = `text-[10px] font-mono px-1.5 py-0.5 rounded border ${
     isLight
-      ? 'bg-slate-100 text-slate-600 border-slate-200'
+      ? 'bg-slate-100 text-slate-700 border-slate-200'
       : 'bg-white/[0.05] text-slate-400 border-white/[0.05]'
   }`;
   const dropdownItemDescClass = `text-[14px] font-light mt-1 leading-snug transition-colors ${
@@ -566,9 +566,9 @@ export function Header() {
         {/* Mobile Navigation Drawer */}
         {mobileMenuOpen && (
           <div
-            className={`xl:hidden border-b px-4 pt-3 pb-6 space-y-4 max-h-[80vh] overflow-y-auto backdrop-blur-xl ${
+            className={`xl:hidden border-b px-4 pt-3 pb-6 space-y-4 max-h-[80vh] overflow-y-auto backdrop-blur-2xl backdrop-filter ${
               isLight
-                ? 'border-sky-500/30 bg-white/98 text-slate-900 shadow-xl'
+                ? 'border-slate-200/90 bg-white/95 text-slate-900 shadow-xl'
                 : 'border-sky-500/20 bg-[#07132b]/95 text-white'
             }`}
           >
