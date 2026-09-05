@@ -64,6 +64,53 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   };
 }
 
+function renderFormattedContent(text: string): React.ReactNode {
+  if (!text) return null;
+  const linkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
+  const parts: React.ReactNode[] = [];
+  let lastIndex = 0;
+  let match: RegExpExecArray | null;
+
+  while ((match = linkRegex.exec(text)) !== null) {
+    if (match.index > lastIndex) {
+      parts.push(text.substring(lastIndex, match.index));
+    }
+    const label = match[1];
+    const href = match[2];
+    const isExternal = href.startsWith('http');
+    if (isExternal) {
+      parts.push(
+        <a
+          key={match.index}
+          href={href}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-brand-600 hover:text-brand-700 underline font-normal"
+        >
+          {label}
+        </a>
+      );
+    } else {
+      parts.push(
+        <Link
+          key={match.index}
+          href={href}
+          className="text-brand-600 hover:text-brand-700 underline font-normal"
+        >
+          {label}
+        </Link>
+      );
+    }
+    lastIndex = linkRegex.lastIndex;
+  }
+
+  if (lastIndex < text.length) {
+    parts.push(text.substring(lastIndex));
+  }
+
+  return parts.length > 0 ? parts : text;
+}
+
 export default async function ProgrammaticSeoPage({ params }: PageProps) {
   const resolvedParams = await params;
   const slugPath = resolvedParams.slug.join('/');
@@ -217,11 +264,13 @@ export default async function ProgrammaticSeoPage({ params }: PageProps) {
             <div key={idx} className="space-y-3 bg-white border border-slate-200 rounded-lg p-6 sm:p-8 shadow-sm">
               <h2 className="text-xl sm:text-2xl font-light text-navy-900 tracking-tight">{sec.heading}</h2>
               {sec.subheading && <h3 className="text-sm font-medium text-brand-700">{sec.subheading}</h3>}
-              <p className="text-sm sm:text-base leading-relaxed text-slate-600">{sec.content}</p>
+              <div className="text-sm sm:text-base leading-relaxed text-slate-600">
+                {renderFormattedContent(sec.content)}
+              </div>
               {sec.bulletPoints && sec.bulletPoints.length > 0 && (
                 <ul className="space-y-2 pl-4 text-sm list-disc text-slate-600 mt-2">
                   {sec.bulletPoints.map((bp, bidx) => (
-                    <li key={bidx}>{bp}</li>
+                    <li key={bidx}>{renderFormattedContent(bp)}</li>
                   ))}
                 </ul>
               )}

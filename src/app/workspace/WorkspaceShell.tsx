@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { Organization, WorkspaceUser, WorkspaceNotification } from '@/lib/workspace/types';
 
 interface WorkspaceShellProps {
@@ -110,6 +110,7 @@ export function WorkspaceShell({
   children,
 }: WorkspaceShellProps) {
   const pathname = usePathname();
+  const router = useRouter();
   const [showNotifications, setShowNotifications] = useState(false);
   const [notifs, setNotifs] = useState(notifications);
   const [unread, setUnread] = useState(initialUnreadCount);
@@ -124,6 +125,25 @@ export function WorkspaceShell({
     } catch {
       // Ignored
     }
+  }
+
+  async function handleNotificationClick(n: WorkspaceNotification) {
+    if (!n.read_at) {
+      try {
+        await fetch(`/api/workspace/notifications/${n.id}`, { method: 'PATCH' });
+        setNotifs((prev) =>
+          prev.map((item) => (item.id === n.id ? { ...item, read_at: new Date().toISOString() } : item))
+        );
+        setUnread((count) => Math.max(0, count - 1));
+      } catch {
+        // Ignored
+      }
+    }
+    setShowNotifications(false);
+    const targetUrl =
+      n.action_url ||
+      (n.related_credential_id ? `/workspace/comply?credential=${n.related_credential_id}` : '/workspace/comply');
+    router.push(targetUrl);
   }
 
   function isNavActive(href: string, exact?: boolean) {
@@ -249,26 +269,87 @@ export function WorkspaceShell({
                     </button>
                   )}
                 </div>
-                <div className="max-h-72 overflow-y-auto space-y-1">
+                <div className="max-h-80 overflow-y-auto space-y-1.5 pr-0.5">
                   {notifs.length === 0 ? (
                     <div className="text-center py-6 text-xs text-neutral-400">
                       Zero unread alerts.
                     </div>
                   ) : (
-                    notifs.map((n) => (
-                      <div
-                        key={n.id}
-                        className={`p-2.5 rounded-xl text-xs ${
-                          n.read_at ? 'text-neutral-500 bg-neutral-50' : 'text-neutral-900 bg-[#FFF7ED] border border-orange-200'
-                        }`}
-                      >
-                        <div className="micro-label text-[9px] mb-1">
-                          {n.type.replace(/_/g, ' ')}
-                        </div>
-                        <div className="leading-snug">{n.message}</div>
-                      </div>
-                    ))
+                    notifs.map((n) => {
+                      const urgency =
+                        n.urgency ||
+                        (n.type === 'expired' || n.type === 'expiring_14'
+                          ? 'critical'
+                          : n.type === 'expiring_30'
+                          ? 'warning'
+                          : 'info');
+                      const isRead = !!n.read_at;
+
+                      const cardStyle = isRead
+                        ? 'text-neutral-500 bg-neutral-50/70 border-neutral-200/60 hover:bg-neutral-100/70'
+                        : urgency === 'critical'
+                        ? 'text-red-950 bg-red-50/90 border-red-200 hover:bg-red-100/80 shadow-2xs'
+                        : urgency === 'warning'
+                        ? 'text-amber-950 bg-amber-50/90 border-amber-200 hover:bg-amber-100/80 shadow-2xs'
+                        : 'text-neutral-900 bg-[#FFF7ED] border-orange-200 hover:bg-orange-100/70 shadow-2xs';
+
+                      const badgeStyle = isRead
+                        ? 'bg-neutral-200/80 text-neutral-600'
+                        : urgency === 'critical'
+                        ? 'bg-red-500 text-white font-bold'
+                        : urgency === 'warning'
+                        ? 'bg-amber-500 text-neutral-950 font-bold'
+                        : 'bg-orange-500 text-white font-bold';
+
+                      const urgencyIcon = isRead
+                        ? '✓'
+                        : urgency === 'critical'
+                        ? '🔴'
+                        : urgency === 'warning'
+                        ? '⚠'
+                        : 'ℹ';
+
+                      return (
+                        <button
+                          key={n.id}
+                          type="button"
+                          onClick={() => handleNotificationClick(n)}
+                          className={`w-full text-left p-2.5 rounded-xl text-xs border transition-colors cursor-pointer group ${cardStyle}`}
+                        >
+                          <div className="flex items-center justify-between mb-1">
+                            <span className="flex items-center gap-1.5 micro-label text-[9px]">
+                              <span>{urgencyIcon}</span>
+                              <span>{n.type.replace(/_/g, ' ')}</span>
+                            </span>
+                            <span
+                              className={`text-[9px] font-mono px-1.5 py-0.5 rounded ${badgeStyle}`}
+                            >
+                              {isRead ? 'READ' : urgency.toUpperCase()}
+                            </span>
+                          </div>
+                          <div className="leading-snug font-medium text-[12px] group-hover:underline">
+                            {n.message}
+                          </div>
+                        </button>
+                      );
+                    })
                   )}
+                </div>
+                <div className="pt-2.5 mt-2 border-t border-[#E2E4E8] flex items-center justify-between">
+                  <Link
+                    href="/workspace/notifications"
+                    onClick={() => setShowNotifications(false)}
+                    className="text-[11px] font-mono font-medium text-neutral-700 hover:text-neutral-900 hover:underline flex items-center gap-1"
+                  >
+                    View all notifications →
+                  </Link>
+                  <Link
+                    href="/workspace/settings?tab=notifications"
+                    onClick={() => setShowNotifications(false)}
+                    className="text-[10px] font-mono text-neutral-400 hover:text-neutral-700"
+                  >
+                    Preferences
+                  </Link>
                 </div>
               </div>
             )}

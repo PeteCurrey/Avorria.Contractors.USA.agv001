@@ -2,7 +2,13 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Organization, WorkspaceUser, PRIMARY_TRADES } from '@/lib/workspace/types';
+import {
+  Organization,
+  WorkspaceUser,
+  PRIMARY_TRADES,
+  NotificationPreferences,
+  DEFAULT_NOTIFICATION_PREFERENCES,
+} from '@/lib/workspace/types';
 import { PRICING_PLANS, PlanEntitlement } from '@/config/plans';
 
 interface SettingsClientProps {
@@ -10,7 +16,7 @@ interface SettingsClientProps {
   currentUser: WorkspaceUser;
 }
 
-type Tab = 'company' | 'billing';
+type Tab = 'company' | 'billing' | 'notifications';
 
 const PLAN_COLORS: Record<string, string> = {
   free: 'text-slate-400 border-slate-600',
@@ -47,9 +53,14 @@ export function SettingsClient({ organization, currentUser }: SettingsClientProp
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  // Determine initial tab: honour #billing deep-link or ?tab= query param
+  // Determine initial tab: honour #notifications / #billing deep-link or ?tab= query param
+  const paramTab = searchParams.get('tab') as Tab | null;
   const initialTab: Tab =
-    (searchParams.get('tab') as Tab) === 'billing' ? 'billing' : 'company';
+    paramTab === 'notifications'
+      ? 'notifications'
+      : paramTab === 'billing'
+      ? 'billing'
+      : 'company';
   const [activeTab, setActiveTab] = useState<Tab>(initialTab);
 
   // Company form state
@@ -68,14 +79,52 @@ export function SettingsClient({ organization, currentUser }: SettingsClientProp
   const [checkoutLoadingPlan, setCheckoutLoadingPlan] = useState<string | null>(null);
   const [billingError, setBillingError] = useState<string | null>(null);
 
+  // Notification Preferences state
+  const [notifPrefs, setNotifPrefs] = useState<NotificationPreferences>(
+    currentUser.notification_preferences || DEFAULT_NOTIFICATION_PREFERENCES
+  );
+  const [savingNotif, setSavingNotif] = useState(false);
+  const [notifSuccess, setNotifSuccess] = useState(false);
+  const [notifError, setNotifError] = useState<string | null>(null);
+
   const canEdit = currentUser.role === 'owner' || currentUser.role === 'admin';
 
-  // Switch to billing tab if hash is #billing on mount
+  // Switch tab if hash is present on mount
   useEffect(() => {
-    if (typeof window !== 'undefined' && window.location.hash === '#billing') {
-      setActiveTab('billing');
+    if (typeof window !== 'undefined') {
+      if (window.location.hash === '#billing') {
+        setActiveTab('billing');
+      } else if (window.location.hash === '#notifications') {
+        setActiveTab('notifications');
+      }
     }
   }, []);
+
+  async function handleSaveNotif(e: React.FormEvent) {
+    e.preventDefault();
+    setSavingNotif(true);
+    setNotifError(null);
+    setNotifSuccess(false);
+
+    try {
+      const res = await fetch('/api/workspace/notifications/preferences', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(notifPrefs),
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to update preferences');
+
+      setNotifSuccess(true);
+      if (data.preferences) setNotifPrefs(data.preferences);
+      router.refresh();
+    } catch (err: unknown) {
+      setNotifError(err instanceof Error ? err.message : 'Error updating preferences');
+    } finally {
+      setSavingNotif(false);
+    }
+  }
 
   async function handleSave(e: React.FormEvent) {
     e.preventDefault();
@@ -166,7 +215,7 @@ export function SettingsClient({ organization, currentUser }: SettingsClientProp
     <div className="max-w-3xl space-y-0">
       {/* Tab bar */}
       <div className="flex border-b border-slate-800 bg-[#090d16]">
-        {(['company', 'billing'] as Tab[]).map((tab) => (
+        {(['company', 'billing', 'notifications'] as Tab[]).map((tab) => (
           <button
             key={tab}
             type="button"
@@ -177,7 +226,11 @@ export function SettingsClient({ organization, currentUser }: SettingsClientProp
                 : 'text-slate-500 hover:text-slate-300'
             }`}
           >
-            {tab === 'company' ? 'Company Details' : 'Billing & Plan'}
+            {tab === 'company'
+              ? 'Company Details'
+              : tab === 'billing'
+              ? 'Billing & Plan'
+              : 'Notifications'}
           </button>
         ))}
       </div>
@@ -467,6 +520,186 @@ export function SettingsClient({ organization, currentUser }: SettingsClientProp
             </div>
           )}
         </section>
+      )}
+
+      {/* ── NOTIFICATIONS TAB ── */}
+      {activeTab === 'notifications' && (
+        <form
+          id="notifications"
+          onSubmit={handleSaveNotif}
+          className="border border-slate-800 border-t-0 bg-[#090d16] p-6 sm:p-8 space-y-8"
+        >
+          <div className="border-b border-slate-800 pb-3 flex items-center justify-between">
+            <div>
+              <h2 className="text-sm font-mono font-bold uppercase tracking-wider text-white">
+                Notification Channels & Routing
+              </h2>
+              <p className="text-xs text-slate-400 font-mono mt-0.5">
+                Configure renewal alerts, delivery cadence, and team dispatch rules.
+              </p>
+            </div>
+            {notifSuccess && (
+              <span className="text-xs font-mono text-emerald-400">
+                ✓ Preferences updated
+              </span>
+            )}
+          </div>
+
+          {notifError && (
+            <div className="border border-rose-500/30 bg-rose-950/20 text-rose-300 p-2.5 text-xs font-mono">
+              {notifError}
+            </div>
+          )}
+
+          {/* Delivery Channels */}
+          <div className="space-y-4">
+            <h3 className="text-xs font-mono uppercase text-slate-300 tracking-wider">
+              Alert Delivery Channels
+            </h3>
+
+            <div className="space-y-3">
+              <label className="flex items-start gap-3 p-3.5 border border-slate-800 bg-[#030712] rounded cursor-pointer hover:border-slate-700 transition-colors">
+                <input
+                  type="checkbox"
+                  checked={notifPrefs.expiry_alerts_email}
+                  onChange={(e) =>
+                    setNotifPrefs((prev) => ({ ...prev, expiry_alerts_email: e.target.checked }))
+                  }
+                  className="mt-1 h-4 w-4 rounded border-slate-700 bg-slate-900 text-sky-500 focus:ring-sky-400"
+                />
+                <div className="space-y-0.5">
+                  <span className="text-xs font-mono font-bold text-white block">
+                    Credential Expiry Email Alerts
+                  </span>
+                  <span className="text-xs text-slate-400 font-mono block">
+                    Deliver 60, 30, 14-day and expiration warnings directly to your email inbox ({currentUser.email || 'account email'}).
+                  </span>
+                </div>
+              </label>
+
+              <label className="flex items-start gap-3 p-3.5 border border-slate-800 bg-[#030712] rounded cursor-pointer hover:border-slate-700 transition-colors">
+                <input
+                  type="checkbox"
+                  checked={notifPrefs.expiry_alerts_inapp}
+                  onChange={(e) =>
+                    setNotifPrefs((prev) => ({ ...prev, expiry_alerts_inapp: e.target.checked }))
+                  }
+                  className="mt-1 h-4 w-4 rounded border-slate-700 bg-slate-900 text-sky-500 focus:ring-sky-400"
+                />
+                <div className="space-y-0.5">
+                  <span className="text-xs font-mono font-bold text-white block">
+                    In-App Notification Center
+                  </span>
+                  <span className="text-xs text-slate-400 font-mono block">
+                    Display badge counters and notification items in the top navigation bell and workspace feed.
+                  </span>
+                </div>
+              </label>
+
+              <label className="flex items-start gap-3 p-3.5 border border-slate-800 bg-[#030712] rounded cursor-pointer hover:border-slate-700 transition-colors">
+                <input
+                  type="checkbox"
+                  checked={notifPrefs.billing_alerts_email}
+                  onChange={(e) =>
+                    setNotifPrefs((prev) => ({ ...prev, billing_alerts_email: e.target.checked }))
+                  }
+                  className="mt-1 h-4 w-4 rounded border-slate-700 bg-slate-900 text-sky-500 focus:ring-sky-400"
+                />
+                <div className="space-y-0.5">
+                  <span className="text-xs font-mono font-bold text-white block">
+                    Subscription & Billing Invoices
+                  </span>
+                  <span className="text-xs text-slate-400 font-mono block">
+                    Receive payment receipts, renewal notices, and grace-period alerts via email.
+                  </span>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          {/* Digest Option */}
+          <div className="space-y-3 pt-4 border-t border-slate-800">
+            <h3 className="text-xs font-mono uppercase text-slate-300 tracking-wider">
+              Email Delivery Frequency (Digest Mode)
+            </h3>
+            <p className="text-xs text-slate-400 font-mono">
+              Choose whether to receive individual alert emails immediately per expiring document, or a consolidated digest summary.
+            </p>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
+              {[
+                {
+                  id: 'immediate',
+                  title: 'Immediate Alerts',
+                  desc: 'Send an email instantly whenever a credential hits a threshold (Recommended for sole operators).',
+                },
+                {
+                  id: 'daily',
+                  title: 'Daily Digest',
+                  desc: 'Consolidate all active warnings into a single morning briefing email.',
+                },
+                {
+                  id: 'weekly',
+                  title: 'Weekly Digest',
+                  desc: 'One summary email per week listing upcoming deadlines across your fleet.',
+                },
+              ].map((mode) => (
+                <label
+                  key={mode.id}
+                  className={`p-3.5 border rounded cursor-pointer transition-colors block ${
+                    notifPrefs.digest_mode === mode.id
+                      ? 'border-sky-500 bg-sky-950/20'
+                      : 'border-slate-800 bg-[#030712] hover:border-slate-700'
+                  }`}
+                >
+                  <div className="flex items-center gap-2 mb-1.5">
+                    <input
+                      type="radio"
+                      name="digest_mode"
+                      value={mode.id}
+                      checked={notifPrefs.digest_mode === mode.id}
+                      onChange={() =>
+                        setNotifPrefs((prev) => ({ ...prev, digest_mode: mode.id as any }))
+                      }
+                      className="text-sky-500 focus:ring-sky-400"
+                    />
+                    <span className="text-xs font-mono font-bold text-white">
+                      {mode.title}
+                    </span>
+                  </div>
+                  <span className="text-[11px] text-slate-400 font-mono block leading-relaxed">
+                    {mode.desc}
+                  </span>
+                </label>
+              ))}
+            </div>
+          </div>
+
+          {/* Escalation Policy Notice */}
+          <div className="p-4 border border-amber-500/30 bg-amber-950/20 rounded">
+            <div className="flex items-start gap-2.5">
+              <span className="text-sm">🔴</span>
+              <div className="space-y-1">
+                <span className="text-xs font-mono font-bold text-amber-300 uppercase block">
+                  Mandatory Escalation Policy
+                </span>
+                <p className="text-[11px] font-mono text-amber-400/90 leading-relaxed">
+                  To protect contractor readiness and preserve your Verified Contractor badge, <strong>14-day advance warnings and expiration notices</strong> are classified as critical compliance events and will always be dispatched to all registered Owners and Admins on the account, regardless of individual email preference settings.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex items-center justify-end pt-4 border-t border-slate-800">
+            <button
+              type="submit"
+              disabled={savingNotif}
+              className="px-6 py-2.5 bg-sky-500 hover:bg-sky-400 text-black font-mono font-bold text-xs uppercase tracking-wider transition-colors disabled:opacity-50"
+            >
+              {savingNotif ? 'Saving...' : 'Save Notification Preferences'}
+            </button>
+          </div>
+        </form>
       )}
     </div>
   );

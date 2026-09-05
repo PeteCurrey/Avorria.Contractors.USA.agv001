@@ -4,23 +4,43 @@ import { Metadata } from 'next';
 import { siteConfig } from '@/config/site';
 import { Button } from '@/components/ui/Button';
 import { ProductHero } from '@/components/hero/ProductHero';
+import { BreadcrumbJsonLd } from '@/components/seo/JsonLd';
 
 export const metadata: Metadata = {
-  title: 'Win More High-Value Contractor Bids | Avorria Win Work',
+  title: 'Contractor Proposal Software & Estimating Suite | Avorria Win Work',
   description:
-    'Turn professional documentation and verified credentials into your greatest competitive advantage. Commercial proposals, quotes, and pre-qualification packs.',
+    'Professional contractor proposal software and quote calculator. Combine margin-protected estimating, verified contractor passports, and prequalification packs to win work.',
   alternates: {
     canonical: `${siteConfig.url}/win-work`,
+  },
+  openGraph: {
+    title: 'Contractor Proposal Software & Estimating Suite | Avorria Win Work',
+    description:
+      'Professional contractor proposal software and quote calculator. Combine margin-protected estimating, verified contractor passports, and prequalification packs to win work.',
+    url: `${siteConfig.url}/win-work`,
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Contractor Proposal Software & Estimating Suite | Avorria Win Work',
+    description:
+      'Professional contractor proposal software and quote calculator. Combine margin-protected estimating, verified contractor passports, and prequalification packs to win work.',
   },
 };
 
 export default function WinWorkPage() {
   return (
     <div className="min-h-screen bg-surface-page text-navy-800">
+      <BreadcrumbJsonLd
+        breadcrumbs={[
+          { name: 'Home', item: '/' },
+          { name: 'Win Work', item: '/win-work' },
+        ]}
+      />
       <ProductHero
         eyebrow="OPERATIONAL PILLAR 05 · WIN WORK"
-        title={<>Look ready when the<br />opportunity arrives.</>}
-        subtitle="Tier-1 general contractors and commercial project owners do not award bids solely on price. They award to trade contractors who eliminate risk through structured safety planning, verified compliance, and immediate pre-qualification readiness."
+        title={<>Contractor proposal software built to<br />win high-value commercial bids.</>}
+        subtitle="Professional contractor proposal software and quote calculator built for trade contractors. Tier-1 general contractors award to trade contractors who eliminate project risk through structured safety planning, verified compliance, and immediate pre-qualification readiness."
         primaryCta={{ label: 'Build Your Pre-Qual Pack', href: '/sign-up' }}
         secondaryCta={{ label: 'Try Quote & Margin Calculator', href: '/tools/contractor-quote-calculator' }}
         pillars={[

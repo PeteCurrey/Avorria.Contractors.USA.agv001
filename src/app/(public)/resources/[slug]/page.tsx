@@ -4,6 +4,7 @@ import { Metadata } from 'next';
 import { siteConfig } from '@/config/site';
 import { CONTRACTOR_RESOURCES, getResourceBySlug } from '@/lib/resources/catalogue';
 import { ResourceWorkspaceClient } from './ResourceWorkspaceClient';
+import { BreadcrumbJsonLd, ArticleJsonLd } from '@/components/seo/JsonLd';
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -40,6 +41,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       url: canonicalUrl,
       type: 'article',
     },
+    twitter: {
+      card: 'summary_large_image',
+      title: `${resource.title} | Avorria Resources`,
+      description: resource.shortDescription,
+    },
   };
 }
 
@@ -51,8 +57,25 @@ export default async function ResourceDetailPage({ params }: PageProps) {
     notFound();
   }
 
+  const canonicalUrl = `${siteConfig.url}/resources/${resource.slug}`;
+
   return (
     <div className="min-h-screen bg-surface-page text-navy-800 py-10 px-4 sm:px-6 lg:px-8">
+      <BreadcrumbJsonLd
+        breadcrumbs={[
+          { name: 'Home', item: '/' },
+          { name: 'Resources', item: '/resources' },
+          { name: resource.title, item: `/resources/${resource.slug}` },
+        ]}
+      />
+      <ArticleJsonLd
+        title={`${resource.title} (${resource.format})`}
+        description={resource.shortDescription}
+        url={canonicalUrl}
+        publishedAt="2026-09-01T00:00:00Z"
+        updatedAt="2026-09-01T00:00:00Z"
+        authorName="Avorria Editorial Team"
+      />
       <div className="max-w-7xl mx-auto">
         <ResourceWorkspaceClient resource={resource} />
       </div>

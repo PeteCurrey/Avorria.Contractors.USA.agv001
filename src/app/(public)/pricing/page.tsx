@@ -1,24 +1,84 @@
-'use client';
-
-import React, { useState } from 'react';
-import Link from 'next/link';
-import { PRICING_PLANS } from '@/config/plans';
+import React from 'react';
+import { Metadata } from 'next';
+import { siteConfig } from '@/config/site';
 import { Button } from '@/components/ui/Button';
-import { CheckCircle2 } from 'lucide-react';
+import {
+  BreadcrumbJsonLd,
+  FaqJsonLd,
+  SoftwareApplicationJsonLd,
+} from '@/components/seo/JsonLd';
+import { PricingPageClient } from './PricingPageClient';
+
+export const metadata: Metadata = {
+  title: 'Transparent Pricing Plans for Contractors | Avorria',
+  description:
+    'Predictable, transparent pricing for trade contractors and growing commercial builders. From our Free Starter tier to Verified Contractor and Business suites.',
+  alternates: {
+    canonical: `${siteConfig.url}/pricing`,
+  },
+  openGraph: {
+    title: 'Transparent Pricing Plans for Contractors | Avorria',
+    description:
+      'Predictable, transparent pricing for trade contractors and growing commercial builders. Compare Free Starter, Professional, Verified Contractor, and Business tiers.',
+    url: `${siteConfig.url}/pricing`,
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Transparent Pricing Plans for Contractors | Avorria',
+    description:
+      'Predictable, transparent pricing for trade contractors and growing commercial builders. Compare Free Starter, Professional, Verified Contractor, and Business tiers.',
+  },
+};
+
+const PRICING_FAQS = [
+  {
+    question: 'Can I start on the Free Starter plan and upgrade later?',
+    answer:
+      'Yes. You can start completely free, generate required safety forms like JHAs and JSAs, and upgrade to Professional or Verified when you need site-specific safety plans, automated expiration alerts, or verified Contractor Passport sharing.',
+  },
+  {
+    question: 'What is required for the Verified Contractor plan?',
+    answer:
+      'The Verified tier includes review of your uploaded Certificate of Insurance against minimum commercial coverage limits, confirmation of active standing on state licensing board registries, and safety documentation audit to unlock the verified badge.',
+  },
+  {
+    question: 'Are payments and billing data secure?',
+    answer:
+      'Paid subscription billing is currently in final integration and will be processed through an industry-standard, PCI-compliant payment processor. We will never store card numbers on our own servers. During the current beta phase, paid plan activation is handled manually — contact us to get started.',
+  },
+  {
+    question: 'Does Avorria issue government contractor licenses?',
+    answer:
+      'No. Avorria is a private software platform and contractor operating infrastructure. We provide tools to organize, structure, and verify the credentials issued by state licensing boards and licensed insurance carriers.',
+  },
+];
+
+const TRUST_ITEMS = [
+  'Cancel Anytime',
+  '30-Day Guarantee',
+  'No Setup Fees',
+  'Commercial Pre-Qual Ready',
+  'Enterprise Data Isolation',
+];
 
 export default function PricingPage() {
-  const [billingCycle, setBillingCycle] = useState<'monthly' | 'annual'>('annual');
-
-  const trustItems = [
-    'Cancel Anytime',
-    '30-Day Guarantee',
-    'No Setup Fees',
-    'Commercial Pre-Qual Ready',
-    'Enterprise Data Isolation',
-  ];
-
   return (
     <div className="min-h-screen bg-surface-page text-navy-800">
+      {/* Schema.org Structured Data */}
+      <SoftwareApplicationJsonLd
+        name="Avorria Contractor Operating & Compliance Platform"
+        description="Unified software platform for trade contractors: OSHA compliance documentation, automated COI tracking, and verified contractor passport prequalification."
+        url={`${siteConfig.url}/pricing`}
+      />
+      <FaqJsonLd faqs={PRICING_FAQS} />
+      <BreadcrumbJsonLd
+        breadcrumbs={[
+          { name: 'Home', item: '/' },
+          { name: 'Pricing', item: '/pricing' },
+        ]}
+      />
+
       {/* ── CLEAN ABOVE-THE-FOLD ENTERPRISE PRICING HEADER ── */}
       <section className="bg-white border-b border-slate-200/80 pt-10 pb-8 px-4 sm:px-6 lg:px-8 text-center">
         <div className="max-w-4xl mx-auto space-y-4">
@@ -30,164 +90,14 @@ export default function PricingPage() {
           </div>
 
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extralight text-navy-900 tracking-tight leading-tight">
-            Predictable investment for serious contractors.
+            Transparent pricing for serious contractors.
           </h1>
 
           <p className="text-slate-600 text-sm sm:text-base max-w-2xl mx-auto font-normal leading-relaxed">
             From independent specialty trades generating their first JHA to growing multi-crew firms managing commercial pre-qualification dossiers.
           </p>
 
-          {/* Billing Interval Toggle */}
-          <div className="pt-4 flex items-center justify-center gap-3">
-            <span
-              className={`text-xs sm:text-sm transition-colors ${
-                billingCycle === 'monthly' ? 'text-navy-950 font-medium' : 'text-slate-500'
-              }`}
-            >
-              Monthly Billing
-            </span>
-            <button
-              type="button"
-              role="switch"
-              aria-checked={billingCycle === 'annual'}
-              onClick={() => setBillingCycle(billingCycle === 'monthly' ? 'annual' : 'monthly')}
-              className="w-14 h-7 min-h-[28px] max-h-[28px] shrink-0 rounded-full bg-slate-200 border border-slate-300 p-1 transition-colors relative inline-flex items-center focus:outline-none focus:ring-2 focus:ring-sky-500/50 cursor-pointer"
-              aria-label="Toggle Billing Interval"
-            >
-              <div
-                className={`w-5 h-5 rounded-full bg-[#0284c7] transition-transform duration-200 shadow-sm ${
-                  billingCycle === 'annual' ? 'translate-x-7' : 'translate-x-0'
-                }`}
-              />
-            </button>
-            <span
-              className={`text-xs sm:text-sm flex items-center gap-2 transition-colors ${
-                billingCycle === 'annual' ? 'text-navy-950 font-medium' : 'text-slate-500'
-              }`}
-            >
-              <span>Annual Billing</span>
-              <span className="text-[10px] sm:text-[11px] px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 font-mono font-medium">
-                Save ~20%
-              </span>
-            </span>
-          </div>
-
-          {/* Trust points */}
-          <div className="pt-5 flex flex-wrap items-center justify-center gap-3 text-[11px] text-slate-500">
-            {trustItems.map((item) => (
-              <div key={item} className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-50 border border-slate-200/80">
-                <CheckCircle2 className="w-3.5 h-3.5 text-sky-600 shrink-0" />
-                <span>{item}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Pricing Plans Grid */}
-      <section className="py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch">
-          {PRICING_PLANS.map((plan) => {
-            const isVerified = plan.id === 'verified';
-            const isPro = plan.id === 'professional';
-
-            let displayPrice = '$0';
-            let billingSubtext = 'Free Forever';
-
-            if (plan.monthlyPriceCents > 0) {
-              if (billingCycle === 'annual') {
-                const monthlyEquivalent = Math.round(plan.annualPriceCents / 12 / 100);
-                displayPrice = `$${monthlyEquivalent}`;
-                billingSubtext = `Billed annually ($${Math.round(plan.annualPriceCents / 100)}/yr)`;
-              } else {
-                displayPrice = `$${Math.round(plan.monthlyPriceCents / 100)}`;
-                billingSubtext = 'Billed monthly, cancel anytime';
-              }
-            }
-
-            return (
-              <div
-                key={plan.id}
-                className={`rounded-lg bg-white border p-6 flex flex-col justify-between transition-all ${
-                  isVerified
-                    ? 'border-brand-600 ring-2 ring-brand-500/20 shadow-md relative'
-                    : isPro
-                    ? 'border-slate-300 shadow-sm'
-                    : 'border-slate-200 shadow-sm'
-                }`}
-              >
-                <div>
-                  <div className="flex items-center justify-between mb-2">
-                    <h3 className="text-xl font-bold text-navy-900">{plan.name}</h3>
-                    {plan.badge && (
-                      <span
-                        className={`text-[10px] font-mono font-bold uppercase tracking-wider px-2 py-0.5 rounded ${
-                          isVerified
-                            ? 'bg-brand-600 text-white'
-                            : 'bg-slate-100 text-slate-700 border border-slate-200'
-                        }`}
-                      >
-                        {plan.badge}
-                      </span>
-                    )}
-                  </div>
-
-                  <p className="text-xs text-slate-500 leading-relaxed mb-6 min-h-[2.5rem]">
-                    {plan.description}
-                  </p>
-
-                  {/* Price Block */}
-                  <div className="mb-6 pb-6 border-b border-slate-100">
-                    <div className="flex items-baseline gap-1">
-                      <span className="text-4xl font-black text-navy-900 tracking-tight">{displayPrice}</span>
-                      {plan.monthlyPriceCents > 0 && (
-                        <span className="text-xs text-slate-500 font-mono">/ mo</span>
-                      )}
-                    </div>
-                    <div className="text-[11px] text-slate-400 font-mono mt-1">{billingSubtext}</div>
-                  </div>
-
-                  {/* Entitlements */}
-                  <div className="space-y-4 mb-6">
-                    <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider font-mono">
-                      Included Capabilities
-                    </div>
-                    <ul className="space-y-2.5 text-xs">
-                      {plan.features.map((feat, idx) => (
-                        <li
-                          key={idx}
-                          className={`flex items-start gap-2.5 ${
-                            feat.included ? 'text-slate-700' : 'text-slate-400 line-through'
-                          }`}
-                        >
-                          <span
-                            className={`font-bold shrink-0 ${
-                              feat.included ? 'text-brand-600' : 'text-slate-300'
-                            }`}
-                          >
-                            {feat.included ? '✓' : '✕'}
-                          </span>
-                          <span className="leading-snug">{feat.title}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
-
-                {/* Plan Action CTA */}
-                <div className="pt-6 border-t border-slate-100 mt-6">
-                  <Button
-                    href={`/sign-up?plan=${plan.id}&cycle=${billingCycle}`}
-                    size="md"
-                    variant={isVerified || isPro ? 'primary' : 'secondary'}
-                    className="w-full text-center"
-                  >
-                    {plan.ctaLabel}
-                  </Button>
-                </div>
-              </div>
-            );
-          })}
+          <PricingPageClient trustItems={TRUST_ITEMS} />
         </div>
       </section>
 
@@ -201,41 +111,12 @@ export default function PricingPage() {
         </div>
 
         <div className="space-y-4">
-          <div className="p-6 rounded-lg bg-white border border-slate-200 shadow-sm space-y-2">
-            <h3 className="font-bold text-navy-900 text-base">
-              Can I start on the Free Starter plan and upgrade later?
-            </h3>
-            <p className="text-slate-600 text-sm leading-relaxed">
-              Yes. You can start completely free, generate required safety forms like JHAs and JSAs, and upgrade to Professional or Verified when you need site-specific safety plans, automated expiration alerts, or verified Contractor Passport sharing.
-            </p>
-          </div>
-
-          <div className="p-6 rounded-lg bg-white border border-slate-200 shadow-sm space-y-2">
-            <h3 className="font-bold text-navy-900 text-base">
-              What is required for the Verified Contractor plan?
-            </h3>
-            <p className="text-slate-600 text-sm leading-relaxed">
-              The Verified tier includes review of your uploaded Certificate of Insurance against minimum commercial coverage limits, confirmation of active standing on state licensing board registries, and safety documentation audit to unlock the verified badge.
-            </p>
-          </div>
-
-          <div className="p-6 rounded-lg bg-white border border-slate-200 shadow-sm space-y-2">
-            <h3 className="font-bold text-navy-900 text-base">
-              Are payments and billing data secure?
-            </h3>
-            <p className="text-slate-600 text-sm leading-relaxed">
-              Paid subscription billing is currently in final integration and will be processed through an industry-standard, PCI-compliant payment processor. We will never store card numbers on our own servers. During the current beta phase, paid plan activation is handled manually — contact us to get started.
-            </p>
-          </div>
-
-          <div className="p-6 rounded-lg bg-white border border-slate-200 shadow-sm space-y-2">
-            <h3 className="font-bold text-navy-900 text-base">
-              Does Avorria issue government contractor licenses?
-            </h3>
-            <p className="text-slate-600 text-sm leading-relaxed">
-              No. Avorria is a private software platform and contractor operating infrastructure. We provide tools to organize, structure, and verify the credentials issued by state licensing boards and licensed insurance carriers.
-            </p>
-          </div>
+          {PRICING_FAQS.map((faq, idx) => (
+            <div key={idx} className="p-6 rounded-lg bg-white border border-slate-200 shadow-sm space-y-2">
+              <h3 className="font-bold text-navy-900 text-base">{faq.question}</h3>
+              <p className="text-slate-600 text-sm leading-relaxed">{faq.answer}</p>
+            </div>
+          ))}
         </div>
       </section>
 

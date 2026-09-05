@@ -7,11 +7,24 @@ import { RealContractorDocumentPreview } from '@/components/home/RealDocumentPre
 import { FileText, ShieldCheck, ClipboardCheck } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'Avorria | The Operating Platform for American Trade Contractors',
+  title: 'Contractor Compliance Software & Operating Platform | Avorria',
   description:
-    'Create professional documents, stay work-ready, prove your credentials and present your business with confidence — all from one platform.',
+    'Avorria is the contractor compliance software and operating platform for American trade contractors. Manage COI tracking, OSHA safety plans, licenses, and verified credentials in one system.',
   alternates: {
     canonical: siteConfig.url,
+  },
+  openGraph: {
+    title: 'Contractor Compliance Software & Operating Platform | Avorria',
+    description:
+      'Avorria is the contractor compliance software and operating platform for American trade contractors. Manage COI tracking, OSHA safety plans, licenses, and verified credentials in one system.',
+    url: siteConfig.url,
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Contractor Compliance Software & Operating Platform | Avorria',
+    description:
+      'Avorria is the contractor compliance software and operating platform for American trade contractors. Manage COI tracking, OSHA safety plans, licenses, and verified credentials in one system.',
   },
 };
 

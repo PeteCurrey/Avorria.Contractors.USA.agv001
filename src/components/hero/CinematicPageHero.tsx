@@ -90,7 +90,7 @@ export function CinematicPageHero({
         <div className="absolute inset-0 mix-blend-screen opacity-70 overflow-hidden">
           <Image
             src="/images/hero-american-flag-overlay.jpg"
-            alt="American flag billowing over American job sites"
+            alt="American flag billowing over commercial trade contractor project site"
             fill
             priority
             sizes="100vw"

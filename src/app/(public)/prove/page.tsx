@@ -3,13 +3,27 @@ import Link from 'next/link';
 import { Metadata } from 'next';
 import { siteConfig } from '@/config/site';
 import { ProductHero } from '@/components/hero/ProductHero';
+import { BreadcrumbJsonLd } from '@/components/seo/JsonLd';
 
 export const metadata: Metadata = {
-  title: 'Contractor Credibility & Evidence Verification | Avorria Prove',
+  title: 'Contractor Prequalification Profile & Passport | Avorria Prove',
   description:
-    'Turn your credentials into evidence clients can understand. Evidence-based review, auditable verification, and the shareable Contractor Passport.',
+    'Build a verified contractor prequalification profile and digital Contractor Passport. Transform insurance certificates, state licenses, and safety programs into auditable evidence for GCs.',
   alternates: {
     canonical: `${siteConfig.url}/prove`,
+  },
+  openGraph: {
+    title: 'Contractor Prequalification Profile & Passport | Avorria Prove',
+    description:
+      'Build a verified contractor prequalification profile and digital Contractor Passport. Transform insurance certificates, state licenses, and safety programs into auditable evidence for GCs.',
+    url: `${siteConfig.url}/prove`,
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Contractor Prequalification Profile & Passport | Avorria Prove',
+    description:
+      'Build a verified contractor prequalification profile and digital Contractor Passport. Transform insurance certificates, state licenses, and safety programs into auditable evidence for GCs.',
   },
 };
 
@@ -44,10 +58,16 @@ export default function ProvePage() {
 
   return (
     <div className="w-full bg-white text-navy-800">
+      <BreadcrumbJsonLd
+        breadcrumbs={[
+          { name: 'Home', item: '/' },
+          { name: 'Prove', item: '/prove' },
+        ]}
+      />
       <ProductHero
         eyebrow="PILLAR 04 / EVIDENCE & CREDIBILITY"
-        title={<>Turn your credentials into<br />evidence clients can understand.</>}
-        subtitle="Hollow claims don't get contractors onto tier-1 commercial job sites. Avorria transforms your active insurance policies, state trade licenses, and safety programs into an auditable credential that risk managers and general contractors respect."
+        title={<>Turn credentials into an auditable<br />contractor prequalification profile.</>}
+        subtitle="Hollow claims don't get contractors onto tier-1 commercial job sites. Avorria transforms your active insurance policies, state trade licenses, and safety programs into a verified contractor prequalification profile that general contractors and risk managers trust."
         primaryCta={{ label: 'Start Verification Process', href: '/sign-up' }}
         secondaryCta={{ label: 'Explore Contractor Passport', href: '/contractor-passport' }}
         pillars={[

@@ -46,7 +46,28 @@ export type NotificationType =
   | 'expiring_14'
   | 'expired'
   | 'passport_viewed'
-  | 'reorder_alert';
+  | 'reorder_alert'
+  | 'billing_alert'
+  | 'digest_summary';
+
+export type NotificationUrgency = 'info' | 'warning' | 'critical';
+export type DigestMode = 'immediate' | 'daily' | 'weekly';
+
+export interface NotificationPreferences {
+  expiry_alerts_email: boolean;
+  expiry_alerts_inapp: boolean;
+  billing_alerts_email: boolean;
+  digest_mode: DigestMode;
+  digest_day?: number; // 0=Sunday..6=Saturday, for weekly digests
+}
+
+export const DEFAULT_NOTIFICATION_PREFERENCES: NotificationPreferences = {
+  expiry_alerts_email: true,
+  expiry_alerts_inapp: true,
+  billing_alerts_email: true,
+  digest_mode: 'immediate',
+};
+
 
 export type SubscriptionTier =
   | 'free'
@@ -98,6 +119,7 @@ export interface WorkspaceUser {
   full_name: string;
   email?: string;
   phone?: string;
+  notification_preferences?: NotificationPreferences;
   created_at: string;
   updated_at: string;
 }
@@ -260,7 +282,10 @@ export interface WorkspaceNotification {
   org_id: string;
   user_id?: string;
   type: NotificationType;
+  urgency?: NotificationUrgency;
   related_credential_id?: string;
+  related_entity_type?: 'credential' | 'billing' | 'asset';
+  action_url?: string;
   sent_at: string;
   read_at?: string;
   message?: string;

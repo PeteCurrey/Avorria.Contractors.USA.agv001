@@ -3,13 +3,27 @@ import Link from 'next/link';
 import { Metadata } from 'next';
 import { siteConfig } from '@/config/site';
 import { CinematicPageHero } from '@/components/hero/CinematicPageHero';
+import { BreadcrumbJsonLd, SoftwareApplicationJsonLd } from '@/components/seo/JsonLd';
 
 export const metadata: Metadata = {
-  title: 'Platform Architecture & Operating System for Contractors | Avorria',
+  title: 'Contractor Operating System & OSHA Compliance Software | Avorria',
   description:
-    'Avorria is the unified operating platform for American contractors: Business Profile, Document Engine, Compliance Monitoring, Credibility Verification, and Win Work tools.',
+    'Avorria is the complete contractor operating system: OSHA compliance software for contractors, automated document creation, COI tracking, and prequalification tools.',
   alternates: {
     canonical: `${siteConfig.url}/platform`,
+  },
+  openGraph: {
+    title: 'Contractor Operating System & OSHA Compliance Software | Avorria',
+    description:
+      'Avorria is the complete contractor operating system: OSHA compliance software for contractors, automated document creation, COI tracking, and prequalification tools.',
+    url: `${siteConfig.url}/platform`,
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Contractor Operating System & OSHA Compliance Software | Avorria',
+    description:
+      'Avorria is the complete contractor operating system: OSHA compliance software for contractors, automated document creation, COI tracking, and prequalification tools.',
   },
 };
 
@@ -99,6 +113,18 @@ export default function PlatformPage() {
 
   return (
     <div className="w-full bg-white text-navy-800">
+      <SoftwareApplicationJsonLd
+        name="Avorria Contractor Operating System & Platform"
+        description="The unified contractor operating system: OSHA compliance software, automated JHA and safety plan creation, COI tracking, and credential verification."
+        url={`${siteConfig.url}/platform`}
+      />
+      <BreadcrumbJsonLd
+        breadcrumbs={[
+          { name: 'Home', item: '/' },
+          { name: 'Platform', item: '/platform' },
+        ]}
+      />
+
       <CinematicPageHero
         eyebrow="OPERATING SYSTEM ARCHITECTURE"
         title={<>The operating layer for<br />modern contractors.</>}
@@ -106,12 +132,12 @@ export default function PlatformPage() {
         primaryCta={{ label: 'Get Started Free', href: '/sign-up' }}
         secondaryCta={{ label: 'Explore the Platform', href: '#pillars' }}
         backgroundImage="/images/hero-platform.jpg"
-        backgroundAlt="High-tech commercial construction project control center at dusk"
+        backgroundAlt="Commercial construction site command center displaying digital contractor operating system and project controls"
         trustItems={['Business Identity', 'Document Engine', 'Compliance Monitoring', 'Evidence Verification', 'Win Work Suite']}
       />
 
       {/* 5 Editorial Pillar Walkthrough Sections */}
-      <div className="divide-y divide-slate-200">
+      <div id="pillars" className="divide-y divide-slate-200">
         {PILLARS.map((pillar, idx) => (
           <section
             key={pillar.id}

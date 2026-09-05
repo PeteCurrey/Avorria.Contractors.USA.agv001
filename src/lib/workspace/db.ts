@@ -16,6 +16,8 @@ import {
   PassportAccessLog,
   ToolboxTalkAttendance,
   WorkspaceNotification,
+  NotificationPreferences,
+  DEFAULT_NOTIFICATION_PREFERENCES,
 } from './types';
 
 interface WorkspaceStore {
@@ -521,4 +523,28 @@ export async function markNotificationRead(id: string): Promise<boolean> {
   store.notifications[id].read_at = new Date().toISOString();
   saveWorkspaceStore(store);
   return true;
+}
+
+// ─────────────────────────────────────────────────────────────
+// NOTIFICATION PREFERENCES (per-user, stored on user record)
+// ─────────────────────────────────────────────────────────────
+
+export async function getNotificationPreferences(userId: string): Promise<NotificationPreferences> {
+  const store = loadWorkspaceStore();
+  const user = store.users[userId];
+  return user?.notification_preferences ?? DEFAULT_NOTIFICATION_PREFERENCES;
+}
+
+export async function saveNotificationPreferences(
+  userId: string,
+  prefs: Partial<NotificationPreferences>
+): Promise<NotificationPreferences> {
+  const store = loadWorkspaceStore();
+  const user = store.users[userId];
+  if (!user) throw new Error(`User ${userId} not found`);
+  const current = user.notification_preferences ?? DEFAULT_NOTIFICATION_PREFERENCES;
+  const updated: NotificationPreferences = { ...current, ...prefs };
+  store.users[userId] = { ...user, notification_preferences: updated, updated_at: new Date().toISOString() };
+  saveWorkspaceStore(store);
+  return updated;
 }

@@ -70,7 +70,7 @@ export function CinematicHero() {
 
           {/* Subtitle */}
           <p className="text-sm sm:text-lg text-slate-300 max-w-xl font-extralight leading-relaxed">
-            Create professional documents, stay work-ready, prove your credentials, and present your business with confidence — all from one platform.
+            The all-in-one contractor compliance software and operating platform. Create professional safety documents, automate COI tracking, prove trade credentials, and win commercial contracts.
           </p>
 
           {/* CTAs */}

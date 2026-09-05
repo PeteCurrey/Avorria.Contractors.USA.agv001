@@ -61,6 +61,13 @@ export interface SeoRelatedItem {
   badge?: string;
 }
 
+export interface SeoBodySection {
+  heading: string;
+  subheading?: string;
+  content: string; // Markdown or sanitized HTML
+  bulletPoints?: string[];
+}
+
 export interface SeoPageModel {
   slug: string; // e.g., 'templates/job-hazard-analysis-jha'
   pageType: SeoPageType;
@@ -76,12 +83,7 @@ export interface SeoPageModel {
   // Rich Content
   intro: string;
   keyTakeaways?: string[];
-  bodySections: {
-    heading: string;
-    subheading?: string;
-    content: string; // Markdown or sanitized HTML
-    bulletPoints?: string[];
-  }[];
+  bodySections: SeoBodySection[];
 
   // Features / Requirements Checklist (if applicable)
   requirementsChecklist?: {

@@ -3,13 +3,27 @@ import Link from 'next/link';
 import { Metadata } from 'next';
 import { siteConfig } from '@/config/site';
 import { ProductHero } from '@/components/hero/ProductHero';
+import { BreadcrumbJsonLd } from '@/components/seo/JsonLd';
 
 export const metadata: Metadata = {
-  title: 'Contractor Compliance & Readiness Monitoring | Avorria Comply',
+  title: 'COI Tracking Software & Contractor License Tracking | Avorria Comply',
   description:
-    "Track Certificates of Insurance (COI), state trade licenses, workers' comp, and OSHA safety programs. Automated renewal alerts keep your business job-site ready.",
+    "Automated COI tracking software built for trade contractors. Track certificates of insurance, state trade licenses, workers' comp mandates, and job-site readiness in one platform.",
   alternates: {
     canonical: `${siteConfig.url}/comply`,
+  },
+  openGraph: {
+    title: 'COI Tracking Software & Contractor License Tracking | Avorria Comply',
+    description:
+      "Automated COI tracking software built for trade contractors. Track certificates of insurance, state trade licenses, workers' comp mandates, and job-site readiness in one platform.",
+    url: `${siteConfig.url}/comply`,
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'COI Tracking Software & Contractor License Tracking | Avorria Comply',
+    description:
+      "Automated COI tracking software built for trade contractors. Track certificates of insurance, state trade licenses, workers' comp mandates, and job-site readiness in one platform.",
   },
 };
 
@@ -59,10 +73,16 @@ export default function ComplyPage() {
 
   return (
     <div className="w-full bg-white text-navy-800">
+      <BreadcrumbJsonLd
+        breadcrumbs={[
+          { name: 'Home', item: '/' },
+          { name: 'Comply', item: '/comply' },
+        ]}
+      />
       <ProductHero
         eyebrow="PILLAR 03 / COMPLIANCE & READINESS"
-        title={<>Know what you need.<br />Know what's current.</>}
-        subtitle="Contractor compliance is not one-size-fits-all. Avorria organizes your business records by distinguishing legal statutory rules, trade engineering standards, client contract requirements, and internal platform readiness."
+        title={<>COI tracking software &<br />contractor compliance.</>}
+        subtitle="Automated COI tracking software built for trade contractors. Organize your business records by distinguishing legal statutory mandates, trade engineering standards, client certificate of insurance tracking requirements, and internal platform readiness."
         primaryCta={{ label: 'Start Tracking Compliance Free', href: '/sign-up' }}
         secondaryCta={{ label: 'View Compliance Checklist', href: '/guides/contractor-compliance-checklist' }}
         pillars={[

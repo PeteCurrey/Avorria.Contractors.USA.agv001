@@ -3,13 +3,27 @@ import Link from 'next/link';
 import { Metadata } from 'next';
 import { siteConfig } from '@/config/site';
 import { ProductHero } from '@/components/hero/ProductHero';
+import { BreadcrumbJsonLd } from '@/components/seo/JsonLd';
 
 export const metadata: Metadata = {
-  title: 'Create Professional Contractor Documents | Avorria Document Engine',
+  title: 'JHA Generator & Construction Safety Plan Software | Avorria Create',
   description:
-    'Generate job-ready safety, commercial, and operational documents: Job Hazard Analyses (JHA), Construction Safety Plans, Quotes, Proposals, and Change Orders.',
+    'OSHA-aligned JHA generator and construction safety plan software. Generate site-specific Job Hazard Analyses, JSAs, safety manuals, quotes, and proposals in minutes.',
   alternates: {
     canonical: `${siteConfig.url}/create`,
+  },
+  openGraph: {
+    title: 'JHA Generator & Construction Safety Plan Software | Avorria Create',
+    description:
+      'OSHA-aligned JHA generator and construction safety plan software. Generate site-specific Job Hazard Analyses, JSAs, safety manuals, quotes, and proposals in minutes.',
+    url: `${siteConfig.url}/create`,
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'JHA Generator & Construction Safety Plan Software | Avorria Create',
+    description:
+      'OSHA-aligned JHA generator and construction safety plan software. Generate site-specific Job Hazard Analyses, JSAs, safety manuals, quotes, and proposals in minutes.',
   },
 };
 
@@ -106,10 +120,16 @@ export default function CreatePage() {
 
   return (
     <div className="w-full bg-white text-navy-800">
+      <BreadcrumbJsonLd
+        breadcrumbs={[
+          { name: 'Home', item: '/' },
+          { name: 'Create', item: '/create' },
+        ]}
+      />
       <ProductHero
         eyebrow="AVORRIA DOCUMENT ENGINE"
-        title={<>Create professional contractor<br />documents in minutes.</>}
-        subtitle="Deterministic trade templates, real-world regulatory codes, and automated formatting. Create, review, and export audit-ready documents built for American job sites."
+        title={<>Job hazard analysis generator &<br />construction safety plan software.</>}
+        subtitle="Deterministic trade templates, real-world regulatory codes, and automated formatting. Create site-specific Job Hazard Analyses (JHA), JSAs, construction safety plans, and quotes built for American job sites."
         primaryCta={{ label: 'Try Free JHA Generator', href: '/tools/job-hazard-analysis-jha-generator' }}
         secondaryCta={{ label: 'Sign Up for Document Vault', href: '/sign-up' }}
         pillars={[
