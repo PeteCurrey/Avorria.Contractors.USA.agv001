@@ -1,5 +1,6 @@
 import { PDFDocument, PDFPage, PDFFont, StandardFonts, rgb } from 'pdf-lib';
 import { ContractorResource, ChecklistItemDef } from './catalogue';
+import { drawAvorriaBrandMark } from '../brand/pdf-brand';
 
 export interface ResourcePdfPayload {
   resource: ContractorResource;
@@ -144,17 +145,16 @@ export async function renderResourceToPdfBuffer(payload: ResourcePdfPayload): Pr
     color: primaryNavy,
   });
 
-  // Vector Brand Mark Accent (Restrained geometric motif)
-  currentPage.drawRectangle({
+  // Vector Brand Mark Accent (Authentic Avorria crystalline mark)
+  const markHeight = 22;
+  const { width: markWidth } = drawAvorriaBrandMark(currentPage, {
     x: margin + 12,
-    y: cursorY - 40,
-    width: 6,
-    height: 26,
-    color: accentBlue,
+    y: cursorY - 38,
+    height: markHeight,
   });
 
   currentPage.drawText(orgName.toUpperCase(), {
-    x: margin + 26,
+    x: margin + 18 + markWidth,
     y: cursorY - 24,
     size: 12.5,
     font: helveticaBold,
@@ -492,10 +492,16 @@ export async function renderResourceToPdfBuffer(payload: ResourcePdfPayload): Pr
       color: borderRule,
     });
 
+    drawAvorriaBrandMark(p, {
+      x: margin,
+      y: 24,
+      height: 9,
+    });
+
     p.drawText(
-      `AVORRIA CONTRACTOR OPERATING SYSTEM  •  ${refId}  •  PAGE ${index + 1} OF ${totalPages}`,
+      `Generated with Avorria  •  ${refId}  •  PAGE ${index + 1} OF ${totalPages}`,
       {
-        x: margin,
+        x: margin + 20,
         y: 26,
         size: 6.5,
         font: helveticaBold,

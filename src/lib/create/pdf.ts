@@ -9,11 +9,16 @@ import {
   QuoteDocumentContent,
   ChangeOrderDocumentContent,
 } from './types';
+import {
+  drawDocumentHeaderBanner,
+  drawAttributionFooter,
+} from '../brand/pdf-brand';
 
 export interface GeneratePdfOptions {
   document: WorkspaceDocument;
   organization: Organization;
-  watermark?: string; // e.g. "PREVIEW / WATERMARKED" for public unauthenticated generator
+  watermark?: string;
+  isPublic?: boolean;
 }
 
 /**
@@ -52,56 +57,20 @@ export async function renderDocumentToPdfBuffer(
   const accentOrange = rgb(0.976, 0.451, 0.086); // #F97316 SBB orange accent
 
   // ── 1. HEADER (BRANDING & METADATA) ──
-  page.drawRectangle({
-    x: margin,
-    y: cursorY - 50,
-    width: width - margin * 2,
-    height: 50,
-    color: primaryNavy,
+  const bannerBottomY = drawDocumentHeaderBanner(page, {
+    margin,
+    cursorY,
+    pageWidth: width,
+    fontBold: helveticaBold,
+    fontRegular: courier,
+    isPublic: options.isPublic,
+    orgName: org.name,
+    orgSubtitle: `${org.primary_trade.toUpperCase()} • ${org.states_licensed.join(', ') || 'USA'}`,
+    docTypeTitle: doc.type.replace(/_/g, ' '),
+    version: doc.version,
   });
 
-  // 2px SBB orange accent stripe under the header block
-  page.drawRectangle({
-    x: margin,
-    y: cursorY - 52,
-    width: width - margin * 2,
-    height: 2,
-    color: accentOrange,
-  });
-
-  page.drawText(org.name.toUpperCase(), {
-    x: margin + 12,
-    y: cursorY - 22,
-    size: 13,
-    font: helveticaBold,
-    color: rgb(1, 1, 1),
-  });
-
-  page.drawText(`${org.primary_trade.toUpperCase()} • ${org.states_licensed.join(', ') || 'USA'}`, {
-    x: margin + 12,
-    y: cursorY - 38,
-    size: 8,
-    font: courier,
-    color: rgb(0.7, 0.8, 0.9),
-  });
-
-  page.drawText(`VER. ${doc.version}`, {
-    x: width - margin - 65,
-    y: cursorY - 22,
-    size: 10,
-    font: courierBold,
-    color: accentOrange,
-  });
-
-  page.drawText(doc.type.replace('_', ' ').toUpperCase(), {
-    x: width - margin - 120,
-    y: cursorY - 38,
-    size: 8,
-    font: courier,
-    color: rgb(0.8, 0.8, 0.8),
-  });
-
-  cursorY -= 67;
+  cursorY = bannerBottomY - 18;
 
   // ── 2. DOCUMENT TITLE & SUBHEADER ──
   page.drawText(doc.title, {
@@ -465,16 +434,16 @@ export async function renderDocumentToPdfBuffer(
   }
 
   // ── 6. FOOTER ──
-  page.drawText(
-    `AVORRIA CONTRACTOR OPERATING SYSTEM  |  DOC: ${doc.id}  |  V${doc.version}  |  PAGE 1 OF 1`,
-    {
-      x: margin,
-      y: 20,
-      size: 6.5,
-      font: courier,
-      color: midSlate,
-    }
-  );
+  drawAttributionFooter(page, {
+    margin,
+    y: 20,
+    pageWidth: width,
+    font: courier,
+    fontBold: courierBold,
+    docId: doc.id,
+    version: doc.version,
+    isPublic: options.isPublic,
+  });
 
   return await pdfDoc.save();
 }
