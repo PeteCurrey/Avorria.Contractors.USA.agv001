@@ -2,6 +2,8 @@ import React from 'react';
 import Link from 'next/link';
 import { Metadata } from 'next';
 import { siteConfig } from '@/config/site';
+import { BreadcrumbJsonLd } from '@/components/seo/JsonLd';
+import { CinematicPageHero } from '@/components/hero/CinematicPageHero';
 
 export const metadata: Metadata = {
   title: 'Interactive Contractor Tools & Field Calculators | Avorria',
@@ -71,20 +73,26 @@ const TOOLS = [
 
 export default function ToolsIndexPage() {
   return (
-    <div className="min-h-screen bg-surface-page text-navy-800 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-7xl mx-auto space-y-12">
-        {/* Header */}
-        <div className="text-center max-w-3xl mx-auto space-y-4">
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-brand-50 border border-brand-200 text-brand-700 text-xs font-mono font-medium uppercase tracking-wider rounded-[4px]">
-            CONTRACTOR UTILITIES · PROFESSIONAL JOB TOOLS
-          </div>
-          <h1 className="text-3xl sm:text-5xl font-extralight text-navy-900 tracking-tight leading-tight">
-            Field Utilities &amp; Commercial Calculators
-          </h1>
-          <p className="text-sm sm:text-base text-slate-600 leading-relaxed font-extralight max-w-2xl mx-auto">
-            Practical digital utilities engineered for American trade contractors to evaluate site hazards, model commercial margins, and document compliance.
-          </p>
-        </div>
+    <div className="min-h-screen bg-surface-page text-navy-800">
+      <BreadcrumbJsonLd items={[
+        { name: 'Home', url: `${siteConfig.url}/` },
+        { name: 'Contractor Tools', url: `${siteConfig.url}/tools` },
+      ]} />
+      <CinematicPageHero
+        eyebrow="CONTRACTOR UTILITIES · PROFESSIONAL JOB TOOLS"
+        title={<>Field Utilities &amp;<br />Commercial Calculators.</>}
+        subtitle="Practical digital utilities engineered for American trade contractors to evaluate site hazards, model commercial margins, and document compliance."
+        primaryCta={{ label: 'Launch JHA Generator', href: '/tools/job-hazard-analysis-jha-generator' }}
+        secondaryCta={{ label: 'Margin & Quote Calculator', href: '/tools/contractor-quote-calculator' }}
+        backgroundImage="/images/hero-tools.jpg"
+        backgroundAlt="Trade contractor foreman utilizing digital hazard assessment tool and engineering calculations in field vehicle"
+        pillars={[
+          { title: 'OSHA 1926 Safety Forms', description: 'Step-by-step Job Hazard Analysis with codified control measures and signed sign-offs.' },
+          { title: 'Commercial Labor Burden', description: 'Accurate fully burdened labor rate calculators with worker comp and payroll overhead.' },
+          { title: 'Immediate PDF Exports', description: 'Generate branded commercial documentation ready for GC review in under 2 minutes.' },
+        ]}
+      />
+      <div className="max-w-7xl mx-auto space-y-12 py-16 px-4 sm:px-6 lg:px-8">
 
         {/* Featured Flagship Card */}
         <div className="bg-white border border-slate-200 shadow-sm p-8 sm:p-10 space-y-4 max-w-4xl mx-auto rounded-lg">

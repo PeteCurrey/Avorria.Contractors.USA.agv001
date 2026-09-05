@@ -5,11 +5,6 @@ import { usePathname } from 'next/navigation';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 
-const FULLSCREEN_HERO_ROUTES = new Set([
-  '/',
-  '/about',
-  '/platform',
-]);
 
 export default function PublicLayout({
   children,
@@ -23,7 +18,11 @@ export default function PublicLayout({
     return <>{children}</>;
   }
 
-  const hasFullscreenHero = FULLSCREEN_HERO_ROUTES.has(pathname);
+  // All pages apart from the Resources pages have a full screen hero,
+  // except these content-only tool/utility pages which have no hero image.
+  const isResourcePage = pathname ? pathname === '/resources' || pathname.startsWith('/resources/') : false;
+  const isContentOnlyPage = pathname === '/tools/job-hazard-analysis-jha-generator';
+  const hasFullscreenHero = !isResourcePage && !isContentOnlyPage;
 
   return (
     <>

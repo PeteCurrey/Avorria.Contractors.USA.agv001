@@ -2,6 +2,7 @@ import React from 'react';
 import { Metadata } from 'next';
 import { siteConfig } from '@/config/site';
 import { ContactFormClient } from './ContactFormClient';
+import { BreadcrumbJsonLd } from '@/components/seo/JsonLd';
 
 export const metadata: Metadata = {
   title: 'Contact Avorria | Support & Commercial Inquiries',
@@ -15,6 +16,10 @@ export const metadata: Metadata = {
 export default function ContactPage() {
   return (
     <div className="min-h-screen bg-surface-page py-16 px-4 sm:px-6 lg:px-8 text-navy-800">
+      <BreadcrumbJsonLd items={[
+        { name: 'Home', url: `${siteConfig.url}/` },
+        { name: 'Contact', url: `${siteConfig.url}/contact` },
+      ]} />
       <div className="max-w-5xl mx-auto space-y-12 text-left">
         {/* Header */}
         <div className="space-y-4 max-w-2xl border-b border-slate-200 pb-8">

@@ -3,6 +3,8 @@ import Link from 'next/link';
 import { Metadata } from 'next';
 import { siteConfig } from '@/config/site';
 import { INITIAL_SEO_PAGES } from '@/lib/seo/registry';
+import { BreadcrumbJsonLd } from '@/components/seo/JsonLd';
+import { CinematicPageHero } from '@/components/hero/CinematicPageHero';
 
 export const metadata: Metadata = {
   title: 'Contractor Compliance by Industry & Trade | Avorria',
@@ -29,21 +31,24 @@ export default function IndustriesPage() {
 
   return (
     <div className="min-h-screen bg-surface-page">
-      <section className="bg-[#070c18] border-b border-slate-800 py-16 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
-          <span className="font-mono text-xs text-[#38bdf8] uppercase tracking-widest">
-            Trade-Specific Compliance
-          </span>
-          <h1 className="mt-3 text-4xl sm:text-5xl font-extralight text-white leading-tight">
-            Contractor compliance<br />
-            <span className="text-[#38bdf8]">by industry &amp; trade.</span>
-          </h1>
-          <p className="mt-4 text-slate-400 text-sm sm:text-base max-w-2xl leading-relaxed font-extralight">
-            Every trade carries its own licensing boards, OSHA standards, insurance thresholds, and documentation requirements.
-            Avorria structures compliance around your specific trade so nothing falls through the cracks.
-          </p>
-        </div>
-      </section>
+      <BreadcrumbJsonLd items={[
+        { name: 'Home', url: `${siteConfig.url}/` },
+        { name: 'Trade Compliance Guides', url: `${siteConfig.url}/industries` },
+      ]} />
+      <CinematicPageHero
+        eyebrow="TRADE-SPECIFIC COMPLIANCE"
+        title={<>Contractor compliance<br />by industry &amp; trade.</>}
+        subtitle="Every trade carries its own licensing boards, OSHA standards, insurance thresholds, and documentation requirements. Avorria structures compliance around your specific trade so nothing falls through the cracks."
+        primaryCta={{ label: 'Electrical Compliance', href: '/industries/electrical-contractor-compliance' }}
+        secondaryCta={{ label: 'HVAC Standards', href: '/industries/hvac-contractor-compliance' }}
+        backgroundImage="/images/hero-industries.jpg"
+        backgroundAlt="Specialized commercial trade craftsmen, pipefitters, and electrical technicians performing precision installations on industrial facility"
+        pillars={[
+          { title: 'OSHA 1926 Code Overlays', description: 'Trade-specific OSHA standards: Subpart K (Electrical), Subpart R (Steel), Subpart M (Fall).' },
+          { title: 'Master Trade Licensing', description: 'Qualifying master licenses, apprentice ratios, and mandatory trade board qualifications.' },
+          { title: 'Critical Hazard Controls', description: 'Pre-built Job Hazard Analyses and safe work procedures mapped directly to your trade scope.' },
+        ]}
+      />
 
       <section className="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">

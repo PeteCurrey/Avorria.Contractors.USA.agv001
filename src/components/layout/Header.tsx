@@ -122,15 +122,6 @@ const RESOURCE_ITEMS: NavDropdownItem[] = [
 
 type DropdownKey = 'platform' | 'win-work' | 'resources' | null;
 
-const DARK_HERO_ROUTES = new Set([
-  '/',
-  '/about',
-  '/platform',
-  '/contractors',
-  '/states',
-  '/industries',
-]);
-
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [mobileExpandedSection, setMobileExpandedSection] = useState<string | null>(null);
@@ -143,7 +134,14 @@ export function Header() {
   const [assembling, setAssembling] = useState(false);
   const closeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  const isLight = !DARK_HERO_ROUTES.has(pathname);
+  const isLight = Boolean(
+    pathname &&
+    (
+      pathname === '/resources' ||
+      pathname.startsWith('/resources/') ||
+      pathname === '/tools/job-hazard-analysis-jha-generator'
+    )
+  );
   const isScrolledOrOpen = scrolled || mobileMenuOpen || activeDropdown !== null;
 
   // Brand mark entrance animation
@@ -297,7 +295,7 @@ export function Header() {
               : 'border-b border-transparent bg-transparent'
             : isScrolledOrOpen
               ? 'border-b border-sky-500/20 bg-[#07132b]/80 backdrop-blur-lg shadow-lg shadow-[#020817]/50'
-              : 'border-b border-white/[0.06] bg-gradient-to-b from-[#040813]/95 via-[#040813]/60 to-transparent'
+              : 'border-b border-transparent bg-transparent'
         }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-[72px] flex items-center justify-between">

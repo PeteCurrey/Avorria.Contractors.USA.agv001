@@ -2,7 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import { Metadata } from 'next';
 import { siteConfig } from '@/config/site';
-import { ProductHero } from '@/components/hero/ProductHero';
+import { CinematicPageHero } from '@/components/hero/CinematicPageHero';
 import { BreadcrumbJsonLd } from '@/components/seo/JsonLd';
 
 export const metadata: Metadata = {
@@ -126,12 +126,14 @@ export default function CreatePage() {
           { name: 'Create', item: '/create' },
         ]}
       />
-      <ProductHero
+      <CinematicPageHero
         eyebrow="AVORRIA DOCUMENT ENGINE"
-        title={<>Job hazard analysis generator &<br />construction safety plan software.</>}
+        title={<>Job hazard analysis generator &amp;<br />construction safety plan software.</>}
         subtitle="Deterministic trade templates, real-world regulatory codes, and automated formatting. Create site-specific Job Hazard Analyses (JHA), JSAs, construction safety plans, and quotes built for American job sites."
         primaryCta={{ label: 'Try Free JHA Generator', href: '/tools/job-hazard-analysis-jha-generator' }}
         secondaryCta={{ label: 'Sign Up for Document Vault', href: '/sign-up' }}
+        backgroundImage="/images/hero-create.jpg"
+        backgroundAlt="Trade contractor foreman generating OSHA Job Hazard Analysis on rugged mobile tablet on commercial framing site"
         pillars={[
           { title: 'OSHA-Aligned Safety Forms', description: 'Job Hazard Analyses, Toolbox Talk Records, and Site Safety Inspection reports structured to OSHA 1926 and 1910.' },
           { title: 'Commercial Documents', description: 'Bid proposals, quotes with burden multipliers, change orders, and invoice templates built for trade contracting.' },

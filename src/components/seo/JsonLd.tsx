@@ -88,25 +88,40 @@ export function WebSiteJsonLd({ url }: WebSiteJsonLdProps) {
   );
 }
 
+interface BreadcrumbItemInput {
+  name: string;
+  item?: string;
+  url?: string;
+}
+
+type AnyBreadcrumb = SeoBreadcrumbItem & BreadcrumbItemInput;
+
 interface BreadcrumbJsonLdProps {
-  breadcrumbs: SeoBreadcrumbItem[];
+  breadcrumbs?: SeoBreadcrumbItem[] | BreadcrumbItemInput[];
+  items?: BreadcrumbItemInput[];
   baseUrl?: string;
 }
 
-export function BreadcrumbJsonLd({ breadcrumbs, baseUrl }: BreadcrumbJsonLdProps) {
-  if (!breadcrumbs || breadcrumbs.length === 0) return null;
+export function BreadcrumbJsonLd({ breadcrumbs, items, baseUrl }: BreadcrumbJsonLdProps) {
+  const rawList = breadcrumbs || items;
+  if (!rawList || rawList.length === 0) return null;
 
   const effectiveBaseUrl = getCanonicalUrl(baseUrl);
 
   const schema = {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
-    itemListElement: breadcrumbs.map((crumb, idx) => ({
-      '@type': 'ListItem',
-      position: idx + 1,
-      name: crumb.name,
-      item: crumb.item.startsWith('http') ? crumb.item : `${effectiveBaseUrl}${crumb.item.startsWith('/') ? crumb.item : `/${crumb.item}`}`,
-    })),
+    itemListElement: (rawList as AnyBreadcrumb[]).map((crumb, idx) => {
+      const targetUrl = crumb.item || crumb.url || '';
+      return {
+        '@type': 'ListItem',
+        position: idx + 1,
+        name: crumb.name,
+        item: targetUrl.startsWith('http')
+          ? targetUrl
+          : `${effectiveBaseUrl}${targetUrl.startsWith('/') ? targetUrl : `/${targetUrl}`}`,
+      };
+    }),
   };
 
   return (

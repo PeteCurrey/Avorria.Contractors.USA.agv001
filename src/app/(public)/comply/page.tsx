@@ -2,7 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import { Metadata } from 'next';
 import { siteConfig } from '@/config/site';
-import { ProductHero } from '@/components/hero/ProductHero';
+import { CinematicPageHero } from '@/components/hero/CinematicPageHero';
 import { BreadcrumbJsonLd } from '@/components/seo/JsonLd';
 
 export const metadata: Metadata = {
@@ -79,12 +79,14 @@ export default function ComplyPage() {
           { name: 'Comply', item: '/comply' },
         ]}
       />
-      <ProductHero
+      <CinematicPageHero
         eyebrow="PILLAR 03 / COMPLIANCE & READINESS"
-        title={<>COI tracking software &<br />contractor compliance.</>}
+        title={<>COI tracking software &amp;<br />contractor compliance.</>}
         subtitle="Automated COI tracking software built for trade contractors. Organize your business records by distinguishing legal statutory mandates, trade engineering standards, client certificate of insurance tracking requirements, and internal platform readiness."
         primaryCta={{ label: 'Start Tracking Compliance Free', href: '/sign-up' }}
         secondaryCta={{ label: 'View Compliance Checklist', href: '/guides/contractor-compliance-checklist' }}
+        backgroundImage="/images/hero-comply.jpg"
+        backgroundAlt="Commercial trade contractors reviewing certificates of insurance and compliance documentation on jobsite"
         pillars={[
           { title: 'Certificate of Insurance Tracking', description: 'Monitor COI expiry, occurrence limits, aggregate coverage, and endorsement status in one place.' },
           { title: 'Trade License Monitoring', description: 'Track state licensing board status, designated qualifying parties, and renewal windows across jurisdictions.' },

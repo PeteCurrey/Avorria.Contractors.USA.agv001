@@ -1,15 +1,23 @@
 import React from 'react';
 import { Metadata } from 'next';
 import { siteConfig } from '@/config/site';
+import { BreadcrumbJsonLd } from '@/components/seo/JsonLd';
 
 export const metadata: Metadata = {
   title: 'Compliance & Legal Disclaimer | Avorria',
   description: 'Regulatory status notice and compliance disclaimer for the Avorria contractor operating platform.',
+  alternates: {
+    canonical: `${siteConfig.url}/disclaimer`,
+  },
 };
 
 export default function DisclaimerPage() {
   return (
     <div className="min-h-screen bg-surface-page py-16 px-4 sm:px-6 lg:px-8 text-navy-800">
+      <BreadcrumbJsonLd items={[
+        { name: 'Home', url: `${siteConfig.url}/` },
+        { name: 'Legal Disclaimer', url: `${siteConfig.url}/disclaimer` },
+      ]} />
       <div className="max-w-4xl mx-auto bg-white border border-slate-200 rounded-lg p-8 sm:p-12 shadow-sm space-y-8 text-left">
         <div className="border-b border-slate-200 pb-6">
           <div className="text-[11px] font-mono uppercase tracking-widest text-brand-700 font-medium mb-1.5">

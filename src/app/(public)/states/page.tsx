@@ -3,6 +3,8 @@ import Link from 'next/link';
 import { Metadata } from 'next';
 import { siteConfig } from '@/config/site';
 import { INITIAL_SEO_PAGES } from '@/lib/seo/registry';
+import { BreadcrumbJsonLd } from '@/components/seo/JsonLd';
+import { CinematicPageHero } from '@/components/hero/CinematicPageHero';
 
 export const metadata: Metadata = {
   title: 'Contractor Licensing & Compliance by State | Avorria',
@@ -78,21 +80,24 @@ export default function StatesPage() {
 
   return (
     <div className="min-h-screen bg-surface-page">
-      <section className="bg-[#070c18] border-b border-slate-800 py-16 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
-          <span className="font-mono text-xs text-[#38bdf8] uppercase tracking-widest">
-            State-by-State Compliance
-          </span>
-          <h1 className="mt-3 text-4xl sm:text-5xl font-extralight text-white leading-tight">
-            Contractor licensing &amp;<br />
-            <span className="text-[#38bdf8]">compliance by state.</span>
-          </h1>
-          <p className="mt-4 text-slate-400 text-sm sm:text-base max-w-2xl leading-relaxed font-extralight">
-            Contractor licensing rules, workers&apos; compensation requirements, insurance minimums, and permit processes
-            vary significantly across all 50 states. Find your state&apos;s specific compliance guide below.
-          </p>
-        </div>
-      </section>
+      <BreadcrumbJsonLd items={[
+        { name: 'Home', url: `${siteConfig.url}/` },
+        { name: 'State Compliance Guides', url: `${siteConfig.url}/states` },
+      ]} />
+      <CinematicPageHero
+        eyebrow="STATE-BY-STATE COMPLIANCE"
+        title={<>Contractor licensing &amp;<br />compliance by state.</>}
+        subtitle="Contractor licensing rules, workers' compensation mandates, insurance minimums, and permit processes vary significantly across all 50 states. Access your jurisdiction's authoritative commercial operating guide."
+        primaryCta={{ label: 'Texas Requirements', href: '/states/texas-contractor-requirements' }}
+        secondaryCta={{ label: 'California Standards', href: '/states/california-contractor-requirements' }}
+        backgroundImage="/images/hero-states.jpg"
+        backgroundAlt="Panoramic aerial view of American civil infrastructure, highway bridges, and commercial construction projects spanning US states"
+        pillars={[
+          { title: '50-State Licensing Directory', description: 'Statutory boards, designated qualifying agent criteria, and reciprocal state recognition.' },
+          { title: 'Insurance & Bond Mandates', description: 'Statutory minimum GL limits, surety bond thresholds, and required endorsements by jurisdiction.' },
+          { title: "Workers' Comp Compliance", description: 'Employee count thresholds, corporate officer exemption filing rules, and stop-work penalties.' },
+        ]}
+      />
 
       <section className="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3">

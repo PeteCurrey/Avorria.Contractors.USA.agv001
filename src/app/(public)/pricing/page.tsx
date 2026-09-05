@@ -7,6 +7,7 @@ import {
   FaqJsonLd,
   SoftwareApplicationJsonLd,
 } from '@/components/seo/JsonLd';
+import { CinematicPageHero } from '@/components/hero/CinematicPageHero';
 import { PricingPageClient } from './PricingPageClient';
 
 export const metadata: Metadata = {
@@ -79,23 +80,36 @@ export default function PricingPage() {
         ]}
       />
 
-      {/* ── CLEAN ABOVE-THE-FOLD ENTERPRISE PRICING HEADER ── */}
-      <section className="bg-white border-b border-slate-200/80 pt-10 pb-8 px-4 sm:px-6 lg:px-8 text-center">
-        <div className="max-w-4xl mx-auto space-y-4">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-sky-600/20 bg-sky-50">
-            <span className="w-1.5 h-1.5 rounded-full bg-sky-600" />
-            <span className="text-[11px] font-mono font-semibold tracking-[0.16em] uppercase text-sky-800">
-              TRANSPARENT COMMERCIAL PRICING
+      {/* ── CINEMATIC FULL-SCREEN PRICING HERO ── */}
+      <CinematicPageHero
+        eyebrow="TRANSPARENT COMMERCIAL PRICING"
+        title={<>Transparent pricing for<br />serious contractors.</>}
+        subtitle="From independent specialty trades generating their first JHA to growing multi-crew firms managing commercial pre-qualification dossiers."
+        primaryCta={{ label: 'View Pricing Plans', href: '#plans' }}
+        secondaryCta={{ label: 'Explore Platform', href: '/platform' }}
+        backgroundImage="/images/hero-pricing.jpg"
+        backgroundAlt="Commercial trade contractors and estimating team reviewing project bids and contractor operating platform"
+        pillars={[
+          { title: 'Free Starter Access', description: 'Zero barrier to entry. Create unlimited single-use JHAs, JSAs, and daily reports at no cost.' },
+          { title: 'Predictable Monthly Rates', description: 'No hidden setup fees, surprise per-seat penalties, or convoluted enterprise contracts.' },
+          { title: 'Commercial ROI', description: 'Win higher margin subcontracts with instant pre-qualification packs and verified credentials.' },
+        ]}
+      />
+
+      {/* ── PRICING PLANS & BILLING TOGGLE ── */}
+      <section id="plans" className="bg-surface-page py-20 lg:py-28 px-4 sm:px-6 lg:px-8 border-b border-slate-200/80">
+        <div className="max-w-7xl mx-auto space-y-10 text-center">
+          <div className="max-w-3xl mx-auto space-y-3">
+            <span className="font-mono text-xs text-brand-600 uppercase tracking-widest font-semibold">
+              Select Your Tier
             </span>
+            <h2 className="text-3xl sm:text-4xl font-black text-navy-900 tracking-tight">
+              Simple, transparent contractor tiers.
+            </h2>
+            <p className="text-slate-600 text-sm sm:text-base max-w-2xl mx-auto font-normal leading-relaxed">
+              Choose the right operational capability for your business size and client requirements.
+            </p>
           </div>
-
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extralight text-navy-900 tracking-tight leading-tight">
-            Transparent pricing for serious contractors.
-          </h1>
-
-          <p className="text-slate-600 text-sm sm:text-base max-w-2xl mx-auto font-normal leading-relaxed">
-            From independent specialty trades generating their first JHA to growing multi-crew firms managing commercial pre-qualification dossiers.
-          </p>
 
           <PricingPageClient trustItems={TRUST_ITEMS} />
         </div>

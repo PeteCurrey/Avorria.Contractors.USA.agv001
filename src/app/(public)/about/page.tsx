@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { Metadata } from 'next';
 import { siteConfig } from '@/config/site';
 import { CheckCircle2, ArrowRight } from 'lucide-react';
+import { BreadcrumbJsonLd } from '@/components/seo/JsonLd';
 
 export const metadata: Metadata = {
   title: 'About Avorria | The Professional Contractor Platform',
@@ -76,6 +77,10 @@ const VALUES = [
 export default function AboutPage() {
   return (
     <div className="w-full bg-white text-navy-800">
+      <BreadcrumbJsonLd items={[
+        { name: 'Home', url: `${siteConfig.url}/` },
+        { name: 'About', url: `${siteConfig.url}/about` },
+      ]} />
 
       {/* ===================================================================== */}
       {/* SECTION 1: FULL-SCREEN CINEMATIC HERO (DARK)                          */}

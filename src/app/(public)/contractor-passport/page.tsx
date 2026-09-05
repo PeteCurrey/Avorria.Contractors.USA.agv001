@@ -2,7 +2,8 @@ import React from 'react';
 import Link from 'next/link';
 import { Metadata } from 'next';
 import { siteConfig } from '@/config/site';
-import { ProductHero } from '@/components/hero/ProductHero';
+import { CinematicPageHero } from '@/components/hero/CinematicPageHero';
+import { BreadcrumbJsonLd } from '@/components/seo/JsonLd';
 
 export const metadata: Metadata = {
   title: 'Contractor Passport | Professional Credential Infrastructure | Avorria',
@@ -51,12 +52,18 @@ export default function ContractorPassportPage() {
 
   return (
     <div className="w-full bg-white text-navy-800">
-      <ProductHero
+      <BreadcrumbJsonLd items={[
+        { name: 'Home', url: `${siteConfig.url}/` },
+        { name: 'Contractor Passport', url: `${siteConfig.url}/contractor-passport` },
+      ]} />
+      <CinematicPageHero
         eyebrow="THE AVORRIA CONTRACTOR PASSPORT"
         title={<>Your business. Your credentials.<br />One professional Passport.</>}
         subtitle="Eliminate disorganized PDF attachments, lost insurance certificates, and amateur email threads. The Contractor Passport organizes the verifiable facts of your business into an authoritative digital credential."
         primaryCta={{ label: 'Build Your Passport Free', href: '/sign-up' }}
         secondaryCta={{ label: 'How Verification Works', href: '/prove' }}
+        backgroundImage="/images/hero-passport.jpg"
+        backgroundAlt="Audited digital contractor passport credential displayed on mobile device in the field"
         pillars={[
           { title: 'Unified Digital Dossier', description: 'Consolidate active COIs, state trade licenses, safety programs, and corporate identities into one secure record.' },
           { title: 'Auditable Standing', description: 'Rigorous validation against published criteria with immutable audit trails and real-time status.' },

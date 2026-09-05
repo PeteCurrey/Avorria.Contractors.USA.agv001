@@ -3,6 +3,8 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 import { Button } from '@/components/ui/Button';
 import { Card, CardTitle, CardDescription } from '@/components/ui/Card';
+import { BreadcrumbJsonLd } from '@/components/seo/JsonLd';
+import { CinematicPageHero } from '@/components/hero/CinematicPageHero';
 
 export const metadata: Metadata = {
   title: 'Contractor Verification Programme | Avorria',
@@ -15,28 +17,26 @@ export const metadata: Metadata = {
 
 export default function ContractorVerificationOverviewPage() {
   return (
-    <div className="min-h-screen bg-surface-page py-16 px-4 sm:px-6 lg:px-8 text-navy-800">
-      <div className="max-w-5xl mx-auto space-y-14 text-left">
-        {/* Hero Section */}
-        <div className="space-y-4 border-b border-slate-200 pb-10">
-          <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-[4px] bg-brand-50 border border-brand-200 text-brand-700 font-mono text-xs font-medium">
-            <span>STANDARDS & VERIFICATION PROGRAM</span>
-          </div>
-          <h1 className="text-3xl sm:text-5xl font-extralight text-navy-900 tracking-tight leading-tight">
-            Evidence-Backed, Not Badge-Backed.
-          </h1>
-          <p className="text-base sm:text-lg text-slate-600 max-w-2xl leading-relaxed font-extralight">
-            Avorria verifies commercial trade contractors against published, objective verification criteria using submitted operational evidence. We believe serious contractors deserve professional proof, not automated vanity badges.
-          </p>
-          <div className="pt-2 flex flex-wrap gap-3">
-            <Button href="/verification/criteria" variant="primary">
-              View Published Verification Criteria →
-            </Button>
-            <Button href="/sign-up" variant="outline">
-              Join Avorria & Build Passport
-            </Button>
-          </div>
-        </div>
+    <div className="min-h-screen bg-surface-page text-navy-800">
+      <BreadcrumbJsonLd items={[
+        { name: 'Home', url: 'https://avorria.com/' },
+        { name: 'Contractor Verification', url: 'https://avorria.com/contractor-verification' },
+      ]} />
+      <CinematicPageHero
+        eyebrow="STANDARDS &amp; VERIFICATION PROGRAM"
+        title={<>Evidence-Backed,<br />Not Badge-Backed.</>}
+        subtitle="Avorria verifies commercial trade contractors against published, objective verification criteria using submitted operational evidence. We believe serious contractors deserve professional proof, not automated vanity badges."
+        primaryCta={{ label: 'View Published Criteria', href: '/verification/criteria' }}
+        secondaryCta={{ label: 'Join Avorria & Build Passport', href: '/sign-up' }}
+        backgroundImage="/images/hero-verification.jpg"
+        backgroundAlt="Quality control compliance inspector reviewing trade certifications and engineering blueprints on commercial site"
+        pillars={[
+          { title: 'Human Evidence Inspection', description: 'Qualified compliance reviewers inspect insurance certificates, state licenses, and safety programs.' },
+          { title: 'Cryptographic Integrity', description: 'Underlying document hashes are stored; modified records automatically trigger re-verification.' },
+          { title: 'Continuous Monitoring', description: 'Expiring policies or altered standing immediately flag renewal alerts before job site audits.' },
+        ]}
+      />
+      <div className="max-w-5xl mx-auto space-y-14 text-left py-16 px-4 sm:px-6 lg:px-8">
 
         {/* 1. What Verification Means vs What It Does Not Mean */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">

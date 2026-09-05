@@ -2,6 +2,7 @@ import React from 'react';
 import { Metadata } from 'next';
 import { siteConfig } from '@/config/site';
 import { PublicQuoteCalculatorClient } from './PublicQuoteCalculatorClient';
+import { BreadcrumbJsonLd } from '@/components/seo/JsonLd';
 
 export const metadata: Metadata = {
   title: 'Free Contractor Quote & Margin Calculator | Avorria',
@@ -13,5 +14,14 @@ export const metadata: Metadata = {
 };
 
 export default function ContractorQuoteCalculatorPage() {
-  return <PublicQuoteCalculatorClient />;
+  return (
+    <>
+      <BreadcrumbJsonLd items={[
+        { name: 'Home', url: `${siteConfig.url}/` },
+        { name: 'Contractor Tools', url: `${siteConfig.url}/tools` },
+        { name: 'Quote Calculator', url: `${siteConfig.url}/tools/contractor-quote-calculator` },
+      ]} />
+      <PublicQuoteCalculatorClient />
+    </>
+  );
 }

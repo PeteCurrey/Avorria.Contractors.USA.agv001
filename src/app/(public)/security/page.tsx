@@ -1,15 +1,23 @@
 import React from 'react';
 import { Metadata } from 'next';
 import { siteConfig } from '@/config/site';
+import { BreadcrumbJsonLd } from '@/components/seo/JsonLd';
 
 export const metadata: Metadata = {
   title: 'Security Architecture & Data Protection | Avorria',
   description: 'Learn how Avorria protects contractor business records, Certificates of Insurance, and multi-tenant data.',
+  alternates: {
+    canonical: `${siteConfig.url}/security`,
+  },
 };
 
 export default function SecurityPage() {
   return (
     <div className="min-h-screen bg-surface-page py-16 px-4 sm:px-6 lg:px-8 text-navy-800">
+      <BreadcrumbJsonLd items={[
+        { name: 'Home', url: `${siteConfig.url}/` },
+        { name: 'Security Architecture', url: `${siteConfig.url}/security` },
+      ]} />
       <div className="max-w-4xl mx-auto bg-white border border-slate-200 rounded-lg p-8 sm:p-12 shadow-sm space-y-8 text-left">
         <div className="border-b border-slate-200 pb-6">
           <div className="text-[11px] font-mono uppercase tracking-widest text-brand-700 font-medium mb-1.5">

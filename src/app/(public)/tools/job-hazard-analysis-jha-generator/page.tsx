@@ -2,6 +2,7 @@ import React from 'react';
 import { Metadata } from 'next';
 import { siteConfig } from '@/config/site';
 import { PublicJhaToolClient } from './PublicJhaToolClient';
+import { BreadcrumbJsonLd } from '@/components/seo/JsonLd';
 
 export const metadata: Metadata = {
   title: 'Free Job Hazard Analysis (JHA) Generator | Avorria',
@@ -12,5 +13,14 @@ export const metadata: Metadata = {
 };
 
 export default function PublicJhaToolPage() {
-  return <PublicJhaToolClient />;
+  return (
+    <>
+      <BreadcrumbJsonLd items={[
+        { name: 'Home', url: `${siteConfig.url}/` },
+        { name: 'Contractor Tools', url: `${siteConfig.url}/tools` },
+        { name: 'JHA Generator', url: `${siteConfig.url}/tools/job-hazard-analysis-jha-generator` },
+      ]} />
+      <PublicJhaToolClient />
+    </>
+  );
 }

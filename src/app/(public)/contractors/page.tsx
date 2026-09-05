@@ -8,6 +8,7 @@ import { ContractorCard } from '@/components/directory/ContractorCard';
 import { DirectorySearchFilters } from '@/components/directory/DirectorySearchFilters';
 import { ShortlistProvider } from '@/components/shortlist/ShortlistContext';
 import { ShieldCheck } from 'lucide-react';
+import { CinematicPageHero } from '@/components/hero/CinematicPageHero';
 
 interface Props {
   searchParams: Promise<{
@@ -99,48 +100,27 @@ export default async function ContractorsDirectoryPage({ searchParams }: Props) 
 
       <div className="min-h-screen bg-surface-page">
         {/* ========================================================================= */}
-        {/* HERO SECTION — Cinematic, Institutional Trust Direction                  */}
+        {/* HERO SECTION — Cinematic Full-Screen Contractor Directory Hero           */}
         {/* ========================================================================= */}
-        <section className="relative overflow-hidden bg-[#070c18] border-b border-navy-800 text-white pt-12 pb-16 lg:pt-16 lg:pb-20">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 space-y-6">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-navy-800/80 border border-navy-700/80 text-brand-400 text-xs font-mono font-medium tracking-wide">
-              <span>DISCOVER</span>
-              <span>·</span>
-              <span>CANONICAL CONTRACTOR DIRECTORY</span>
-            </div>
-
-            <div className="max-w-3xl space-y-4">
-              <h1 className="text-3xl sm:text-5xl font-extralight text-white tracking-tight leading-tight">
-                Find contractors with evidence behind them.
-              </h1>
-              <p className="text-base sm:text-lg text-slate-300 leading-relaxed font-extralight">
-                Discover commercial trade contractors using verified credentials, published Avorria Passports, and human-reviewed compliance documentation.
-              </p>
-            </div>
-
-            {/* Regulatory Transparency Callout */}
-            <div className="p-4 rounded-xl bg-navy-900/90 border border-navy-700/80 max-w-2xl text-xs text-slate-300 leading-relaxed space-y-1 font-extralight">
-              <div className="font-bold text-white flex items-center gap-1.5">
-                <ShieldCheck className="w-4 h-4 text-sky-400 shrink-0" />
-                <span>Verified by Avorria Standards</span>
-              </div>
-              <p>
-                Verification indicates that Avorria compliance reviewers have examined specified evidence against our published criteria. Avorria is not a government licensing body, statutory regulator, or insurance carrier.{' '}
-                <Link
-                  href="/contractor-verification"
-                  className="text-brand-400 hover:text-brand-300 underline font-medium"
-                >
-                  Learn how verification works →
-                </Link>
-              </p>
-            </div>
-          </div>
-        </section>
+        <CinematicPageHero
+          eyebrow="CANONICAL CONTRACTOR DIRECTORY"
+          title={<>Find contractors with<br />evidence behind them.</>}
+          subtitle="Discover commercial trade contractors using verified credentials, published Avorria Passports, and human-reviewed compliance documentation."
+          primaryCta={{ label: 'Explore Directory', href: '#directory' }}
+          secondaryCta={{ label: 'How Verification Works', href: '/contractor-verification' }}
+          backgroundImage="/images/hero-contractors.jpg"
+          backgroundAlt="Commercial trade contractors and master craftsmen standing atop high-rise build site with city skyline"
+          pillars={[
+            { title: 'Verified Trade Standing', description: 'Active state licensing, registered business entities, and verified qualification parties.' },
+            { title: 'Audited Insurance Coverage', description: 'Validated General Liability occurrence limits, statutory Workers\' Comp, and certificates.' },
+            { title: 'Demonstrated Safety Programs', description: 'Written safety manuals, contemporaneous daily reports, and OSHA hazard controls.' },
+          ]}
+        />
 
         {/* ========================================================================= */}
         {/* DIRECTORY SEARCH & CONTENT SECTION                                        */}
         {/* ========================================================================= */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
+        <div id="directory" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
           {/* Search & Filter Component */}
           <DirectorySearchFilters
             initialQuery={queryParams.query}

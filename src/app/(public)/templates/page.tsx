@@ -3,6 +3,8 @@ import Link from 'next/link';
 import { Metadata } from 'next';
 import { siteConfig } from '@/config/site';
 import { CONTRACTOR_RESOURCES, getResourcesByType } from '@/lib/resources/catalogue';
+import { BreadcrumbJsonLd } from '@/components/seo/JsonLd';
+import { CinematicPageHero } from '@/components/hero/CinematicPageHero';
 
 export const metadata: Metadata = {
   title: 'Contractor Document Templates & Commercial Forms | Avorria',
@@ -19,20 +21,26 @@ export default function TemplatesIndexPage() {
   );
 
   return (
-    <div className="min-h-screen bg-surface-page text-navy-800 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-7xl mx-auto space-y-12">
-        {/* Header */}
-        <div className="text-center max-w-3xl mx-auto space-y-4">
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-brand-50 border border-brand-200 text-brand-700 text-xs font-mono font-medium uppercase tracking-wider rounded-[4px]">
-            DOCUMENT TEMPLATE LIBRARY · COMMERCIAL CONTRACTOR STANDARDS
-          </div>
-          <h1 className="text-3xl sm:text-5xl font-extralight text-navy-900 tracking-tight leading-tight">
-            Professional Contractor Document Templates
-          </h1>
-          <p className="text-sm sm:text-base text-slate-600 leading-relaxed font-extralight max-w-2xl mx-auto">
-            Legally vetted and OSHA-aligned document templates designed for commercial general contractors and specialty trade contractors in the United States.
-          </p>
-        </div>
+    <div className="min-h-screen bg-surface-page text-navy-800">
+      <BreadcrumbJsonLd items={[
+        { name: 'Home', url: `${siteConfig.url}/` },
+        { name: 'Contractor Templates', url: `${siteConfig.url}/templates` },
+      ]} />
+      <CinematicPageHero
+        eyebrow="DOCUMENT TEMPLATE LIBRARY · COMMERCIAL STANDARDS"
+        title={<>Professional Contractor<br />Document Templates.</>}
+        subtitle="Legally vetted and OSHA-aligned document templates designed for commercial general contractors and specialty trade contractors in the United States."
+        primaryCta={{ label: 'Explore Templates Below', href: '#templates-grid' }}
+        secondaryCta={{ label: 'Document Engine', href: '/create' }}
+        backgroundImage="/images/hero-templates.jpg"
+        backgroundAlt="Architectural prints and commercial contract specifications on drafting table on construction site"
+        pillars={[
+          { title: 'AIA & ConsensusDocs Aligned', description: 'Industry-standard formats for change orders, scope exhibits, and subcontracts.' },
+          { title: 'OSHA 1926 Aligned', description: 'Site-specific HASPs, Job Hazard Analyses, and toolbox talks compliant with federal standards.' },
+          { title: 'Ready to Deploy', description: 'Instant downloads in PDF and DOCX formats customized with your company branding.' },
+        ]}
+      />
+      <div id="templates-grid" className="max-w-7xl mx-auto space-y-12 py-16 px-4 sm:px-6 lg:px-8">
 
         {/* Templates Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

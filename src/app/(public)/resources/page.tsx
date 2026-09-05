@@ -3,6 +3,7 @@ import { Metadata } from 'next';
 import { siteConfig } from '@/config/site';
 import { CONTRACTOR_RESOURCES } from '@/lib/resources/catalogue';
 import { ResourcesDirectoryClient } from './ResourcesDirectoryClient';
+import { BreadcrumbJsonLd } from '@/components/seo/JsonLd';
 
 export const metadata: Metadata = {
   title: 'Contractor Operating Resources, Templates & Field Utilities | Avorria',
@@ -16,6 +17,10 @@ export const metadata: Metadata = {
 export default function ResourcesIndexPage() {
   return (
     <div className="min-h-screen bg-surface-page text-navy-800 py-12 px-4 sm:px-6 lg:px-8">
+      <BreadcrumbJsonLd items={[
+        { name: 'Home', url: `${siteConfig.url}/` },
+        { name: 'Contractor Resources', url: `${siteConfig.url}/resources` },
+      ]} />
       <div className="max-w-7xl mx-auto space-y-12">
         {/* Page Header */}
         <div className="text-center max-w-3xl mx-auto space-y-4">

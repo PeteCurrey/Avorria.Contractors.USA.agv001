@@ -2,7 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import { Metadata } from 'next';
 import { siteConfig } from '@/config/site';
-import { ProductHero } from '@/components/hero/ProductHero';
+import { CinematicPageHero } from '@/components/hero/CinematicPageHero';
 import { BreadcrumbJsonLd } from '@/components/seo/JsonLd';
 
 export const metadata: Metadata = {
@@ -64,12 +64,14 @@ export default function ProvePage() {
           { name: 'Prove', item: '/prove' },
         ]}
       />
-      <ProductHero
+      <CinematicPageHero
         eyebrow="PILLAR 04 / EVIDENCE & CREDIBILITY"
         title={<>Turn credentials into an auditable<br />contractor prequalification profile.</>}
         subtitle="Hollow claims don't get contractors onto tier-1 commercial job sites. Avorria transforms your active insurance policies, state trade licenses, and safety programs into a verified contractor prequalification profile that general contractors and risk managers trust."
         primaryCta={{ label: 'Start Verification Process', href: '/sign-up' }}
         secondaryCta={{ label: 'Explore Contractor Passport', href: '/contractor-passport' }}
+        backgroundImage="/images/hero-prove.jpg"
+        backgroundAlt="Auditor verifying contractor certifications, safety records, and licenses on tablet at commercial construction site"
         pillars={[
           { title: 'Documentary Evidence Upload', description: 'Secure encrypted vault for COIs, state trade licenses, safety manuals, and EMR records.' },
           { title: 'Structured Criteria Review', description: 'Audited against trade standards: active effective dates, statutory limits, and qualifying party alignment.' },

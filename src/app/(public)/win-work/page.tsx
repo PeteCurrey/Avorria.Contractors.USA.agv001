@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { Metadata } from 'next';
 import { siteConfig } from '@/config/site';
 import { Button } from '@/components/ui/Button';
-import { ProductHero } from '@/components/hero/ProductHero';
+import { CinematicPageHero } from '@/components/hero/CinematicPageHero';
 import { BreadcrumbJsonLd } from '@/components/seo/JsonLd';
 
 export const metadata: Metadata = {
@@ -37,12 +37,14 @@ export default function WinWorkPage() {
           { name: 'Win Work', item: '/win-work' },
         ]}
       />
-      <ProductHero
+      <CinematicPageHero
         eyebrow="OPERATIONAL PILLAR 05 · WIN WORK"
         title={<>Contractor proposal software built to<br />win high-value commercial bids.</>}
         subtitle="Professional contractor proposal software and quote calculator built for trade contractors. Tier-1 general contractors award to trade contractors who eliminate project risk through structured safety planning, verified compliance, and immediate pre-qualification readiness."
         primaryCta={{ label: 'Build Your Pre-Qual Pack', href: '/sign-up' }}
         secondaryCta={{ label: 'Try Quote & Margin Calculator', href: '/tools/contractor-quote-calculator' }}
+        backgroundImage="/images/hero-win-work.jpg"
+        backgroundAlt="Commercial trade contractors presenting winning proposal and verified prequalification dossier to general contractor"
         pillars={[
           { title: 'Commercial Pre-Qual Packs', description: 'Package COIs, licenses, safety plans, and EMR records into a structured digital dossier for rapid GC review.' },
           { title: 'Margin-Protected Estimating', description: 'Burden multipliers, overhead recovery, and markup calculations built for trade contractor cost structures.' },
